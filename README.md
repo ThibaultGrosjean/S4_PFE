@@ -4,4 +4,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 1 :
 
 * Découverte du sujet
-* Construction d'un modèle relationnel
+* Construction d'un modèle relationnel (ERD, MCD)
+* Création du Serveur
+* API des tables Enseignant et Statut
+
