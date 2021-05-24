@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : sam. 22 mai 2021 à 11:16
+-- Généré le : lun. 24 mai 2021 à 17:38
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -78,37 +78,25 @@ CREATE TABLE `element` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `element_canva`
---
-
-CREATE TABLE `element_canva` (
-  `id` int NOT NULL,
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `niveau` int DEFAULT NULL,
-  `indice` int DEFAULT NULL,
-  `vol_hor_prevues_etu_cm` int DEFAULT NULL,
-  `vol_hor_prevues_etu_td` int DEFAULT NULL,
-  `vol_hor_prevues_etu_tp` int DEFAULT NULL,
-  `date_de_creation` date DEFAULT NULL,
-  `parent` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `enseignant`
 --
 
 CREATE TABLE `enseignant` (
   `id` int NOT NULL,
   `statut_id` int DEFAULT NULL,
+  `prenom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `prenom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `surnom` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `enseignant`
+--
+
+INSERT INTO `enseignant` (`id`, `statut_id`, `prenom`, `nom`, `surnom`, `email`) VALUES
+(1, 1, 'Gérard', 'Dupond', 'GDU', 'gerard.dupond@testmail.com'),
+(2, 2, 'Jean-Louis', 'Martin', 'JLM', 'jeanlouis.martin@testmail.com');
 
 -- --------------------------------------------------------
 
@@ -262,6 +250,17 @@ CREATE TABLE `statut` (
   `nb_he_td_max_sup` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `statut`
+--
+
+INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_max_attendu`, `nb_he_td_min_sup`, `nb_he_td_max_sup`) VALUES
+(1, ' Professeur des Universités', 'PU', 192, 192, 0, 100),
+(2, 'Maître de Conférence', 'MCF', 192, 192, 0, 100),
+(3, 'Professeur agrégé', 'PRAG', 384, 384, 0, 200),
+(4, 'Professeur certifié', 'PRCE', 384, 384, 0, 200),
+(5, 'Vacataire', 'VAC', 0, 64, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -318,13 +317,6 @@ ALTER TABLE `bilan_sous_total`
 -- Index pour la table `element`
 --
 ALTER TABLE `element`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `parent` (`parent`);
-
---
--- Index pour la table `element_canva`
---
-ALTER TABLE `element_canva`
   ADD PRIMARY KEY (`id`),
   ADD KEY `parent` (`parent`);
 
@@ -446,16 +438,10 @@ ALTER TABLE `element`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `element_canva`
---
-ALTER TABLE `element_canva`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT pour la table `enseignant`
 --
 ALTER TABLE `enseignant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `formation`
@@ -509,7 +495,7 @@ ALTER TABLE `sous_total`
 -- AUTO_INCREMENT pour la table `statut`
 --
 ALTER TABLE `statut`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `volume_globale`
@@ -545,12 +531,6 @@ ALTER TABLE `bilan_sous_total`
 --
 ALTER TABLE `element`
   ADD CONSTRAINT `element_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `element_canva`
---
-ALTER TABLE `element_canva`
-  ADD CONSTRAINT `element_canva_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `element_canva` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `enseignant`
