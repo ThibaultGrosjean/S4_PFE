@@ -12,12 +12,27 @@ exports.validator = [
 
 exports.getAllEnseignants = (req, res) => {
   db.query('SELECT * FROM enseignant;',
-    function(err, Enseignant) {
-      if (!err) {
-        res.status(200).json(Enseignant);  
+    function(errE, enseignant) {
+      if (!errE) {
+        db.query('SELECT * FROM statut',
+          function(errS, statut) {
+            if (!errS) {
+              for (var i = enseignant.length - 1; i >= 0; i--) {
+                const idS = enseignant[i].statut_id;
+                for (var j = statut.length - 1; j >= 0; j--) {
+                  if (idS == statut[j].id) enseignant[i]['statut_id'] = statut[j];
+                }
+              }
+              res.status(200).send(enseignant);
+            }
+            else {
+              res.send(errS);
+            }
+          }
+        )   
       }
       else {
-        res.send(err);
+        res.send(errE);
       }
     }
   );  

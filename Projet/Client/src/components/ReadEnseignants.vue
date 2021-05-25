@@ -12,7 +12,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-for="(e,index) in this.request.data"
+        <v-col v-for="(e,index) in this.enseignant.data"
                :key="index"
                sm="4"
         >
@@ -24,7 +24,36 @@
               <p>Prénom : <b>{{ e.prenom}}</b></p>
               <p>Nom : <b>{{ e.nom}}</b></p>
               <p>Adresse mail : <b>{{ e.email}}</b></p>
-              <p>Statut : <b>{{ e.statut_nom}}</b></p>
+              <p class="mb-0">Statut : <b>{{ e.statut_id.nom}}</b></p>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      icon
+                      @click="show = !show"
+                  >
+                    <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      {{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Détails des statuts</span>
+              </v-tooltip>
+
+              <v-expand-transition>
+                <div v-show="show">
+                  <v-divider></v-divider>
+                  <v-card-text>
+                    <p>Nombre HeTD* minimal attendu : <b>{{ e.statut_id.nb_he_td_min_attendu }}</b></p>
+                    <p>Nombre HeTD* maximal attendu : <b>{{ e.statut_id.nb_he_td_max_attendu }}</b></p>
+                    <p>Nombre HeTD* minimal pour les heure supplémentaires : <b>{{ e.statut_id.nb_he_td_min_sup }}</b></p>
+                    <p>Nombre HeTD* maximal pour les heure supplémentaires : <b>{{ e.statut_id.nb_he_td_max_sup }}</b></p>
+                    <small>* HeTD : Nombre d’heures équivalent TD</small>
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
 
             </v-card-text>
             <v-card-actions>
@@ -83,8 +112,8 @@ export default {
   name: "ReadStatuts",
   components: {ConfirmPopUp},
   data: () => ({
-    request: {},
-    dialog: false,
+    enseignant: {},
+    show: false,
     items: [
       {
         text: 'Enseignants',
@@ -100,15 +129,17 @@ export default {
     axios
         .get('http://localhost:8888/enseignants')
         .then((responce) => {
-          this.request = responce;
+          this.enseignant = responce;
           console.log(responce.data);
         })
         .catch((responce) => {
           console.log(responce.data);
           console.log(responce.status);
           console.log(responce.headers);
-        })
+        });
   },
+
+
 }
 </script>
 
