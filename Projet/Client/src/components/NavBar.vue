@@ -6,7 +6,14 @@
     >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-btn icon @click="$router.push({path:'/accueil'})">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-toolbar-title>Gestion des horaires annuels</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="$router.push({path:'/mon-compte'})">
+        <v-icon>settings</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -18,6 +25,16 @@
         nav
         dense
       >
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="title" disabled>
+              Menu Principale
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
         <v-list-item-group
           v-model="group"
           active-class="blue--text text--accent-4"
@@ -43,8 +60,8 @@ export default {
     group: null,
     title: "",
     subMenu: [
-      {text: "Accueil",icon:"mdi-home", path: "/accueil"},
-      {text: "Mon Compte",icon:"settings", path: "/mon-compte"},
+      // {text: "Accueil",icon:"mdi-home", path: "/accueil"},
+      // {text: "Mon Compte",icon:"settings", path: "/mon-compte"},
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Formations",icon:"auto_stories", path: "/formations"},
@@ -63,7 +80,7 @@ export default {
     redirect: function (t){
       this.$router.push({path:t.path});
       this.title = t.text;
-    }
+    },
   }
 }
 </script>

@@ -1,15 +1,20 @@
 <template>
-  <test />
+  <div>
+
+    <v-container>
+      <v-row>
+        <v-col>
+          <h1 class="text-center">Accueil</h1>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
-  import Test from '../components/Test'
 
-  export default {
-    name: 'Accueil',
+export default {
+  name: 'Accueil',
 
-    components: {
-      Test,
-    },
-  }
+}
 </script>
