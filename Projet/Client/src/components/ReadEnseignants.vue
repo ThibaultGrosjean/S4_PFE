@@ -17,10 +17,7 @@
               icon
               @click="display = !display"
           >
-            <v-icon
-                v-bind="attrs"
-                v-on="on"
-            >
+            <v-icon>
               {{ display ? 'grid_view' : 'table_rows' }}
             </v-icon>
           </v-btn>
@@ -39,7 +36,7 @@
           </v-col>
           <v-data-table
               :headers="headers"
-              :items="this.enseignant.data"
+              :items="enseignants"
               :items-per-page="5"
               :search="search"
               class="elevation-1"
@@ -74,14 +71,14 @@
                 </template>
                 <span>Dupliquer</span>
               </v-tooltip>
-              <ConfirmPopUp></ConfirmPopUp>
+              <ConfirmPopUp :item="item.id"></ConfirmPopUp>
             </template>
           </v-data-table>
         </v-col>
       </v-row>
       <v-row v-if="!display">
-        <v-col v-for="(e,index) in this.enseignant.data"
-               :key="index"
+        <v-col v-for="e in enseignants"
+               :key="e.id"
                sm="4"
         >
           <v-card>
@@ -152,14 +149,14 @@
                 <span>Dupliquer</span>
               </v-tooltip>
               <v-spacer></v-spacer>
-              <ConfirmPopUp/>
+              <ConfirmPopUp :item="e.id"></ConfirmPopUp>
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn class="v-btn--example"
+          <v-btn class="v-btn--addElement"
                  color="green"
                  fab
                  dark
@@ -173,19 +170,14 @@
 </template>
 
 <script>
-import axios from "axios";
 import ConfirmPopUp from "@/components/DeleteConfirmation";
+import { mapState } from 'vuex';
 
 export default {
   name: "ReadStatuts",
   components: {ConfirmPopUp},
   data: () => ({
-    enseignant: [],
     headers: [
-      {
-        align: 'start',
-        sortable: false,
-      },
       { text: 'Nom', value: 'nom' },
       { text: 'Prénom', value: 'prenom' },
       { text: 'Surnom', value: 'surnom' },
@@ -208,25 +200,16 @@ export default {
     ],
   }),
   mounted() {
-    axios
-        .get('http://localhost:8888/enseignants')
-        .then((responce) => {
-          this.enseignant = responce;
-          console.log(responce.data);
-        })
-        .catch((responce) => {
-          console.log(responce.data);
-          console.log(responce.status);
-          console.log(responce.headers);
-        });
+    this.$store.dispatch('loadEnseignants');
   },
-
-
+  computed: mapState([
+    'enseignants'
+  ]),
 }
 </script>
 
 <style scoped>
-.v-btn--example {
+.v-btn--addElement {
   bottom: 0;
   right: 0;
   position: fixed;

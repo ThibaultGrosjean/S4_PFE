@@ -58,7 +58,6 @@ export default {
   data: () => ({
     drawer: false,
     group: null,
-    title: "",
     subMenu: [
       // {text: "Accueil",icon:"mdi-home", path: "/accueil"},
       // {text: "Mon Compte",icon:"settings", path: "/mon-compte"},
@@ -79,7 +78,6 @@ export default {
   methods: {
     redirect: function (t){
       this.$router.push({path:t.path});
-      this.title = t.text;
     },
   }
 }

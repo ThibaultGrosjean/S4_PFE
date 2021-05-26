@@ -31,7 +31,7 @@
         <v-btn
             color="green darken-1"
             text
-            @click="dialog = false"
+            @click="deleteItem(item)"
         >
           Confirmer
         </v-btn>
@@ -43,11 +43,17 @@
 <script>
 export default {
   name: "ConfirmPopUp",
+  props: ['item'],
   data() {
     return {
       dialog: false,
     }
   },
+  methods: {
+    deleteItem(item){
+      this.$store.commit('DELETE_Enseignant', item);
+    }
+  }
 }
 </script>
 

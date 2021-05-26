@@ -12,8 +12,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-for="(s,index) in this.request.data"
-               :key="index"
+        <v-col v-for="s in statuts"
+               :key="s.id"
                sm="4"
         >
           <v-card>
@@ -80,8 +80,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import ConfirmPopUp from "@/components/DeleteConfirmation";
+import {mapState} from "vuex";
 
 export default {
   name: "ReadStatuts",
@@ -101,18 +101,11 @@ export default {
     ],
   }),
   mounted() {
-    axios
-        .get('http://localhost:8888/statuts')
-        .then((responce) => {
-          this.request = responce;
-          console.log(responce.data);
-        })
-        .catch((responce) => {
-          console.log(responce.data);
-          console.log(responce.status);
-          console.log(responce.headers);
-        })
+    this.$store.dispatch('loadStatuts');
   },
+  computed: mapState([
+    'statuts'
+  ]),
 }
 </script>
 

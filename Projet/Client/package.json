@@ -11,6 +11,7 @@
     "core-js": "^3.6.5",
     "material-design-icons": "^3.0.1",
     "vue": "^2.6.11",
+    "vue-axios": "^3.2.4",
     "vue-cli": "^2.9.6",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
@@ -46,7 +47,10 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off",
+      "no-mixed-spaces-and-tabs" : "off"
+    }
   },
   "browserslist": [
     "> 1%",
