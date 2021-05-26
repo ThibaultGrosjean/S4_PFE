@@ -20,7 +20,11 @@ exports.getAllEnseignants = (req, res) => {
               for (var i = enseignant.length - 1; i >= 0; i--) {
                 const idS = enseignant[i].statut_id;
                 for (var j = statut.length - 1; j >= 0; j--) {
-                  if (idS == statut[j].id) enseignant[i]['statut_id'] = statut[j];
+                  if (idS == statut[j].id) {
+                    enseignant[i]['statut'] = statut[j];
+                    delete enseignant[i]['statut_id'];
+                  }
+
                 }
               }
               res.status(200).send(enseignant);

@@ -12,6 +12,74 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col>
+          <v-btn
+              icon
+              @click="display = !display"
+          >
+            <v-icon
+                v-bind="attrs"
+                v-on="on"
+            >
+              {{ display ? 'grid_view' : 'table_rows' }}
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row v-if="display">
+        <v-col>
+          <v-col>
+            <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
+          </v-col>
+          <v-data-table
+              :headers="headers"
+              :items="this.enseignant.data"
+              :items-per-page="5"
+              :search="search"
+              class="elevation-1"
+          >
+
+            <template v-slot:item.actions="{ item }">
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon>
+                    <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="editItem(item)"
+                    >
+                      edit
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Modifier</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon>
+                    <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="copyItem(item)"
+                    >
+                      file_copy
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Dupliquer</span>
+              </v-tooltip>
+              <ConfirmPopUp></ConfirmPopUp>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+      <v-row v-if="!display">
         <v-col v-for="(e,index) in this.enseignant.data"
                :key="index"
                sm="4"
@@ -24,7 +92,7 @@
               <p>Prénom : <b>{{ e.prenom}}</b></p>
               <p>Nom : <b>{{ e.nom}}</b></p>
               <p>Adresse mail : <b>{{ e.email}}</b></p>
-              <p class="mb-0">Statut : <b>{{ e.statut_id.nom}}</b></p>
+              <p class="mb-0">Statut : <b>{{ e.statut.nom}}</b></p>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -46,10 +114,10 @@
                 <div v-show="show">
                   <v-divider></v-divider>
                   <v-card-text>
-                    <p>Nombre HeTD* minimal attendu : <b>{{ e.statut_id.nb_he_td_min_attendu }}</b></p>
-                    <p>Nombre HeTD* maximal attendu : <b>{{ e.statut_id.nb_he_td_max_attendu }}</b></p>
-                    <p>Nombre HeTD* minimal pour les heure supplémentaires : <b>{{ e.statut_id.nb_he_td_min_sup }}</b></p>
-                    <p>Nombre HeTD* maximal pour les heure supplémentaires : <b>{{ e.statut_id.nb_he_td_max_sup }}</b></p>
+                    <p>Nombre HeTD* minimal attendu : <b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
+                    <p>Nombre HeTD* maximal attendu : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
+                    <p>Nombre HeTD* minimal pour les heure supplémentaires : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
+                    <p>Nombre HeTD* maximal pour les heure supplémentaires : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
                     <small>* HeTD : Nombre d’heures équivalent TD</small>
                   </v-card-text>
                 </div>
@@ -112,8 +180,22 @@ export default {
   name: "ReadStatuts",
   components: {ConfirmPopUp},
   data: () => ({
-    enseignant: {},
+    enseignant: [],
+    headers: [
+      {
+        align: 'start',
+        sortable: false,
+      },
+      { text: 'Nom', value: 'nom' },
+      { text: 'Prénom', value: 'prenom' },
+      { text: 'Surnom', value: 'surnom' },
+      { text: 'Email', value: 'email' },
+      { text: 'Statut', value: 'statut.nom' },
+      { text: 'Actions', value: 'actions', sortable: false },
+    ],
     show: false,
+    display: true,
+    search: '',
     items: [
       {
         text: 'Enseignants',
