@@ -30,7 +30,7 @@ export default new Vuex.Store({
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
       state.enseignants.splice(index,1)
-      axios.delete('http://localhost:8888/enseignants/' + id_enseignant).catch(error => {
+      axios.delete('/enseignants/' + id_enseignant).catch(error => {
         console.log('Erreur : ', error)
       })
     }

@@ -156,6 +156,11 @@
       </v-row>
       <v-row>
         <v-col>
+          <EnseignantForm></EnseignantForm>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <v-btn class="v-btn--addElement"
                  color="green"
                  fab
@@ -172,10 +177,11 @@
 <script>
 import ConfirmPopUp from "@/components/DeleteConfirmation";
 import { mapState } from 'vuex';
+import EnseignantForm from "@/components/Form/EnseignantForm";
 
 export default {
   name: "ReadStatuts",
-  components: {ConfirmPopUp},
+  components: {EnseignantForm, ConfirmPopUp},
   data: () => ({
     headers: [
       { text: 'Nom', value: 'nom' },

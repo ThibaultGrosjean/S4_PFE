@@ -39,7 +39,6 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 export default {
   name: "ConfirmPopUp",
@@ -51,6 +50,7 @@ export default {
   },
   methods: {
     deleteItem(item){
+      //TODO trouver un moyen de génraliser l'action ou supprimer cette vue et la remettre dans ReadNom.vue et ajouter une snackbar a la fin de la suppression
       this.$store.commit('DELETE_Enseignant', item);
     }
   }
