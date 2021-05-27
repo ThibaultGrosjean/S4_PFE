@@ -54,7 +54,6 @@
                 <span>Dupliquer</span>
               </v-tooltip>
               <v-spacer></v-spacer>
-              <ConfirmPopUp/>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -85,7 +84,6 @@ import {mapState} from "vuex";
 
 export default {
   name: "ReadStatuts",
-  components: {ConfirmPopUp},
   data: () => ({
     request: {},
     dialog: false,

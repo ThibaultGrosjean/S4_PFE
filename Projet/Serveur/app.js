@@ -26,26 +26,26 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-app.get('/enseignants', enseignantController.getAllEnseignants);
+app.get('/enseignants/get', enseignantController.getAllEnseignants);
 
-app.get('/enseignants/:id', enseignantController.getEnseignant);
+app.get('/enseignants/get/:id', enseignantController.getEnseignant);
 
-app.post('/enseignants', enseignantController.addEnseignant);
+app.post('/enseignants/create', enseignantController.addEnseignant);
 
-app.put('/enseignants/:id', enseignantController.editEnseignant);
+app.put('/enseignants/editStatut/:id', enseignantController.editEnseignant);
 
-app.delete('/enseignants/:id', enseignantController.deleteEnseignant);
+app.delete('/enseignants/delete/:id', enseignantController.deleteEnseignant);
 
 
-app.get('/statuts', statutController.getAllStatuts);
+app.get('/statuts/get', statutController.getAllStatuts);
 
-app.get('/statuts/:id', statutController.getStatut);
+app.get('/statuts/get/:id', statutController.getStatut);
 
-app.post('/statuts',statutController.validator, statutController.addStatut);
+app.post('/statuts/create/',statutController.validator, statutController.addStatut);
 
-app.put('/statuts/:id',statutController.validator, statutController.editStatut);
+app.put('/statuts/edit/:id',statutController.validator, statutController.editStatut);
 
-app.delete('/statuts/:id', statutController.deleteStatut);
+app.delete('/statuts/delete/:id', statutController.deleteStatut);
 
 
 

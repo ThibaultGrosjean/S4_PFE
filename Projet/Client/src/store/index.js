@@ -30,15 +30,25 @@ export default new Vuex.Store({
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
       state.enseignants.splice(index,1)
-      axios.delete('/enseignants/' + id_enseignant).catch(error => {
+      axios.delete('/enseignants/delete/' + id_enseignant).catch(error => {
         console.log('Erreur : ', error)
       })
-    }
+    },
+    ADD_Enseignant(state, enseignant) {
+      axios.post('/enseignants/create/', enseignant)
+          .then(response => response.data)
+          .then(enseignants => {
+            console.log(enseignants);
+          }).catch(error => {
+            console.log('Erreur : ', error)
+          });
+      state.enseignants.push(enseignant)
+    },
   },
   actions: {
     loadEnseignants ({ commit }) {
       axios
-          .get('enseignants')
+          .get('enseignants/get')
           .then(response => response.data)
           .then(enseignants => {
             console.log(enseignants);
@@ -49,7 +59,7 @@ export default new Vuex.Store({
     },
     loadStatuts ({ commit }) {
       axios
-          .get('statuts')
+          .get('statuts/get')
           .then(response => response.data)
           .then(statuts => {
             console.log(statuts);
@@ -58,6 +68,16 @@ export default new Vuex.Store({
             console.log('Erreur : ', error)
           })
     },
+    addEnseignant({ commit }, enseignant) {
+      axios.post('/enseignants/create', enseignant)
+          .then(response => response.data)
+          .then(enseignants => {
+          this.state.enseignants.push(enseignant)
+            console.log(enseignants);
+          }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    }
   },
   modules: {
   }
