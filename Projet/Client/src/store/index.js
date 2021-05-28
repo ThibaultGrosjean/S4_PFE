@@ -21,64 +21,63 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    SET_Enseignant (state, enseignants) {
+    SET_Enseignant(state, enseignants) {
       state.enseignants = enseignants
     },
-    SET_Statut (state, statuts) {
+    SET_Statut(state, statuts) {
       state.statuts = statuts
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
-      state.enseignants.splice(index,1)
+      state.enseignants.splice(index, 1)
       axios.delete('/enseignants/delete/' + id_enseignant).catch(error => {
         console.log('Erreur : ', error)
       })
     },
     ADD_Enseignant(state, enseignant) {
       axios.post('/enseignants/create/', enseignant)
-          .then(response => response.data)
-          .then(enseignants => {
-            console.log(enseignants);
-          }).catch(error => {
-            console.log('Erreur : ', error)
-          });
+        .then(response => response.data)
+        .then(enseignants => {
+          console.log(enseignants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
       state.enseignants.push(enseignant)
     },
   },
   actions: {
-    loadEnseignants ({ commit }) {
+    loadEnseignants({commit}) {
       axios
-          .get('enseignants/get')
-          .then(response => response.data)
-          .then(enseignants => {
-            console.log(enseignants);
-            commit('SET_Enseignant', enseignants)
-          }).catch(error => {
-            console.log('Erreur : ', error)
-          })
+        .get('enseignants/get')
+        .then(response => response.data)
+        .then(enseignants => {
+          console.log(enseignants);
+          commit('SET_Enseignant', enseignants)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
     },
-    loadStatuts ({ commit }) {
+    loadStatuts({commit}) {
       axios
-          .get('statuts/get')
-          .then(response => response.data)
-          .then(statuts => {
-            console.log(statuts);
-            commit('SET_Statut', statuts)
-          }).catch(error => {
-            console.log('Erreur : ', error)
-          })
+        .get('statuts/get')
+        .then(response => response.data)
+        .then(statuts => {
+          console.log(statuts);
+          commit('SET_Statut', statuts)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
     },
-    addEnseignant({ commit }, enseignant) {
+    addEnseignant({commit}, enseignant) {
       axios.post('/enseignants/create', enseignant)
-          .then(response => response.data)
-          .then(enseignants => {
+        .then(response => response.data)
+        .then(enseignants => {
           this.state.enseignants.push(enseignant)
-            console.log(enseignants);
-          }).catch(error => {
+          console.log(enseignants);
+        }).catch(error => {
         console.log('Erreur : ', error)
       });
     }
   },
-  modules: {
-  }
+  modules: {}
 })

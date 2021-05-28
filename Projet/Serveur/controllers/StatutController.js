@@ -71,6 +71,39 @@ exports.addStatut = (req, res) => {
 };
 
 
+exports.copyStatut = (req, res) => {
+  db.query('SELECT * FROM statut where id = ? ;', [req.params.id],
+    function(err, statut) {
+      if (!err) {
+        var requete="INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES ('" 
+          + statut[0]['nom'] + ' (copie)' + "','"
+          + statut[0]['surnom'] + "','"
+          + statut[0]['nb_he_td_min_attendu'] + "','" 
+          + statut[0]['nb_he_td_max_attendu'] + "','" 
+          + statut[0]['nb_he_td_min_sup'] + "','" 
+          + statut[0]['nb_he_td_max_sup'] + "');"
+        ;
+
+        db.query(requete,
+          function(err, nexs) {
+            if (!err) {
+              res.status(200).json(nexs); 
+            } else  {
+              res.send(err);
+            }
+          }
+        );
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+
+  
+};
+
+
 exports.editStatut = (req, res) => {
   var donnees = {
     id : req.body.id,
@@ -92,7 +125,7 @@ exports.editStatut = (req, res) => {
   db.query(requete,
     function(err) {
       if (!err) {
-        res.status(200); 
+        res.status(200);  
       } else {
         res.send(err);
       }

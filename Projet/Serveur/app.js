@@ -32,7 +32,9 @@ app.get('/enseignants/get/:id', enseignantController.getEnseignant);
 
 app.post('/enseignants/create', enseignantController.addEnseignant);
 
-app.put('/enseignants/editStatut/:id', enseignantController.editEnseignant);
+app.post('/enseignants/copy/:id', enseignantController.copyEnseignant);
+
+app.put('/enseignants/edit/:id', enseignantController.editEnseignant);
 
 app.delete('/enseignants/delete/:id', enseignantController.deleteEnseignant);
 
@@ -43,10 +45,11 @@ app.get('/statuts/get/:id', statutController.getStatut);
 
 app.post('/statuts/create/',statutController.validator, statutController.addStatut);
 
+app.post('/statuts/copy/:id',statutController.validator, statutController.copyStatut);
+
 app.put('/statuts/edit/:id',statutController.validator, statutController.editStatut);
 
 app.delete('/statuts/delete/:id', statutController.deleteStatut);
-
 
 
 app.listen(port, () => {
