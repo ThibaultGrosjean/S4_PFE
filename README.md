@@ -18,6 +18,6 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 
 ## Semaine 2 : 26 mai - 1 juin
 
-* Filtrer Enseignants
-* Suppression Enseignants
-* Formulaire Création et Modification
+* Filtrer les Enseignants
+* Suppression d'un Enseignant
+* Formulaire de création et de modification d'un Enseignant

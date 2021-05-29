@@ -21,10 +21,10 @@
             <v-card-subtitle><b class="text-uppercase">{{ s.surnom }}</b></v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
-              <p>Nombre HeTD* minimal attendu : <b>{{ s.nb_he_td_min_attendu }}</b></p>
-              <p>Nombre HeTD* maximal attendu : <b>{{ s.nb_he_td_max_attendu }}</b></p>
-              <p>Nombre HeTD* minimal pour les heure supplémentaires : <b>{{ s.nb_he_td_min_sup }}</b></p>
-              <p>Nombre HeTD* maximal pour les heure supplémentaires : <b>{{ s.nb_he_td_max_sup }}</b></p>
+              <p>HeTD* minimal attendu : <b>{{ s.nb_he_td_min_attendu }}</b></p>
+              <p>HeTD* maximal attendu : <b>{{ s.nb_he_td_max_attendu }}</b></p>
+              <p>HeTD* minimal sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
+              <p>HeTD* maximal sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
             </v-card-text>
             <v-card-actions>
               <v-tooltip top>

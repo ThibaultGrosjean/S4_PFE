@@ -44,6 +44,17 @@ export default new Vuex.Store({
       });
       state.enseignants.push(enseignant)
     },
+    EDIT_Enseignant(state, enseignant) {
+      axios.put('/enseignants/edit/'+enseignant.id, enseignant)
+        .then(response => response.data)
+        .then(enseignants => {
+          console.log(enseignants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.enseignants.findIndex(e => e.id === enseignant.id);
+      state.enseignants[index] = enseignant
+    },
   },
   actions: {
     loadEnseignants({commit}) {
