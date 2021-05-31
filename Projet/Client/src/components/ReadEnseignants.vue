@@ -6,106 +6,38 @@
           <h1 class="text-center">Liste des enseignants</h1>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-breadcrumbs :items="items" large class="pl-0"></v-breadcrumbs>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-            icon
-            @click="display = !display"
-          >
-            <v-icon>
-              {{ display ? 'grid_view' : 'table_rows' }}
-            </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
       <v-row
           align="center"
           justify="center"
       >
-          <v-btn-toggle
-              borderless
-              rounded
-              dense
-              mandatory
-              color="blue--text text--accent-4"
+        <v-btn-toggle
+            borderless
+            rounded
+            dense
+            mandatory
+            color="blue--text text--accent-4"
+        >
+          <v-btn
+              @click="sortedByPrenom"
           >
-            <v-btn
-                @click="sortedByPrenom"
-            >
-              <span class="hidden-sm-and-down">Prénom</span>
-              <v-icon right>sort_by_alpha</v-icon>
-            </v-btn>
-            <v-btn
-                @click="sortedByNom"
-            >
-              <span class="hidden-sm-and-down">Nom</span>
-              <v-icon right>sort_by_alpha</v-icon>
-            </v-btn>
-            <v-btn
-                @click="sortedByStatut"
-            >
-              <span class="hidden-sm-and-down">Statut</span>
-              <v-icon right>sort_by_alpha</v-icon>
-            </v-btn>
-          </v-btn-toggle>
-      </v-row>
-      <v-row v-if="display">
-        <v-col>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-          <br>
-          <v-data-table
-            :headers="headers"
-            :items="enseignants"
-            :items-per-page="10"
-            :search="search"
-            class="elevation-1"
+            <span class="hidden-sm-and-down">Prénom</span>
+            <v-icon right>sort_by_alpha</v-icon>
+          </v-btn>
+          <v-btn
+              @click="sortedByNom"
           >
-
-            <template v-slot:item.actions="{ item }">
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(item)"
-                    >
-                      edit
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      file_copy
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Dupliquer</span>
-              </v-tooltip>
-              <ConfirmPopUp :item="item.id"></ConfirmPopUp>
-            </template>
-          </v-data-table>
-        </v-col>
+            <span class="hidden-sm-and-down">Nom</span>
+            <v-icon right>sort_by_alpha</v-icon>
+          </v-btn>
+          <v-btn
+              @click="sortedByStatut"
+          >
+            <span class="hidden-sm-and-down">Statut</span>
+            <v-icon right>sort_by_alpha</v-icon>
+          </v-btn>
+        </v-btn-toggle>
       </v-row>
-      <v-row v-if="!display">
+      <v-row>
         <v-col v-for="e in enseignants"
                :key="e.id"
                sm="4"
@@ -120,12 +52,12 @@
               <div class="text-center">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon @click="show = !show">
+                    <v-btn icon @click="showDetails = !showDetails">
                       <v-icon
                           v-bind="attrs"
                           v-on="on"
                       >
-                        {{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                        {{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                       </v-icon>
                     </v-btn>
                   </template>
@@ -135,7 +67,7 @@
 
 
               <v-expand-transition>
-                <div v-show="show">
+                <div v-show="showDetails">
                   <p>HeTD* minimal attendu :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
                   <p>HeTD* maximal attendu : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
                   <p>HeTD* minimal sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
@@ -149,9 +81,9 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon>
                     <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(e)"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="edit(e)"
                     >
                       edit
                     </v-icon>
@@ -163,8 +95,8 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon>
                     <v-icon
-                      v-bind="attrs"
-                      v-on="on"
+                        v-bind="attrs"
+                        v-on="on"
                     >
                       file_copy
                     </v-icon>
@@ -173,7 +105,7 @@
                 <span>Dupliquer</span>
               </v-tooltip>
               <v-spacer></v-spacer>
-              <ConfirmPopUp :item="e.id"></ConfirmPopUp>
+              <Delete :item="e.id"></Delete>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -181,12 +113,12 @@
       <v-row>
         <v-col>
           <v-btn
-            class="v-btn--addElement"
-            color="green"
-            fab
-            dark
-            @click="close"
-        >
+              class="v-btn--addElement"
+              color="green"
+              fab
+              dark
+              @click="close"
+          >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
 
@@ -194,11 +126,10 @@
       </v-row>
       <v-row justify="center">
         <v-dialog
-          v-model="form"
-          persistent
-          max-width="600px"
+            v-model="form"
+            persistent
+            max-width="600px"
         >
-
           <v-card>
             <v-form lazy-validation>
               <v-card-title>
@@ -206,8 +137,8 @@
                 <span class="headline" v-else>Modifier un enseignant</span>
                 <v-spacer></v-spacer>
                 <v-btn
-                  icon
-                  @click="close"
+                    icon
+                    @click="close"
                 >
                   <v-icon>
                     close
@@ -225,58 +156,58 @@
                     @blur="$v.prenom.$touch()"
                 ></v-text-field>
                 <v-text-field
-                  v-model="nom"
-                  :error-messages="nomErrors"
-                  :counter="255"
-                  label="Nom"
-                  required
-                  @input="$v.nom.$touch()"
-                  @blur="$v.nom.$touch()"
+                    v-model="nom"
+                    :error-messages="nomErrors"
+                    :counter="255"
+                    label="Nom"
+                    required
+                    @input="$v.nom.$touch()"
+                    @blur="$v.nom.$touch()"
                 ></v-text-field>
                 <v-text-field
-                  v-model="surnom"
-                  :error-messages="surnomErrors"
-                  :counter="3"
-                  label="Surnom"
-                  required
-                  @input="$v.surnom.$touch()"
-                  @blur="$v.surnom.$touch()"
+                    v-model="surnom"
+                    :error-messages="surnomErrors"
+                    :counter="3"
+                    label="Surnom"
+                    required
+                    @input="$v.surnom.$touch()"
+                    @blur="$v.surnom.$touch()"
                 ></v-text-field>
                 <v-text-field
-                  v-model="email"
-                  :error-messages="emailErrors"
-                  label="E-mail"
-                  :counter="255"
-                  required
-                  @input="$v.email.$touch()"
-                  @blur="$v.email.$touch()"
+                    v-model="email"
+                    :error-messages="emailErrors"
+                    label="E-mail"
+                    :counter="255"
+                    required
+                    @input="$v.email.$touch()"
+                    @blur="$v.email.$touch()"
                 ></v-text-field>
                 <v-select
-                  v-model="statut_id"
-                  :items="statuts"
-                  item-text="nom"
-                  item-value="id"
-                  label="Statut"
-                  :error-messages="statutErrors"
-                  @change="$v.statut_id.$touch()"
-                  @blur="$v.statut_id.$touch()"
-                  required
+                    v-model="statut_id"
+                    :items="statuts"
+                    item-text="nom"
+                    item-value="id"
+                    label="Statut"
+                    :error-messages="statutErrors"
+                    @change="$v.statut_id.$touch()"
+                    @blur="$v.statut_id.$touch()"
+                    required
                 ></v-select>
                 <v-card-actions>
                   <v-btn
-                    color="red darken-1"
-                    class="mr-4"
-                    text
-                    @click="clear"
+                      color="red darken-1"
+                      class="mr-4"
+                      text
+                      @click="clear"
                   >
                     Vider
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                    color="green darken-1"
-                    class="mr-4"
-                    text
-                    @click="submit"
+                      color="green darken-1"
+                      class="mr-4"
+                      text
+                      @click="submit"
                   >
                     Valider
                   </v-btn>
@@ -291,14 +222,14 @@
 </template>
 
 <script>
-import ConfirmPopUp from "@/components/DeleteConfirmation";
+import Delete from "@/components/DeleteConfirmation";
 import {mapState} from 'vuex';
 import {validationMixin} from "vuelidate";
 import {email, maxLength, required} from "vuelidate/lib/validators";
 
 export default {
   name: "ReadStatuts",
-  components: {ConfirmPopUp},
+  components: {Delete},
   mixins: [validationMixin],
 
   validations: {
@@ -309,32 +240,12 @@ export default {
     statut_id: {required},
   },
   data: () => ({
-    headers: [
-      {text: 'Nom', value: 'nom',align: 'center',},
-      {text: 'Prénom', value: 'prenom',align: 'center',},
-      {text: 'Surnom', value: 'surnom',align: 'center',},
-      {text: 'Email', value: 'email',align: 'center',},
-      {text: 'Statut', value: 'statut.nom',align: 'center',},
-      {text: 'HeTD min attendu', value: 'statut.nb_he_td_min_attendu',align: 'center',},
-      {text: 'HeTD max attendu', value: 'statut.nb_he_td_max_attendu',align: 'center',},
-      {text: 'HeTD min sup.', value: 'statut.nb_he_td_min_sup',align: 'center',},
-      {text: 'HeTD max sup.', value: 'statut.nb_he_td_max_sup',align: 'center',},
-      {text: 'Actions', value: 'actions', sortable: false, width: "13%",align: 'center',},
-    ],
-    show: false,
-    display: false,
+    showDetails: false,
     form: false,
     sortNom: false,
     sortPrenom: false,
     sortStatut: false,
-    search: '',
     methods: "POST",
-    items: [
-      {text: 'Enseignants', disabled: true,},
-      {text: 'Liste', disabled: true,},
-    ],
-    editedIndex: -1,
-    editedItem: {},
     id: '',
     nom: '',
     prenom: '',

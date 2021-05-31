@@ -77,7 +77,7 @@ export default {
   }),
   methods: {
     redirect: function (t){
-      this.$router.push({path:t.path});
+      this.$router.push({path:t.path}).catch(()=>{});
     },
   }
 }

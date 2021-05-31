@@ -21,3 +21,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Filtrer les Enseignants
 * Suppression d'un Enseignant
 * Formulaire de création et de modification d'un Enseignant
+* Filtrer les Statuts
+* Formulaire de création et de modification d'un Statut

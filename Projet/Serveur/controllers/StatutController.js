@@ -5,10 +5,10 @@ const { check, validator } = require('express-validator');
 exports.validator = [
   check('nom',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
   check('surnom',"Veuillez saisir un surnom avec au minimum 2 caractères").isLength({ min: 2 }),
-  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un numérique non nul").isNumeric(),
-  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un numérique non nul").isNumeric(),
-  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un numérique non nul").isNumeric(),
-  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un numérique non nul").isNumeric(),
+  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un numérique non nul").isDecimal(),
+  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un numérique non nul").isDecimal(),
+  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un numérique non nul").isDecimal(),
+  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un numérique non nul").isDecimal(),
 ];
 
 

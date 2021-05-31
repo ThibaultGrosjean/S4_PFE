@@ -55,6 +55,27 @@ export default new Vuex.Store({
       let index = state.enseignants.findIndex(e => e.id === enseignant.id);
       state.enseignants[index] = enseignant
     },
+    ADD_Statut(state, statut) {
+      axios.post('/statuts/create/', statut)
+        .then(response => response.data)
+        .then(statuts => {
+          console.log(statuts);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.statuts.push(statut)
+    },
+    EDIT_Statut(state, statut) {
+      axios.put('/statuts/edit/'+statut.id, statut)
+        .then(response => response.data)
+        .then(statuts => {
+          console.log(statuts);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.statuts.findIndex(e => e.id === statut.id);
+      state.statuts[index] = statut
+    },
   },
   actions: {
     loadEnseignants({commit}) {
