@@ -118,7 +118,7 @@ exports.editProjet = (req, res) => {
   );
 };
 
-
+// Vérifier les relations avec les autres tables
 exports.deleteProjet = (req, res) => {
   db.query('DELETE FROM projet WHERE id = ? ;',[req.params.id],
     function(err) {

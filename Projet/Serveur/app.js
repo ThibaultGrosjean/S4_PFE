@@ -17,6 +17,7 @@ const app = express();
 const enseignantController = require('./controllers/EnseignantController');
 const statutController = require('./controllers/StatutController');
 const projetController = require('./controllers/ProjetController');
+const elementController = require('./controllers/ElementController');
 
 const port = 8888;
 
@@ -63,6 +64,19 @@ app.post('/projets/copy/:id',projetController.validator, projetController.copyPr
 app.put('/projets/edit/:id',projetController.validator, projetController.editProjet);
 
 app.delete('/projets/delete/:id', projetController.deleteProjet);
+
+
+app.get('/elements/get', elementController.getAllElements);
+
+app.get('/elements/get/:id', elementController.getElement);
+
+app.post('/elements/create/',elementController.validator, elementController.addElement);
+
+app.post('/elements/copy/:id',elementController.validator, elementController.copyElement);
+
+app.put('/elements/edit/:id',elementController.validator, elementController.editElement);
+
+app.delete('/elements/delete/:id', elementController.deleteElement);
 
 
 app.listen(port, () => {
