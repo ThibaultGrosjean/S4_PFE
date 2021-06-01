@@ -5,7 +5,6 @@ npm install body-parser
 npm install express-validator 
 npm install mysql 
 
-
 **/
 
 const express = require('express');
@@ -17,6 +16,7 @@ const app = express();
 
 const enseignantController = require('./controllers/EnseignantController');
 const statutController = require('./controllers/StatutController');
+const projetController = require('./controllers/ProjetController');
 
 const port = 8888;
 
@@ -50,6 +50,19 @@ app.post('/statuts/copy/:id',statutController.validator, statutController.copySt
 app.put('/statuts/edit/:id',statutController.validator, statutController.editStatut);
 
 app.delete('/statuts/delete/:id', statutController.deleteStatut);
+
+
+app.get('/projets/get', projetController.getAllProjets);
+
+app.get('/projets/get/:id', projetController.getProjet);
+
+app.post('/projets/create/',projetController.validator, projetController.addProjet);
+
+app.post('/projets/copy/:id',projetController.validator, projetController.copyProjet);
+
+app.put('/projets/edit/:id',projetController.validator, projetController.editProjet);
+
+app.delete('/projets/delete/:id', projetController.deleteProjet);
 
 
 app.listen(port, () => {
