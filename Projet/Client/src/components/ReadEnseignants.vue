@@ -110,20 +110,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-              class="v-btn--addElement"
-              color="green"
-              fab
-              dark
-              @click="close"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-
-        </v-col>
-      </v-row>
       <v-row justify="center">
         <v-dialog
             v-model="form"
@@ -217,6 +203,19 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+              class="v-btn--addElement"
+              color="green"
+              fab
+              dark
+              @click="close"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -253,6 +252,10 @@ export default {
     email: '',
     statut_id: null,
   }),
+  mounted() {
+    this.$store.dispatch('loadEnseignants')
+    this.$store.dispatch('loadStatuts')
+  },
   computed: {
     ...mapState(['statuts', 'enseignants']),
     statutErrors() {
@@ -290,7 +293,6 @@ export default {
       return errors
     },
   },
-
   methods: {
     submit() {
       this.$v.$touch()
@@ -374,10 +376,6 @@ export default {
         this.enseignants.sort((a, b) => a.statut.id > b.statut.id)
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch('loadEnseignants')
-    this.$store.dispatch('loadStatuts')
   },
 }
 </script>

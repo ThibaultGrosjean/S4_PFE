@@ -11,6 +11,8 @@ export default new Vuex.Store({
   state: {
     enseignants: [],
     statuts: [],
+    projets: [],
+    elements: [],
   },
   getters: {
     enseignants: state => {
@@ -19,6 +21,12 @@ export default new Vuex.Store({
     statuts: state => {
       return state.statuts;
     },
+    projets: state => {
+      return state.projets;
+    },
+    elements: state => {
+      return state.elements;
+    },
   },
   mutations: {
     SET_Enseignant(state, enseignants) {
@@ -26,6 +34,12 @@ export default new Vuex.Store({
     },
     SET_Statut(state, statuts) {
       state.statuts = statuts
+    },
+    SET_Projet(state, projets) {
+      state.projets = projets
+    },
+    SET_Element(state, elements) {
+      state.elements = elements
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
@@ -96,6 +110,28 @@ export default new Vuex.Store({
         .then(statuts => {
           console.log(statuts);
           commit('SET_Statut', statuts)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadProjets({commit}) {
+      axios
+        .get('projets/get')
+        .then(response => response.data)
+        .then(projets => {
+          console.log(projets);
+          commit('SET_Projet', projets)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadElements({commit}) {
+      axios
+        .get('elements/get')
+        .then(response => response.data)
+        .then(elements => {
+          console.log(elements);
+          commit('SET_Elements', elements)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

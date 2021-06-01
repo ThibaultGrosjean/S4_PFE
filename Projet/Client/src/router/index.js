@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Accueil from '../views/Accueil.vue'
 import Statuts from "@/views/Statuts";
 import Enseignants from "@/views/Enseignants";
+import Projets from "../views/Projets";
+import Elements from "../views/Elements";
 
 Vue.use(VueRouter)
 
@@ -26,6 +28,16 @@ const routes = [
     path: '/enseignants',
     name: 'Enseignants',
     component: Enseignants
+  },
+  {
+    path: '/projets',
+    name: 'Projets',
+    component: Projets
+  },
+  {
+    path: '/hierarchies-arborescentes',
+    name: 'Hierarchies Arborescentes',
+    component: Elements
   },
 ]
 

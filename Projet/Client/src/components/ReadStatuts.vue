@@ -78,19 +78,6 @@
           <small>* HeTD : Nombre d’heures équivalent TD</small>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-               class="v-btn--addElement"
-               color="green"
-               fab
-               dark
-               @click="close"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
       <v-row justify="center">
         <v-dialog
             v-model="form"
@@ -187,6 +174,19 @@
             </v-form>
           </v-card>
         </v-dialog>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+              class="v-btn--addElement"
+              color="green"
+              fab
+              dark
+              @click="close"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -332,9 +332,6 @@ export default {
         this.sortNom = true
         this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
       }
-    },
-    mounted() {
-      this.$store.dispatch('loadStatuts')
     },
   },
 }

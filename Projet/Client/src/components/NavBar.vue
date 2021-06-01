@@ -64,7 +64,7 @@ export default {
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Formations",icon:"auto_stories", path: "/formations"},
-      {text: "Groupes d'enseignants",icon:"groups", path: "/groupes-enseignants"},
+      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},
       {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},
       {text: "Intervenants",icon:"assignment_ind", path: "/intervenant"},
       {text: "Périodes",icon:"access_time", path: "/periodes"},
