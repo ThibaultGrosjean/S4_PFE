@@ -55,9 +55,9 @@ app.delete('/statuts/delete/:id', statutController.deleteStatut);
 
 app.get('/projets/get', projetController.getAllProjets);
 
-app.get('/projets/get/:id', projetController.getProjet);
+app.get('/projets/get/:id', projetController.getProjet)
 
-app.post('/projets/create/',projetController.validator, projetController.addProjet);
+app.put('/projets/create/:name',projetController.validator, projetController.addProjet);
 
 app.post('/projets/copy/:id',projetController.validator, projetController.copyProjet);
 

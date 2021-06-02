@@ -11,6 +11,7 @@
           justify="center"
       >
         <v-btn-toggle
+            v-if="enseignants.length"
             borderless
             rounded
             dense
@@ -36,6 +37,11 @@
             <v-icon right>sort_by_alpha</v-icon>
           </v-btn>
         </v-btn-toggle>
+      </v-row>
+      <v-row>
+        <v-col v-if="!enseignants.length">
+          <p class="text-center">Aucune donnée trouvée</p>
+        </v-col>
       </v-row>
       <v-row>
         <v-col v-for="e in enseignants"

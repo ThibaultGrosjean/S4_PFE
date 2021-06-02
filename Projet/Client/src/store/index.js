@@ -69,6 +69,17 @@ export default new Vuex.Store({
       let index = state.enseignants.findIndex(e => e.id === enseignant.id);
       state.enseignants[index] = enseignant
     },
+    EDIT_Projet(state, projet) {
+      axios.put('/projets/edit/'+projet.id, projet)
+        .then(response => response.data)
+        .then(projet => {
+          console.log(projet);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.projets.findIndex(e => e.id === projet.id);
+      state.projets[index] = projet
+    },
     ADD_Statut(state, statut) {
       axios.post('/statuts/create/', statut)
         .then(response => response.data)
@@ -78,6 +89,17 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
       state.statuts.push(statut)
+    },
+    ADD_Projet(state, nom) {
+      axios.put('/projets/create/'+ nom)
+        .then(response => response.data)
+        .then(projet => {
+          console.log(projet);
+          const dateNow = new Date().toISOString().substr(0, 10)
+          state.projets.push({id:projet.insertId, nom: nom, date:dateNow, verrou:0,archive:0})
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
     },
     EDIT_Statut(state, statut) {
       axios.put('/statuts/edit/'+statut.id, statut)
@@ -136,16 +158,6 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
-    addEnseignant({commit}, enseignant) {
-      axios.post('/enseignants/create', enseignant)
-        .then(response => response.data)
-        .then(enseignants => {
-          this.state.enseignants.push(enseignant)
-          console.log(enseignants);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-    }
   },
   modules: {}
 })

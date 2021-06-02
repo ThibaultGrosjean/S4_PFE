@@ -11,6 +11,7 @@
           justify="center"
       >
         <v-btn-toggle
+            v-if="statuts.length"
             borderless
             rounded
             dense
@@ -26,6 +27,11 @@
         </v-btn-toggle>
       </v-row>
       <v-row>
+        <v-col v-if="!statuts.length">
+          <p class="text-center">Aucune donnée trouvée</p>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col v-for="s in statuts"
                :key="s.id"
                sm="4"
@@ -39,6 +45,7 @@
               <p>HeTD* maximal attendu : <b>{{ s.nb_he_td_max_attendu }}</b></p>
               <p>HeTD* minimal sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
               <p>HeTD* maximal sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
+              <small>* HeTD : Nombre d’heures équivalent TD</small>
             </v-card-text>
             <v-card-actions>
               <v-tooltip top>
@@ -71,11 +78,6 @@
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <small>* HeTD : Nombre d’heures équivalent TD</small>
         </v-col>
       </v-row>
       <v-row justify="center">

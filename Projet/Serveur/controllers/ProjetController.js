@@ -39,10 +39,10 @@ exports.getProjet = (req, res) => {
 
 exports.addProjet = (req, res) => {
   var data = {
-    nom : req.body.nom,
-    date : req.body.date,
-    verrou : req.body.verrou,
-    archive : req.body.archive,
+    nom :  req.params.name,
+    date : new Date().toISOString().substr(0,10),
+    verrou : 0,
+    archive : 0,
   };
 
   var requete="INSERT INTO projet(nom, date, verrou, archive) VALUES ('" 
@@ -53,9 +53,9 @@ exports.addProjet = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, projet) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(projet); 
       } else  {
         res.send(err);
       }

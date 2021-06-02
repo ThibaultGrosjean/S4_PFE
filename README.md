@@ -24,3 +24,8 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Filtrer les Statuts
 * Formulaire de création et de modification d'un Statut
 * API des tables Projet et Élément
+
+## Semaine 3 : 2-8 juin
+
+* Filtrer les Projets
+* Formulaire de création et de modification d'un Projet

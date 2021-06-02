@@ -7,6 +7,11 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col v-if="!elements.length">
+          <p class="text-center">Aucune donnée trouvée</p>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col>
           <v-btn
               class="v-btn--addElement"
