@@ -55,7 +55,7 @@ app.delete('/statuts/delete/:id', statutController.deleteStatut);
 
 app.get('/projets/get', projetController.getAllProjets);
 
-app.get('/projets/get/:id', projetController.getProjet)
+app.get('/projets/get/:id', projetController.getProjet);
 
 app.put('/projets/create/:name',projetController.validator, projetController.addProjet);
 

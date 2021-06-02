@@ -5,6 +5,7 @@ import Statuts from "@/views/Statuts";
 import Enseignants from "@/views/Enseignants";
 import Projets from "../views/Projets";
 import Elements from "../views/Elements";
+import Intervenant from "../views/Intervenant";
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,11 @@ const routes = [
     path: '/hierarchies-arborescentes',
     name: 'Hierarchies Arborescentes',
     component: Elements
+  },
+  {
+    path: '/intervenants',
+    name: 'Intervenants',
+    component: Intervenant
   },
 ]
 

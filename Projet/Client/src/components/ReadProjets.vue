@@ -119,6 +119,7 @@
                   </v-icon>
                 </v-btn>
               </v-card-title>
+              <v-divider></v-divider>
               <v-card-text>
                 <v-text-field
                     v-model="nom"

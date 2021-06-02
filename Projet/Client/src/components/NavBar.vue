@@ -66,7 +66,7 @@ export default {
       {text: "Formations",icon:"auto_stories", path: "/formations"},
       {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},
       {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},
-      {text: "Intervenants",icon:"assignment_ind", path: "/intervenant"},
+      {text: "Intervenants",icon:"assignment_ind", path: "/intervenants"},
       {text: "Périodes",icon:"access_time", path: "/periodes"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},

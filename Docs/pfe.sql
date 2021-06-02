@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 31 mai 2021 à 11:01
+-- Généré le : mer. 02 juin 2021 à 14:45
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -29,29 +29,36 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `element` (
   `id` int NOT NULL,
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `niveau` int DEFAULT NULL,
+  `titre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `surnom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `niveau` int NOT NULL,
   `indice` int NOT NULL,
   `vol_hor_total_prevues_etu_cm` float DEFAULT NULL,
   `vol_hor_total_prevues_etu_td` float DEFAULT NULL,
   `vol_hor_total_prevues_etu_tp` float DEFAULT NULL,
   `mode_saisie` enum('aucun','hebdo','globale') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cm_autorises` tinyint(1) NOT NULL,
-  `td_autorises` tinyint(1) NOT NULL,
-  `tp_autorises` tinyint(1) NOT NULL,
-  `partiel_autorises` tinyint(1) NOT NULL,
-  `forfait_globale_cm` float NOT NULL,
-  `forfait_globale_td` float NOT NULL,
-  `forfait_globale_tp` float NOT NULL,
-  `forfait_globale_partiel` float NOT NULL,
-  `nb_groupe_effectif_cm` int NOT NULL,
-  `nb_groupe_effectif_td` int NOT NULL,
-  `nb_groupe_effectif_tp` int NOT NULL,
-  `nb_groupe_effectif_partiel` int NOT NULL,
-  `parent` int NOT NULL
+  `cm_autorises` tinyint(1) NOT NULL DEFAULT '0',
+  `td_autorises` tinyint(1) NOT NULL DEFAULT '0',
+  `tp_autorises` tinyint(1) NOT NULL DEFAULT '0',
+  `partiel_autorises` tinyint(1) NOT NULL DEFAULT '0',
+  `forfait_globale_cm` float DEFAULT NULL,
+  `forfait_globale_td` float DEFAULT NULL,
+  `forfait_globale_tp` float DEFAULT NULL,
+  `forfait_globale_partiel` float DEFAULT NULL,
+  `nb_groupe_effectif_cm` int DEFAULT NULL,
+  `nb_groupe_effectif_td` int DEFAULT NULL,
+  `nb_groupe_effectif_tp` int DEFAULT NULL,
+  `nb_groupe_effectif_partiel` int DEFAULT NULL,
+  `parent` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `element`
+--
+
+INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol_hor_total_prevues_etu_cm`, `vol_hor_total_prevues_etu_td`, `vol_hor_total_prevues_etu_tp`, `mode_saisie`, `cm_autorises`, `td_autorises`, `tp_autorises`, `partiel_autorises`, `forfait_globale_cm`, `forfait_globale_td`, `forfait_globale_tp`, `forfait_globale_partiel`, `nb_groupe_effectif_cm`, `nb_groupe_effectif_td`, `nb_groupe_effectif_tp`, `nb_groupe_effectif_partiel`, `parent`) VALUES
+(1, 'Test élémént', 'TestE', 'TE', 0, 0, 1, 1, 1, 'hebdo', 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, NULL);
 
 -- --------------------------------------------------------
 
@@ -63,9 +70,9 @@ CREATE TABLE `enseignant` (
   `id` int NOT NULL,
   `statut_id` int DEFAULT NULL,
   `prenom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `surnom` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -170,11 +177,18 @@ CREATE TABLE `periode` (
 
 CREATE TABLE `projet` (
   `id` int NOT NULL,
-  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date` date NOT NULL,
   `verrou` tinyint(1) NOT NULL,
   `archive` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `projet`
+--
+
+INSERT INTO `projet` (`id`, `nom`, `date`, `verrou`, `archive`) VALUES
+(1, 'Test Projet', '2021-06-02', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -184,8 +198,8 @@ CREATE TABLE `projet` (
 
 CREATE TABLE `statut` (
   `id` int NOT NULL,
-  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `surnom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nb_he_td_min_attendu` float NOT NULL,
   `nb_he_td_max_attendu` float NOT NULL,
   `nb_he_td_min_sup` float NOT NULL,

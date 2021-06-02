@@ -153,7 +153,7 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(elements => {
           console.log(elements);
-          commit('SET_Elements', elements)
+          commit('SET_Element', elements)
         }).catch(error => {
         console.log('Erreur : ', error)
       })
