@@ -239,7 +239,7 @@ import {validationMixin} from "vuelidate";
 import {email, maxLength, required} from "vuelidate/lib/validators";
 
 export default {
-  name: "ReadStatuts",
+  name: "ReadEnseignants",
   components: {Delete},
   mixins: [validationMixin],
 

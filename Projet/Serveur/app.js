@@ -4,6 +4,7 @@ npm install express
 npm install body-parser 
 npm install express-validator 
 npm install mysql 
+npm install cors 
 
 **/
 
@@ -18,6 +19,7 @@ const enseignantController = require('./controllers/EnseignantController');
 const statutController = require('./controllers/StatutController');
 const projetController = require('./controllers/ProjetController');
 const elementController = require('./controllers/ElementController');
+const intervenantController = require('./controllers/IntervenantController');
 
 const port = 8888;
 
@@ -77,6 +79,17 @@ app.post('/elements/copy/:id',elementController.validator, elementController.cop
 app.put('/elements/edit/:id',elementController.validator, elementController.editElement);
 
 app.delete('/elements/delete/:id', elementController.deleteElement);
+
+
+app.get('/intervenants/get', intervenantController.getAllIntervenants, enseignantController.getEnseignant, projetController.getProjet);
+
+app.get('/intervenants/get/:id', intervenantController.getIntervenant);
+
+app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
+
+app.put('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
+
+app.delete('/intervenants/delete/:id', intervenantController.deleteIntervenant);
 
 
 app.listen(port, () => {

@@ -13,6 +13,7 @@ export default new Vuex.Store({
     statuts: [],
     projets: [],
     elements: [],
+    intervenants: [],
   },
   getters: {
     enseignants: state => {
@@ -27,6 +28,9 @@ export default new Vuex.Store({
     elements: state => {
       return state.elements;
     },
+    intervenants: state => {
+      return state.intervenants;
+    },
   },
   mutations: {
     SET_Enseignant(state, enseignants) {
@@ -40,6 +44,9 @@ export default new Vuex.Store({
     },
     SET_Element(state, elements) {
       state.elements = elements
+    },
+    SET_Intervenant(state, intervenants) {
+      state.intervenants = intervenants
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
@@ -175,6 +182,17 @@ export default new Vuex.Store({
         .then(elements => {
           console.log(elements);
           commit('SET_Element', elements)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadIntervenants({commit}) {
+      axios
+        .get('intervenants/get')
+        .then(response => response.data)
+        .then(intervenants => {
+          console.log(intervenants);
+          commit('SET_Intervenant', intervenants)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

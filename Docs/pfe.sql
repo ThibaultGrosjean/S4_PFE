@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mer. 02 juin 2021 à 14:45
+-- Généré le : jeu. 03 juin 2021 à 15:22
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -58,7 +58,15 @@ CREATE TABLE `element` (
 --
 
 INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol_hor_total_prevues_etu_cm`, `vol_hor_total_prevues_etu_td`, `vol_hor_total_prevues_etu_tp`, `mode_saisie`, `cm_autorises`, `td_autorises`, `tp_autorises`, `partiel_autorises`, `forfait_globale_cm`, `forfait_globale_td`, `forfait_globale_tp`, `forfait_globale_partiel`, `nb_groupe_effectif_cm`, `nb_groupe_effectif_td`, `nb_groupe_effectif_tp`, `nb_groupe_effectif_partiel`, `parent`) VALUES
-(1, 'Test élémént', 'TestE', 'TE', 0, 0, 1, 1, 1, 'hebdo', 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, NULL);
+(1, 'DUT Informatique IUT Belfort-Montbéliard', 'DUT Info', 'DUTI', 0, 0, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'Semestre 1', 'S1', 'S1', 1, 0, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(3, 'Semestre 2', 'S2', 'S2', 1, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(4, 'Semestre 3', 'S3', 'S3', 1, 2, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(5, 'Semestre 4', 'S4', 'S4', 1, 3, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(6, 'UE 11: Informatique', 'UE11', 'UE11', 2, 0, 44, 60, 76, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(7, 'UE 12: Connaissances et compétences générales', 'UE12', 'UE12', 2, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 27, 33.5, 42, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
+(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 17, 26.5, 34, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -140,6 +148,13 @@ CREATE TABLE `intervenant` (
   `nb_he_td_max_sup_projet` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `intervenant`
+--
+
+INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu_projet`, `nb_he_td_max_attendu_projet`, `nb_he_td_min_sup_projet`, `nb_he_td_max_sup_projet`) VALUES
+(1, 1, 1, 10, 15, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -188,7 +203,7 @@ CREATE TABLE `projet` (
 --
 
 INSERT INTO `projet` (`id`, `nom`, `date`, `verrou`, `archive`) VALUES
-(1, 'Test Projet', '2021-06-02', 0, 0);
+(1, 'Test Projet', '2021-05-31', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -348,13 +363,13 @@ ALTER TABLE `volume_hebdomadaire`
 -- AUTO_INCREMENT pour la table `element`
 --
 ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
 --
 ALTER TABLE `enseignant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `formation`
@@ -372,7 +387,7 @@ ALTER TABLE ` groupe_intervenant`
 -- AUTO_INCREMENT pour la table `intervenant`
 --
 ALTER TABLE `intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table `periode`
@@ -390,7 +405,7 @@ ALTER TABLE `projet`
 -- AUTO_INCREMENT pour la table `statut`
 --
 ALTER TABLE `statut`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `volume_globale`
