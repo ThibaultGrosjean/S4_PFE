@@ -110,15 +110,17 @@
                     :counter="255"
                     label="Nom"
                     required
+                    clearable
                     @input="$v.nom.$touch()"
                     @blur="$v.nom.$touch()"
                 ></v-text-field>
                 <v-text-field
                     v-model="surnom"
                     :error-messages="surnomErrors"
-                    :counter="3"
+                    :counter="255"
                     label="Surnom"
                     required
+                    clearable
                     @input="$v.surnom.$touch()"
                     @blur="$v.surnom.$touch()"
                 ></v-text-field>
@@ -127,6 +129,7 @@
                     :error-messages="heTDMinAttenduErrors"
                     label="Nombre d'heures (équivalent TD) minimal attendu"
                     required
+                    clearable
                     @input="$v.nb_he_td_min_attendu.$touch()"
                     @blur="$v.nb_he_td_min_attendu.$touch()"
                 ></v-text-field>
@@ -135,6 +138,7 @@
                     :error-messages="heTDMaxAttenduErrors"
                     label="Nombre d'heures (équivalent TD) maximal attendu"
                     required
+                    clearable
                     @input="$v.nb_he_td_max_attendu.$touch()"
                     @blur="$v.nb_he_td_max_attendu.$touch()"
                 ></v-text-field>
@@ -143,6 +147,7 @@
                     :error-messages="heTDMinSupErrors"
                     label="Nombre d'heures (équivalent TD) minimal supplémentaires"
                     required
+                    clearable
                     @input="$v.nb_he_td_min_sup.$touch()"
                     @blur="$v.nb_he_td_min_sup.$touch()"
                 ></v-text-field>
@@ -151,6 +156,7 @@
                     :error-messages="heTDMaxSupErrors"
                     label="Nombre d'heures (équivalent TD) maximal supplémentaires"
                     required
+                    clearable
                     @input="$v.nb_he_td_max_sup.$touch()"
                     @blur="$v.nb_he_td_max_sup.$touch()"
                 ></v-text-field>
@@ -207,10 +213,10 @@ export default {
   validations: {
     nom: {required, maxLength: maxLength(255)},
     surnom: {required, maxLength: maxLength(3)},
-    nb_he_td_min_attendu: {required, decimal: decimal},
-    nb_he_td_max_attendu: {required, decimal: decimal},
-    nb_he_td_min_sup: {required, decimal: decimal},
-    nb_he_td_max_sup: {required, decimal: decimal},
+    nb_he_td_min_attendu: {required, decimal},
+    nb_he_td_max_attendu: {required, decimal},
+    nb_he_td_min_sup: {required, decimal},
+    nb_he_td_max_sup: {required, decimal},
   },
   data: () => ({
     showDetails: false,
@@ -240,7 +246,7 @@ export default {
     surnomErrors() {
       const errors = []
       if (!this.$v.surnom.$dirty) return errors
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 3 caractères')
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
       !this.$v.surnom.required && errors.push('Le surnom est obligatoire')
       return errors
     },
@@ -278,25 +284,19 @@ export default {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       this.form = false;
+      const statut = {
+        id: this.id,
+        nom: this.nom,
+        surnom: this.surnom,
+        nb_he_td_min_attendu: this.nb_he_td_min_attendu,
+        nb_he_td_max_attendu: this.nb_he_td_max_attendu,
+        nb_he_td_min_sup: this.nb_he_td_min_sup,
+        nb_he_td_max_sup: this.nb_he_td_max_sup,
+      };
       if (this.methods === 'POST'){
-        this.$store.commit('ADD_Statut', {
-          nom: this.nom,
-          surnom: this.surnom,
-          nb_he_td_min_attendu: this.nb_he_td_min_attendu,
-          nb_he_td_max_attendu: this.nb_he_td_max_attendu,
-          nb_he_td_min_sup: this.nb_he_td_min_sup,
-          nb_he_td_max_sup: this.nb_he_td_max_sup,
-        });
+        this.$store.commit('ADD_Statut',statut);
       } else {
-        this.$store.commit('EDIT_Statut', {
-          id: this.id,
-          nom: this.nom,
-          surnom: this.surnom,
-          nb_he_td_min_attendu: this.nb_he_td_min_attendu,
-          nb_he_td_max_attendu: this.nb_he_td_max_attendu,
-          nb_he_td_min_sup: this.nb_he_td_min_sup,
-          nb_he_td_max_sup: this.nb_he_td_max_sup,
-        });
+        this.$store.commit('EDIT_Statut',statut);
       }
       this.clear()
     },

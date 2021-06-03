@@ -127,6 +127,7 @@
                     :counter="255"
                     label="Nom"
                     required
+                    clearable
                     @input="$v.nom.$touch()"
                     @blur="$v.nom.$touch()"
                 ></v-text-field>

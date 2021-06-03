@@ -145,6 +145,7 @@
                     :counter="255"
                     label="Prénom"
                     required
+                    clearable
                     @input="$v.prenom.$touch()"
                     @blur="$v.prenom.$touch()"
                 ></v-text-field>
@@ -154,6 +155,7 @@
                     :counter="255"
                     label="Nom"
                     required
+                    clearable
                     @input="$v.nom.$touch()"
                     @blur="$v.nom.$touch()"
                 ></v-text-field>
@@ -163,6 +165,7 @@
                     :counter="3"
                     label="Surnom"
                     required
+                    clearable
                     @input="$v.surnom.$touch()"
                     @blur="$v.surnom.$touch()"
                 ></v-text-field>
@@ -172,6 +175,7 @@
                     label="E-mail"
                     :counter="255"
                     required
+                    clearable
                     @input="$v.email.$touch()"
                     @blur="$v.email.$touch()"
                 ></v-text-field>
@@ -181,6 +185,7 @@
                     item-text="nom"
                     item-value="id"
                     label="Statut"
+                    clearable
                     :error-messages="statutErrors"
                     @change="$v.statut_id.$touch()"
                     @blur="$v.statut_id.$touch()"
@@ -305,25 +310,19 @@ export default {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       this.form = false;
+      const enseignant = {
+        id: this.id,
+        nom: this.nom,
+        prenom: this.prenom,
+        surnom: this.surnom,
+        email: this.email,
+        statut_id: this.statut_id,
+        statut: this.returnStatut(this.statut_id)
+      }
       if (this.methods === 'POST'){
-        this.$store.commit('ADD_Enseignant', {
-          nom: this.nom,
-          prenom: this.prenom,
-          surnom: this.surnom,
-          email: this.email,
-          statut_id: this.statut_id,
-          statut: this.returnStatut(this.statut_id)
-        });
+        this.$store.commit('ADD_Enseignant', enseignant);
       } else {
-        this.$store.commit('EDIT_Enseignant', {
-          id: this.id,
-          nom: this.nom,
-          prenom: this.prenom,
-          surnom: this.surnom,
-          email: this.email,
-          statut_id: this.statut_id,
-          statut: this.returnStatut(this.statut_id)
-        });
+        this.$store.commit('EDIT_Enseignant', enseignant);
       }
       this.clear()
     },

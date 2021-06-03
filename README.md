@@ -29,3 +29,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 
 * Filtrer les Projets
 * Formulaire de création et de modification d'un Projet
+* Filtrer les Éléments
+* Formulaire de création et de modification d'un Éléments

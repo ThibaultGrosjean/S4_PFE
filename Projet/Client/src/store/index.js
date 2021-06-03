@@ -58,28 +58,6 @@ export default new Vuex.Store({
       });
       state.enseignants.push(enseignant)
     },
-    EDIT_Enseignant(state, enseignant) {
-      axios.put('/enseignants/edit/'+enseignant.id, enseignant)
-        .then(response => response.data)
-        .then(enseignants => {
-          console.log(enseignants);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.enseignants.findIndex(e => e.id === enseignant.id);
-      state.enseignants[index] = enseignant
-    },
-    EDIT_Projet(state, projet) {
-      axios.put('/projets/edit/'+projet.id, projet)
-        .then(response => response.data)
-        .then(projet => {
-          console.log(projet);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.projets.findIndex(e => e.id === projet.id);
-      state.projets[index] = projet
-    },
     ADD_Statut(state, statut) {
       axios.post('/statuts/create/', statut)
         .then(response => response.data)
@@ -101,6 +79,27 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
     },
+    ADD_Element(state, element) {
+      axios.post('/elements/create/', element)
+        .then(response => response.data)
+        .then(elements => {
+          console.log(elements);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.elements.push(element)
+    },
+    EDIT_Enseignant(state, enseignant) {
+      axios.put('/enseignants/edit/'+enseignant.id, enseignant)
+        .then(response => response.data)
+        .then(enseignants => {
+          console.log(enseignants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.enseignants.findIndex(e => e.id === enseignant.id);
+      state.enseignants[index] = enseignant
+    },
     EDIT_Statut(state, statut) {
       axios.put('/statuts/edit/'+statut.id, statut)
         .then(response => response.data)
@@ -111,6 +110,28 @@ export default new Vuex.Store({
       });
       let index = state.statuts.findIndex(e => e.id === statut.id);
       state.statuts[index] = statut
+    },
+    EDIT_Projet(state, projet) {
+      axios.put('/projets/edit/'+projet.id, projet)
+        .then(response => response.data)
+        .then(projet => {
+          console.log(projet);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.projets.findIndex(e => e.id === projet.id);
+      state.projets[index] = projet
+    },
+    EDIT_Element(state, element) {
+      axios.put('/elements/edit/'+element.id, element)
+        .then(response => response.data)
+        .then(elements => {
+          console.log(elements);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.elements.findIndex(e => e.id === element.id);
+      state.elements[index] = element
     },
   },
   actions: {

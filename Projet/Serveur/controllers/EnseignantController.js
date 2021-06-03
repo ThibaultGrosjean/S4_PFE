@@ -11,29 +11,27 @@ exports.validator = [
 
 
 exports.getAllEnseignants = (req, res) => {
-  db.query('SELECT e.id, e.prenom, e.nom, e.surnom, e.email, e.statut_id, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = statut_id',
+  db.query('SELECT e.id, e.prenom, e.nom, e.surnom, e.email, e.statut_id, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id',
     function(errE, rows) {
       if (!errE) {
         var obj = []
         for (var i = 0; i < rows.length; i++) {
-          if (rows[i].id_statut == rows[i].statut_id){
-            obj.push({
-              id: rows[i].id,
-              prenom: rows[i].prenom,
-              nom: rows[i].nom,
-              surnom: rows[i].surnom,
-              email: rows[i].email,
-              statut: {
-                id: rows[i].id_statut,
-                nom: rows[i].statut_nom,
-                surnom: rows[i].statut_surnom,
-                nb_he_td_min_attendu: rows[i].nb_he_td_min_attendu,
-                nb_he_td_max_attendu: rows[i].nb_he_td_max_attendu,
-                nb_he_td_min_sup: rows[i].nb_he_td_min_sup,
-                nb_he_td_max_sup: rows[i].nb_he_td_max_sup,
-              },
-            });
-          }
+          obj.push({
+            id: rows[i].id,
+            prenom: rows[i].prenom,
+            nom: rows[i].nom,
+            surnom: rows[i].surnom,
+            email: rows[i].email,
+            statut: {
+              id: rows[i].id_statut,
+              nom: rows[i].statut_nom,
+              surnom: rows[i].statut_surnom,
+              nb_he_td_min_attendu: rows[i].nb_he_td_min_attendu,
+              nb_he_td_max_attendu: rows[i].nb_he_td_max_attendu,
+              nb_he_td_min_sup: rows[i].nb_he_td_min_sup,
+              nb_he_td_max_sup: rows[i].nb_he_td_max_sup,
+            },
+          });
         }
         res.status(200).send(obj);
       }
