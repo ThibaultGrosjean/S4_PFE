@@ -74,10 +74,10 @@
 
               <v-expand-transition>
                 <div v-show="showDetails">
-                  <p>HeTD* minimal attendu :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
-                  <p>HeTD* maximal attendu : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
-                  <p>HeTD* minimal sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
-                  <p>HeTD* maximal sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
+                  <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
+                  <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
+                  <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
+                  <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
                   <small>* HeTD : Nombre d’heures équivalent TD</small>
                 </div>
               </v-expand-transition>

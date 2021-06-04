@@ -41,10 +41,10 @@
             <v-card-subtitle><b class="text-uppercase">{{ s.surnom }}</b></v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
-              <p>HeTD* minimal attendu : <b>{{ s.nb_he_td_min_attendu }}</b></p>
-              <p>HeTD* maximal attendu : <b>{{ s.nb_he_td_max_attendu }}</b></p>
-              <p>HeTD* minimal sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
-              <p>HeTD* maximal sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
+              <p>HeTD* minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b></p>
+              <p>HeTD* maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b></p>
+              <p>HeTD* minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
+              <p>HeTD* maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
               <small>* HeTD : Nombre d’heures équivalent TD</small>
             </v-card-text>
             <v-card-actions>
@@ -127,7 +127,7 @@
                 <v-text-field
                     v-model="nb_he_td_min_attendu"
                     :error-messages="heTDMinAttenduErrors"
-                    label="Nombre d'heures (équivalent TD) minimal attendu"
+                    label="Nombre d'heures (équivalent TD) minimales attendues"
                     required
                     clearable
                     @input="$v.nb_he_td_min_attendu.$touch()"
@@ -136,7 +136,7 @@
                 <v-text-field
                     v-model="nb_he_td_max_attendu"
                     :error-messages="heTDMaxAttenduErrors"
-                    label="Nombre d'heures (équivalent TD) maximal attendu"
+                    label="Nombre d'heures (équivalent TD) maximales attendues"
                     required
                     clearable
                     @input="$v.nb_he_td_max_attendu.$touch()"
@@ -145,7 +145,7 @@
                 <v-text-field
                     v-model="nb_he_td_min_sup"
                     :error-messages="heTDMinSupErrors"
-                    label="Nombre d'heures (équivalent TD) minimal supplémentaires"
+                    label="Nombre d'heures (équivalent TD) minimales supplémentaires attendues"
                     required
                     clearable
                     @input="$v.nb_he_td_min_sup.$touch()"
@@ -154,7 +154,7 @@
                 <v-text-field
                     v-model="nb_he_td_max_sup"
                     :error-messages="heTDMaxSupErrors"
-                    label="Nombre d'heures (équivalent TD) maximal supplémentaires"
+                    label="Nombre d'heures (équivalent TD) maximales supplémentaires attendues"
                     required
                     clearable
                     @input="$v.nb_he_td_max_sup.$touch()"
@@ -253,29 +253,29 @@ export default {
     heTDMinAttenduErrors() {
       const errors = []
       if (!this.$v.nb_he_td_min_attendu.$dirty) return errors
-      !this.$v.nb_he_td_min_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) minimal attendu doit être un numérique')
-      !this.$v.nb_he_td_min_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) minimal attendu est obligatoire')
+      !this.$v.nb_he_td_min_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues doit être un numérique')
+      !this.$v.nb_he_td_min_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues est obligatoire')
       return errors
     },
     heTDMaxAttenduErrors() {
       const errors = []
       if (!this.$v.nb_he_td_max_attendu.$dirty) return errors
-      !this.$v.nb_he_td_max_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximal attendu doit être un numérique')
-      !this.$v.nb_he_td_max_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) maximal attendu est obligatoire')
+      !this.$v.nb_he_td_max_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues doit être un numérique')
+      !this.$v.nb_he_td_max_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues est obligatoire')
       return errors
     },
     heTDMinSupErrors() {
       const errors = []
       if (!this.$v.nb_he_td_min_sup.$dirty) return errors
-      !this.$v.nb_he_td_min_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximal supplémentaires doit être un numérique')
-      !this.$v.nb_he_td_min_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximal supplémentaires est obligatoire')
+      !this.$v.nb_he_td_min_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique')
+      !this.$v.nb_he_td_min_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire')
       return errors
     },
     heTDMaxSupErrors() {
       const errors = []
       if (!this.$v.nb_he_td_max_attendu.$dirty) return errors
-      !this.$v.nb_he_td_max_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximal supplémentaires doit être un numérique')
-      !this.$v.nb_he_td_max_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximal supplémentaires est obligatoire')
+      !this.$v.nb_he_td_max_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique')
+      !this.$v.nb_he_td_max_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire')
       return errors
     },
   },

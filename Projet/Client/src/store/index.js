@@ -96,6 +96,16 @@ export default new Vuex.Store({
       });
       state.elements.push(element)
     },
+    ADD_Intervenant(state, intervenant) {
+      axios.post('/intervenants/create/', intervenant)
+        .then(response => response.data)
+        .then(intervenant => {
+          console.log(intervenant);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.intervenants.push(intervenant)
+    },
     EDIT_Enseignant(state, enseignant) {
       axios.put('/enseignants/edit/'+enseignant.id, enseignant)
         .then(response => response.data)
@@ -139,6 +149,17 @@ export default new Vuex.Store({
       });
       let index = state.elements.findIndex(e => e.id === element.id);
       state.elements[index] = element
+    },
+    EDIT_Intervenant(state, intervenant) {
+      axios.put('/intervenants/edit/'+intervenant.id, intervenant)
+        .then(response => response.data)
+        .then(intervenant => {
+          console.log(intervenant);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.intervenants.findIndex(e => e.id === intervenant.id);
+      state.intervenants[index] = intervenant
     },
   },
   actions: {
