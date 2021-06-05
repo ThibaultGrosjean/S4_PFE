@@ -300,7 +300,7 @@ export default {
 
       this.id = projet.id
       this.nom = projet.nom
-      this.date = new Date(projet.date).toISOString().substr(0, 10)
+      this.date = this.toTime(projet.date)
       this.verrou = projet.verrou
       this.archive = projet.archive
       this.form = true;
@@ -319,10 +319,4 @@ export default {
 </script>
 
 <style scoped>
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  margin: 16px;
-}
 </style>

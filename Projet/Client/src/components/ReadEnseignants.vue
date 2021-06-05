@@ -182,7 +182,7 @@
                 <v-select
                     v-model="statut_id"
                     :items="statuts"
-                    item-text="nom"
+                    :item-text="item => item.nom +' ('+ item.surnom + ')'"
                     item-value="id"
                     label="Statut"
                     clearable
@@ -387,10 +387,4 @@ export default {
 </script>
 
 <style scoped>
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  margin: 16px;
-}
 </style>

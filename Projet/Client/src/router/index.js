@@ -6,6 +6,7 @@ import Enseignants from "@/views/Enseignants";
 import Projets from "../views/Projets";
 import Elements from "../views/Elements";
 import Intervenant from "../views/Intervenant";
+import Formation from "../views/Formation";
 
 Vue.use(VueRouter)
 
@@ -13,7 +14,11 @@ const routes = [
   {
     path: '/',
     name: 'Accueil',
-    component: Accueil
+    component: Accueil,
+    meta: {
+      auth: true,
+      title: 'Accueil'
+    }
   },
   {
     path: '/accueil',
@@ -45,12 +50,22 @@ const routes = [
     name: 'Intervenants',
     component: Intervenant
   },
+  {
+    path: '/formations',
+    name: 'Formations',
+    component: Formation
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  document.title = "Gestion des horaires annuels | " + to.name
+  next();
 })
 
 export default router

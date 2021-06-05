@@ -6,12 +6,12 @@
     >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
-      <v-btn icon @click="$router.push({path:'/accueil'})">
+      <v-btn icon @click="redirect('/accueil')">
         <v-icon>mdi-home</v-icon>
       </v-btn>
       <v-toolbar-title>Gestion des horaires annuels</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click="$router.push({path:'/mon-compte'})">
+      <v-btn icon @click="redirect('/mon-compte')">
         <v-icon>settings</v-icon>
       </v-btn>
     </v-app-bar>
@@ -39,7 +39,7 @@
           v-model="group"
           active-class="blue--text text--accent-4"
         >
-          <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t)">
+          <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)">
             <v-list-item-icon>
               <v-icon>{{ t.icon }}</v-icon>
             </v-list-item-icon>
@@ -59,8 +59,6 @@ export default {
     drawer: false,
     group: null,
     subMenu: [
-      // {text: "Accueil",icon:"mdi-home", path: "/accueil"},
-      // {text: "Mon Compte",icon:"settings", path: "/mon-compte"},
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Formations",icon:"auto_stories", path: "/formations"},
@@ -76,8 +74,8 @@ export default {
     ]
   }),
   methods: {
-    redirect: function (t){
-      this.$router.push({path:t.path}).catch(()=>{});
+    redirect: function (path){
+      this.$router.push({path:path}).catch(()=>{});
     },
   }
 }

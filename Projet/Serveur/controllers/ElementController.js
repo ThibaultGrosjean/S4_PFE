@@ -28,10 +28,63 @@ exports.validator = [
 
 
 exports.getAllElements = (req, res) => {
-  db.query('SELECT * FROM element;',
+  db.query('SELECT * FROM element ORDER BY parent;',
     function(err, elements) {
       if (!err) {
-        res.status(200).json(elements);  
+        res.status(200).send(elements);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
+// exports.getAllElements = (req, res) => {
+//   db.query('SELECT * FROM element ORDER BY parent;',
+//     function(err, elements) {
+//       if (!err) {
+//         var obj = []
+//         for (var i = 0; i < elements.length; i++) {
+//           obj.push(elements[i])
+//         }
+//         for (var i = 0; i < obj.length; i++) {
+//           for (var j = 0; j < obj.length; j++) {
+//             if (obj[i].parent == obj[j].id) {
+//               obj[i].parent = obj[j]
+//             }
+//           }
+//         }
+//         res.status(200).send(obj);
+//       }
+//       else {
+//         res.send(err);
+//       }
+//     }
+//   ); 
+// };
+
+
+exports.getAllLevelElements = (req, res) => {
+  db.query('SELECT * FROM element WHERE niveau = ?;', [req.params.id],
+    function(err, elements) {
+      if (!err) {
+        res.status(200).send(elements);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
+exports.getChildren = (req, res) => {
+  db.query('SELECT * FROM element  where parent = ? ORDER BY indice;', [req.params.id],
+    function(err, elements) {
+      if (!err) {
+        res.status(200).send(elements);
       }
       else {
         res.send(err);

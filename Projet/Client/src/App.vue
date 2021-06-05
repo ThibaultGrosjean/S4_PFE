@@ -31,4 +31,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #353535;
 }
+.v-btn--addElement {
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  margin: 16px;
+  z-index: 1000;
+}
 </style>

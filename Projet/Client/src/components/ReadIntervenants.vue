@@ -17,7 +17,7 @@
                sm="4"
         >
           <v-card>
-            <v-card-title>{{ returnEnseignant(i.enseignant_id).nom }} {{ returnEnseignant(i.enseignant_id).prenom }}</v-card-title>
+            <v-card-title>{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
             <v-card-subtitle><b>{{ returnProjet(i.projet_id).nom }}</b></v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
@@ -99,7 +99,7 @@
                 <v-select
                     v-model="projet_id"
                     :items="projets"
-                    item-text="nom"
+                    :item-text="item => item.nom +' ('+ toTime(item.date) + ')'"
                     item-value="id"
                     label="Projet"
                     clearable
@@ -111,7 +111,7 @@
                 <v-select
                     v-model="enseignant_id"
                     :items="enseignants"
-                    item-text="nom"
+                    :item-text="item => item.prenom +' '+ item.nom +' ('+item.statut.nom+')'"
                     item-value="id"
                     label="Enseignant"
                     clearable
@@ -337,15 +337,12 @@ export default {
       this.nb_he_td_min_sup_projet = enseignant.statut.nb_he_td_min_sup
       this.nb_he_td_max_sup_projet = enseignant.statut.nb_he_td_max_sup
     },
+    toTime(date) {
+      return new Date(date).toISOString().substr(0, 4)
+    },
   }
 }
 </script>
 
 <style scoped>
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  margin: 16px;
-}
 </style>

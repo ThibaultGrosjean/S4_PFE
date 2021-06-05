@@ -32,6 +32,99 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="12"
+               v-for="i in elements"
+               :key="i.id"
+        >
+          <v-card
+              v-if="i.niveau === 0"
+          >
+            <v-card-title>{{ i.titre }}</v-card-title>
+            <v-card-subtitle>{{ i.surnom }}</v-card-subtitle>
+            <v-card-text></v-card-text>
+            <v-card-actions class="pa-0">
+
+              <v-expansion-panels
+                  multiple flat
+                  accordion
+              >
+                <v-expansion-panel
+                    v-for="j in elements"
+                    :key="j.id"
+                >
+                  <div v-if="i.id === j.parent">
+                    <v-expansion-panel-header>{{ j.titre }}</v-expansion-panel-header>
+                    <v-expansion-panel-content>
+
+                      <v-expansion-panels
+                          multiple flat
+                          accordion
+                      >
+                        <v-expansion-panel
+                            v-for="k in elements"
+                            :key="k.id"
+                        >
+                          <div v-if="j.id === k.parent">
+                            <v-expansion-panel-header>{{ k.titre }}</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+
+                              <v-expansion-panels
+                                  multiple flat
+                                  accordion
+                              >
+                                <v-expansion-panel
+                                    v-for="l in elements"
+                                    :key="l.id"
+                                >
+                                  <div v-if="k.id === l.parent">
+                                    <v-expansion-panel-header>{{ l.titre }}</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                      <p>Mode de saisie :<b>{{ l.mode_saisie }}</b></p>
+                                      <div class="ma-0 pa-0" v-if="l.mode_saisie !=='aucun'">
+                                        <p>Volume horaire prévu en CM pour les étudiants
+                                          :<b>{{ l.vol_hor_total_prevues_etu_cm }}</b></p>
+                                        <p>Volume horaire prévu en TD pour les étudiants
+                                          :<b>{{ l.vol_hor_total_prevues_etu_td }}</b></p>
+                                        <p>Volume horaire prévu en TP pour les étudiants
+                                          :<b>{{ l.vol_hor_total_prevues_etu_tp }}</b></p>
+                                        <p>CM autorisés :<b>{{ convertBoolean(l.cm_autorises) }}</b></p>
+                                        <p>TD autorisés :<b>{{ convertBoolean(l.td_autorises) }}</b></p>
+                                        <p>TP autorisés :<b>{{ convertBoolean(l.tp_autorises) }}</b></p>
+                                        <p>Partiel autorisés :<b>{{ convertBoolean(l.partiel_autorises) }}</b></p>
+                                        <div class="ma-0 pa-0" v-if="l.mode_saisie ==='globale'">
+                                          <p>Forfait globale en CM :<b>{{ l.forfait_globale_cm }}</b></p>
+                                          <p>Forfait globale en TD :<b>{{ l.forfait_globale_td }}</b></p>
+                                          <p>Forfait globale en TP :<b>{{ l.forfait_globale_tp }}</b></p>
+                                          <p>Forfait globale en Partiel :<b>{{ l.forfait_globale_partiel }}</b></p>
+                                        </div>
+                                        <p>Nombre de groupe effectif en CM :<b>{{ l.nb_groupe_effectif_cm }}</b></p>
+                                        <p>Nombre de groupe effectif en TD :<b>{{ l.nb_groupe_effectif_td }}</b></p>
+                                        <p>Nombre de groupe effectif en TP :<b>{{ l.nb_groupe_effectif_tp }}</b></p>
+                                        <p>Nombre de groupe effectif en Partiel :<b>{{ l.nb_groupe_effectif_partiel}}</b></p>
+                                      </div>
+                                    </v-expansion-panel-content>
+                                  </div>
+
+                                </v-expansion-panel>
+                              </v-expansion-panels>
+
+                            </v-expansion-panel-content>
+                          </div>
+
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+
+                    </v-expansion-panel-content>
+                  </div>
+
+                </v-expansion-panel>
+              </v-expansion-panels>
+
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col
             v-for="e in elements"
             :key="e.id"
@@ -367,8 +460,10 @@
 
 <script>
 import {mapState} from "vuex";
+import {mapGetters} from 'vuex'
 import {validationMixin} from "vuelidate";
 import {decimal, numeric, maxLength, required} from "vuelidate/lib/validators";
+import axios from "axios";
 
 export default {
   name: "ReadElements",
@@ -635,7 +730,7 @@ export default {
         this.elements.sort((a, b) => a.titre.toUpperCase() > b.titre.toUpperCase())
       }
     },
-    convertBoolean(b){
+    convertBoolean(b) {
       if (b === 0) return "Non"
       else return "Oui"
     },
@@ -644,10 +739,11 @@ export default {
 </script>
 
 <style scoped>
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  margin: 16px;
+.v-expansion-panel::before {
+  box-shadow: none !important;
+}
+
+.v-expansion-panel-content::before {
+  padding: 0 0 0 0 !important;
 }
 </style>

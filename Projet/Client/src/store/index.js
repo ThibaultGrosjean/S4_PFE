@@ -12,8 +12,10 @@ export default new Vuex.Store({
     enseignants: [],
     statuts: [],
     projets: [],
+    elementsRoot: [],
     elements: [],
     intervenants: [],
+    formations: [],
   },
   getters: {
     enseignants: state => {
@@ -28,8 +30,14 @@ export default new Vuex.Store({
     elements: state => {
       return state.elements;
     },
+    elementsRoot: state => {
+      return state.elementsRoot;
+    },
     intervenants: state => {
       return state.intervenants;
+    },
+    formations: state => {
+      return state.formations;
     },
   },
   mutations: {
@@ -45,8 +53,14 @@ export default new Vuex.Store({
     SET_Element(state, elements) {
       state.elements = elements
     },
+    SET_ElementRoot(state, elementsRoot) {
+      state.elementsRoot = elementsRoot
+    },
     SET_Intervenant(state, intervenants) {
       state.intervenants = intervenants
+    },
+    SET_Formations(state, formations) {
+      state.formations = formations
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
@@ -106,6 +120,16 @@ export default new Vuex.Store({
       });
       state.intervenants.push(intervenant)
     },
+    ADD_Formations(state, formations) {
+      axios.post('/formations/create/', formations)
+        .then(response => response.data)
+        .then(formations => {
+          console.log(formations);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.formations.push(formations)
+    },
     EDIT_Enseignant(state, enseignant) {
       axios.put('/enseignants/edit/'+enseignant.id, enseignant)
         .then(response => response.data)
@@ -158,8 +182,19 @@ export default new Vuex.Store({
         }).catch(error => {
         console.log('Erreur : ', error)
       });
-      let index = state.intervenants.findIndex(e => e.id === intervenant.id);
+      let index = state.intervenants.findIndex(i => i.id === intervenant.id);
       state.intervenants[index] = intervenant
+    },
+    EDIT_Formations(state, formations) {
+      axios.put('/formations/edit/'+formations.id, formations)
+        .then(response => response.data)
+        .then(formations => {
+          console.log(formations);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.formations.findIndex(f => f.id === formations.id);
+      state.formations[index] = formations
     },
   },
   actions: {
@@ -207,6 +242,17 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
+    loadElementsRoot({commit}) {
+      axios
+        .get('/elements/get/level/'+0)
+        .then(response => response.data)
+        .then(elementsRoot => {
+          console.log(elementsRoot);
+          commit('SET_ElementRoot', elementsRoot)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
     loadIntervenants({commit}) {
       axios
         .get('intervenants/get')
@@ -214,6 +260,17 @@ export default new Vuex.Store({
         .then(intervenants => {
           console.log(intervenants);
           commit('SET_Intervenant', intervenants)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadFormations({commit}) {
+      axios
+        .get('formations/get')
+        .then(response => response.data)
+        .then(formations => {
+          console.log(formations);
+          commit('SET_Formations', formations)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

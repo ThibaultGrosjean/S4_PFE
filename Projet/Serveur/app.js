@@ -20,6 +20,7 @@ const statutController = require('./controllers/StatutController');
 const projetController = require('./controllers/ProjetController');
 const elementController = require('./controllers/ElementController');
 const intervenantController = require('./controllers/IntervenantController');
+const formationController = require('./controllers/FormationController');
 
 const port = 8888;
 
@@ -72,6 +73,10 @@ app.get('/elements/get', elementController.getAllElements);
 
 app.get('/elements/get/:id', elementController.getElement);
 
+app.get('/elements/get/level/:id', elementController.getAllLevelElements);
+
+app.get('/elements/get/children/:id', elementController.getChildren);
+
 app.post('/elements/create/',elementController.validator, elementController.addElement);
 
 app.post('/elements/copy/:id',elementController.validator, elementController.copyElement);
@@ -81,7 +86,7 @@ app.put('/elements/edit/:id',elementController.validator, elementController.edit
 app.delete('/elements/delete/:id', elementController.deleteElement);
 
 
-app.get('/intervenants/get', intervenantController.getAllIntervenants, enseignantController.getEnseignant, projetController.getProjet);
+app.get('/intervenants/get', intervenantController.getAllIntervenants);
 
 app.get('/intervenants/get/:id', intervenantController.getIntervenant);
 
@@ -90,6 +95,17 @@ app.post('/intervenants/create/',intervenantController.validator, intervenantCon
 app.put('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
 
 app.delete('/intervenants/delete/:id', intervenantController.deleteIntervenant);
+
+
+app.get('/formations/get', formationController.getAllFormations);
+
+app.get('/formations/get/:id', formationController.getFormation);
+
+app.post('/formations/create/',formationController.validator, formationController.addFormation);
+
+app.put('/formations/edit/:id',formationController.validator, formationController.editFormation);
+
+app.delete('/formations/delete/:id', formationController.deleteFormation);
 
 
 app.listen(port, () => {

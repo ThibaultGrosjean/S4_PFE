@@ -341,10 +341,4 @@ export default {
 </script>
 
 <style scoped>
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  margin: 16px;
-}
 </style>
