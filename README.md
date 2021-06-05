@@ -33,3 +33,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Formulaire de création et de modification d'un Éléments
 * API de la table Intervenant
 * Formulaire de création et de modification d'un Intervenant
+* API de la table Formation
+* Formulaire de création et de modification d'une Formation
