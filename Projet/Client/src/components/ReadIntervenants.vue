@@ -98,8 +98,9 @@
               <v-card-text>
                 <v-select
                     v-model="projet_id"
-                    :items="projets"
+                    :items="projetsArchive"
                     :item-text="item => item.nom +' ('+ toTime(item.date) + ')'"
+                    no-data-text="Aucun projet non archivé disponible"
                     item-value="id"
                     label="Projet"
                     clearable
@@ -229,10 +230,11 @@ export default {
   mounted() {
     this.$store.dispatch('loadIntervenants')
     this.$store.dispatch('loadProjets')
+    this.$store.dispatch('loadProjetsNonArchive')
     this.$store.dispatch('loadEnseignants')
   },
   computed: {
-    ...mapState(['intervenants' , 'projets', 'enseignants']),
+    ...mapState(['intervenants' , 'projets', 'enseignants', 'projetsArchive']),
     projetErrors() {
       const errors = []
       if (!this.$v.projet_id.$dirty) return errors

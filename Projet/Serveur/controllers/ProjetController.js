@@ -23,6 +23,20 @@ exports.getAllProjets = (req, res) => {
 };
 
 
+exports.getProjetArchive = (req, res) => {
+  db.query('SELECT * FROM projet WHERE archive = 0;',
+    function(err, projets) {
+      if (!err) {
+        res.status(200).json(projets);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
 exports.getProjet = (req, res) => {
   db.query('SELECT * FROM projet where id = ? ;', [req.params.id],
     function(err, projet) {
