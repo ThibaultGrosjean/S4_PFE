@@ -77,10 +77,6 @@ app.get('/elements/get/:id', elementController.getElement);
 
 app.get('/elements/get/level/:id', elementController.getAllLevelElements);
 
-app.get('/elements/get/children/:id', elementController.getChildren);
-
-app.get('/elements/get/hierarchie/:id', elementController.getHierarchieByRoot);
-
 app.post('/elements/create/',elementController.validator, elementController.addElement);
 
 app.post('/elements/copy/:id',elementController.validator, elementController.copyElement);

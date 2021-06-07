@@ -32,179 +32,311 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12"
-               v-for="i in elements"
-               :key="i.id"
-        >
-          <v-card
-              v-if="i.niveau === 0"
+        <template v-for="formation in elements">
+          <v-col
+              :key="formation.id"
+              v-if="formation.parent === null"
+              cols="12"
           >
-            <v-card-title>{{ i.titre }}</v-card-title>
-            <v-card-subtitle>{{ i.surnom }}</v-card-subtitle>
-            <v-card-text></v-card-text>
-            <v-card-actions class="pa-0">
-
-              <v-expansion-panels
-                  multiple flat
-                  accordion
-              >
-                <v-expansion-panel
-                    v-for="j in elements"
-                    :key="j.id"
-                >
-                  <div v-if="i.id === j.parent">
-                    <v-expansion-panel-header>{{ j.titre }}</v-expansion-panel-header>
-                    <v-expansion-panel-content>
-
-                      <v-expansion-panels
-                          multiple flat
-                          accordion
+            <v-card>
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <v-divider></v-divider>
+                <div class="mr-2 ml-2">{{ formation.titre }}</div>
+                <v-divider></v-divider>
+                <v-spacer></v-spacer>
+              </v-card-title>
+              <v-card-subtitle class="text-center">
+                {{ formation.surnom }}
+              </v-card-subtitle>
+              <v-card-text class="pa-0">
+                <v-container>
+                  <v-row>
+                    <v-expansion-panels
+                        multiple
+                        flat
+                        accordion
+                    >
+                      <v-expansion-panel
+                          v-for="semestre in elements"
+                          :key="semestre.id"
                       >
-                        <v-expansion-panel
-                            v-for="k in elements"
-                            :key="k.id"
-                        >
-                          <div v-if="j.id === k.parent">
-                            <v-expansion-panel-header>{{ k.titre }}</v-expansion-panel-header>
-                            <v-expansion-panel-content>
-
-                              <v-expansion-panels
-                                  multiple flat
-                                  accordion
-                              >
-                                <v-expansion-panel
-                                    v-for="l in elements"
-                                    :key="l.id"
+                        <div v-if="formation.id === semestre.parent">
+                          <v-expansion-panel-header>{{ semestre.titre }}</v-expansion-panel-header>
+                          <v-expansion-panel-content class="innerExPan">
+                            <v-container>
+                              <v-row>
+                                <v-expansion-panels
+                                    multiple
+                                    accordion
                                 >
-                                  <div v-if="k.id === l.parent">
-                                    <v-expansion-panel-header>{{ l.titre }}</v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                      <p>Mode de saisie :<b>{{ l.mode_saisie }}</b></p>
-                                      <div class="ma-0 pa-0" v-if="l.mode_saisie !=='aucun'">
-                                        <p>Volume horaire prévu en CM pour les étudiants
-                                          :<b>{{ l.vol_hor_total_prevues_etu_cm }}</b></p>
-                                        <p>Volume horaire prévu en TD pour les étudiants
-                                          :<b>{{ l.vol_hor_total_prevues_etu_td }}</b></p>
-                                        <p>Volume horaire prévu en TP pour les étudiants
-                                          :<b>{{ l.vol_hor_total_prevues_etu_tp }}</b></p>
-                                        <p>CM autorisés :<b>{{ convertBoolean(l.cm_autorises) }}</b></p>
-                                        <p>TD autorisés :<b>{{ convertBoolean(l.td_autorises) }}</b></p>
-                                        <p>TP autorisés :<b>{{ convertBoolean(l.tp_autorises) }}</b></p>
-                                        <p>Partiel autorisés :<b>{{ convertBoolean(l.partiel_autorises) }}</b></p>
-                                        <div class="ma-0 pa-0" v-if="l.mode_saisie ==='globale'">
-                                          <p>Forfait globale en CM :<b>{{ l.forfait_globale_cm }}</b></p>
-                                          <p>Forfait globale en TD :<b>{{ l.forfait_globale_td }}</b></p>
-                                          <p>Forfait globale en TP :<b>{{ l.forfait_globale_tp }}</b></p>
-                                          <p>Forfait globale en Partiel :<b>{{ l.forfait_globale_partiel }}</b></p>
-                                        </div>
-                                        <p>Nombre de groupe effectif en CM :<b>{{ l.nb_groupe_effectif_cm }}</b></p>
-                                        <p>Nombre de groupe effectif en TD :<b>{{ l.nb_groupe_effectif_td }}</b></p>
-                                        <p>Nombre de groupe effectif en TP :<b>{{ l.nb_groupe_effectif_tp }}</b></p>
-                                        <p>Nombre de groupe effectif en Partiel :<b>{{ l.nb_groupe_effectif_partiel}}</b></p>
-                                      </div>
-                                    </v-expansion-panel-content>
-                                  </div>
+                                  <v-expansion-panel
+                                      v-for="ue in elements"
+                                      :key="ue.id"
+                                  >
+                                    <div v-if="semestre.id === ue.parent">
+                                      <v-expansion-panel-header>{{ ue.titre }}</v-expansion-panel-header>
+                                      <v-expansion-panel-content class="innerExPan">
+                                        <v-container>
+                                          <v-row>
+                                            <v-expansion-panels
+                                                multiple
+                                                accordion
+                                            >
+                                              <v-expansion-panel
+                                                  v-for="module in elements"
+                                                  :key="module.id"
+                                              >
+                                                <div v-if="ue.id === module.parent">
+                                                  <v-expansion-panel-header>{{
+                                                      module.titre
+                                                    }}
+                                                  </v-expansion-panel-header>
+                                                  <v-expansion-panel-content class="innerExPan">
+                                                    <p>Mode de saisie :<b>{{ module.mode_saisie }}</b></p>
+                                                    <div class="ma-0 pa-0" v-if="module.mode_saisie !=='aucun'">
+                                                      <p>Volume horaire prévu en CM pour les étudiants
+                                                        :<b>{{ module.vol_hor_total_prevues_etu_cm }}</b></p>
+                                                      <p>Volume horaire prévu en TD pour les étudiants
+                                                        :<b>{{ module.vol_hor_total_prevues_etu_td }}</b></p>
+                                                      <p>Volume horaire prévu en TP pour les étudiants
+                                                        :<b>{{ module.vol_hor_total_prevues_etu_tp }}</b></p>
+                                                      <p>CM autorisés :<b>{{ convertBoolean(module.cm_autorises) }}</b>
+                                                      </p>
+                                                      <p>TD autorisés :<b>{{ convertBoolean(module.td_autorises) }}</b>
+                                                      </p>
+                                                      <p>TP autorisés :<b>{{ convertBoolean(module.tp_autorises) }}</b>
+                                                      </p>
+                                                      <p>Partiel autorisés
+                                                        :<b>{{ convertBoolean(module.partiel_autorises) }}</b>
+                                                      </p>
+                                                      <div class="ma-0 pa-0" v-if="module.mode_saisie ==='globale'">
+                                                        <p>Forfait globale en CM :<b>{{ module.forfait_globale_cm }}</b>
+                                                        </p>
+                                                        <p>Forfait globale en TD :<b>{{ module.forfait_globale_td }}</b>
+                                                        </p>
+                                                        <p>Forfait globale en TP :<b>{{ module.forfait_globale_tp }}</b>
+                                                        </p>
+                                                        <p>Forfait globale en Partiel
+                                                          :<b>{{ module.forfait_globale_partiel }}</b>
+                                                        </p>
+                                                      </div>
+                                                      <p>Nombre de groupe effectif en CM
+                                                        :<b>{{ module.nb_groupe_effectif_cm }}</b>
+                                                      </p>
+                                                      <p>Nombre de groupe effectif en TD
+                                                        :<b>{{ module.nb_groupe_effectif_td }}</b>
+                                                      </p>
+                                                      <p>Nombre de groupe effectif en TP
+                                                        :<b>{{ module.nb_groupe_effectif_tp }}</b>
+                                                      </p>
+                                                      <p>Nombre de groupe effectif en Partiel
+                                                        :<b>{{ module.nb_groupe_effectif_partiel }}</b></p>
+                                                    </div>
+                                                  </v-expansion-panel-content>
+                                                </div>
 
-                                </v-expansion-panel>
-                              </v-expansion-panels>
+                                              </v-expansion-panel>
+                                            </v-expansion-panels>
+                                          </v-row>
+                                          <v-row
+                                              align="center"
+                                              justify="center"
+                                              class="pt-2"
+                                          >
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn icon>
+                                                  <v-icon
+                                                      v-bind="attrs"
+                                                      v-on="on"
+                                                      @click="edit(semestre)"
+                                                  >
+                                                    edit
+                                                  </v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Modifier</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn icon>
+                                                  <v-icon
+                                                      v-bind="attrs"
+                                                      v-on="on"
+                                                  >
+                                                    file_copy
+                                                  </v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Dupliquer</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    @click="addModule(ue, semestre)"
+                                                >
+                                                  <v-icon>mdi-plus</v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Ajouter un module a l'{{ ue.titre }}</span>
+                                            </v-tooltip>
+                                            <v-spacer></v-spacer>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn icon>
+                                                  <v-icon
+                                                      color="red darken-1"
+                                                      v-bind="attrs"
+                                                      v-on="on"
+                                                  >
+                                                    delete
+                                                  </v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Supprimer</span>
+                                            </v-tooltip>
+                                          </v-row>
+                                        </v-container>
+                                      </v-expansion-panel-content>
+                                    </div>
 
-                            </v-expansion-panel-content>
-                          </div>
-
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-
-                    </v-expansion-panel-content>
-                  </div>
-
-                </v-expansion-panel>
-              </v-expansion-panels>
-
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-            v-for="e in elements"
-            :key="e.id"
-            sm="5"
-        >
-          <v-card>
-            <v-card-title>{{ e.titre }}</v-card-title>
-            <v-card-subtitle><b class="text-uppercase">{{ e.surnom }}</b></v-card-subtitle>
-            <v-card-text>
-              <p>Code :<b>{{ e.code }}</b></p>
-              <p>Niveau :<b>{{ e.niveau }}</b></p>
-              <p>Indice :<b>{{ e.indice }}</b></p>
-              <p>Mode de saisie :<b>{{ e.mode_saisie }}</b></p>
-              <p>Parent :<b>{{ e.parent }}</b></p>
-              <div class="ma-0 pa-0" v-if="e.mode_saisie !=='aucun'">
-                <p>Volume horaire prévu en CM pour les étudiants :<b>{{ e.vol_hor_total_prevues_etu_cm }}</b></p>
-                <p>Volume horaire prévu en TD pour les étudiants :<b>{{ e.vol_hor_total_prevues_etu_td }}</b></p>
-                <p>Volume horaire prévu en TP pour les étudiants :<b>{{ e.vol_hor_total_prevues_etu_tp }}</b></p>
-                <p>CM autorisés :<b>{{ convertBoolean(e.cm_autorises) }}</b></p>
-                <p>TD autorisés :<b>{{ convertBoolean(e.td_autorises) }}</b></p>
-                <p>TP autorisés :<b>{{ convertBoolean(e.tp_autorises) }}</b></p>
-                <p>Partiel autorisés :<b>{{ convertBoolean(e.partiel_autorises) }}</b></p>
-                <div class="ma-0 pa-0" v-if="e.mode_saisie ==='globale'">
-                  <p>Forfait globale en CM :<b>{{ e.forfait_globale_cm }}</b></p>
-                  <p>Forfait globale en TD :<b>{{ e.forfait_globale_td }}</b></p>
-                  <p>Forfait globale en TP :<b>{{ e.forfait_globale_tp }}</b></p>
-                  <p>Forfait globale en Partiel :<b>{{ e.forfait_globale_partiel }}</b></p>
-                </div>
-                <p>Nombre de groupe effectif en CM :<b>{{ e.nb_groupe_effectif_cm }}</b></p>
-                <p>Nombre de groupe effectif en TD :<b>{{ e.nb_groupe_effectif_td }}</b></p>
-                <p>Nombre de groupe effectif en TP :<b>{{ e.nb_groupe_effectif_tp }}</b></p>
-                <p>Nombre de groupe effectif en Partiel :<b>{{ e.nb_groupe_effectif_partiel }}</b></p>
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
+                                  </v-expansion-panel>
+                                </v-expansion-panels>
+                              </v-row>
+                              <v-row
+                                  align="center"
+                                  justify="center"
+                                  class="pt-2"
+                              >
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon>
+                                      <v-icon
+                                          v-bind="attrs"
+                                          v-on="on"
+                                          @click="edit(semestre)"
+                                      >
+                                        edit
+                                      </v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Modifier</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon>
+                                      <v-icon
+                                          v-bind="attrs"
+                                          v-on="on"
+                                      >
+                                        file_copy
+                                      </v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Dupliquer</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        @click="addUE(semestre)"
+                                    >
+                                      <v-icon>mdi-plus</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Ajouter une UE au {{ semestre.titre }}</span>
+                                </v-tooltip>
+                                <v-spacer></v-spacer>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn icon>
+                                      <v-icon
+                                          color="red darken-1"
+                                          v-bind="attrs"
+                                          v-on="on"
+                                      >
+                                        delete
+                                      </v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Supprimer</span>
+                                </v-tooltip>
+                              </v-row>
+                            </v-container>
+                          </v-expansion-panel-content>
+                        </div>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon>
+                      <v-icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="edit(formation)"
+                      >
+                        edit
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Modifier</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon>
+                      <v-icon
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        file_copy
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Dupliquer</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
                         v-bind="attrs"
                         v-on="on"
-                        @click="edit(e)"
+                        @click="addSemester(formation)"
                     >
-                      edit
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      file_copy
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Dupliquer</span>
-              </v-tooltip>
-              <v-spacer></v-spacer>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        color="red darken-1"
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      delete
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Supprimer</span>
-              </v-tooltip>
-            </v-card-actions>
-          </v-card>
-        </v-col>
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Ajouter un semestre</span>
+                </v-tooltip>
+                <v-spacer></v-spacer>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon>
+                      <v-icon
+                          color="red darken-1"
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        delete
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Supprimer</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </template>
       </v-row>
       <v-row justify="center">
         <v-dialog
@@ -303,7 +435,6 @@
 
                 <br>
                 <div class="text-center">Les champs suivants sont optionnels</div>
-                <v-divider></v-divider>
                 <v-divider></v-divider>
                 <br>
                 <v-text-field
@@ -448,7 +579,7 @@
               color="green"
               fab
               dark
-              @click="close"
+              @click="close()"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -460,7 +591,6 @@
 
 <script>
 import {mapState} from "vuex";
-import {mapGetters} from 'vuex'
 import {validationMixin} from "vuelidate";
 import {decimal, numeric, maxLength, required} from "vuelidate/lib/validators";
 import axios from "axios";
@@ -508,7 +638,7 @@ export default {
     vol_hor_total_prevues_etu_cm: null,
     vol_hor_total_prevues_etu_td: null,
     vol_hor_total_prevues_etu_tp: null,
-    mode_saisie: '',
+    mode_saisie: null,
     cm_autorises: false,
     td_autorises: false,
     tp_autorises: false,
@@ -522,12 +652,13 @@ export default {
     nb_groupe_effectif_tp: null,
     nb_groupe_effectif_partiel: null,
     parent: null,
+    nbfils: null
   }),
   mounted() {
     this.$store.dispatch('loadElements');
   },
   computed: {
-    ...mapState(['elements']),
+    ...mapState(['elements', 'elementsRoot']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -653,9 +784,14 @@ export default {
         nb_groupe_effectif_tp: this.nb_groupe_effectif_tp,
         nb_groupe_effectif_partiel: this.nb_groupe_effectif_partiel,
         parent: this.parent,
+        nbfils: this.nbfils
       }
       if (this.methods === 'POST') {
         this.$store.commit('ADD_Element', element);
+        // if (this.nbfils != null) {
+        //   let index = this.elements.findIndex(e => e.id === this.parent);
+        //   this.elements[index].nbfils = this.nbfils
+        // }
       } else {
         this.$store.commit('EDIT_Element', element);
       }
@@ -687,6 +823,7 @@ export default {
       this.nb_groupe_effectif_tp = ''
       this.nb_groupe_effectif_partiel = ''
       this.parent = null
+      this.nbfils = null
     },
     close() {
       this.form = !this.form
@@ -730,10 +867,69 @@ export default {
         this.elements.sort((a, b) => a.titre.toUpperCase() > b.titre.toUpperCase())
       }
     },
+    addSemester(element) {
+      var nbfils = this.countChild(element)
+      this.titre = "Semestre " + (nbfils + 1)
+      this.surnom = "S" + (nbfils + 1)
+      this.niveau = 1
+      this.indice = nbfils
+      this.parent = element.id
+      element.nbfils = element.nbfils + 1
+      this.form = true;
+    },
+    addUE(element) {
+      var indice = element.indice
+      var nbfils = this.countChild(element)
+      this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
+      this.surnom = "UE" + (indice + 1) + (nbfils+1)
+      this.niveau = 2
+      this.indice = nbfils
+      this.parent = element.id
+      element.nbfils = element.nbfils + 1
+      this.form = true;
+    },
+    addModule(element, module) {
+      var indice = element.indice
+      var indiceM = module.indice
+      var nbfils = this.countChild(element)
+      if (nbfils + 1 < 10) {
+        this.titre = "M " + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1) + " : "
+        this.surnom = "M" + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1)
+      } else {
+        this.titre = "M " + (indiceM + 1) + (indice + 1) + (nbfils + 1) + " : "
+        this.surnom = "M" + (indiceM + 1) + (indice + 1) + (nbfils + 1)
+      }
+      this.niveau = 3
+      this.indice = nbfils
+      this.parent = element.id
+      element.nbfils = element.nbfils + 1
+      this.form = true;
+    },
+    countChild(element) {
+      var nbFils = 0;
+      for (let i = 0; i < this.elements.length; i++) {
+        if (this.elements[i].parent === element.id) nbFils = nbFils + 1;
+      }
+      return nbFils
+    },
     convertBoolean(b) {
       if (b === 0) return "Non"
       else return "Oui"
     },
+    // getHierarchies(id) {
+    //   var hierarchieById = []
+    //   axios
+    //       .get('http://localhost:8888/elements/get/hierarchie/'+id)
+    //       .then(response => response.data)
+    //       .then(hierarchie => {
+    //         console.log(hierarchie);
+    //         hierarchieById = hierarchie;
+    //       }).catch(error => {
+    //     console.log('Erreur : ', error)
+    //   });
+    //   console.log(hierarchieById)
+    //   return hierarchieById;
+    // }
   }
 }
 </script>
@@ -741,9 +937,5 @@ export default {
 <style scoped>
 .v-expansion-panel::before {
   box-shadow: none !important;
-}
-
-.v-expansion-panel-content::before {
-  padding: 0 0 0 0 !important;
 }
 </style>
