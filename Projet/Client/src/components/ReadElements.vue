@@ -63,7 +63,7 @@
                       >
                         <div v-if="formation.id === semestre.parent">
                           <v-expansion-panel-header>{{ semestre.titre }}</v-expansion-panel-header>
-                          <v-expansion-panel-content class="innerExPan">
+                          <v-expansion-panel-content>
                             <v-container>
                               <v-row>
                                 <v-expansion-panels
@@ -76,7 +76,7 @@
                                   >
                                     <div v-if="semestre.id === ue.parent">
                                       <v-expansion-panel-header>{{ ue.titre }}</v-expansion-panel-header>
-                                      <v-expansion-panel-content class="innerExPan">
+                                      <v-expansion-panel-content>
                                         <v-container>
                                           <v-row>
                                             <v-expansion-panels
@@ -88,51 +88,85 @@
                                                   :key="module.id"
                                               >
                                                 <div v-if="ue.id === module.parent">
-                                                  <v-expansion-panel-header>{{
-                                                      module.titre
-                                                    }}
+                                                  <v-expansion-panel-header>{{module.titre}}
                                                   </v-expansion-panel-header>
-                                                  <v-expansion-panel-content class="innerExPan">
-                                                    <p>Mode de saisie :<b>{{ module.mode_saisie }}</b></p>
-                                                    <div class="ma-0 pa-0" v-if="module.mode_saisie !=='aucun'">
-                                                      <p>Volume horaire prévu en CM pour les étudiants
-                                                        :<b>{{ module.vol_hor_total_prevues_etu_cm }}</b></p>
-                                                      <p>Volume horaire prévu en TD pour les étudiants
-                                                        :<b>{{ module.vol_hor_total_prevues_etu_td }}</b></p>
-                                                      <p>Volume horaire prévu en TP pour les étudiants
-                                                        :<b>{{ module.vol_hor_total_prevues_etu_tp }}</b></p>
-                                                      <p>CM autorisés :<b>{{ convertBoolean(module.cm_autorises) }}</b>
-                                                      </p>
-                                                      <p>TD autorisés :<b>{{ convertBoolean(module.td_autorises) }}</b>
-                                                      </p>
-                                                      <p>TP autorisés :<b>{{ convertBoolean(module.tp_autorises) }}</b>
-                                                      </p>
-                                                      <p>Partiel autorisés
-                                                        :<b>{{ convertBoolean(module.partiel_autorises) }}</b>
-                                                      </p>
-                                                      <div class="ma-0 pa-0" v-if="module.mode_saisie ==='globale'">
-                                                        <p>Forfait globale en CM :<b>{{ module.forfait_globale_cm }}</b>
-                                                        </p>
-                                                        <p>Forfait globale en TD :<b>{{ module.forfait_globale_td }}</b>
-                                                        </p>
-                                                        <p>Forfait globale en TP :<b>{{ module.forfait_globale_tp }}</b>
-                                                        </p>
-                                                        <p>Forfait globale en Partiel
-                                                          :<b>{{ module.forfait_globale_partiel }}</b>
-                                                        </p>
-                                                      </div>
-                                                      <p>Nombre de groupe effectif en CM
-                                                        :<b>{{ module.nb_groupe_effectif_cm }}</b>
-                                                      </p>
-                                                      <p>Nombre de groupe effectif en TD
-                                                        :<b>{{ module.nb_groupe_effectif_td }}</b>
-                                                      </p>
-                                                      <p>Nombre de groupe effectif en TP
-                                                        :<b>{{ module.nb_groupe_effectif_tp }}</b>
-                                                      </p>
-                                                      <p>Nombre de groupe effectif en Partiel
-                                                        :<b>{{ module.nb_groupe_effectif_partiel }}</b></p>
-                                                    </div>
+                                                  <v-expansion-panel-content>
+                                                    <v-container>
+                                                      <v-row>
+                                                        <v-col>
+                                                          <p>Mode de saisie :<b>{{ module.mode_saisie }}</b></p>
+                                                          <div class="ma-0 pa-0" v-if="module.mode_saisie !=='aucun'">
+                                                            <p>Volume horaire prévu en CM pour les étudiants
+                                                              :<b>{{ module.vol_hor_total_prevues_etu_cm }}</b></p>
+                                                            <p>Volume horaire prévu en TD pour les étudiants
+                                                              :<b>{{ module.vol_hor_total_prevues_etu_td }}</b></p>
+                                                            <p>Volume horaire prévu en TP pour les étudiants
+                                                              :<b>{{ module.vol_hor_total_prevues_etu_tp }}</b></p>
+                                                            <p>CM autorisés :<b>{{ convertBoolean(module.cm_autorises) }}</b>
+                                                            </p>
+                                                            <p>TD autorisés :<b>{{ convertBoolean(module.td_autorises) }}</b>
+                                                            </p>
+                                                            <p>TP autorisés :<b>{{ convertBoolean(module.tp_autorises) }}</b>
+                                                            </p>
+                                                            <p>Partiel autorisés
+                                                              :<b>{{ convertBoolean(module.partiel_autorises) }}</b>
+                                                            </p>
+                                                            <div class="ma-0 pa-0" v-if="module.mode_saisie ==='globale'">
+                                                              <p>Forfait globale en CM :<b>{{ module.forfait_globale_cm }}</b>
+                                                              </p>
+                                                              <p>Forfait globale en TD :<b>{{ module.forfait_globale_td }}</b>
+                                                              </p>
+                                                              <p>Forfait globale en TP :<b>{{ module.forfait_globale_tp }}</b>
+                                                              </p>
+                                                              <p>Forfait globale en Partiel :<b>{{ module.forfait_globale_partiel }}</b>
+                                                              </p>
+                                                            </div>
+                                                            <p>Nombre de groupe effectif en CM :<b>{{ module.nb_groupe_effectif_cm }}</b>
+                                                            </p>
+                                                            <p>Nombre de groupe effectif en TD :<b>{{ module.nb_groupe_effectif_td }}</b>
+                                                            </p>
+                                                            <p>Nombre de groupe effectif en TP :<b>{{ module.nb_groupe_effectif_tp }}</b>
+                                                            </p>
+                                                            <p>Nombre de groupe effectif en Partiel :<b>{{ module.nb_groupe_effectif_partiel }}</b></p>
+                                                          </div>
+                                                        </v-col>
+                                                      </v-row>
+                                                      <v-row
+                                                          align="center"
+                                                          justify="center"
+                                                          class="pt-2"
+                                                      >
+                                                        <v-tooltip top>
+                                                          <template v-slot:activator="{ on, attrs }">
+                                                            <v-btn icon>
+                                                              <v-icon
+                                                                  v-bind="attrs"
+                                                                  v-on="on"
+                                                                  @click="edit(module)"
+                                                              >
+                                                                edit
+                                                              </v-icon>
+                                                            </v-btn>
+                                                          </template>
+                                                          <span>Modifier {{ module.surnom }}</span>
+                                                        </v-tooltip>
+                                                        <v-spacer></v-spacer>
+                                                        <v-tooltip top>
+                                                          <template v-slot:activator="{ on, attrs }">
+                                                            <v-btn icon>
+                                                              <v-icon
+                                                                  color="red darken-1"
+                                                                  v-bind="attrs"
+                                                                  v-on="on"
+                                                              >
+                                                                delete
+                                                              </v-icon>
+                                                            </v-btn>
+                                                          </template>
+                                                          <span>Supprimer</span>
+                                                        </v-tooltip>
+                                                      </v-row>
+                                                    </v-container>
                                                   </v-expansion-panel-content>
                                                 </div>
 
@@ -150,13 +184,13 @@
                                                   <v-icon
                                                       v-bind="attrs"
                                                       v-on="on"
-                                                      @click="edit(semestre)"
+                                                      @click="edit(ue)"
                                                   >
                                                     edit
                                                   </v-icon>
                                                 </v-btn>
                                               </template>
-                                              <span>Modifier</span>
+                                              <span>Modifier {{ ue.surnom }}</span>
                                             </v-tooltip>
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
@@ -224,7 +258,7 @@
                                       </v-icon>
                                     </v-btn>
                                   </template>
-                                  <span>Modifier</span>
+                                  <span>Modifier {{ semestre.titre }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                   <template v-slot:activator="{ on, attrs }">
@@ -290,7 +324,7 @@
                       </v-icon>
                     </v-btn>
                   </template>
-                  <span>Modifier</span>
+                  <span>Modifier {{ formation.surnom }}</span>
                 </v-tooltip>
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
@@ -432,122 +466,119 @@
                     item-value="id"
                     label="Parent"
                 ></v-select>
-
-                <br>
-                <div class="text-center">Les champs suivants sont optionnels</div>
-                <v-divider></v-divider>
-                <br>
-                <v-text-field
-                    clearable
-                    v-model="vol_hor_total_prevues_etu_cm"
-                    :error-messages="vol_hor_total_prevues_etu_cmErrors"
-                    label="Volume horaire total de CM prévu pour les étudiants"
-                    @input="$v.vol_hor_total_prevues_etu_cm.$touch()"
-                    @blur="$v.vol_hor_total_prevues_etu_cm.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    clearable
-                    v-model="vol_hor_total_prevues_etu_td"
-                    :error-messages="vol_hor_total_prevues_etu_tdErrors"
-                    label="Volume horaire total de TD prévu pour les étudiants"
-                    @input="$v.vol_hor_total_prevues_etu_td.$touch()"
-                    @blur="$v.vol_hor_total_prevues_etu_td.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    clearable
-                    v-model="vol_hor_total_prevues_etu_tp"
-                    :error-messages="vol_hor_total_prevues_etu_tpErrors"
-                    label="Volume horaire total de TP prévu pour les étudiants"
-                    @input="$v.vol_hor_total_prevues_etu_tp.$touch()"
-                    @blur="$v.vol_hor_total_prevues_etu_tp.$touch()"
-                ></v-text-field>
-                <v-switch
-                    v-model="cm_autorises"
-                    inset
-                    :label="'CM autorisés'"
-                ></v-switch>
-                <v-switch
-                    v-model="td_autorises"
-                    inset
-                    :label="'TD autorisés'"
-                ></v-switch>
-                <v-switch
-                    v-model="tp_autorises"
-                    inset
-                    :label="'TP autorisés'"
-                ></v-switch>
-                <v-switch
-                    v-model="partiel_autorises"
-                    inset
-                    :label="'Partiel autorisés'"
-                ></v-switch>
-                <div class="ma-0 pa-0" v-if="this.mode_saisie ==='globale'">
+                <div class="ma-0 pa-0" v-if="this.mode_saisie && this.mode_saisie !== 'aucun'">
+                  <br><v-divider></v-divider>
                   <v-text-field
                       clearable
-                      v-model="forfait_globale_cm"
-                      :error-messages="forfait_globale_cmErrors"
-                      label="Forfait horaire global pour les CM"
-                      @input="$v.forfait_globale_cm.$touch()"
-                      @blur="$v.forfait_globale_cm.$touch()"
+                      v-model="vol_hor_total_prevues_etu_cm"
+                      :error-messages="vol_hor_total_prevues_etu_cmErrors"
+                      label="Volume horaire total de CM prévu pour les étudiants"
+                      @input="$v.vol_hor_total_prevues_etu_cm.$touch()"
+                      @blur="$v.vol_hor_total_prevues_etu_cm.$touch()"
                   ></v-text-field>
                   <v-text-field
                       clearable
-                      v-model="forfait_globale_td"
-                      :error-messages="forfait_globale_tdErrors"
-                      label="Forfait horaire global pour les TD"
-                      @input="$v.forfait_globale_td.$touch()"
-                      @blur="$v.forfait_globale_td.$touch()"
+                      v-model="vol_hor_total_prevues_etu_td"
+                      :error-messages="vol_hor_total_prevues_etu_tdErrors"
+                      label="Volume horaire total de TD prévu pour les étudiants"
+                      @input="$v.vol_hor_total_prevues_etu_td.$touch()"
+                      @blur="$v.vol_hor_total_prevues_etu_td.$touch()"
                   ></v-text-field>
                   <v-text-field
                       clearable
-                      v-model="forfait_globale_tp"
-                      :error-messages="forfait_globale_tpErrors"
-                      label="Forfait horaire global pour les TP"
-                      @input="$v.forfait_globale_tp.$touch()"
-                      @blur="$v.forfait_globale_tp.$touch()"
+                      v-model="vol_hor_total_prevues_etu_tp"
+                      :error-messages="vol_hor_total_prevues_etu_tpErrors"
+                      label="Volume horaire total de TP prévu pour les étudiants"
+                      @input="$v.vol_hor_total_prevues_etu_tp.$touch()"
+                      @blur="$v.vol_hor_total_prevues_etu_tp.$touch()"
+                  ></v-text-field>
+                  <v-switch
+                      v-model="cm_autorises"
+                      inset
+                      :label="'CM autorisés'"
+                  ></v-switch>
+                  <v-switch
+                      v-model="td_autorises"
+                      inset
+                      :label="'TD autorisés'"
+                  ></v-switch>
+                  <v-switch
+                      v-model="tp_autorises"
+                      inset
+                      :label="'TP autorisés'"
+                  ></v-switch>
+                  <v-switch
+                      v-model="partiel_autorises"
+                      inset
+                      :label="'Partiel autorisés'"
+                  ></v-switch>
+                  <div class="ma-0 pa-0" v-if="this.mode_saisie ==='globale'">
+                    <v-text-field
+                        clearable
+                        v-model="forfait_globale_cm"
+                        :error-messages="forfait_globale_cmErrors"
+                        label="Forfait horaire global pour les CM"
+                        @input="$v.forfait_globale_cm.$touch()"
+                        @blur="$v.forfait_globale_cm.$touch()"
+                    ></v-text-field>
+                    <v-text-field
+                        clearable
+                        v-model="forfait_globale_td"
+                        :error-messages="forfait_globale_tdErrors"
+                        label="Forfait horaire global pour les TD"
+                        @input="$v.forfait_globale_td.$touch()"
+                        @blur="$v.forfait_globale_td.$touch()"
+                    ></v-text-field>
+                    <v-text-field
+                        clearable
+                        v-model="forfait_globale_tp"
+                        :error-messages="forfait_globale_tpErrors"
+                        label="Forfait horaire global pour les TP"
+                        @input="$v.forfait_globale_tp.$touch()"
+                        @blur="$v.forfait_globale_tp.$touch()"
+                    ></v-text-field>
+                    <v-text-field
+                        clearable
+                        v-model="forfait_globale_partiel"
+                        :error-messages="forfait_globale_partielErrors"
+                        label="Forfait horaire global pour les partiels"
+                        @input="$v.forfait_globale_partiel.$touch()"
+                        @blur="$v.forfait_globale_partiel.$touch()"
+                    ></v-text-field>
+                  </div>
+                  <v-text-field
+                      clearable
+                      v-model="nb_groupe_effectif_cm"
+                      :error-messages="nb_groupe_effectif_cmErrors"
+                      label="Nombre de groupes effectifs pour les CM"
+                      @input="$v.nb_groupe_effectif_cm.$touch()"
+                      @blur="$v.nb_groupe_effectif_cm.$touch()"
                   ></v-text-field>
                   <v-text-field
                       clearable
-                      v-model="forfait_globale_partiel"
-                      :error-messages="forfait_globale_partielErrors"
-                      label="Forfait horaire global pour les partiels"
-                      @input="$v.forfait_globale_partiel.$touch()"
-                      @blur="$v.forfait_globale_partiel.$touch()"
+                      v-model="nb_groupe_effectif_td"
+                      :error-messages="nb_groupe_effectif_tdErrors"
+                      label="Nombre de groupes effectifs pour les TD"
+                      @input="$v.nb_groupe_effectif_td.$touch()"
+                      @blur="$v.nb_groupe_effectif_td.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      clearable
+                      v-model="nb_groupe_effectif_tp"
+                      :error-messages="nb_groupe_effectif_tpErrors"
+                      label="Nombre de groupes effectifs pour les TP"
+                      @input="$v.nb_groupe_effectif_tp.$touch()"
+                      @blur="$v.nb_groupe_effectif_tp.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      clearable
+                      v-model="nb_groupe_effectif_partiel"
+                      :error-messages="nb_groupe_effectif_partielErrors"
+                      label="Nombre de groupes effectifs pour les partiels"
+                      @input="$v.nb_groupe_effectif_partiel.$touch()"
+                      @blur="$v.nb_groupe_effectif_partiel.$touch()"
                   ></v-text-field>
                 </div>
-                <v-text-field
-                    clearable
-                    v-model="nb_groupe_effectif_cm"
-                    :error-messages="nb_groupe_effectif_cmErrors"
-                    label="Nombre de groupes effectifs pour les CM"
-                    @input="$v.nb_groupe_effectif_cm.$touch()"
-                    @blur="$v.nb_groupe_effectif_cm.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    clearable
-                    v-model="nb_groupe_effectif_td"
-                    :error-messages="nb_groupe_effectif_tdErrors"
-                    label="Nombre de groupes effectifs pour les TD"
-                    @input="$v.nb_groupe_effectif_td.$touch()"
-                    @blur="$v.nb_groupe_effectif_td.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    clearable
-                    v-model="nb_groupe_effectif_tp"
-                    :error-messages="nb_groupe_effectif_tpErrors"
-                    label="Nombre de groupes effectifs pour les TP"
-                    @input="$v.nb_groupe_effectif_tp.$touch()"
-                    @blur="$v.nb_groupe_effectif_tp.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    clearable
-                    v-model="nb_groupe_effectif_partiel"
-                    :error-messages="nb_groupe_effectif_partielErrors"
-                    label="Nombre de groupes effectifs pour les partiels"
-                    @input="$v.nb_groupe_effectif_partiel.$touch()"
-                    @blur="$v.nb_groupe_effectif_partiel.$touch()"
-                ></v-text-field>
-
                 <v-card-actions>
                   <v-btn
                       color="red darken-1"
@@ -658,7 +689,7 @@ export default {
     this.$store.dispatch('loadElements');
   },
   computed: {
-    ...mapState(['elements', 'elementsRoot']),
+    ...mapState(['elements']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -788,10 +819,6 @@ export default {
       }
       if (this.methods === 'POST') {
         this.$store.commit('ADD_Element', element);
-        // if (this.nbfils != null) {
-        //   let index = this.elements.findIndex(e => e.id === this.parent);
-        //   this.elements[index].nbfils = this.nbfils
-        // }
       } else {
         this.$store.commit('EDIT_Element', element);
       }
@@ -868,30 +895,30 @@ export default {
       }
     },
     addSemester(element) {
-      var nbfils = this.countChild(element)
+      var nbfils = element.nbfils
       this.titre = "Semestre " + (nbfils + 1)
       this.surnom = "S" + (nbfils + 1)
       this.niveau = 1
+      this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      element.nbfils = element.nbfils + 1
       this.form = true;
     },
     addUE(element) {
       var indice = element.indice
-      var nbfils = this.countChild(element)
+      var nbfils = element.nbfils
       this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
       this.surnom = "UE" + (indice + 1) + (nbfils+1)
       this.niveau = 2
+      this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      element.nbfils = element.nbfils + 1
       this.form = true;
     },
     addModule(element, module) {
       var indice = element.indice
       var indiceM = module.indice
-      var nbfils = this.countChild(element)
+      var nbfils = element.nbfils
       if (nbfils + 1 < 10) {
         this.titre = "M " + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1) + " : "
         this.surnom = "M" + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1)
@@ -902,34 +929,12 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
-      element.nbfils = element.nbfils + 1
       this.form = true;
-    },
-    countChild(element) {
-      var nbFils = 0;
-      for (let i = 0; i < this.elements.length; i++) {
-        if (this.elements[i].parent === element.id) nbFils = nbFils + 1;
-      }
-      return nbFils
     },
     convertBoolean(b) {
       if (b === 0) return "Non"
       else return "Oui"
     },
-    // getHierarchies(id) {
-    //   var hierarchieById = []
-    //   axios
-    //       .get('http://localhost:8888/elements/get/hierarchie/'+id)
-    //       .then(response => response.data)
-    //       .then(hierarchie => {
-    //         console.log(hierarchie);
-    //         hierarchieById = hierarchie;
-    //       }).catch(error => {
-    //     console.log('Erreur : ', error)
-    //   });
-    //   console.log(hierarchieById)
-    //   return hierarchieById;
-    // }
   }
 }
 </script>

@@ -13,10 +13,11 @@ export default new Vuex.Store({
     statuts: [],
     projets: [],
     projetsArchive: [],
-    elementsRoot: [],
+    elementsLevel: [],
     elements: [],
     intervenants: [],
     formations: [],
+    periodes: [],
   },
   getters: {
     enseignants: state => {
@@ -34,14 +35,17 @@ export default new Vuex.Store({
     elements: state => {
       return state.elements;
     },
-    elementsRoot: state => {
-      return state.elementsRoot;
+    elementsLevel: state => {
+      return state.elementsLevel;
     },
     intervenants: state => {
       return state.intervenants;
     },
     formations: state => {
       return state.formations;
+    },
+    periodes: state => {
+      return state.periodes;
     },
   },
   mutations: {
@@ -60,14 +64,17 @@ export default new Vuex.Store({
     SET_Element(state, elements) {
       state.elements = elements
     },
-    SET_ElementRoot(state, elementsRoot) {
-      state.elementsRoot = elementsRoot
+    SET_ElementLevel(state, elementsLevel) {
+      state.elementsLevel = elementsLevel
     },
     SET_Intervenant(state, intervenants) {
       state.intervenants = intervenants
     },
     SET_Formations(state, formations) {
       state.formations = formations
+    },
+    SET_Periodes(state, periodes) {
+      state.periodes = periodes
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
@@ -97,12 +104,12 @@ export default new Vuex.Store({
       state.statuts.push(statut)
     },
     ADD_Projet(state, nom) {
-      axios.put('/projets/create/'+ nom)
+      axios.put('/projets/create/' + nom)
         .then(response => response.data)
         .then(projet => {
           console.log(projet);
           const dateNow = new Date().toISOString().substr(0, 10)
-          state.projets.push({id:projet.insertId, nom: nom, date:dateNow, verrou:0,archive:0})
+          state.projets.push({id: projet.insertId, nom: nom, date: dateNow, verrou: 0, archive: 0})
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -116,6 +123,8 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
       state.elements.push(element)
+      let index = state.elements.findIndex(e => e.id === element.parent);
+      state.elements[index].nbfils += 1
     },
     ADD_Intervenant(state, intervenant) {
       axios.post('/intervenants/create/', intervenant)
@@ -137,8 +146,18 @@ export default new Vuex.Store({
       });
       state.formations.push(formations)
     },
+    ADD_Periodes(state, periodes) {
+      axios.post('/periodes/create/', periodes)
+        .then(response => response.data)
+        .then(periodes => {
+          console.log(periodes);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.periodes.push(periodes)
+    },
     EDIT_Enseignant(state, enseignant) {
-      axios.put('/enseignants/edit/'+enseignant.id, enseignant)
+      axios.put('/enseignants/edit/' + enseignant.id, enseignant)
         .then(response => response.data)
         .then(enseignants => {
           console.log(enseignants);
@@ -149,7 +168,7 @@ export default new Vuex.Store({
       state.enseignants[index] = enseignant
     },
     EDIT_Statut(state, statut) {
-      axios.put('/statuts/edit/'+statut.id, statut)
+      axios.put('/statuts/edit/' + statut.id, statut)
         .then(response => response.data)
         .then(statuts => {
           console.log(statuts);
@@ -160,7 +179,7 @@ export default new Vuex.Store({
       state.statuts[index] = statut
     },
     EDIT_Projet(state, projet) {
-      axios.put('/projets/edit/'+projet.id, projet)
+      axios.put('/projets/edit/' + projet.id, projet)
         .then(response => response.data)
         .then(projet => {
           console.log(projet);
@@ -171,7 +190,7 @@ export default new Vuex.Store({
       state.projets[index] = projet
     },
     EDIT_Element(state, element) {
-      axios.put('/elements/edit/'+element.id, element)
+      axios.put('/elements/edit/' + element.id, element)
         .then(response => response.data)
         .then(elements => {
           console.log(elements);
@@ -182,7 +201,7 @@ export default new Vuex.Store({
       state.elements[index] = element
     },
     EDIT_Intervenant(state, intervenant) {
-      axios.put('/intervenants/edit/'+intervenant.id, intervenant)
+      axios.put('/intervenants/edit/' + intervenant.id, intervenant)
         .then(response => response.data)
         .then(intervenant => {
           console.log(intervenant);
@@ -193,7 +212,7 @@ export default new Vuex.Store({
       state.intervenants[index] = intervenant
     },
     EDIT_Formations(state, formations) {
-      axios.put('/formations/edit/'+formations.id, formations)
+      axios.put('/formations/edit/' + formations.id, formations)
         .then(response => response.data)
         .then(formations => {
           console.log(formations);
@@ -202,6 +221,17 @@ export default new Vuex.Store({
       });
       let index = state.formations.findIndex(f => f.id === formations.id);
       state.formations[index] = formations
+    },
+    EDIT_Periodes(state, periodes) {
+      axios.put('/periodes/edit/' + periodes.id, periodes)
+        .then(response => response.data)
+        .then(periodes => {
+          console.log(periodes);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.periodes.findIndex(p => p.id === periodes.id);
+      state.periodes[index] = periodes
     },
   },
   actions: {
@@ -260,13 +290,13 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
-    loadElementsRoot({commit}) {
+    loadElementsLevel({commit}, level) {
       axios
-        .get('/elements/get/level/'+0)
+        .get('/elements/get/level/' + level)
         .then(response => response.data)
-        .then(elementsRoot => {
-          console.log(elementsRoot);
-          commit('SET_ElementRoot', elementsRoot)
+        .then(elementsLevel => {
+          console.log(elementsLevel);
+          commit('SET_ElementLevel', elementsLevel)
         }).catch(error => {
         console.log('Erreur : ', error)
       })
@@ -289,6 +319,17 @@ export default new Vuex.Store({
         .then(formations => {
           console.log(formations);
           commit('SET_Formations', formations)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadPeriodes({commit}) {
+      axios
+        .get('periodes/get')
+        .then(response => response.data)
+        .then(periodes => {
+          console.log(periodes);
+          commit('SET_Periodes', periodes)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

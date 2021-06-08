@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des Formations</h1>
+          <h1 class="text-center">Liste des formations</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -14,7 +14,7 @@
       <v-row>
         <v-col v-for="f in formations"
                :key="f.id"
-               sm="5"
+               sm="6"
         >
           <v-card>
             <v-card-title>{{ returnElement(f.element_id).titre }}</v-card-title>
@@ -112,7 +112,7 @@
                 ></v-select>
                 <v-select
                     v-model="element_id"
-                    :items="elementsRoot"
+                    :items="elementsLevel"
                     item-text="titre"
                     item-value="id"
                     label="Hierarchies arborescentes"
@@ -190,14 +190,14 @@ export default {
     element_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadFormations')
     this.$store.dispatch('loadProjets')
     this.$store.dispatch('loadProjetsNonArchive')
     this.$store.dispatch('loadElements')
-    this.$store.dispatch('loadElementsRoot')
+    this.$store.dispatch('loadElementsLevel', 0)
+    this.$store.dispatch('loadFormations')
   },
   computed: {
-    ...mapState(['formations','projets', 'elements', 'elementsRoot', 'projetsArchive']),
+    ...mapState(['projets', 'elements', 'elementsLevel', 'projetsArchive', 'formations']),
     projetErrors() {
       const errors = []
       if (!this.$v.projet_id.$dirty) return errors

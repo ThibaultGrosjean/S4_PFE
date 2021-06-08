@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des Projets</h1>
+          <h1 class="text-center">Liste des projets</h1>
         </v-col>
       </v-row>
       <v-row

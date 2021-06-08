@@ -21,6 +21,8 @@ const projetController = require('./controllers/ProjetController');
 const elementController = require('./controllers/ElementController');
 const intervenantController = require('./controllers/IntervenantController');
 const formationController = require('./controllers/FormationController');
+const periodeController = require('./controllers/PeriodeController');
+
 
 const port = 8888;
 
@@ -106,6 +108,17 @@ app.post('/formations/create/',formationController.validator, formationControlle
 app.put('/formations/edit/:id',formationController.validator, formationController.editFormation);
 
 app.delete('/formations/delete/:id', formationController.deleteFormation);
+
+
+app.get('/periodes/get', periodeController.getAllPeriodes);
+
+app.get('/periodes/get/:id', periodeController.getPeriode);
+
+app.post('/periodes/create/',periodeController.validator, periodeController.addPeriode);
+
+app.put('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
+
+app.delete('/periodes/delete/:id', periodeController.deletePeriode);
 
 
 app.listen(port, () => {

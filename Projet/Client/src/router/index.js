@@ -7,6 +7,7 @@ import Projets from "../views/Projets";
 import Elements from "../views/Elements";
 import Intervenant from "../views/Intervenant";
 import Formation from "../views/Formation";
+import Periodes from "../views/Periodes";
 
 Vue.use(VueRouter)
 
@@ -54,6 +55,11 @@ const routes = [
     path: '/formations',
     name: 'Formations',
     component: Formation
+  },
+  {
+    path: '/periodes',
+    name: 'Periodes',
+    component: Periodes
   },
 ]
 
