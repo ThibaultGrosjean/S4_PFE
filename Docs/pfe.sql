@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 03 juin 2021 à 15:22
+-- Généré le : mer. 09 juin 2021 à 10:45
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -66,7 +66,8 @@ INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol
 (6, 'UE 11: Informatique', 'UE11', 'UE11', 2, 0, 44, 60, 76, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (7, 'UE 12: Connaissances et compétences générales', 'UE12', 'UE12', 2, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 27, 33.5, 42, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 17, 26.5, 34, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6);
+(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 17, 26.5, 34, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
+(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'globale', 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -103,6 +104,13 @@ CREATE TABLE `formation` (
   `element_id` int DEFAULT NULL,
   `verrou` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `formation`
+--
+
+INSERT INTO `formation` (`id`, `projet_id`, `element_id`, `verrou`) VALUES
+(1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -184,6 +192,16 @@ CREATE TABLE `periode` (
   `nb_groupe_defaut_partiel` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `periode`
+--
+
+INSERT INTO `periode` (`id`, `element_id`, `nb_semaine`, `nb_groupe_defaut_cm`, `nb_groupe_defaut_td`, `nb_groupe_defaut_tp`, `nb_groupe_defaut_partiel`) VALUES
+(1, 2, 10, 1, 4, 8, 2),
+(2, 3, 10, 1, 4, 8, 2),
+(3, 4, 10, 1, 4, 8, 2),
+(4, 5, 10, 1, 3, 6, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -203,7 +221,7 @@ CREATE TABLE `projet` (
 --
 
 INSERT INTO `projet` (`id`, `nom`, `date`, `verrou`, `archive`) VALUES
-(1, 'Test Projet', '2021-05-31', 0, 1);
+(1, 'Test Projet', '2021-05-30', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -363,19 +381,19 @@ ALTER TABLE `volume_hebdomadaire`
 -- AUTO_INCREMENT pour la table `element`
 --
 ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
 --
 ALTER TABLE `enseignant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `formation`
 --
 ALTER TABLE `formation`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table ` groupe_intervenant`
@@ -387,25 +405,25 @@ ALTER TABLE ` groupe_intervenant`
 -- AUTO_INCREMENT pour la table `intervenant`
 --
 ALTER TABLE `intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `periode`
 --
 ALTER TABLE `periode`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `projet`
 --
 ALTER TABLE `projet`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `statut`
 --
 ALTER TABLE `statut`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `volume_globale`

@@ -50,6 +50,7 @@
                   <span class="green--text text--darken-1" v-else>Activé</span></b>
               </p>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">

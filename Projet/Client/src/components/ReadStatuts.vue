@@ -47,6 +47,7 @@
               <p>HeTD* maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
               <small>* HeTD : Nombre d’heures équivalent TD</small>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">

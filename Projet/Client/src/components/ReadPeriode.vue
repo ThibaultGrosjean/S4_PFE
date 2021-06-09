@@ -14,7 +14,7 @@
       <v-row>
         <v-col v-for="p in periodes"
                :key="p.id"
-               sm="5"
+               sm="4"
         >
           <v-card>
             <v-card-title>{{ returnElement(p.element_id).titre }}</v-card-title>
@@ -25,10 +25,10 @@
               <p>Nombre de groupes* pour les CM :<b>{{ p.nb_groupe_defaut_cm }}</b></p>
               <p>Nombre de groupes* pour les TD : <b>{{ p.nb_groupe_defaut_td }}</b></p>
               <p>Nombre de groupes* pour les TP : <b>{{ p.nb_groupe_defaut_tp }}</b></p>
-              <p>Nombre de groupes* pour les TP : <b>{{ p.nb_groupe_defaut_tp }}</b></p>
               <p>Nombre de groupes* pour les partiels : <b>{{ p.nb_groupe_defaut_partiel }}</b></p>
               <small>* par défaut</small>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">

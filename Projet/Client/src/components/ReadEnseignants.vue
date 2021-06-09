@@ -82,6 +82,7 @@
                 </div>
               </v-expand-transition>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">

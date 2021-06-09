@@ -687,9 +687,10 @@ export default {
   }),
   mounted() {
     this.$store.dispatch('loadElements');
+    this.$store.dispatch('loadPeriodes');
   },
   computed: {
-    ...mapState(['elements']),
+    ...mapState(['elements', 'periodes']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -910,9 +911,15 @@ export default {
       this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
       this.surnom = "UE" + (indice + 1) + (nbfils+1)
       this.niveau = 2
-      this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
+      var periode = this.findPeriodeSemestre(element);
+      if (periode !== -1 && periode !== undefined){
+        this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
+        this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
+        this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
+        this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
+      }
       this.form = true;
     },
     addModule(element, module) {
@@ -929,12 +936,23 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
+      var periode = this.findPeriodeSemestre(module);
+      if (periode !== -1 && periode !== undefined){
+        this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
+        this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
+        this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
+        this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
+      }
       this.form = true;
     },
     convertBoolean(b) {
       if (b === 0) return "Non"
       else return "Oui"
     },
+    findPeriodeSemestre(semestre){
+      let index = this.periodes.findIndex(p => p.element_id === semestre.id);
+      return this.periodes[index];
+    }
   }
 }
 </script>

@@ -38,3 +38,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Affichage hiérarchique des éléments
 * API de la table Période
 * Formulaire de création et de modification d'une Période
+
+## Semaine 4 : 9-15 juin
+
+* Initialisation auto. des nombres de groupes (CM, TD...) grâce à la période du semestre

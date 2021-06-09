@@ -26,6 +26,7 @@
               <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
               <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
