@@ -43,3 +43,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 
 * Initialisation auto. des nombres de groupes (CM, TD...) grâce à la période du semestre
 * Dupliquer un statut et un enseignant
+* Affichage des heures prévues hebdo. (tableau)

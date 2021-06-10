@@ -54,15 +54,22 @@
                   <v-row>
                     <v-expansion-panels
                         multiple
-                        flat
                         accordion
+                        flat
                     >
                       <v-expansion-panel
                           v-for="semestre in elements"
                           :key="semestre.id"
                       >
                         <div v-if="formation.id === semestre.parent">
-                          <v-expansion-panel-header>{{ semestre.titre }}</v-expansion-panel-header>
+                          <v-expansion-panel-header>
+                            <span class="blue--text text--darken-2">{{ semestre.titre }}</span>
+                            <template v-slot:actions>
+                              <v-icon color="blue darken-2">
+                                $expand
+                              </v-icon>
+                            </template>
+                          </v-expansion-panel-header>
                           <v-expansion-panel-content>
                             <v-container>
                               <v-row>
@@ -75,7 +82,14 @@
                                       :key="ue.id"
                                   >
                                     <div v-if="semestre.id === ue.parent">
-                                      <v-expansion-panel-header>{{ ue.titre }}</v-expansion-panel-header>
+                                      <v-expansion-panel-header>
+                                        <span class="light-blue--text text--darken-2">{{ ue.titre }}</span>
+                                        <template v-slot:actions>
+                                          <v-icon color="light-blue darken-3">
+                                            $expand
+                                          </v-icon>
+                                        </template>
+                                      </v-expansion-panel-header>
                                       <v-expansion-panel-content>
                                         <v-container>
                                           <v-row>
@@ -88,64 +102,103 @@
                                                   :key="module.id"
                                               >
                                                 <div v-if="ue.id === module.parent">
-                                                  <v-expansion-panel-header>{{module.titre}}
+                                                  <v-expansion-panel-header>
+                                                    <span class="light-blue--text">{{module.titre}}</span>
+                                                    <template v-slot:actions>
+                                                      <v-icon color="light-blue">
+                                                        $expand
+                                                      </v-icon>
+                                                    </template>
                                                   </v-expansion-panel-header>
                                                   <v-expansion-panel-content>
+                                                    <v-divider></v-divider>
                                                     <v-container>
                                                       <v-row>
-                                                        <v-col>
-                                                          <p>Mode de saisie :<b>{{ module.mode_saisie }}</b></p>
-                                                          <div class="ma-0 pa-0" v-if="module.mode_saisie !=='aucun'">
-                                                            <p>Volume horaire prévu en CM pour les étudiants
-                                                              :<b>{{ module.vol_hor_total_prevues_etu_cm }}</b></p>
-                                                            <p>Volume horaire prévu en TD pour les étudiants
-                                                              :<b>{{ module.vol_hor_total_prevues_etu_td }}</b></p>
-                                                            <p>Volume horaire prévu en TP pour les étudiants
-                                                              :<b>{{ module.vol_hor_total_prevues_etu_tp }}</b></p>
-                                                            <p>CM autorisés :<b>{{ convertBoolean(module.cm_autorises) }}</b>
-                                                            </p>
-                                                            <p>TD autorisés :<b>{{ convertBoolean(module.td_autorises) }}</b>
-                                                            </p>
-                                                            <p>TP autorisés :<b>{{ convertBoolean(module.tp_autorises) }}</b>
-                                                            </p>
-                                                            <p>Partiel autorisés
-                                                              :<b>{{ convertBoolean(module.partiel_autorises) }}</b>
-                                                            </p>
-                                                            <div class="ma-0 pa-0" v-if="module.mode_saisie ==='globale'">
-                                                              <p>Forfait globale en CM :<b>{{ module.forfait_globale_cm }}</b>
-                                                              </p>
-                                                              <p>Forfait globale en TD :<b>{{ module.forfait_globale_td }}</b>
-                                                              </p>
-                                                              <p>Forfait globale en TP :<b>{{ module.forfait_globale_tp }}</b>
-                                                              </p>
-                                                              <p>Forfait globale en Partiel :<b>{{ module.forfait_globale_partiel }}</b>
-                                                              </p>
+                                                        <v-col class="pr-6 pl-6 pt-3 pb-0">
+                                                          <div v-if="module.mode_saisie !=='aucun'">
+                                                            <div v-if="module.mode_saisie ==='hebdo'">
+                                                              <v-simple-table dense>
+                                                                <template v-slot:default>
+                                                                  <thead>
+                                                                  <tr>
+                                                                    <th></th>
+                                                                    <th v-for="item in findPeriodeSemestre(semestre).nb_semaine" :key="item">{{ item }}</th>
+                                                                    <th class="text-left">Total</th>
+                                                                  </tr>
+                                                                  </thead>
+                                                                  <tbody>
+                                                                  <tr v-if="module.cm_autorises">
+                                                                    <td class="text-right">CM</td>
+                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
+                                                                      {{ module.vol_hor_total_prevues_etu_cm }}
+                                                                    </td>
+                                                                    <td>-</td>
+                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_cm) }}</td>
+                                                                  </tr>
+                                                                  <tr v-if="module.td_autorises">
+                                                                    <td class="text-right">TD</td>
+                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
+                                                                      {{ module.vol_hor_total_prevues_etu_td }}
+                                                                    </td>
+                                                                    <td>-</td>
+                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_td) }}</td>
+                                                                  </tr>
+                                                                  <tr v-if="module.tp_autorises">
+                                                                    <td class="text-right">TP</td>
+                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
+                                                                      {{ module.vol_hor_total_prevues_etu_tp }}
+                                                                    </td>
+                                                                    <td>-</td>
+                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_tp) }}</td>
+                                                                  </tr>
+                                                                  <tr v-if="module.partiel_autorises">
+                                                                    <td class="text-right">Partiel</td>
+                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">-</td>
+                                                                    <!--TODO : Affichage partiel avec la table volumen hebdomadaire (à implémenter dans le serveur)-->
+                                                                    <td>2</td>
+                                                                    <td>2</td>
+                                                                  </tr>
+                                                                  </tbody>
+                                                                </template>
+                                                              </v-simple-table>
+                                                              <v-divider></v-divider>
+                                                              <v-btn icon>
+                                                                <v-icon>expand_more</v-icon>
+                                                              </v-btn>
                                                             </div>
-                                                            <p>Nombre de groupe effectif en CM :<b>{{ module.nb_groupe_effectif_cm }}</b>
-                                                            </p>
-                                                            <p>Nombre de groupe effectif en TD :<b>{{ module.nb_groupe_effectif_td }}</b>
-                                                            </p>
-                                                            <p>Nombre de groupe effectif en TP :<b>{{ module.nb_groupe_effectif_tp }}</b>
-                                                            </p>
-                                                            <p>Nombre de groupe effectif en Partiel :<b>{{ module.nb_groupe_effectif_partiel }}</b></p>
+                                                            <div v-if="module.mode_saisie ==='globale'">
+                                                              Globale <!--TODO : Affichage saisie globale -->
+                                                            </div>
+<!--                                                            <div class="ma-0 pa-0" v-if="module.mode_saisie ==='globale'">-->
+<!--                                                              <p>Forfait globale en CM :<b>{{ module.forfait_globale_cm }}</b></p>-->
+<!--                                                              <p>Forfait globale en TD :<b>{{ module.forfait_globale_td }}</b></p>-->
+<!--                                                              <p>Forfait globale en TP :<b>{{ module.forfait_globale_tp }}</b></p>-->
+<!--                                                              <p>Forfait globale en Partiel :<b>{{ module.forfait_globale_partiel }}</b></p>-->
+<!--                                                            </div>-->
+<!--                                                            <p>Nombre de groupe effectif en CM :<b>{{ module.nb_groupe_effectif_cm }}</b>-->
+<!--                                                            </p>-->
+<!--                                                            <p>Nombre de groupe effectif en TD :<b>{{ module.nb_groupe_effectif_td }}</b>-->
+<!--                                                            </p>-->
+<!--                                                            <p>Nombre de groupe effectif en TP :<b>{{ module.nb_groupe_effectif_tp }}</b>-->
+<!--                                                            </p>-->
+<!--                                                            <p>Nombre de groupe effectif en Partiel :<b>{{ module.nb_groupe_effectif_partiel }}</b></p>-->
                                                           </div>
                                                         </v-col>
                                                       </v-row>
                                                       <v-row
                                                           align="center"
                                                           justify="center"
-                                                          class="pt-2"
+                                                          class="pa-2 pl-4"
                                                       >
                                                         <v-tooltip top>
                                                           <template v-slot:activator="{ on, attrs }">
-                                                            <v-btn icon>
-                                                              <v-icon
-                                                                  v-bind="attrs"
-                                                                  v-on="on"
-                                                                  @click="edit(module)"
-                                                              >
-                                                                edit
-                                                              </v-icon>
+                                                            <v-btn
+                                                                icon
+                                                                v-bind="attrs"
+                                                                v-on="on"
+                                                                @click="edit(module)"
+                                                            >
+                                                              <v-icon color="light-blue">edit</v-icon>
                                                             </v-btn>
                                                           </template>
                                                           <span>Modifier {{ module.surnom }}</span>
@@ -153,14 +206,12 @@
                                                         <v-spacer></v-spacer>
                                                         <v-tooltip top>
                                                           <template v-slot:activator="{ on, attrs }">
-                                                            <v-btn icon>
-                                                              <v-icon
-                                                                  color="red darken-1"
-                                                                  v-bind="attrs"
-                                                                  v-on="on"
-                                                              >
-                                                                delete
-                                                              </v-icon>
+                                                            <v-btn
+                                                                icon
+                                                                v-bind="attrs"
+                                                                v-on="on"
+                                                            >
+                                                              <v-icon color="red darken-1">delete</v-icon>
                                                             </v-btn>
                                                           </template>
                                                           <span>Supprimer</span>
@@ -176,31 +227,29 @@
                                           <v-row
                                               align="center"
                                               justify="center"
-                                              class="pt-2"
+                                              class="pa-2 pl-4"
                                           >
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
-                                                <v-btn icon>
-                                                  <v-icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                      @click="edit(ue)"
-                                                  >
-                                                    edit
-                                                  </v-icon>
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    @click="edit(ue)"
+                                                >
+                                                  <v-icon color="light-blue darken-2">edit</v-icon>
                                                 </v-btn>
                                               </template>
                                               <span>Modifier {{ ue.surnom }}</span>
                                             </v-tooltip>
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
-                                                <v-btn icon>
-                                                  <v-icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                  >
-                                                    file_copy
-                                                  </v-icon>
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                  <v-icon color="light-blue darken-2">file_copy</v-icon>
                                                 </v-btn>
                                               </template>
                                               <span>Dupliquer</span>
@@ -213,7 +262,7 @@
                                                     v-on="on"
                                                     @click="addModule(ue, semestre)"
                                                 >
-                                                  <v-icon>mdi-plus</v-icon>
+                                                  <v-icon color="light-blue darken-2">mdi-plus</v-icon>
                                                 </v-btn>
                                               </template>
                                               <span>Ajouter un module a l'{{ ue.titre }}</span>
@@ -221,14 +270,12 @@
                                             <v-spacer></v-spacer>
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
-                                                <v-btn icon>
-                                                  <v-icon
-                                                      color="red darken-1"
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                  >
-                                                    delete
-                                                  </v-icon>
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                  <v-icon color="red darken-2">delete</v-icon>
                                                 </v-btn>
                                               </template>
                                               <span>Supprimer</span>
@@ -244,31 +291,29 @@
                               <v-row
                                   align="center"
                                   justify="center"
-                                  class="pt-2"
+                                  class="pa-2 pl-4"
                               >
                                 <v-tooltip top>
                                   <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon>
-                                      <v-icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                          @click="edit(semestre)"
-                                      >
-                                        edit
-                                      </v-icon>
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        @click="edit(semestre)"
+                                    >
+                                      <v-icon color="blue darken-2">edit</v-icon>
                                     </v-btn>
                                   </template>
                                   <span>Modifier {{ semestre.titre }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                   <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon>
-                                      <v-icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                      >
-                                        file_copy
-                                      </v-icon>
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                      <v-icon color="blue darken-2">file_copy</v-icon>
                                     </v-btn>
                                   </template>
                                   <span>Dupliquer</span>
@@ -281,7 +326,7 @@
                                         v-on="on"
                                         @click="addUE(semestre)"
                                     >
-                                      <v-icon>mdi-plus</v-icon>
+                                      <v-icon color="bleu darken-2">mdi-plus</v-icon>
                                     </v-btn>
                                   </template>
                                   <span>Ajouter une UE au {{ semestre.titre }}</span>
@@ -289,14 +334,12 @@
                                 <v-spacer></v-spacer>
                                 <v-tooltip top>
                                   <template v-slot:activator="{ on, attrs }">
-                                    <v-btn icon>
-                                      <v-icon
-                                          color="red darken-1"
-                                          v-bind="attrs"
-                                          v-on="on"
-                                      >
-                                        delete
-                                      </v-icon>
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                      <v-icon color="red darken-3">delete</v-icon>
                                     </v-btn>
                                   </template>
                                   <span>Supprimer</span>
@@ -314,27 +357,25 @@
               <v-card-actions>
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon>
-                      <v-icon
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="edit(formation)"
-                      >
-                        edit
-                      </v-icon>
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="edit(formation)"
+                    >
+                      <v-icon>edit</v-icon>
                     </v-btn>
                   </template>
                   <span>Modifier {{ formation.surnom }}</span>
                 </v-tooltip>
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon>
-                      <v-icon
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        file_copy
-                      </v-icon>
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      <v-icon>file_copy</v-icon>
                     </v-btn>
                   </template>
                   <span>Dupliquer</span>
@@ -355,14 +396,12 @@
                 <v-spacer></v-spacer>
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon>
-                      <v-icon
-                          color="red darken-1"
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        delete
-                      </v-icon>
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      <v-icon color="red darken-4">delete</v-icon>
                     </v-btn>
                   </template>
                   <span>Supprimer</span>
@@ -624,7 +663,6 @@
 import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
 import {decimal, numeric, maxLength, required} from "vuelidate/lib/validators";
-import axios from "axios";
 
 export default {
   name: "ReadElements",
@@ -686,11 +724,11 @@ export default {
     nbfils: null
   }),
   mounted() {
-    this.$store.dispatch('loadElements');
     this.$store.dispatch('loadPeriodes');
+    this.$store.dispatch('loadElements');
   },
   computed: {
-    ...mapState(['elements', 'periodes']),
+    ...mapState(['periodes','elements']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -842,10 +880,10 @@ export default {
       this.td_autorises = false
       this.tp_autorises = false
       this.partiel_autorises = false
-      this.forfait_globale_cm = ''
-      this.forfait_globale_td = ''
-      this.forfait_globale_tp = ''
-      this.forfait_globale_partiel = ''
+      this.forfait_globale_cm = null
+      this.forfait_globale_td = null
+      this.forfait_globale_tp = null
+      this.forfait_globale_partiel = null
       this.nb_groupe_effectif_cm = ''
       this.nb_groupe_effectif_td = ''
       this.nb_groupe_effectif_tp = ''
@@ -952,13 +990,18 @@ export default {
     findPeriodeSemestre(semestre){
       let index = this.periodes.findIndex(p => p.element_id === semestre.id);
       return this.periodes[index];
+    },
+    calculTotalSemestreType(semestre, typeCours){
+      return this.findPeriodeSemestre(semestre).nb_semaine * typeCours;
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .v-expansion-panel::before {
   box-shadow: none !important;
 }
+.v-expansion-panel-content__wrap {
+  padding: 0 0 0 24px !important; }
 </style>
