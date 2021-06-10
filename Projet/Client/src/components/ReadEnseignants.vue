@@ -104,6 +104,7 @@
                     <v-icon
                         v-bind="attrs"
                         v-on="on"
+                        @click="copy(e)"
                     >
                       file_copy
                     </v-icon>
@@ -351,6 +352,9 @@ export default {
       this.email = enseignant.email
       this.statut_id = enseignant.statut.id
       this.form = true;
+    },
+    copy(statut) {
+      this.$store.commit('COPY_Enseignant', statut.id);
     },
     returnStatut(id) {
       let index = this.statuts.findIndex(statut => statut.id === id)

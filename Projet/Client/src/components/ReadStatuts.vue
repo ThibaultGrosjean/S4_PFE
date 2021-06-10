@@ -69,6 +69,7 @@
                     <v-icon
                         v-bind="attrs"
                         v-on="on"
+                        @click="copy(s)"
                     >
                       file_copy
                     </v-icon>
@@ -327,6 +328,9 @@ export default {
       this.nb_he_td_min_sup = statut.nb_he_td_min_sup
       this.nb_he_td_max_sup = statut.nb_he_td_max_sup
       this.form = true;
+    },
+    copy(statut) {
+      this.$store.commit('COPY_Statut', statut.id);
     },
     sortedByNom() {
       if (this.sortNom) {

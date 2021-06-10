@@ -233,6 +233,32 @@ export default new Vuex.Store({
       let index = state.periodes.findIndex(p => p.id === periodes.id);
       state.periodes[index] = periodes
     },
+    COPY_Enseignant(state, id_enseignant) {
+      axios.post('/enseignants/copy/' + id_enseignant)
+        .then(response => response.data)
+        .then(enseignant => {
+          let index = state.enseignants.findIndex(s => s.id === id_enseignant);
+          var copy =  Object.assign({}, state.enseignants[index])
+          copy.id = enseignant.insertId
+          copy.nom = copy.nom + " (copie)";
+          state.enseignants.push(copy)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    COPY_Statut(state, id_statut) {
+      axios.post('/statuts/copy/' + id_statut)
+        .then(response => response.data)
+        .then(statut => {
+          let index = state.statuts.findIndex(s => s.id === id_statut);
+          var copy =  Object.assign({}, state.statuts[index])
+          copy.id = statut.insertId
+          copy.nom = copy.nom + " (copie)";
+          state.statuts.push(copy)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
   },
   actions: {
     loadEnseignants({commit}) {

@@ -85,9 +85,9 @@ exports.copyStatut = (req, res) => {
         ;
 
         db.query(requete,
-          function(err, nexs) {
+          function(err, statut) {
             if (!err) {
-              res.status(200).json(nexs); 
+              res.status(200).json(statut); 
             } else  {
               res.send(err);
             }

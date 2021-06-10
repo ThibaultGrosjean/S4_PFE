@@ -109,16 +109,16 @@ exports.copyEnseignant = (req, res) => {
       if (!err) {
         var requete="INSERT INTO enseignant(nom, prenom, surnom, email, statut_id) VALUES ('" 
           + enseignant[0]['nom'] + ' (copie)' + "','"
-          + enseignant[0]['prenom'] + ' (copie)' + "','"
+          + enseignant[0]['prenom'] + "','"
           + enseignant[0]['surnom'] + "','"
-          + enseignant[0]['email'] + ' (copie)' + "','"
+          + enseignant[0]['email'] + "','"
           + enseignant[0]['statut_id'] + "');"
         ;
 
         db.query(requete,
-          function(err) {
+          function(err, enseignant) {
             if (!err) {
-              res.status(200); 
+              res.status(200).json(enseignant);
             } else  {
               res.send(err);
             }
