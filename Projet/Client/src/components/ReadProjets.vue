@@ -19,9 +19,9 @@
             color="blue--text text--accent-4"
         >
           <v-btn
-              @click="sortedByNom"
+              @click="sortedByDate"
           >
-            <span class="hidden-sm-and-down">Nom</span>
+            <span class="hidden-sm-and-down">Date</span>
             <v-icon right>sort_by_alpha</v-icon>
           </v-btn>
         </v-btn-toggle>
@@ -241,7 +241,7 @@ export default {
   },
   data: () => ({
     form: false,
-    sortNom: false,
+    sortDate: false,
     menu: false,
     methods: "POST",
     id: '',
@@ -306,13 +306,13 @@ export default {
       this.archive = projet.archive
       this.form = true;
     },
-    sortedByNom() {
-      if (this.sortNom) {
-        this.sortNom = false
-        this.projets.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase())
+    sortedByDate() {
+      if (this.sortDate) {
+        this.sortDate = false
+        this.projets.sort((a, b) => new Date(b.date) - new Date(a.date))
       } else {
-        this.sortNom = true
-        this.projets.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
+        this.sortDate = true
+        this.projets.sort((a, b) => new Date(a.date) - new Date(b.date))
       }
     },
   },
