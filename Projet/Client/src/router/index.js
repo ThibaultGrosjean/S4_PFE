@@ -8,6 +8,8 @@ import Elements from "../views/Elements";
 import Intervenant from "../views/Intervenant";
 import Formation from "../views/Formation";
 import Periodes from "../views/Periodes";
+import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
+import VolumeGlobale from "../views/VolumeGlobale";
 
 Vue.use(VueRouter)
 
@@ -60,6 +62,16 @@ const routes = [
     path: '/periodes',
     name: 'Periodes',
     component: Periodes
+  },
+  {
+    path: '/volumes-hebdomadaires',
+    name: 'Volumes Hebdomadaires',
+    component: VolumeHebdomadaire
+  },
+  {
+    path: '/volumes-globaux',
+    name: 'Volume Globale',
+    component: VolumeGlobale
   },
 ]
 

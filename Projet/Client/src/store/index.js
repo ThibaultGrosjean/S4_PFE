@@ -18,6 +18,8 @@ export default new Vuex.Store({
     intervenants: [],
     formations: [],
     periodes: [],
+    volumesHebdomadaires: [],
+    volumesGlobaux: [],
   },
   getters: {
     enseignants: state => {
@@ -47,6 +49,12 @@ export default new Vuex.Store({
     periodes: state => {
       return state.periodes;
     },
+    volumesHebdomadaires: state => {
+      return state.volumesHebdomadaires;
+    },
+    volumesGlobaux: state => {
+      return state.volumesGlobaux;
+    },
   },
   mutations: {
     SET_Enseignant(state, enseignants) {
@@ -75,6 +83,12 @@ export default new Vuex.Store({
     },
     SET_Periodes(state, periodes) {
       state.periodes = periodes
+    },
+    SET_VolumesHebdomadaires(state, volumesHebdomadaires) {
+      state.volumesHebdomadaires = volumesHebdomadaires
+    },
+    SET_VolumesGlobaux(state, volumesGlobaux) {
+      state.volumesGlobaux = volumesGlobaux
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
@@ -156,6 +170,26 @@ export default new Vuex.Store({
       });
       state.periodes.push(periodes)
     },
+    ADD_VolumesHebdomadaires(state, volumesHebdomadaires) {
+      axios.post('/volumes-hebdomadaires/create/', volumesHebdomadaires)
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.volumesHebdomadaires.push(volumesHebdomadaires)
+    },
+    ADD_VolumesGlobaux(state, volumesGlobaux) {
+      axios.post('/volumes-globaux/create/', volumesGlobaux)
+        .then(response => response.data)
+        .then(volumesGlobaux => {
+          console.log(volumesGlobaux);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.volumesGlobaux.push(volumesGlobaux)
+    },
     EDIT_Enseignant(state, enseignant) {
       axios.put('/enseignants/edit/' + enseignant.id, enseignant)
         .then(response => response.data)
@@ -233,6 +267,28 @@ export default new Vuex.Store({
       let index = state.periodes.findIndex(p => p.id === periodes.id);
       state.periodes[index] = periodes
     },
+    EDIT_VolumesHebdomadaires(state, volumesHebdomadaires) {
+      axios.put('/volumes-hebdomadaires/edit/' + volumesHebdomadaires.id, volumesHebdomadaires)
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.volumesHebdomadaires.findIndex(p => p.id === volumesHebdomadaires.id);
+      state.volumesHebdomadaires[index] = volumesHebdomadaires
+    },
+    EDIT_VolumesGlobaux(state, volumesGlobaux) {
+      axios.put('/volume-globaux/edit/' + volumesGlobaux.id, volumesGlobaux)
+        .then(response => response.data)
+        .then(volumesGlobaux => {
+          console.log(volumesGlobaux);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.volumesGlobaux.findIndex(p => p.id === volumesGlobaux.id);
+      state.volumesGlobaux[index] = volumesGlobaux
+    },
     COPY_Enseignant(state, id_enseignant) {
       axios.post('/enseignants/copy/' + id_enseignant)
         .then(response => response.data)
@@ -242,6 +298,32 @@ export default new Vuex.Store({
           copy.id = enseignant.insertId
           copy.nom = copy.nom + " (copie)";
           state.enseignants.push(copy)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    COPY_VolumeHebdomadaire(state, id_volumeHebdomadaire) {
+      axios.post('/volumes-hebdomadaires/copy/' + id_volumeHebdomadaire)
+        .then(response => response.data)
+        .then(volumeHebdomadaire => {
+          let index = state.volumesHebdomadaires.findIndex(v => v.id === id_volumeHebdomadaire);
+          var copy =  Object.assign({}, state.volumesHebdomadaires[index])
+          copy.id = volumeHebdomadaire.insertId
+          copy.num_semaine = parseInt(copy.num_semaine)+1
+          state.volumesHebdomadaires.push(copy)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    COPY_VolumesGlobaux(state, id_volumesGlobaux) {
+      axios.post('/volumes-globaux/copy/' + id_volumesGlobaux)
+        .then(response => response.data)
+        .then(volumesGlobaux => {
+          let index = state.volumesGlobaux.findIndex(v => v.id === id_volumesGlobaux);
+          var copy =  Object.assign({}, state.volumesGlobaux[index])
+          copy.id = volumesGlobaux.insertId
+          copy.num_semaine = parseInt(copy.num_semaine)+1
+          state.volumesGlobaux.push(copy)
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -356,6 +438,28 @@ export default new Vuex.Store({
         .then(periodes => {
           console.log(periodes);
           commit('SET_Periodes', periodes)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadVolumesHebdomadaires({commit}) {
+      axios
+        .get('volumes-hebdomadaires/get')
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+          commit('SET_VolumesHebdomadaires', volumesHebdomadaires)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadVolumesGlobaux({commit}) {
+      axios
+        .get('volume-globaux/get')
+        .then(response => response.data)
+        .then(volumesGlobaux => {
+          console.log(volumesGlobaux);
+          commit('SET_VolumesGlobaux', volumesGlobaux)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

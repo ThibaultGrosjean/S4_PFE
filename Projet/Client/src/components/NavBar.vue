@@ -68,7 +68,7 @@ export default {
       {text: "Périodes",icon:"access_time", path: "/periodes"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
-      {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaire"},
+      {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},
       {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},
 
     ]

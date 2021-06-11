@@ -220,10 +220,10 @@ export default {
     methods: "POST",
     id: '',
     nb_semaine: '',
-    nb_groupe_defaut_cm: '',
-    nb_groupe_defaut_td: '',
-    nb_groupe_defaut_tp: '',
-    nb_groupe_defaut_partiel: '',
+    nb_groupe_defaut_cm: 1,
+    nb_groupe_defaut_td: 1,
+    nb_groupe_defaut_tp: 1,
+    nb_groupe_defaut_partiel: 1,
     element_id: '',
   }),
   mounted() {
@@ -300,10 +300,10 @@ export default {
       this.$v.$reset()
       this.id = ''
       this.nb_semaine = ''
-      this.nb_groupe_defaut_cm = ''
-      this.nb_groupe_defaut_td = ''
-      this.nb_groupe_defaut_tp = ''
-      this.nb_groupe_defaut_partiel = null
+      this.nb_groupe_defaut_cm = 1
+      this.nb_groupe_defaut_td = 1
+      this.nb_groupe_defaut_tp = 1
+      this.nb_groupe_defaut_partiel = 1
       this.element_id = null
     },
     close() {

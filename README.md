@@ -45,3 +45,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Dupliquer un statut et un enseignant
 * Affichage des heures prévues hebdo. (tableau)
 * API de la table Volume_globale, Volume_hebomadaire et Groupe_intervenant (CRUD)
+* Formulaire de création et de modification des Volumes hebdomadaires
+* Formulaire de création et de modification des Volumes globaux

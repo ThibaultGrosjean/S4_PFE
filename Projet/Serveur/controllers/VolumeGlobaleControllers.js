@@ -73,6 +73,38 @@ exports.addVolumeGlobale = (req, res) => {
 };
 
 
+exports.copyVolumeGlobale = (req, res) => {
+  db.query('SELECT * FROM volume_globale where id = ? ;', [req.params.id],
+    function(err, volume_globale) {
+      if (!err) {
+         var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, intervenant_id, element_id) VALUES ('" 
+          + parseInt(volume_globale[0]['num_semaine']+1) + "','"
+          + volume_globale[0]['vol_hor_cm'] + "','"
+          + volume_globale[0]['vol_hor_td'] + "','"
+          + volume_globale[0]['vol_hor_tp'] + "','"
+          + volume_globale[0]['vol_hor_partiel'] + "','"
+          + volume_globale[0]['intervenant_id'] + "','"
+          + volume_globale[0]['element_id'] + "');"
+        ;
+
+        db.query(requete,
+          function(err, volume_globale) {
+            if (!err) {
+              res.status(200).json(volume_globale); 
+            } else  {
+              res.send(err);
+            }
+          }
+        );
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.editVolumeGlobale = (req, res) => {
   var donnees = {
     id : req.body.id,

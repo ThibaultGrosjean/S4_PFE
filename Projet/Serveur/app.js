@@ -142,6 +142,8 @@ app.get('/volumes-globaux/get/:id', volumeGlobaleController.getVolumeGlobale);
 
 app.post('/volumes-globaux/create/',volumeGlobaleController.validator, volumeGlobaleController.addVolumeGlobale);
 
+app.post('/volumes-globaux/copy/:id',volumeGlobaleController.validator, volumeGlobaleController.copyVolumeGlobale);
+
 app.put('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
 
 app.delete('/volumes-globaux/delete/:id', volumeGlobaleController.deleteVolumeGlobale);
