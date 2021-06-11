@@ -129,34 +129,102 @@
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
                                                                     <td class="text-right">CM</td>
-                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
-                                                                      {{ module.vol_hor_total_prevues_etu_cm }}
-                                                                    </td>
-                                                                    <td>-</td>
-                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_cm) }}</td>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <td :key="v.id" v-if="v.element_id === module.id">
+                                                                        <v-edit-dialog
+                                                                            :return-value.sync="v.vol_hor_cm"
+                                                                            large
+                                                                            persistent
+                                                                            @save="save(v)"
+                                                                        >
+                                                                          <div>{{ v.vol_hor_cm }}</div>
+                                                                          <template v-slot:input>
+                                                                            <div class="mt-4 text-h6">Volume horaire CM - semaine {{ v.num_semaine }}</div>
+                                                                            <v-text-field
+                                                                                v-model="v.vol_hor_cm"
+                                                                                clearable
+                                                                                autofocus
+                                                                            ></v-text-field>
+                                                                          </template>
+                                                                        </v-edit-dialog>
+                                                                      </td>
+                                                                    </template>
+                                                                    <td>{{ total(module).total_vol_hor_cm }}</td>
                                                                   </tr>
+
                                                                   <tr v-if="module.td_autorises">
                                                                     <td class="text-right">TD</td>
-                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
-                                                                      {{ module.vol_hor_total_prevues_etu_td }}
-                                                                    </td>
-                                                                    <td>-</td>
-                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_td) }}</td>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <td :key="v.id" v-if="v.element_id === module.id">
+                                                                        <v-edit-dialog
+                                                                            :return-value.sync="v.vol_hor_td"
+                                                                            large
+                                                                            persistent
+                                                                            @save="save(v)"
+                                                                        >
+                                                                          <div>{{ v.vol_hor_td }}</div>
+                                                                          <template v-slot:input>
+                                                                            <div class="mt-4 text-h6">Volume horaire TD - semaine {{ v.num_semaine }}</div>
+                                                                            <v-text-field
+                                                                                v-model="v.vol_hor_td"
+                                                                                clearable
+                                                                                autofocus
+                                                                            ></v-text-field>
+                                                                          </template>
+                                                                        </v-edit-dialog>
+                                                                      </td>
+                                                                    </template>
+                                                                    <td>{{ total(module).total_vol_hor_td }}</td>
                                                                   </tr>
-                                                                  <tr v-if="module.tp_autorises">
+
+                                                                  <tr v-if="module.td_autorises">
                                                                     <td class="text-right">TP</td>
-                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">
-                                                                      {{ module.vol_hor_total_prevues_etu_tp }}
-                                                                    </td>
-                                                                    <td>-</td>
-                                                                    <td>{{ calculTotalSemestreType(semestre, module.vol_hor_total_prevues_etu_tp) }}</td>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <td :key="v.id" v-if="v.element_id === module.id">
+                                                                        <v-edit-dialog
+                                                                            :return-value.sync="v.vol_hor_tp"
+                                                                            large
+                                                                            persistent
+                                                                            @save="save(v)"
+                                                                        >
+                                                                          <div>{{ v.vol_hor_tp }}</div>
+                                                                          <template v-slot:input>
+                                                                            <div class="mt-4 text-h6">Volume horaire TP - semaine {{ v.num_semaine }}</div>
+                                                                            <v-text-field
+                                                                                v-model="v.vol_hor_tp"
+                                                                                clearable
+                                                                                autofocus
+                                                                            ></v-text-field>
+                                                                          </template>
+                                                                        </v-edit-dialog>
+                                                                      </td>
+                                                                    </template>
+                                                                    <td>{{ total(module).total_vol_hor_tp }}</td>
                                                                   </tr>
+
                                                                   <tr v-if="module.partiel_autorises">
                                                                     <td class="text-right">Partiel</td>
-                                                                    <td v-for="item in findPeriodeSemestre(semestre).nb_semaine-1" :key="item">-</td>
-                                                                    <!--TODO : Affichage partiel avec la table volumen hebdomadaire (à implémenter dans le serveur)-->
-                                                                    <td>2</td>
-                                                                    <td>2</td>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <td :key="v.id" v-if="v.element_id === module.id">
+                                                                        <v-edit-dialog
+                                                                            :return-value.sync="v.vol_hor_partiel"
+                                                                            large
+                                                                            persistent
+                                                                            @save="save(v)"
+                                                                        >
+                                                                          <div>{{ v.vol_hor_partiel }}</div>
+                                                                          <template v-slot:input>
+                                                                            <div class="mt-4 text-h6">Volume horaire partiel - semaine {{ v.num_semaine }}</div>
+                                                                            <v-text-field
+                                                                                v-model="v.vol_hor_partiel"
+                                                                                clearable
+                                                                                autofocus
+                                                                            ></v-text-field>
+                                                                          </template>
+                                                                        </v-edit-dialog>
+                                                                      </td>
+                                                                    </template>
+                                                                    <td>{{ total(module).total_vol_hor_partiel }}</td>
                                                                   </tr>
                                                                   </tbody>
                                                                 </template>
@@ -725,10 +793,11 @@ export default {
   }),
   mounted() {
     this.$store.dispatch('loadPeriodes');
+    this.$store.dispatch('loadVolumesHebdomadaires');
     this.$store.dispatch('loadElements');
   },
   computed: {
-    ...mapState(['periodes','elements']),
+    ...mapState(['periodes', 'volumesHebdomadaires','elements']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -924,6 +993,9 @@ export default {
       this.parent = element.parent
       this.form = true;
     },
+    save(volume){
+      this.$store.commit('EDIT_VolumesHebdomadaires', volume);
+    },
     sortedByTitre() {
       if (this.sortTitre) {
         this.sortTitre = false
@@ -983,16 +1055,13 @@ export default {
       }
       this.form = true;
     },
-    convertBoolean(b) {
-      if (b === 0) return "Non"
-      else return "Oui"
-    },
     findPeriodeSemestre(semestre){
       let index = this.periodes.findIndex(p => p.element_id === semestre.id);
       return this.periodes[index];
     },
-    calculTotalSemestreType(semestre, typeCours){
-      return this.findPeriodeSemestre(semestre).nb_semaine * typeCours;
+    total(module) {
+      let index = this.volumesHebdomadaires.findIndex(v => v.element_id === module.id);
+      return this.volumesHebdomadaires[index]
     }
   }
 }

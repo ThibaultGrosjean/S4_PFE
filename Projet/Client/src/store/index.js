@@ -20,6 +20,7 @@ export default new Vuex.Store({
     periodes: [],
     volumesHebdomadaires: [],
     volumesGlobaux: [],
+    groupesIntervenants: [],
   },
   getters: {
     enseignants: state => {
@@ -54,6 +55,9 @@ export default new Vuex.Store({
     },
     volumesGlobaux: state => {
       return state.volumesGlobaux;
+    },
+    groupesIntervenants: state => {
+      return state.groupesIntervenants;
     },
   },
   mutations: {
@@ -90,10 +94,34 @@ export default new Vuex.Store({
     SET_VolumesGlobaux(state, volumesGlobaux) {
       state.volumesGlobaux = volumesGlobaux
     },
+    SET_GroupesIntervenants(state, groupesIntervenants) {
+      state.groupesIntervenants = groupesIntervenants
+    },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
       state.enseignants.splice(index, 1)
       axios.delete('/enseignants/delete/' + id_enseignant).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    DELETE_VolumesHebdomadaires(state, id_volumeHebdo) {
+      let index = state.volumesHebdomadaires.findIndex(volumeHebdo => volumeHebdo.id === id_volumeHebdo);
+      state.volumesHebdomadaires.splice(index, 1)
+      axios.delete('/volumes-hebdomadaires/delete/' + id_volumeHebdo).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    DELETE_VolumeGlobaux(state, id_volumeGlobale) {
+      let index = state.volumesGlobaux.findIndex(volumeGlobale => volumeGlobale.id === id_volumeGlobale);
+      state.volumesGlobaux.splice(index, 1)
+      axios.delete('/volumes-globaux/delete/' + id_volumeGlobale).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    DELETE_GroupesIntervenants(state, id_groupeIntervenant) {
+      let index = state.groupesIntervenants.findIndex(groupeIntervenant => groupeIntervenant.id === id_groupeIntervenant);
+      state.groupesIntervenants.splice(index, 1)
+      axios.delete('/groupes-intervenants/delete/' + id_groupeIntervenant).catch(error => {
         console.log('Erreur : ', error)
       })
     },
@@ -190,6 +218,16 @@ export default new Vuex.Store({
       });
       state.volumesGlobaux.push(volumesGlobaux)
     },
+    ADD_GroupesIntervenants(state, groupesIntervenants) {
+      axios.post('/groupes-intervenants/create/', groupesIntervenants)
+        .then(response => response.data)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      state.groupesIntervenants.push(groupesIntervenants)
+    },
     EDIT_Enseignant(state, enseignant) {
       axios.put('/enseignants/edit/' + enseignant.id, enseignant)
         .then(response => response.data)
@@ -279,7 +317,7 @@ export default new Vuex.Store({
       state.volumesHebdomadaires[index] = volumesHebdomadaires
     },
     EDIT_VolumesGlobaux(state, volumesGlobaux) {
-      axios.put('/volume-globaux/edit/' + volumesGlobaux.id, volumesGlobaux)
+      axios.put('/volumes-globaux/edit/' + volumesGlobaux.id, volumesGlobaux)
         .then(response => response.data)
         .then(volumesGlobaux => {
           console.log(volumesGlobaux);
@@ -288,6 +326,17 @@ export default new Vuex.Store({
       });
       let index = state.volumesGlobaux.findIndex(p => p.id === volumesGlobaux.id);
       state.volumesGlobaux[index] = volumesGlobaux
+    },
+    EDIT_GroupesIntervenants(state, groupesIntervenants) {
+      axios.put('/groupes-intervenants/edit/' + groupesIntervenants.id, groupesIntervenants)
+        .then(response => response.data)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = state.groupesIntervenants.findIndex(g => g.id === groupesIntervenants.id);
+      state.groupesIntervenants[index] = groupesIntervenants
     },
     COPY_Enseignant(state, id_enseignant) {
       axios.post('/enseignants/copy/' + id_enseignant)
@@ -460,6 +509,17 @@ export default new Vuex.Store({
         .then(volumesGlobaux => {
           console.log(volumesGlobaux);
           commit('SET_VolumesGlobaux', volumesGlobaux)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadGroupesIntervenants({commit}) {
+      axios
+        .get('groupes-intervenants/get')
+        .then(response => response.data)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+          commit('SET_GroupesIntervenants', groupesIntervenants)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

@@ -3,11 +3,11 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des volumes globaux</h1>
+          <h1 class="text-center">Liste des groupes d'intervenants</h1>
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-if="!volumesGlobaux.length">
+        <v-col v-if="!groupesIntervenants.length">
           <p class="text-center">Aucune donnée trouvée</p>
         </v-col>
       </v-row>
@@ -20,41 +20,38 @@
                 <th>Nom de l'UE</th>
                 <th>Nom de l'intervanant</th>
                 <th>Numéro de semaine</th>
-                <th>Volume horaire pour les CM</th>
-                <th>Volume horaire pour les TD</th>
-                <th>Volume horaire pour les TP</th>
-                <th>Volume horaire pour les Partiels</th>
+                <th>Nombre de groupe pour les CM</th>
+                <th>Nombre de groupe pour les TD</th>
+                <th>Nombre de groupe pour les TP</th>
+                <th>Nombre de groupe pour les Partiels</th>
                 <th>Opération</th>
               </tr>
               </thead>
               <tbody>
               <tr
-                  v-for="v in volumesGlobaux"
-                  :key="v.name"
+                  v-for="g in groupesIntervenants"
+                  :key="g.name"
               >
-                <td>{{ returnElement(v.element_id).titre  }}</td>
-                <td>{{ returnIntervenant(v.intervenant_id).prenom  }}{{ returnIntervenant(v.intervenant_id).nom  }}</td>
-                <td>{{ v.num_semaine }}</td>
-                <td>{{ v.vol_hor_cm }}</td>
-                <td>{{ v.vol_hor_td }}</td>
-                <td>{{ v.vol_hor_tp }}</td>
-                <td>{{ v.vol_hor_partiel }}</td>
+                <td>{{ returnElement(g.element_id).titre  }}</td>
+                <td>{{ returnIntervenant(g.intervenant_id).prenom  }}{{ returnIntervenant(g.intervenant_id).nom  }}</td>
+                <td>{{ g.num_semaine }}</td>
+                <td>{{ g.nb_groupe_cm }}</td>
+                <td>{{ g.nb_groupe_td }}</td>
+                <td>{{ g.nb_groupe_tp }}</td>
+                <td>{{ g.nb_groupe_partiel }}</td>
                 <td>
                   <v-btn
                       icon
-                      @click="edit(v)"
+                      @click="edit(g)"
                   >
                     <v-icon small>edit</v-icon>
                   </v-btn>
-                  <v-btn
-                      icon
-                      @click="copy(v)"
-                  >
+                  <v-btn icon>
                     <v-icon small>file_copy</v-icon>
                   </v-btn>
                   <v-btn
                       icon
-                      @click="deleteItem(v)"
+                      @click="deleteItem(g)"
                   >
                     <v-icon small color="red darken-1">delete</v-icon>
                   </v-btn>
@@ -74,8 +71,8 @@
           <v-card>
             <v-form lazy-validation>
               <v-card-title>
-                <span class="headline" v-if="methods === 'POST'">Ajouter un volume hebdomadaire</span>
-                <span class="headline" v-else>Modifier un volume hebdomadaire</span>
+                <span class="headline" v-if="methods === 'POST'">Ajouter un groupe d'intervenant</span>
+                <span class="headline" v-else>Modifier un groupe d'intervenant</span>
                 <v-spacer></v-spacer>
                 <v-btn
                     icon
@@ -93,7 +90,7 @@
                     :items="elementsLevel"
                     :item-text="item => returnElement(item.id).titre + ' (' + returnElement(item.id).sousTitre + ')'"
                     item-value="id"
-                    label="Période"
+                    label="Élément"
                     clearable
                     :error-messages="elementErrors"
                     @input="$v.element_id.$touch()"
@@ -122,40 +119,40 @@
                     @blur="$v.num_semaine.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="vol_hor_cm"
-                    :error-messages="vol_hor_cmErrors"
-                    label="Volume horaire par défaut pour les CM"
+                    v-model="nb_groupe_cm"
+                    :error-messages="nb_groupe_cmErrors"
+                    label="Nombre de groupe par défaut pour les CM"
                     required
                     clearable
-                    @input="$v.vol_hor_cm.$touch()"
-                    @blur="$v.vol_hor_cm.$touch()"
+                    @input="$v.nb_groupe_cm.$touch()"
+                    @blur="$v.nb_groupe_cm.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="vol_hor_td"
-                    :error-messages="vol_hor_tdErrors"
-                    label="Volume horaire par défaut pour les TD"
+                    v-model="nb_groupe_td"
+                    :error-messages="nb_groupe_tdErrors"
+                    label="Nombre de groupe par défaut pour les TD"
                     required
                     clearable
-                    @input="$v.vol_hor_td.$touch()"
-                    @blur="$v.vol_hor_td.$touch()"
+                    @input="$v.nb_groupe_td.$touch()"
+                    @blur="$v.nb_groupe_td.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="vol_hor_tp"
-                    :error-messages="vol_hor_tpErrors"
-                    label="Volume horaire par défaut pour les TP"
+                    v-model="nb_groupe_tp"
+                    :error-messages="nb_groupe_tpErrors"
+                    label="Nombre de groupe par défaut pour les TP"
                     required
                     clearable
-                    @input="$v.vol_hor_tp.$touch()"
-                    @blur="$v.vol_hor_tp.$touch()"
+                    @input="$v.nb_groupe_tp.$touch()"
+                    @blur="$v.nb_groupe_tp.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="vol_hor_partiel"
-                    :error-messages="vol_hor_partielErrors"
-                    label="Volume horaire par défaut pour les partiels"
+                    v-model="nb_groupe_partiel"
+                    :error-messages="nb_groupe_partielErrors"
+                    label="Nombre de groupe par défaut pour les partiels"
                     required
                     clearable
-                    @input="$v.vol_hor_partiel.$touch()"
-                    @blur="$v.vol_hor_partiel.$touch()"
+                    @input="$v.nb_groupe_partiel.$touch()"
+                    @blur="$v.nb_groupe_partiel.$touch()"
                 ></v-text-field>
 
                 <v-card-actions>
@@ -202,18 +199,18 @@
 <script>
 import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
-import {between, decimal, required} from "vuelidate/lib/validators";
+import {numeric, required} from "vuelidate/lib/validators";
 
 export default {
-  name: "ReadVolumeGlobale",
+  name: "ReadGroupeIntervenant",
   mixins: [validationMixin],
 
   validations: {
-    num_semaine: {required, decimal},
-    vol_hor_cm: {required, decimal, between: between(0, 50.0)},
-    vol_hor_td: {required, decimal, between: between(0, 50.0)},
-    vol_hor_tp: {required, decimal, between: between(0, 50.0)},
-    vol_hor_partiel: {required, decimal, between: between(0, 50.0)},
+    num_semaine: {required, numeric},
+    nb_groupe_cm: {required, numeric},
+    nb_groupe_td: {required, numeric},
+    nb_groupe_tp: {required, numeric},
+    nb_groupe_partiel: {required, numeric},
     element_id: {required},
     intervenant_id : {required},
   },
@@ -222,22 +219,22 @@ export default {
     methods: "POST",
     id: '',
     num_semaine: '',
-    vol_hor_cm: '',
-    vol_hor_td: '',
-    vol_hor_tp: '',
-    vol_hor_partiel: '',
+    nb_groupe_cm: '',
+    nb_groupe_td: '',
+    nb_groupe_tp: '',
+    nb_groupe_partiel: '',
     element_id: '',
     intervenant_id : '',
   }),
   mounted() {
     this.$store.dispatch('loadElementsLevel', 3)
     this.$store.dispatch('loadElements')
-    this.$store.dispatch('loadIntervenants')
     this.$store.dispatch('loadEnseignants')
-    this.$store.dispatch('loadVolumesGlobaux')
+    this.$store.dispatch('loadIntervenants')
+    this.$store.dispatch('loadGroupesIntervenants')
   },
   computed: {
-    ...mapState(['elementsLevel', 'elements', 'intervenants', 'enseignants', 'volumesGlobaux']),
+    ...mapState(['elementsLevel', 'elements', 'intervenants', 'enseignants', 'groupesIntervenants']),
     elementErrors() {
       const errors = []
       if (!this.$v.element_id.$dirty) return errors
@@ -253,40 +250,36 @@ export default {
     num_semaineErrors() {
       const errors = []
       if (!this.$v.num_semaine.$dirty) return errors
-      !this.$v.num_semaine.decimal && errors.push('Le Numéro de semaines doit être un numérique')
+      !this.$v.num_semaine.numeric && errors.push('Le Numéro de semaines doit être un numérique')
       !this.$v.num_semaine.required && errors.push('Le Numéro de semaines est obligatoire')
       return errors
     },
-    vol_hor_cmErrors() {
+    nb_groupe_cmErrors() {
       const errors = []
-      if (!this.$v.vol_hor_cm.$dirty) return errors
-      !this.$v.vol_hor_cm.decimal && errors.push('Le Volume horaire pour les CM doit être un numérique')
-      !this.$v.vol_hor_cm.between && errors.push('Le Volume horaire pour les CM doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_cm.required && errors.push('Le Volume horaire pour les CM est obligatoire')
+      if (!this.$v.nb_groupe_cm.$dirty) return errors
+      !this.$v.nb_groupe_cm.numeric && errors.push('Le Nombre de groupe pour les CM doit être un numérique')
+      !this.$v.nb_groupe_cm.required && errors.push('Le Nombre de groupe pour les CM est obligatoire')
       return errors
     },
-    vol_hor_tdErrors() {
+    nb_groupe_tdErrors() {
       const errors = []
-      if (!this.$v.vol_hor_td.$dirty) return errors
-      !this.$v.vol_hor_td.decimal && errors.push('Le Volume horaire pour les TD doit être un numérique')
-      !this.$v.vol_hor_td.between && errors.push('Le Volume horaire pour les CM doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_td.required && errors.push('Le Volume horaire pour les TD est obligatoire')
+      if (!this.$v.nb_groupe_td.$dirty) return errors
+      !this.$v.nb_groupe_td.numeric && errors.push('Le Nombre de groupe pour les TD doit être un numérique')
+      !this.$v.nb_groupe_td.required && errors.push('Le Nombre de groupe pour les TD est obligatoire')
       return errors
     },
-    vol_hor_tpErrors() {
+    nb_groupe_tpErrors() {
       const errors = []
-      if (!this.$v.vol_hor_tp.$dirty) return errors
-      !this.$v.vol_hor_tp.decimal && errors.push('Le Volume horaire pour les TP doit être un numérique')
-      !this.$v.vol_hor_tp.between && errors.push('Le Volume horaire pour les CM doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_tp.required && errors.push('Le Volume horaire pour les TP est obligatoire')
+      if (!this.$v.nb_groupe_tp.$dirty) return errors
+      !this.$v.nb_groupe_tp.numeric && errors.push('Le Nombre de groupe pour les TP doit être un numérique')
+      !this.$v.nb_groupe_tp.required && errors.push('Le Nombre de groupe pour les TP est obligatoire')
       return errors
     },
-    vol_hor_partielErrors() {
+    nb_groupe_partielErrors() {
       const errors = []
-      if (!this.$v.vol_hor_partiel.$dirty) return errors
-      !this.$v.vol_hor_partiel.decimal && errors.push('Le Volume horaire pour les partiels doit être un numérique')
-      !this.$v.vol_hor_partiel.between && errors.push('Le Volume horaire pour les CM doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_partiel.required && errors.push('Le Volume horaire pour les partiels est obligatoire')
+      if (!this.$v.nb_groupe_partiel.$dirty) return errors
+      !this.$v.nb_groupe_partiel.numeric && errors.push('Le Nombre de groupe pour les partiels doit être un numérique')
+      !this.$v.nb_groupe_partiel.required && errors.push('Le Nombre de groupe pour les partiels est obligatoire')
       return errors
     },
   },
@@ -295,20 +288,20 @@ export default {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       this.form = false;
-      const volumeGlobale = {
+      const groupeIntervenant = {
         id: this.id,
         num_semaine: this.num_semaine,
-        vol_hor_cm: this.vol_hor_cm,
-        vol_hor_td: this.vol_hor_td,
-        vol_hor_tp: this.vol_hor_tp,
-        vol_hor_partiel: this.vol_hor_partiel,
+        nb_groupe_cm: this.nb_groupe_cm,
+        nb_groupe_td: this.nb_groupe_td,
+        nb_groupe_tp: this.nb_groupe_tp,
+        nb_groupe_partiel: this.nb_groupe_partiel,
         element_id: this.element_id,
         intervenant_id : this.intervenant_id ,
       }
       if (this.methods === 'POST'){
-        this.$store.commit('ADD_VolumesGlobaux', volumeGlobale);
+        this.$store.commit('ADD_GroupesIntervenants', groupeIntervenant);
       } else {
-        this.$store.commit('EDIT_VolumesGlobaux', volumeGlobale);
+        this.$store.commit('EDIT_GroupesIntervenants', groupeIntervenant);
       }
       this.clear()
     },
@@ -316,10 +309,10 @@ export default {
       this.$v.$reset()
       this.id = ''
       this.num_semaine = ''
-      this.vol_hor_cm = ''
-      this.vol_hor_td = ''
-      this.vol_hor_tp = ''
-      this.vol_hor_partiel = ''
+      this.nb_groupe_cm = ''
+      this.nb_groupe_td = ''
+      this.nb_groupe_tp = ''
+      this.nb_groupe_partiel = ''
       this.element_id = null
       this.intervenant_id = null
     },
@@ -328,24 +321,21 @@ export default {
       this.methods = 'POST'
       this.clear()
     },
-    edit(volumeGlobale) {
+    edit(groupeIntervenant) {
       this.methods = 'PUT'
 
-      this.id = volumeGlobale.id
-      this.num_semaine = volumeGlobale.num_semaine
-      this.vol_hor_cm = volumeGlobale.vol_hor_cm
-      this.vol_hor_td = volumeGlobale.vol_hor_td
-      this.vol_hor_tp = volumeGlobale.vol_hor_tp
-      this.vol_hor_partiel = volumeGlobale.vol_hor_partiel
-      this.element_id = volumeGlobale.element_id
-      this.intervenant_id = volumeGlobale.intervenant_id
+      this.id = groupeIntervenant.id
+      this.num_semaine = groupeIntervenant.num_semaine
+      this.nb_groupe_cm = groupeIntervenant.nb_groupe_cm
+      this.nb_groupe_td = groupeIntervenant.nb_groupe_td
+      this.nb_groupe_tp = groupeIntervenant.nb_groupe_tp
+      this.nb_groupe_partiel = groupeIntervenant.nb_groupe_partiel
+      this.element_id = groupeIntervenant.element_id
+      this.intervenant_id = groupeIntervenant.intervenant_id
       this.form = true;
     },
-    deleteItem(volumeGlobale){
-      this.$store.commit('DELETE_VolumeGlobaux', volumeGlobale.id);
-    },
-    copy(volumeGlobale) {
-      this.$store.commit('COPY_VolumesGlobaux', volumeGlobale.id);
+    deleteItem(groupeIntervenant){
+      this.$store.commit('DELETE_GroupesIntervenants', groupeIntervenant.id);
     },
     returnElement(id){
       let index = this.elementsLevel.findIndex(elementLevel => elementLevel.id === id);

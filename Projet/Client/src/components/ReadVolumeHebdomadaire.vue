@@ -50,7 +50,10 @@
                   >
                     <v-icon small>file_copy</v-icon>
                   </v-btn>
-                  <v-btn icon>
+                  <v-btn
+                      icon
+                      @click="deleteItem(v)"
+                  >
                     <v-icon small color="red darken-1">delete</v-icon>
                   </v-btn>
                 </td>
@@ -220,7 +223,7 @@ export default {
     elementErrors() {
       const errors = []
       if (!this.$v.element_id.$dirty) return errors
-      !this.$v.element_id.required && errors.push('Veuillez sélectionner un element')
+      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément')
       return errors
     },
     num_semaineErrors() {
@@ -310,6 +313,9 @@ export default {
       this.vol_hor_partiel = volumeHebdomadaire.vol_hor_partiel
       this.element_id = volumeHebdomadaire.element_id
       this.form = true;
+    },
+    deleteItem(volumeHebdo){
+      this.$store.commit('DELETE_VolumesHebdomadaires', volumeHebdo.id);
     },
     copy(volumeHebdomadaire) {
       this.$store.commit('COPY_VolumeHebdomadaire', volumeHebdomadaire.id);

@@ -10,6 +10,7 @@ import Formation from "../views/Formation";
 import Periodes from "../views/Periodes";
 import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 import VolumeGlobale from "../views/VolumeGlobale";
+import GroupeIntervenant from "../views/GroupeIntervenant";
 
 Vue.use(VueRouter)
 
@@ -72,6 +73,11 @@ const routes = [
     path: '/volumes-globaux',
     name: 'Volume Globale',
     component: VolumeGlobale
+  },
+  {
+    path: '/groupes-intervenants',
+    name: 'Groupes Intervenants',
+    component: GroupeIntervenant
   },
 ]
 

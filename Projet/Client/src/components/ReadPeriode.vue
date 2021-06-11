@@ -236,7 +236,7 @@ export default {
     elementErrors() {
       const errors = []
       if (!this.$v.element_id.$dirty) return errors
-      !this.$v.element_id.required && errors.push('Veuillez sélectionner un element')
+      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément')
       return errors
     },
     nb_semaineErrors() {
