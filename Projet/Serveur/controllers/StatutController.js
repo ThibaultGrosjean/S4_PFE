@@ -99,8 +99,6 @@ exports.copyStatut = (req, res) => {
       }
     }
   );
-
-  
 };
 
 

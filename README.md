@@ -10,7 +10,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Découverte du sujet
 * Construction d'un modèle relationnel (ERD, MCD)
 * Création du Serveur
-* API des tables Enseignant et Statut
+* API des tables Enseignant et Statut (CRUD)
 * Création du Client
 * Début d'une interface
 * Test API avec Axios
@@ -23,7 +23,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Formulaire de création et de modification d'un Enseignant
 * Filtrer les Statuts
 * Formulaire de création et de modification d'un Statut
-* API des tables Projet et Élément
+* API des tables Projet et Élément (CRUD)
 
 ## Semaine 3 : 2-8 juin
 
@@ -31,12 +31,12 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Formulaire de création et de modification d'un Projet
 * Filtrer les Éléments
 * Formulaire de création et de modification d'un Éléments
-* API de la table Intervenant
+* API de la table Intervenant (CRUD)
 * Formulaire de création et de modification d'un Intervenant
-* API de la table Formation
+* API de la table Formation (CRUD)
 * Formulaire de création et de modification d'une Formation
 * Affichage hiérarchique des éléments
-* API de la table Période
+* API de la table Période (CRUD)
 * Formulaire de création et de modification d'une Période
 
 ## Semaine 4 : 9-15 juin
@@ -44,3 +44,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Initialisation auto. des nombres de groupes (CM, TD...) grâce à la période du semestre
 * Dupliquer un statut et un enseignant
 * Affichage des heures prévues hebdo. (tableau)
+* API de la table Volume_globale, Volume_hebomadaire et Groupe_intervenant (CRUD)

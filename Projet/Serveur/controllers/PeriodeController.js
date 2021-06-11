@@ -3,10 +3,10 @@ const { check, validator } = require('express-validator');
 
 exports.validator = [
   check('nb_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_defaut_cm',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('nb_groupe_defaut_td',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('nb_groupe_defaut_tp',"Veuillez saisir un un numérique non nul").isDecimal(),
-  check('nb_groupe_defaut_partiel',"Veuillez saisir un un numérique non nul").isDecimal(),
+  check('nb_groupe_defaut_cm',"Veuillez saisir un numérique non nul").isNumeric(),
+  check('nb_groupe_defaut_td',"Veuillez saisir un numérique non nul").isNumeric(),
+  check('nb_groupe_defaut_tp',"Veuillez saisir un un numérique non nul").isNumeric(),
+  check('nb_groupe_defaut_partiel',"Veuillez saisir un un numérique non nul").isNumeric(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
 ];
 

@@ -22,7 +22,9 @@ const elementController = require('./controllers/ElementController');
 const intervenantController = require('./controllers/IntervenantController');
 const formationController = require('./controllers/FormationController');
 const periodeController = require('./controllers/PeriodeController');
-
+const volumeHebdomadaireController = require('./controllers/VolumeHebdomadaireControllers');
+const volumeGlobaleController = require('./controllers/VolumeGlobaleControllers');
+const groupeIntervenantController = require('./controllers/GroupeIntervenantControllers');
 
 const port = 8888;
 
@@ -119,6 +121,41 @@ app.post('/periodes/create/',periodeController.validator, periodeController.addP
 app.put('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
 
 app.delete('/periodes/delete/:id', periodeController.deletePeriode);
+
+
+app.get('/volumes-hebdomadaires/get', volumeHebdomadaireController.getAllVolumeHebdomadaires);
+
+app.get('/volumes-hebdomadaires/get/:id', volumeHebdomadaireController.getVolumeHebdomadaire);
+
+app.post('/volumes-hebdomadaires/create/',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumeHebdomadaire);
+
+app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.copyVolumeHebdomadaire);
+
+app.put('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
+
+app.delete('/volumes-hebdomadaires/delete/:id', volumeHebdomadaireController.deleteVolumeHebdomadaire);
+
+
+app.get('/volume-globaux/get', volumeGlobaleController.getAllVolumeGlobales);
+
+app.get('/volumes-globaux/get/:id', volumeGlobaleController.getVolumeGlobale);
+
+app.post('/volumes-globaux/create/',volumeGlobaleController.validator, volumeGlobaleController.addVolumeGlobale);
+
+app.put('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
+
+app.delete('/volumes-globaux/delete/:id', volumeGlobaleController.deleteVolumeGlobale);
+
+
+app.get('/groupes-intervenants/get', groupeIntervenantController.getAllGroupeIntervenants);
+
+app.get('/groupes-intervenants/get/:id', groupeIntervenantController.getGroupeIntervenant);
+
+app.post('/groupes-intervenants/create/',groupeIntervenantController.validator, groupeIntervenantController.addGroupeIntervenant);
+
+app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
+
+app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
 
 
 app.listen(port, () => {

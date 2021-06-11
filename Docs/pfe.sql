@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mer. 09 juin 2021 à 10:45
+-- Généré le : jeu. 10 juin 2021 à 16:24
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -115,10 +115,10 @@ INSERT INTO `formation` (`id`, `projet_id`, `element_id`, `verrou`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table ` groupe_intervenant`
+-- Structure de la table `groupe_intervenant`
 --
 
-CREATE TABLE ` groupe_intervenant` (
+CREATE TABLE `groupe_intervenant` (
   `id` int NOT NULL,
   `element_id` int DEFAULT NULL,
   `intervenant_id` int DEFAULT NULL,
@@ -310,9 +310,9 @@ ALTER TABLE `formation`
   ADD KEY `IDX_404021BF1F1F2A24` (`element_id`);
 
 --
--- Index pour la table ` groupe_intervenant`
+-- Index pour la table `groupe_intervenant`
 --
-ALTER TABLE ` groupe_intervenant`
+ALTER TABLE `groupe_intervenant`
   ADD PRIMARY KEY (`id`),
   ADD KEY `IDX_394A1E7D1F1F2A24` (`element_id`),
   ADD KEY `IDX_394A1E7DAB9A1716` (`intervenant_id`);
@@ -396,9 +396,9 @@ ALTER TABLE `formation`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table ` groupe_intervenant`
+-- AUTO_INCREMENT pour la table `groupe_intervenant`
 --
-ALTER TABLE ` groupe_intervenant`
+ALTER TABLE `groupe_intervenant`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -461,9 +461,9 @@ ALTER TABLE `formation`
   ADD CONSTRAINT `FK_404021BFC18272` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`);
 
 --
--- Contraintes pour la table ` groupe_intervenant`
+-- Contraintes pour la table `groupe_intervenant`
 --
-ALTER TABLE ` groupe_intervenant`
+ALTER TABLE `groupe_intervenant`
   ADD CONSTRAINT `FK_394A1E7D1F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`),
   ADD CONSTRAINT `FK_394A1E7DAB9A1716` FOREIGN KEY (`intervenant_id`) REFERENCES `intervenant` (`id`);
 
