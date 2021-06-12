@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des statuts</h1>
+          <h1 class="text-center text-h4">Liste des statuts</h1>
         </v-col>
       </v-row>
       <v-row
@@ -37,8 +37,8 @@
                sm="4"
         >
           <v-card>
-            <v-card-title>{{ s.nom }}</v-card-title>
-            <v-card-subtitle><b class="text-uppercase">{{ s.surnom }}</b></v-card-subtitle>
+            <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
+            <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p>HeTD* minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b></p>

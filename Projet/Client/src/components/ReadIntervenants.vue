@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des intervenants</h1>
+          <h1 class="text-center text-h4">Liste des intervenants</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -17,8 +17,8 @@
                sm="4"
         >
           <v-card>
-            <v-card-title>{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
-            <v-card-subtitle><b>{{ returnProjet(i.projet_id).nom }}</b></v-card-subtitle>
+            <v-card-title class="text-h5">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
+            <v-card-subtitle class="text-subtitle-1">{{ returnProjet(i.projet_id).nom }} {{ toTime(returnProjet(i.projet_id).date, 4) }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>

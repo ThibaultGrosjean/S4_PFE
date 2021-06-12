@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des projets</h1>
+          <h1 class="text-center text-h4">Liste des projets</h1>
         </v-col>
       </v-row>
       <v-row
@@ -38,7 +38,7 @@
             sm="4"
         >
           <v-card>
-            <v-card-title>{{ p.nom }}</v-card-title>
+            <v-card-title class="text-h5">{{ p.nom }}</v-card-title>
             <v-card-text>
               <p class="mb-0">Date : <b>{{ toTime(p.date) }}</b></p>
               <p class="mb-0">Verrou :

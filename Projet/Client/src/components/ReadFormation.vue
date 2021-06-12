@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des formations</h1>
+          <h1 class="text-center text-h4">Liste des formations</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -17,8 +17,8 @@
                sm="6"
         >
           <v-card>
-            <v-card-title>{{ returnElement(f.element_id).titre }}</v-card-title>
-            <v-card-subtitle><b>{{ returnProjet(f.projet_id).nom }}</b> {{ toTime(returnProjet(f.projet_id).date, 10) }}</v-card-subtitle>
+            <v-card-title class="text-h5">{{ returnElement(f.element_id).titre }}</v-card-title>
+            <v-card-subtitle class="text-subtitle-1">{{ returnProjet(f.projet_id).nom }} {{ toTime(returnProjet(f.projet_id).date, 4) }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p class="mb-0">Verrou :

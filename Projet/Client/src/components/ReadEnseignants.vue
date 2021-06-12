@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des enseignants</h1>
+          <h1 class="text-center text-h4">Liste des enseignants</h1>
         </v-col>
       </v-row>
       <v-row
@@ -49,8 +49,8 @@
                sm="4"
         >
           <v-card>
-            <v-card-title>{{ e.prenom }} {{ e.nom }}</v-card-title>
-            <v-card-subtitle><b class="text-uppercase">{{ e.surnom }}</b></v-card-subtitle>
+            <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
+            <v-card-subtitle class="text-subtitle-1">{{ e.surnom }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p>Adresse mail : <b>{{ e.email }}</b></p>

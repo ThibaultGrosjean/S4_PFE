@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des volumes hebdomadaires</h1>
+          <h1 class="text-center text-h4">Liste des volumes hebdomadaires</h1>
         </v-col>
       </v-row>
       <v-row>

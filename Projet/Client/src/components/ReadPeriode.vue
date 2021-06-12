@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <h1 class="text-center">Liste des périodes</h1>
+          <h1 class="text-center text-h4">Liste des périodes</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -17,8 +17,8 @@
                sm="4"
         >
           <v-card>
-            <v-card-title>{{ returnElement(p.element_id).titre }}</v-card-title>
-            <v-card-subtitle>{{ returnElement(p.element_id).sousTitre }}</v-card-subtitle>
+            <v-card-title class="text-h5">{{ returnElement(p.element_id).titre }}</v-card-title>
+            <v-card-subtitle class="text-subtitle-1">{{ returnElement(p.element_id).sousTitre }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p>Nombre de semaines :<b>{{ p.nb_semaine }}</b></p>
