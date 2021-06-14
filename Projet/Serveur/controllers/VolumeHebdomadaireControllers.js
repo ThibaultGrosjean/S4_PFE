@@ -140,6 +140,39 @@ exports.editVolumeHebdomadaire = (req, res) => {
 };
 
 
+exports.editTypeValueElementVolumeHebdomadaire = (req, res) => {
+  var typeUpdate = ''
+  switch(req.params.type) {
+    case 'cm':
+      typeUpdate = "vol_hor_cm =" + req.params.value
+      break;
+    case 'td':
+      typeUpdate = "vol_hor_td =" + req.params.value
+      break;
+    case 'tp':
+      typeUpdate = "vol_hor_tp =" + req.params.value
+      break;
+    case 'partiel':
+      typeUpdate = "vol_hor_partiel =" + req.params.value
+      break;
+    default:
+  } 
+
+  var requete="UPDATE volume_hebdomadaire SET " + typeUpdate
+  +" WHERE element_id = " + req.params.id +";";
+
+  db.query(requete,
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      } else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.deleteVolumeHebdomadaire = (req, res) => {
   db.query('DELETE FROM volume_hebdomadaire WHERE id = ? ;',[req.params.id],
     function(err) {

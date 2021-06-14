@@ -381,14 +381,15 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <td class="text-right">CM</td>
+                                                                    <TDContexteMenu :type="'cm'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_cm"
                                                                             large
-                                                                            persistent
                                                                             @save="save(v)"
+                                                                            cancel-text="Annuler"
+                                                                            save-text="Valider"
                                                                         >
                                                                           <div>{{ v.vol_hor_cm }}</div>
                                                                           <template v-slot:input>
@@ -400,21 +401,25 @@
                                                                                 autofocus
                                                                             ></v-text-field>
                                                                           </template>
+                                                                          <template v-slot:actions>
+                                                                            <v-btn>t</v-btn>
+                                                                          </template>
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module).total_vol_hor_cm }}</td>
+                                                                    <td>{{ total(module, 'vol_hor_cm') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <td class="text-right">TD</td>
+                                                                    <TDContexteMenu :type="'td'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_td"
                                                                             large
-                                                                            persistent
                                                                             @save="save(v)"
+                                                                            cancel-text="Annuler"
+                                                                            save-text="Valider"
                                                                         >
                                                                           <div>{{ v.vol_hor_td }}</div>
                                                                           <template v-slot:input>
@@ -429,18 +434,19 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module).total_vol_hor_td }}</td>
+                                                                    <td>{{ total(module, 'vol_hor_td') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <td class="text-right">TP</td>
+                                                                    <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_tp"
                                                                             large
-                                                                            persistent
                                                                             @save="save(v)"
+                                                                            cancel-text="Annuler"
+                                                                            save-text="Valider"
                                                                         >
                                                                           <div>{{ v.vol_hor_tp }}</div>
                                                                           <template v-slot:input>
@@ -455,18 +461,19 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module).total_vol_hor_tp }}</td>
+                                                                    <td>{{ total(module, 'vol_hor_tp') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <td class="text-right">Partiel</td>
+                                                                    <TDContexteMenu :type="'partiel'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_partiel"
                                                                             large
-                                                                            persistent
                                                                             @save="save(v)"
+                                                                            cancel-text="Annuler"
+                                                                            save-text="Valider"
                                                                         >
                                                                           <div>{{ v.vol_hor_partiel }}</div>
                                                                           <template v-slot:input>
@@ -481,7 +488,7 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module).total_vol_hor_partiel }}</td>
+                                                                    <td>{{ total(module, 'vol_hor_partiel') }}</td>
                                                                   </tr>
                                                                   </tbody>
                                                                 </template>
@@ -788,10 +795,12 @@
 <script>
 import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
-import {decimal, numeric, maxLength, required} from "vuelidate/lib/validators";
+import {decimal, maxLength, numeric, required} from "vuelidate/lib/validators";
+import TDContexteMenu from "./TDContexteMenu";
 
 export default {
   name: "ReadElements",
+  components: {TDContexteMenu},
   mixins: [validationMixin],
 
   validations: {
@@ -1121,10 +1130,18 @@ export default {
       let index = this.periodes.findIndex(p => p.element_id === semestre.id);
       return this.periodes[index];
     },
-    total(module) {
-      let index = this.volumesHebdomadaires.findIndex(v => v.element_id === module.id);
-      return this.volumesHebdomadaires[index]
-    }
+    total(module, type) {
+      var volumeByModule = []
+      for (let i = 0; i < this.volumesHebdomadaires.length; i++) {
+       if(this.volumesHebdomadaires[i].element_id === module.id){
+         volumeByModule.push(this.volumesHebdomadaires[i])
+       }
+      }
+      let total = 0
+      return volumeByModule.reduce((accumulator, currentValue) => {
+        return (total += +currentValue[type])
+      }, 0)
+    },
   }
 }
 </script>

@@ -97,6 +97,34 @@ export default new Vuex.Store({
     SET_GroupesIntervenants(state, groupesIntervenants) {
       state.groupesIntervenants = groupesIntervenants
     },
+    SET_ValeurTtesSem(state, objs){
+      axios.put('/volumes-hebdomadaires/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.type)
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      for (let i = 0; i < state.volumesHebdomadaires.length; i++) {
+        if(state.volumesHebdomadaires[i].element_id === objs.element){
+          switch(objs.type) {
+            case 'cm':
+              state.volumesHebdomadaires[i].vol_hor_cm = objs.value
+              break;
+            case 'td':
+              state.volumesHebdomadaires[i].vol_hor_td = objs.value
+              break;
+            case 'tp':
+              state.volumesHebdomadaires[i].vol_hor_tp = objs.value
+              break;
+            case 'partiel':
+              state.volumesHebdomadaires[i].vol_hor_partiel = objs.value
+              break;
+            default:
+          }
+        }
+      }
+    },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
       state.enseignants.splice(index, 1)

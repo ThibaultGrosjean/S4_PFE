@@ -133,6 +133,8 @@ app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validato
 
 app.put('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
 
+app.put('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadaireController.validator, volumeHebdomadaireController.editTypeValueElementVolumeHebdomadaire);
+
 app.delete('/volumes-hebdomadaires/delete/:id', volumeHebdomadaireController.deleteVolumeHebdomadaire);
 
 

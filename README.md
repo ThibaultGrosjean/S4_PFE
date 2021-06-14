@@ -50,3 +50,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Formulaire de création et de modification des Groupes d'enseignants
 * Modification des Volumes hebdomadaires depuis le tableau des heures hebdo. prévues
 * Surnom d'un enseignant calculé automatiquement
+* Menu contextuel pour copier la même valeur à toutes les semaines
