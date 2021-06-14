@@ -78,23 +78,36 @@ exports.addEnseignant = (req, res) => {
   var data = {
     nom : req.body.nom,
     prenom : req.body.prenom,
-    surnom : req.body.surnom,
     email : req.body.email,
     statut_id : req.body.statut_id,
   };
 
+  var nom = data['nom']
+  var prenom = data['prenom']
+  var surnom = ''
+
+  var compose = prenom.indexOf("-")
+  if (nom.length == 1 && prenom.length == 1){
+    surnom = prenom[0] + nom[0]
+  } else {
+    if (compose != -1)
+      surnom = prenom[0] + prenom[compose+1] + nom[0]
+    else
+      surnom = prenom[0] + nom[0] + nom[1]
+  }
+      
   var requete="INSERT INTO enseignant(nom, prenom, surnom, email, statut_id) VALUES ('" 
     + data['nom'] + "','"
     + data['prenom'] + "','"
-    + data['surnom'] + "','"
+    + surnom.toUpperCase() + "','"
     + data['email'] + "','"
     + data['statut_id'] + "');"
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, enseignant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).send(enseignant); 
       } else  {
         res.send(err);
       }
@@ -119,6 +132,7 @@ exports.copyEnseignant = (req, res) => {
           function(err, enseignant) {
             if (!err) {
               res.status(200).json(enseignant);
+              
             } else  {
               res.send(err);
             }

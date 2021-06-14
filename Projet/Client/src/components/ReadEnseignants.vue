@@ -50,7 +50,7 @@
         >
           <v-card>
             <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
-            <v-card-subtitle class="text-subtitle-1">{{ e.surnom }}</v-card-subtitle>
+            <v-card-subtitle class="text-subtitle-1">{{ e.surnom.toUpperCase() }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <p>Adresse mail : <b>{{ e.email }}</b></p>
@@ -161,12 +161,11 @@
                     @input="$v.nom.$touch()"
                     @blur="$v.nom.$touch()"
                 ></v-text-field>
-                <v-text-field
+                <v-text-field v-if="this.methods === 'PUT'"
                     v-model="surnom"
                     :error-messages="surnomErrors"
                     :counter="3"
                     label="Surnom"
-                    required
                     clearable
                     @input="$v.surnom.$touch()"
                     @blur="$v.surnom.$touch()"
@@ -248,7 +247,7 @@ export default {
   validations: {
     nom: {required, maxLength: maxLength(255)},
     prenom: {required, maxLength: maxLength(255)},
-    surnom: {required, maxLength: maxLength(3)},
+    surnom: {maxLength: maxLength(3)},
     email: {required, email},
     statut_id: {required},
   },
@@ -296,7 +295,6 @@ export default {
       const errors = []
       if (!this.$v.surnom.$dirty) return errors
       !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 3 caractères')
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire')
       return errors
     },
     emailErrors() {
@@ -322,8 +320,19 @@ export default {
         statut: this.returnStatut(this.statut_id)
       }
       if (this.methods === 'POST'){
+        var compose = enseignant.prenom.indexOf("-")
+        if (this.nom.length === 1 && this.prenom.length === 1){
+          enseignant.surnom = this.prenom[0] + enseignant.nom[0]
+        } else {
+          if (compose !== -1)
+            enseignant.surnom = this.prenom[0] + this.prenom[compose+1] + this.nom[0]
+          else
+            enseignant.surnom = this.prenom[0] + this.nom[0] + this.nom[1]
+        }
+        this.surnom = this.surnom.toUpperCase()
         this.$store.commit('ADD_Enseignant', enseignant);
       } else {
+        this.surnom = this.surnom.toUpperCase()
         this.$store.commit('EDIT_Enseignant', enseignant);
       }
       this.clear()
@@ -348,7 +357,7 @@ export default {
       this.id = enseignant.id
       this.nom = enseignant.nom
       this.prenom = enseignant.prenom
-      this.surnom = enseignant.surnom
+      this.surnom = enseignant.surnom.toUpperCase()
       this.email = enseignant.email
       this.statut_id = enseignant.statut.id
       this.form = true;

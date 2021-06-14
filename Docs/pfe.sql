@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 10 juin 2021 à 16:24
+-- Généré le : Dim 13 juin 2021 à 09:13
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -65,9 +65,10 @@ INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol
 (5, 'Semestre 4', 'S4', 'S4', 1, 3, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (6, 'UE 11: Informatique', 'UE11', 'UE11', 2, 0, 44, 60, 76, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (7, 'UE 12: Connaissances et compétences générales', 'UE12', 'UE12', 2, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 27, 33.5, 42, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 17, 26.5, 34, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'globale', 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 2, 5);
+(8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 19, 16, 16, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
+(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 2, 1, 2, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
+(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'globale', 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 2, 5),
+(11, 'M 4101 : Stage', 'M4101', 'M4101', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 10);
 
 -- --------------------------------------------------------
 
@@ -129,6 +130,13 @@ CREATE TABLE `groupe_intervenant` (
   `nb_groupe_partiel` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `groupe_intervenant`
+--
+
+INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
+(1, 8, 1, 1, 1, 1, 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -161,7 +169,8 @@ CREATE TABLE `intervenant` (
 --
 
 INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu_projet`, `nb_he_td_max_attendu_projet`, `nb_he_td_min_sup_projet`, `nb_he_td_max_sup_projet`) VALUES
-(1, 1, 1, 10, 15, 0, 0);
+(1, 1, 1, 10, 15, 0, 0),
+(2, 1, 2, 384, 384, 0, 200);
 
 -- --------------------------------------------------------
 
@@ -197,7 +206,7 @@ CREATE TABLE `periode` (
 --
 
 INSERT INTO `periode` (`id`, `element_id`, `nb_semaine`, `nb_groupe_defaut_cm`, `nb_groupe_defaut_td`, `nb_groupe_defaut_tp`, `nb_groupe_defaut_partiel`) VALUES
-(1, 2, 10, 1, 4, 8, 2),
+(1, 2, 11, 1, 4, 8, 2),
 (2, 3, 10, 1, 4, 8, 2),
 (3, 4, 10, 1, 4, 8, 2),
 (4, 5, 10, 1, 3, 6, 2);
@@ -267,6 +276,13 @@ CREATE TABLE `volume_globale` (
   `vol_hor_partiel` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `volume_globale`
+--
+
+INSERT INTO `volume_globale` (`id`, `intervenant_id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
+(1, 2, 11, 1, 0, 5, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -282,6 +298,26 @@ CREATE TABLE `volume_hebdomadaire` (
   `vol_hor_tp` float NOT NULL,
   `vol_hor_partiel` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `volume_hebdomadaire`
+--
+
+INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
+(1, 8, 1, 2, 1, 1.5, 0),
+(2, 8, 3, 1, 3, 3, 0),
+(3, 8, 2, 1, 1, 1.5, 0),
+(4, 8, 4, 1, 1, 2, 0),
+(5, 8, 5, 1, 1, 1.5, 0),
+(6, 8, 6, 1, 1, 1.5, 0),
+(7, 8, 7, 1, 1, 1.5, 0),
+(8, 8, 8, 1, 1, 1.5, 0),
+(9, 8, 9, 2, 1, 1.5, 0),
+(10, 8, 10, 1, 1, 2, 0),
+(11, 8, 11, 2, 1, 1, 3),
+(13, 9, 1, 1, 1, 2, 0),
+(14, 9, 3, 1, 1, 2, 0),
+(15, 9, 2, 1, 1, 2, 0);
 
 --
 -- Index pour les tables déchargées
@@ -381,7 +417,7 @@ ALTER TABLE `volume_hebdomadaire`
 -- AUTO_INCREMENT pour la table `element`
 --
 ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
@@ -399,13 +435,13 @@ ALTER TABLE `formation`
 -- AUTO_INCREMENT pour la table `groupe_intervenant`
 --
 ALTER TABLE `groupe_intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `intervenant`
 --
 ALTER TABLE `intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `periode`
@@ -429,13 +465,13 @@ ALTER TABLE `statut`
 -- AUTO_INCREMENT pour la table `volume_globale`
 --
 ALTER TABLE `volume_globale`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `volume_hebdomadaire`
 --
 ALTER TABLE `volume_hebdomadaire`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées

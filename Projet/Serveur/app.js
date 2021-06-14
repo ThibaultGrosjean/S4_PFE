@@ -4,7 +4,7 @@ npm install express
 npm install body-parser 
 npm install express-validator 
 npm install mysql 
-npm install cors 
+npm install cors
 
 **/
 

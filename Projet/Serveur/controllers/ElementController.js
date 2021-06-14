@@ -45,7 +45,12 @@ exports.getAllElements = (req, res) => {
 
 
 exports.getAllLevelElements = (req, res) => {
-  db.query('SELECT * FROM element WHERE niveau = ?;', [req.params.id],
+  db.query('SELECT e.*, COUNT(ee.id) as nbfils'
+        +' FROM element as e'
+        +' LEFT JOIN element as ee'
+        +' ON e.id = ee.parent'
+        +' WHERE e.niveau = ?'
+        +' GROUP BY e.id ORDER BY parent;', [req.params.id],
     function(err, elements) {
       if (!err) {
         res.status(200).send(elements);
@@ -59,7 +64,12 @@ exports.getAllLevelElements = (req, res) => {
 
 
 exports.getElement = (req, res) => {
-  db.query('SELECT * FROM element where id = ? ;', [req.params.id],
+  db.query('SELECT e.*, COUNT(ee.id) as nbfils'
+        +' FROM element as e'
+        +' LEFT JOIN element as ee'
+        +' ON e.id = ee.parent'
+        +' WHERE e.id = ?'
+        +' GROUP BY e.id ORDER BY parent ;', [req.params.id],
     function(err, element) {
       if (!err) {
         res.status(200).json(element);  

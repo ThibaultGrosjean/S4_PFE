@@ -46,7 +46,7 @@
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
                 <div>
-                  <v-menu offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                  <v-menu offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                           icon
@@ -395,6 +395,7 @@
                                                                             <div class="mt-4 text-subtitle-1">Volume horaire CM - semaine {{ v.num_semaine }}</div>
                                                                             <v-text-field
                                                                                 v-model="v.vol_hor_cm"
+                                                                                :rules="[vol_hor]"
                                                                                 clearable
                                                                                 autofocus
                                                                             ></v-text-field>
@@ -420,6 +421,7 @@
                                                                             <div class="mt-4 text-subtitle-2">Volume horaire TD - semaine {{ v.num_semaine }}</div>
                                                                             <v-text-field
                                                                                 v-model="v.vol_hor_td"
+                                                                                :rules="[vol_hor]"
                                                                                 clearable
                                                                                 autofocus
                                                                             ></v-text-field>
@@ -445,6 +447,7 @@
                                                                             <div class="mt-4 text-subtitle-2">Volume horaire TP - semaine {{ v.num_semaine }}</div>
                                                                             <v-text-field
                                                                                 v-model="v.vol_hor_tp"
+                                                                                :rules="[vol_hor]"
                                                                                 clearable
                                                                                 autofocus
                                                                             ></v-text-field>
@@ -470,6 +473,7 @@
                                                                             <div class="mt-4 text-subtitle-2">Volume horaire partiel - semaine {{ v.num_semaine }}</div>
                                                                             <v-text-field
                                                                                 v-model="v.vol_hor_partiel"
+                                                                                :rules="[vol_hor]"
                                                                                 clearable
                                                                                 autofocus
                                                                             ></v-text-field>
@@ -843,7 +847,11 @@ export default {
     nb_groupe_effectif_tp: null,
     nb_groupe_effectif_partiel: null,
     parent: null,
-    nbfils: null
+    nbfils: null,
+    vol_hor: v  => {
+      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 50.0) return true;
+      return 'Le volume horaire doit être compris entre 0 et 50.0';
+    },
   }),
   mounted() {
     this.$store.dispatch('loadPeriodes');
