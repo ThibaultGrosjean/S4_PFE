@@ -335,19 +335,18 @@
                                                     </div>
                                                   </v-expansion-panel-header>
                                                   <v-expansion-panel-content>
-                                                    <v-divider></v-divider>
                                                     <v-container>
                                                       <v-row>
-                                                        <v-col class="pa-6 pl-4">
+                                                        <v-col class="pa-6 pl-4 pt-1">
                                                           <div v-if="module.mode_saisie !=='aucun'">
                                                             <div v-if="module.mode_saisie ==='hebdo'">
-                                                              <v-simple-table dense>
+                                                              <v-simple-table dense fixed-header>
                                                                 <template v-slot:default>
                                                                   <thead>
                                                                   <tr>
-                                                                    <th></th>
+                                                                    <th class="text-right right-border"></th>
                                                                     <th v-for="item in findPeriodeBySemestre(semestre).nb_semaine" :key="item">{{ item }}</th>
-                                                                    <th class="text-left">Total</th>
+                                                                    <th class="text-left left-border">Total</th>
                                                                   </tr>
                                                                   </thead>
                                                                   <tbody>
@@ -378,7 +377,7 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module, 'vol_hor_cm') }}</td>
+                                                                    <td class="left-border">{{ total(module, 'vol_hor_cm') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
@@ -405,7 +404,7 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module, 'vol_hor_td') }}</td>
+                                                                    <td class="left-border">{{ total(module, 'vol_hor_td') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
@@ -432,7 +431,7 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module, 'vol_hor_tp') }}</td>
+                                                                    <td class="left-border">{{ total(module, 'vol_hor_tp') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
@@ -459,7 +458,7 @@
                                                                         </v-edit-dialog>
                                                                       </td>
                                                                     </template>
-                                                                    <td>{{ total(module, 'vol_hor_partiel') }}</td>
+                                                                    <td class="left-border">{{ total(module, 'vol_hor_partiel') }}</td>
                                                                   </tr>
                                                                   </tbody>
                                                                 </template>
@@ -1125,5 +1124,12 @@ export default {
   box-shadow: none !important;
 }
 .v-expansion-panel-content__wrap {
-  padding: 0 0 0 24px !important; }
+  padding: 0 0 0 24px !important;
+}
+.right-border {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+.left-border {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y right>
     <template v-slot:activator="{ on }">
-      <td class="text-right" @contextmenu.prevent="on.click">
+      <td class="text-right right-border" @contextmenu.prevent="on.click">
         {{ type.toUpperCase() }}
       </td>
     </template>
@@ -77,4 +77,7 @@ export default {
 </script>
 
 <style scoped>
+.right-border {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
 </style>
