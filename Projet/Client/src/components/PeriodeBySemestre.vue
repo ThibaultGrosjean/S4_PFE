@@ -22,7 +22,7 @@
       <v-card>
         <v-form lazy-validation>
           <v-card-title>
-            <span class="headline">Modifier la période</span>
+            <span class="headline">Modifier la période du {{ semestre.titre }}</span>
             <v-spacer></v-spacer>
             <v-btn
                 icon
@@ -35,19 +35,6 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
-            <v-select
-                v-model="element_id"
-                :items="elementsLevel"
-                :item-text="item => semestre.titre + ' (' + semestre.surnom + ')'"
-                item-value="id"
-                label="Période"
-                clearable
-                disabled
-                :error-messages="elementErrors"
-                @input="$v.element_id.$touch()"
-                @blur="$v.element_id.$touch()"
-                required
-            ></v-select>
             <v-text-field
                 v-model="nb_semaine"
                 :error-messages="nb_semaineErrors"
@@ -148,17 +135,10 @@ export default {
     element_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadElementsLevel', 1)
     this.$store.dispatch('loadPeriodes')
   },
   computed: {
-    ...mapState(['elementsLevel', 'periodes']),
-    elementErrors() {
-      const errors = []
-      if (!this.$v.element_id.$dirty) return errors
-      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément')
-      return errors
-    },
+    ...mapState(['periodes']),
     nb_semaineErrors() {
       const errors = []
       if (!this.$v.nb_semaine.$dirty) return errors

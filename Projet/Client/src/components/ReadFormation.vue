@@ -14,18 +14,45 @@
       <v-row>
         <v-col v-for="f in formations"
                :key="f.id"
-               sm="6"
+               sm="12"
         >
           <v-card>
-            <v-card-title class="text-h5">{{ returnElement(f.element_id).titre }}</v-card-title>
-            <v-card-subtitle class="text-subtitle-1">{{ returnProjet(f.projet_id).nom }} {{ toTime(returnProjet(f.projet_id).date, 4) }}</v-card-subtitle>
+            <v-card-title class="text-h5">
+              <span>{{ returnProjet(f.projet_id).nom }} {{ toTime(returnProjet(f.projet_id).date, 4) }}</span>
+              <v-spacer></v-spacer>
+              <small class="text-body-1 mr-2">Verrou</small>
+              <v-edit-dialog
+                  :return-value.sync="f.verrou"
+                  large
+                  @save="save(f)"
+                  cancel-text="Annuler"
+                  save-text="Valider"
+              >
+                <v-btn
+                    outlined
+                    rounded
+                    :color="f.verrou ? 'success' : 'error'"
+                >
+                  {{ f.verrou ? "Activé" : "Désactivé" }}
+                </v-btn>
+                <template v-slot:input>
+                  <v-switch
+                      v-model="f.verrou"
+                      inset
+                      :true-value="1"
+                      :false-value="0"
+                      color="success"
+                      label="Verrou"
+                  >
+                  </v-switch>
+                </template>
+              </v-edit-dialog>
+            </v-card-title>
             <v-divider></v-divider>
-            <v-card-text>
-              <p class="mb-0">Verrou :
-                <b><span class="red--text text--darken-1" v-if="f.verrou === 0">Désactivé</span>
-                  <span class="green--text text--darken-1" v-else>Activé</span></b>
-              </p>
+            <v-card-text class="pa-0">
+              <ReadElements :racine="returnElement(f.element_id)" :flat="true" :add-btn="false"></ReadElements>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-actions>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
@@ -173,9 +200,11 @@
 import {validationMixin} from "vuelidate";
 import {numeric, required} from "vuelidate/lib/validators";
 import {mapState} from "vuex";
+import ReadElements from "./ReadElements";
 
 export default {
   name: "ReadFormation",
+  components: {ReadElements},
   mixins: [validationMixin],
 
   validations: {
@@ -250,13 +279,16 @@ export default {
       this.element_id = formation.element_id
       this.form = true;
     },
+    save(formation){
+      this.$store.commit('EDIT_Formations', formation);
+    },
     returnProjet(id) {
       let index = this.projets.findIndex(projet => projet.id === id)
       return this.projets[index]
     },
     returnElement(id){
       let index = this.elements.findIndex(element => element.id === id);
-      return this.elements[index]
+      return [this.elements[index]]
     },
     toTime(date, length) {
       return new Date(date).toISOString().substr(0, length)

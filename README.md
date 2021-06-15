@@ -52,3 +52,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Surnom d'un enseignant calculé automatiquement
 * Menu contextuel pour copier la même valeur à toutes les semaines
 * Accéder à la période (d'un semestre) depuis la hiérarchie
+* Accéder à la composition hiérarchique depuis la formation

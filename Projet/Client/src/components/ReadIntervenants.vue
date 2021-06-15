@@ -229,13 +229,13 @@ export default {
     enseignant_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadIntervenants')
-    this.$store.dispatch('loadProjets')
-    this.$store.dispatch('loadProjetsNonArchive')
     this.$store.dispatch('loadEnseignants')
+    this.$store.dispatch('loadProjets')
+    this.$store.dispatch('loadIntervenants')
+    this.$store.dispatch('loadProjetsNonArchive')
   },
   computed: {
-    ...mapState(['intervenants' , 'projets', 'enseignants', 'projetsArchive']),
+    ...mapState(['enseignants', 'projets', 'intervenants', 'projetsArchive']),
     projetErrors() {
       const errors = []
       if (!this.$v.projet_id.$dirty) return errors
