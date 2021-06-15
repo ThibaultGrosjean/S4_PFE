@@ -184,18 +184,6 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
     },
-    ADD_Element(state, element) {
-      axios.post('/elements/create/', element)
-        .then(response => response.data)
-        .then(elements => {
-          console.log(elements);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      state.elements.push(element)
-      let index = state.elements.findIndex(e => e.id === element.parent);
-      state.elements[index].nbfils += 1
-    },
     ADD_Intervenant(state, intervenant) {
       axios.post('/intervenants/create/', intervenant)
         .then(response => response.data)
@@ -552,6 +540,30 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
+    ADD_Element({commit}, element) {
+      axios.post('/elements/create/', element)
+        .then(response => response.data)
+        .then(elements => {
+          element.id = elements.insertId
+          this.state.elements.push(element)
+          let index = this.state.elements.findIndex(e => e.id === element.parent);
+          this.state.elements[index].nbfils += 1
+          if (element.niveau === 1) {
+            var periode = {
+              nb_semaine: 0,
+              nb_groupe_defaut_cm: 1,
+              nb_groupe_defaut_td:1,
+              nb_groupe_defaut_tp: 1,
+              nb_groupe_defaut_partiel: 1,
+              element_id: elements.insertId
+            }
+            commit('ADD_Periodes', periode)
+          }
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+
+    }
   },
   modules: {}
 })

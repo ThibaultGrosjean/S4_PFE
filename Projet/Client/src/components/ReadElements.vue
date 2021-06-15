@@ -46,7 +46,7 @@
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
                 <div>
-                  <v-menu offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
+                  <v-menu :close-on-content-click="false" offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                           icon
@@ -133,7 +133,7 @@
                         <div v-if="formation.id === semestre.parent">
                           <v-expansion-panel-header>
                             <div>
-                               <v-menu offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                               <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                         icon
@@ -173,6 +173,7 @@
                                         </template>
                                         <span>Ajouter une UE au {{ semestre.titre }}</span>
                                       </v-tooltip>
+                                      <PeriodeBySemestre :semestre="semestre"></PeriodeBySemestre>
                                       <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
                                         <v-btn
@@ -219,7 +220,7 @@
                                     <div v-if="semestre.id === ue.parent">
                                       <v-expansion-panel-header>
                                         <div>
-                                        <v-menu offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                        <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                           <template v-slot:activator="{ on, attrs }">
                                             <v-btn
                                                 icon
@@ -305,7 +306,7 @@
                                                 <div v-if="ue.id === module.parent">
                                                   <v-expansion-panel-header>
                                                     <div>
-                                                    <v-menu offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                                    <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                                       <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
                                                             icon
@@ -375,7 +376,7 @@
                                                                   <thead>
                                                                   <tr>
                                                                     <th></th>
-                                                                    <th v-for="item in findPeriodeSemestre(semestre).nb_semaine" :key="item">{{ item }}</th>
+                                                                    <th v-for="item in findPeriodeBySemestre(semestre).nb_semaine" :key="item">{{ item }}</th>
                                                                     <th class="text-left">Total</th>
                                                                   </tr>
                                                                   </thead>
@@ -797,10 +798,11 @@ import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
 import {decimal, maxLength, numeric, required} from "vuelidate/lib/validators";
 import TDContexteMenu from "./TDContexteMenu";
+import PeriodeBySemestre from "./PeriodeBySemestre";
 
 export default {
   name: "ReadElements",
-  components: {TDContexteMenu},
+  components: {PeriodeBySemestre, TDContexteMenu},
   mixins: [validationMixin],
 
   validations: {
@@ -997,7 +999,7 @@ export default {
         nbfils: this.nbfils
       }
       if (this.methods === 'POST') {
-        this.$store.commit('ADD_Element', element);
+        this.$store.dispatch('ADD_Element', element);
       } else {
         this.$store.commit('EDIT_Element', element);
       }
@@ -1092,9 +1094,10 @@ export default {
       this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
       this.surnom = "UE" + (indice + 1) + (nbfils+1)
       this.niveau = 2
+      this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeSemestre(element);
+      var periode = this.findPeriodeBySemestre(element);
       if (periode !== -1 && periode !== undefined){
         this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
         this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
@@ -1117,7 +1120,7 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeSemestre(module);
+      var periode = this.findPeriodeBySemestre(module);
       if (periode !== -1 && periode !== undefined){
         this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
         this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
@@ -1126,7 +1129,7 @@ export default {
       }
       this.form = true;
     },
-    findPeriodeSemestre(semestre){
+    findPeriodeBySemestre(semestre){
       let index = this.periodes.findIndex(p => p.element_id === semestre.id);
       return this.periodes[index];
     },

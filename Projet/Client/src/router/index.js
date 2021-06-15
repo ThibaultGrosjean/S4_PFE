@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Accueil from '../views/Accueil.vue'
-import Statuts from "@/views/Statuts";
-import Enseignants from "@/views/Enseignants";
+import Statuts from "../views/Statuts";
+import Enseignants from "../views/Enseignants";
 import Projets from "../views/Projets";
 import Elements from "../views/Elements";
 import Intervenant from "../views/Intervenant";
 import Formation from "../views/Formation";
-import Periodes from "../views/Periodes";
 import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 import VolumeGlobale from "../views/VolumeGlobale";
 import GroupeIntervenant from "../views/GroupeIntervenant";
@@ -58,11 +57,6 @@ const routes = [
     path: '/formations',
     name: 'Formations',
     component: Formation
-  },
-  {
-    path: '/periodes',
-    name: 'Periodes',
-    component: Periodes
   },
   {
     path: '/volumes-hebdomadaires',

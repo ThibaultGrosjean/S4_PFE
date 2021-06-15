@@ -134,9 +134,9 @@ exports.addElement = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, element) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(element);
       } else  {
         res.send(err);
       }
@@ -154,23 +154,23 @@ exports.copyElement = (req, res) => {
           + element[0]['surnom'] + ' (copie)' + "','"
           + element[0]['code'] + ' (copie)' + "','"
           + element[0]['niveau'] + "','"
-          + element[0]['indice'] + "','"
-          + element[0]['vol_hor_total_prevues_etu_cm'] + "','"
-          + element[0]['vol_hor_total_prevues_etu_td'] + "','"
-          + element[0]['vol_hor_total_prevues_etu_tp'] + "','"
+          + element[0]['indice'] + "',"
+          + element[0]['vol_hor_total_prevues_etu_cm'] + ","
+          + element[0]['vol_hor_total_prevues_etu_td'] + ","
+          + element[0]['vol_hor_total_prevues_etu_tp'] + ",'"
           + element[0]['mode_saisie'] + "','"
           + element[0]['cm_autorises'] + "','"
           + element[0]['td_autorises'] + "','"
           + element[0]['tp_autorises'] + "','"
-          + element[0]['partiel_autorises'] + "','"
-          + element[0]['forfait_globale_cm'] + "','"
-          + element[0]['forfait_globale_td'] + "','"
-          + element[0]['forfait_globale_tp'] + "','"
-          + element[0]['forfait_globale_partiel'] + "','"
-          + element[0]['nb_groupe_effectif_cm'] + "','"
-          + element[0]['nb_groupe_effectif_td'] + "','"
-          + element[0]['nb_groupe_effectif_tp'] + "','"
-          + element[0]['nb_groupe_effectif_partiel'] + "',"
+          + element[0]['partiel_autorises'] + "',"
+          + element[0]['forfait_globale_cm'] + ","
+          + element[0]['forfait_globale_td'] + ","
+          + element[0]['forfait_globale_tp'] + ","
+          + element[0]['forfait_globale_partiel'] + ","
+          + element[0]['nb_groupe_effectif_cm'] + ","
+          + element[0]['nb_groupe_effectif_td'] + ","
+          + element[0]['nb_groupe_effectif_tp'] + ","
+          + element[0]['nb_groupe_effectif_partiel'] + ","
           + element[0]['parent'] + ");"
         ;
 
@@ -222,10 +222,10 @@ exports.editElement = (req, res) => {
   +"', code ='" + data['code'] 
   +"', niveau ='" + data['niveau'] 
   +"', indice ='" + data['indice'] 
-  +"', vol_hor_total_prevues_etu_cm ='" + data['vol_hor_total_prevues_etu_cm'] 
-  +"', vol_hor_total_prevues_etu_td ='" + data['vol_hor_total_prevues_etu_td'] 
-  +"', vol_hor_total_prevues_etu_tp ='" + data['vol_hor_total_prevues_etu_tp'] 
-  +"', mode_saisie ='" + data['mode_saisie'] 
+  +"', vol_hor_total_prevues_etu_cm =" + data['vol_hor_total_prevues_etu_cm'] 
+  +", vol_hor_total_prevues_etu_td =" + data['vol_hor_total_prevues_etu_td'] 
+  +", vol_hor_total_prevues_etu_tp =" + data['vol_hor_total_prevues_etu_tp'] 
+  +", mode_saisie ='" + data['mode_saisie'] 
   +"', cm_autorises ='" + data['cm_autorises'] 
   +"', td_autorises ='" + data['td_autorises'] 
   +"', tp_autorises ='" + data['tp_autorises'] 
@@ -234,11 +234,11 @@ exports.editElement = (req, res) => {
   +", forfait_globale_td =" + data['forfait_globale_td'] 
   +", forfait_globale_tp =" + data['forfait_globale_tp'] 
   +", forfait_globale_partiel =" + data['forfait_globale_partiel']
-  +", nb_groupe_effectif_cm ='" + data['nb_groupe_effectif_cm'] 
-  +"', nb_groupe_effectif_td ='" + data['nb_groupe_effectif_td'] 
-  +"', nb_groupe_effectif_tp ='" + data['nb_groupe_effectif_tp'] 
-  +"', nb_groupe_effectif_partiel ='" + data['nb_groupe_effectif_partiel']
-  +"', parent =" + data['parent']
+  +", nb_groupe_effectif_cm =" + data['nb_groupe_effectif_cm'] 
+  +", nb_groupe_effectif_td =" + data['nb_groupe_effectif_td'] 
+  +", nb_groupe_effectif_tp =" + data['nb_groupe_effectif_tp'] 
+  +", nb_groupe_effectif_partiel =" + data['nb_groupe_effectif_partiel']
+  +", parent =" + data['parent']
   +" WHERE id = " + req.params.id + ";";
 
   db.query(requete,

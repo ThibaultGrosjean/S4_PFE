@@ -65,7 +65,6 @@ export default {
       {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},
       {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},
       {text: "Intervenants",icon:"assignment_ind", path: "/intervenants"},
-      {text: "Périodes",icon:"access_time", path: "/periodes"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
       {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},
