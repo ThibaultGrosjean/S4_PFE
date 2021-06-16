@@ -12,16 +12,13 @@ exports.validator = [
 
 
 exports.getAllVolumeHebdomadaires = (req, res) => {
-  db.query('SELECT v.*,'
-        + ' SUM(v2.vol_hor_cm) as total_vol_hor_cm,'
-        + ' SUM(v2.vol_hor_td) as total_vol_hor_td,'
-        + ' SUM(v2.vol_hor_tp) as total_vol_hor_tp,'
-        + ' SUM(v2.vol_hor_partiel) as total_vol_hor_partiel'
+  db.query('SELECT v.*, eee.parent AS semestre_id '
         + ' FROM volume_hebdomadaire as v'
-        + ' LEFT JOIN volume_hebdomadaire as v2'
-        + ' ON v.element_id = v2.element_id'
-        + ' GROUP BY v.element_id, v.id'
-        + ' ORDER BY v.element_id, v.num_semaine;',
+        + ' LEFT JOIN element as ee'
+        + ' ON v.element_id = ee.id'
+        + ' LEFT JOIN element as eee'
+        + ' ON ee.parent = eee.id'
+        + ' ORDER BY v.element_id, v.num_semaine',
     function(err, volume_hebdomadaires) {
       if (!err) {
         res.status(200).json(volume_hebdomadaires);  

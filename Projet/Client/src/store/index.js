@@ -546,8 +546,13 @@ export default new Vuex.Store({
         .then(elements => {
           element.id = elements.insertId
           this.state.elements.push(element)
+          if (element.parent === null) this.state.elementsLevel.push(element)
+
           let index = this.state.elements.findIndex(e => e.id === element.parent);
-          this.state.elements[index].nbfils += 1
+          if (this.state.elements[index]) this.state.elements[index].nbfils += 1
+          let indexL = this.state.elementsLevel.findIndex(e => e.id === element.parent);
+          if (this.state.elementsLevel[indexL]) this.state.elementsLevel[indexL].nbfils += 1
+
           if (element.niveau === 1) {
             var periode = {
               nb_semaine: 0,

@@ -568,7 +568,7 @@
                     @input="$v.code.$touch()"
                     @blur="$v.code.$touch()"
                 ></v-text-field>
-                <v-text-field
+                <v-text-field v-if="this.methods !=='POST' && this.niveau > 1 && !this.formation"
                     v-model="niveau"
                     :error-messages="niveauErrors"
                     label="Niveau"
@@ -577,7 +577,7 @@
                     @input="$v.niveau.$touch()"
                     @blur="$v.niveau.$touch()"
                 ></v-text-field>
-                <v-text-field
+                <v-text-field v-if="!this.formation"
                     v-model="indice"
                     :error-messages="indiceErrors"
                     label="Indice"
@@ -586,7 +586,7 @@
                     @input="$v.indice.$touch()"
                     @blur="$v.indice.$touch()"
                 ></v-text-field>
-                <v-select
+                <v-select v-if="!this.formation"
                     v-model="mode_saisie"
                     :items="item_mode_saisie"
                     item-text="nom"
@@ -598,7 +598,7 @@
                     required
                     clearable
                 ></v-select>
-                <v-select
+                <v-select v-if="!this.formation"
                     v-model="parent"
                     :items="elements"
                     clearable
@@ -752,7 +752,7 @@
               color="green"
               fab
               dark
-              @click="close()"
+              @click="addFormation()"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -797,14 +797,13 @@ export default {
   },
   data: () => ({
     form: false,
+    formation: false,
     methods: "POST",
     item_mode_saisie: [
       {nom: 'Aucun', val: 'aucun'},
       {nom: 'Hebdomadaire', val: 'hebdo'},
       {nom: 'Globale', val: 'globale'},
     ],
-    showDetails: '',
-    sortTitre: false,
     id: '',
     titre: '',
     surnom: '',
@@ -1034,6 +1033,8 @@ export default {
       this.nb_groupe_effectif_tp = element.nb_groupe_effectif_tp
       this.nb_groupe_effectif_partiel = element.nb_groupe_effectif_partiel
       this.parent = element.parent
+
+      this.formation = this.parent === null;
       this.form = true;
     },
     save(volume){
@@ -1048,6 +1049,14 @@ export default {
         this.elements.sort((a, b) => a.titre.toUpperCase() > b.titre.toUpperCase())
       }
     },
+    addFormation(){
+      this.niveau = 0
+      this.indice = 0
+      this.mode_saisie = 'aucun'
+      this.parent = null
+      this.formation = true;
+      this.form = true;
+    },
     addSemester(element) {
       var nbfils = element.nbfils
       this.titre = "Semestre " + (nbfils + 1)
@@ -1056,6 +1065,7 @@ export default {
       this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
+      this.formation = false;
       this.form = true;
     },
     addUE(element) {
@@ -1074,6 +1084,7 @@ export default {
         this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
         this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
       }
+      this.formation = false;
       this.form = true;
     },
     addModule(element, module) {
@@ -1097,6 +1108,7 @@ export default {
         this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
         this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
       }
+      this.formation = false;
       this.form = true;
     },
     findPeriodeBySemestre(semestre){

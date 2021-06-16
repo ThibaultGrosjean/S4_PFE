@@ -53,3 +53,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Menu contextuel pour copier la même valeur à toutes les semaines
 * Accéder à la période (d'un semestre) depuis la hiérarchie
 * Accéder à la composition hiérarchique depuis la formation
+
+## Semaine 5 : 16-22 juin
+
+* Changement de niveau (sauf 0 et 1) et cacher les champs inutiles selon le niveau

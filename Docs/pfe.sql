@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `pfe`
 --
-
+DROP TABLE IF EXISTS `element`, `enseignant`, `formation`, `groupe_intervenant`, `groupe_sous_total`, `intervenant`, `limite_sous_total`, `periode`, `projet`, `statut`, `volume_globale`, `volume_hebdomadaire`;
 -- --------------------------------------------------------
 
 --
