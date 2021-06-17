@@ -31,7 +31,7 @@
           <p class="text-center">Aucune donnée trouvée</p>
         </v-col>
       </v-row>
-      <ReadElements :racine="elementsLevel" :flat="false" :add-btn="true"/>
+      <ReadElements :racine="elementsLevel" :flat="false" :add-btn="true" :disabled="false"/>
     </v-container>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y right>
+  <v-menu :disabled="disabled" offset-y right>
     <template v-slot:activator="{ on }">
       <td class="text-right right-border" @contextmenu.prevent="on.click">
         {{ type.toUpperCase() }}
@@ -41,7 +41,7 @@ import {mapState} from "vuex";
 
 export default {
   name: "TDContexteMenu",
-  props: ['type', 'element'],
+  props: ['type', 'element', 'disabled'],
   data: () => ({
     showMenuVolHor: false,
     volHorSemaineDefaut: 0,

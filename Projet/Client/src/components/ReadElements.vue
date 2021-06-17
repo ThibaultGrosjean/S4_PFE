@@ -16,7 +16,7 @@
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
                 <div>
-                  <v-menu :close-on-content-click="false" offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
+                  <v-menu :disabled="disabled" :close-on-content-click="false" offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                           icon
@@ -103,7 +103,7 @@
                         <div v-if="formation.id === semestre.parent">
                           <v-expansion-panel-header>
                             <div>
-                              <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                              <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                       icon
@@ -190,7 +190,7 @@
                                     <div v-if="semestre.id === ue.parent">
                                       <v-expansion-panel-header>
                                         <div>
-                                          <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                          <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                             <template v-slot:activator="{ on, attrs }">
                                               <v-btn
                                                   icon
@@ -276,7 +276,7 @@
                                                 <div v-if="ue.id === module.parent">
                                                   <v-expansion-panel-header>
                                                     <div>
-                                                      <v-menu :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                                      <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                                         <template v-slot:activator="{ on, attrs }">
                                                           <v-btn
                                                               icon
@@ -351,10 +351,11 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :type="'cm'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :type="'cm'" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
+                                                                            :disabled="disabled"
                                                                             :return-value.sync="v.vol_hor_cm"
                                                                             large
                                                                             @save="save(v)"
@@ -365,14 +366,12 @@
                                                                           <template v-slot:input>
                                                                             <div class="mt-4 text-subtitle-1">Volume horaire CM - semaine {{ v.num_semaine }}</div>
                                                                             <v-text-field
+                                                                                :disabled="disabled"
                                                                                 v-model="v.vol_hor_cm"
                                                                                 :rules="[vol_hor]"
                                                                                 clearable
                                                                                 autofocus
                                                                             ></v-text-field>
-                                                                          </template>
-                                                                          <template v-slot:actions>
-                                                                            <v-btn>t</v-btn>
                                                                           </template>
                                                                         </v-edit-dialog>
                                                                       </td>
@@ -822,7 +821,7 @@ export default {
   name: "ReadElements",
   components: {PeriodeBySemestre, TDContexteMenu},
   mixins: [validationMixin],
-  props: ['racine', 'flat', 'addBtn'],
+  props: ['racine', 'flat', 'addBtn', 'disabled'],
 
   validations: {
     titre: {required, maxLength: maxLength(255)},
