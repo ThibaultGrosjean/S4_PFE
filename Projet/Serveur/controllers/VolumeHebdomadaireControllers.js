@@ -78,7 +78,8 @@ exports.addVolumeHebdomadaire = (req, res) => {
 
 exports.addVolumesHebdomadaires = (req, res) => {
   var moduleId = req.params.module
-  var nbSemaine = req.params.semaine
+  var nbSemaineDeb = req.params.semaineDeb
+  var nbSemaineFin = req.params.semaineFin
 
   var data = {
     num_semaine : 0,
@@ -86,10 +87,10 @@ exports.addVolumesHebdomadaires = (req, res) => {
     vol_hor_td : 0,
     vol_hor_tp : 0,
     vol_hor_partiel : 0,
-    element_id : moduleId,  
+    element_id : moduleId,
   };
 
-  for (let i = 1; i <= nbSemaine; i++) {
+  for (let i = nbSemaineDeb; i <= nbSemaineFin; i++) {
     data['num_semaine'] = i;
 
     var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
@@ -110,6 +111,9 @@ exports.addVolumesHebdomadaires = (req, res) => {
       }
     );
   }
+
+
+  
 };
 
 

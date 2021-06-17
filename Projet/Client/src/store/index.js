@@ -133,11 +133,11 @@ export default new Vuex.Store({
       })
     },
     DELETE_VolumesHebdomadaires(state, id_volumeHebdo) {
-      let index = state.volumesHebdomadaires.findIndex(volumeHebdo => volumeHebdo.id === id_volumeHebdo);
-      state.volumesHebdomadaires.splice(index, 1)
       axios.delete('/volumes-hebdomadaires/delete/' + id_volumeHebdo).catch(error => {
         console.log('Erreur : ', error)
       })
+      let index = state.volumesHebdomadaires.findIndex(volumeHebdo => volumeHebdo.id === id_volumeHebdo);
+      state.volumesHebdomadaires.splice(index, 1)
     },
     DELETE_VolumeGlobaux(state, id_volumeGlobale) {
       let index = state.volumesGlobaux.findIndex(volumeGlobale => volumeGlobale.id === id_volumeGlobale);
@@ -225,11 +225,10 @@ export default new Vuex.Store({
       state.volumesHebdomadaires.push(volumesHebdomadaires)
     },
     ADD_AllVolumesHebdomadairesForModule(state, params ) {
-      axios.post('/volumes-hebdomadaires/create/'+ params.module +'/nbsemaine/' + params.nb_semaine)
+      axios.post('/volumes-hebdomadaires/create/'+ params.module + '/'+'nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
         .then(response => response.data)
         .then(volumesHebdomadaires => {
           console.log(volumesHebdomadaires);
-          console.log("volumes hebdomadaire créer ??,");
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -324,17 +323,6 @@ export default new Vuex.Store({
       let index = state.formations.findIndex(f => f.id === formations.id);
       state.formations[index] = formations
     },
-    EDIT_Periodes(state, periodes) {
-      axios.put('/periodes/edit/' + periodes.id, periodes)
-        .then(response => response.data)
-        .then(periodes => {
-          console.log(periodes);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.periodes.findIndex(p => p.id === periodes.id);
-      state.periodes[index] = periodes
-    },
     EDIT_VolumesHebdomadaires(state, volumesHebdomadaires) {
       axios.put('/volumes-hebdomadaires/edit/' + volumesHebdomadaires.id, volumesHebdomadaires)
         .then(response => response.data)
@@ -427,7 +415,6 @@ export default new Vuex.Store({
         .get('enseignants/get')
         .then(response => response.data)
         .then(enseignants => {
-          console.log(enseignants);
           commit('SET_Enseignant', enseignants)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -438,7 +425,6 @@ export default new Vuex.Store({
         .get('statuts/get')
         .then(response => response.data)
         .then(statuts => {
-          console.log(statuts);
           commit('SET_Statut', statuts)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -449,7 +435,6 @@ export default new Vuex.Store({
         .get('projets/get')
         .then(response => response.data)
         .then(projets => {
-          console.log(projets);
           commit('SET_Projet', projets)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -460,7 +445,6 @@ export default new Vuex.Store({
         .get('projets/non-archive/get')
         .then(response => response.data)
         .then(projetsArchive => {
-          console.log(projetsArchive);
           commit('SET_Projet_archive', projetsArchive)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -471,7 +455,6 @@ export default new Vuex.Store({
         .get('elements/get')
         .then(response => response.data)
         .then(elements => {
-          console.log(elements);
           commit('SET_Element', elements)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -482,7 +465,6 @@ export default new Vuex.Store({
         .get('/elements/get/level/' + level)
         .then(response => response.data)
         .then(elementsLevel => {
-          console.log(elementsLevel);
           commit('SET_ElementLevel', elementsLevel)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -493,7 +475,6 @@ export default new Vuex.Store({
         .get('intervenants/get')
         .then(response => response.data)
         .then(intervenants => {
-          console.log(intervenants);
           commit('SET_Intervenant', intervenants)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -504,7 +485,6 @@ export default new Vuex.Store({
         .get('formations/get')
         .then(response => response.data)
         .then(formations => {
-          console.log(formations);
           commit('SET_Formations', formations)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -515,7 +495,6 @@ export default new Vuex.Store({
         .get('periodes/get')
         .then(response => response.data)
         .then(periodes => {
-          console.log(periodes);
           commit('SET_Periodes', periodes)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -526,7 +505,6 @@ export default new Vuex.Store({
         .get('volumes-hebdomadaires/get')
         .then(response => response.data)
         .then(volumesHebdomadaires => {
-          console.log(volumesHebdomadaires);
           commit('SET_VolumesHebdomadaires', volumesHebdomadaires)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -537,7 +515,6 @@ export default new Vuex.Store({
         .get('volume-globaux/get')
         .then(response => response.data)
         .then(volumesGlobaux => {
-          console.log(volumesGlobaux);
           commit('SET_VolumesGlobaux', volumesGlobaux)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -548,7 +525,6 @@ export default new Vuex.Store({
         .get('groupes-intervenants/get')
         .then(response => response.data)
         .then(groupesIntervenants => {
-          console.log(groupesIntervenants);
           commit('SET_GroupesIntervenants', groupesIntervenants)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -574,7 +550,7 @@ export default new Vuex.Store({
 
           if (element.niveau === 3){
             if (element.mode_saisie === 'hebdo'){
-              commit('ADD_AllVolumesHebdomadairesForModule', {module:element.id, nb_semaine: element.periode.nb_semaine} )
+              commit('ADD_AllVolumesHebdomadairesForModule', {module: element.id, nb_semaine_deb: 1, nb_semaine_fin: element.periode.nb_semaine})
             } else if (element.mode_saisie === 'globale'){
               console.log("mode de saisie gloable")
             }
@@ -583,8 +559,43 @@ export default new Vuex.Store({
         }).catch(error => {
         console.log('Erreur : ', error)
       });
+    },
+    EDIT_Periodes({commit, dispatch}, periode) {
+      axios.put('/periodes/edit/' + periode.id, periode)
+        .then(response => response.data)
+        .then(periodes => {
+          console.log(periodes);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      let index = this.state.periodes.findIndex(p => p.id === periode.id);
+      this.state.periodes[index] = periode
 
-    }
+      var diff = periode.nb_semaine - periode.old_nb_semaine
+
+      if (diff < 0 ){
+        var toDelete = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine > periode.nb_semaine))
+        for (let j = 0; j < toDelete.length; j++) commit('DELETE_VolumesHebdomadaires', toDelete[j].id)
+
+      } else if (diff > 0){
+        const volume = {
+          num_semaine: periode.nb_semaine,
+          vol_hor_cm: 0,
+          vol_hor_td: 0,
+          vol_hor_tp: 0,
+          vol_hor_partiel: 0,
+          element_id: null,
+        }
+        var toAdd = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine === periode.old_nb_semaine));
+
+        for (let i = 0; i < toAdd.length ; i++) {
+          var deb = periode.old_nb_semaine +1
+          console.log(deb)
+          commit('ADD_AllVolumesHebdomadairesForModule', {module: toAdd[i].element_id, nb_semaine_deb: deb, nb_semaine_fin: periode.nb_semaine})
+        }
+        dispatch('loadVolumesHebdomadaires')
+      }
+    },
   },
   modules: {}
 })

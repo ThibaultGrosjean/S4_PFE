@@ -128,6 +128,7 @@ export default {
     form: false,
     id: '',
     nb_semaine: '',
+    old_nb_semaine: '',
     nb_groupe_defaut_cm: 1,
     nb_groupe_defaut_td: 1,
     nb_groupe_defaut_tp: 1,
@@ -183,19 +184,21 @@ export default {
       const periode = {
         id: this.id,
         nb_semaine: this.nb_semaine,
+        old_nb_semaine: this.old_nb_semaine,
         nb_groupe_defaut_cm: this.nb_groupe_defaut_cm,
         nb_groupe_defaut_td: this.nb_groupe_defaut_td,
         nb_groupe_defaut_tp: this.nb_groupe_defaut_tp,
         nb_groupe_defaut_partiel: this.nb_groupe_defaut_partiel,
         element_id: this.element_id,
       }
-      this.$store.commit('EDIT_Periodes', periode);
+      this.$store.dispatch('EDIT_Periodes', periode);
       this.clear()
     },
     clear() {
       this.$v.$reset()
       this.id = ''
       this.nb_semaine = ''
+      this.old_nb_semaine = ''
       this.nb_groupe_defaut_cm = 1
       this.nb_groupe_defaut_td = 1
       this.nb_groupe_defaut_tp = 1
@@ -209,6 +212,7 @@ export default {
     edit(periode) {
       this.id = periode.id
       this.nb_semaine = periode.nb_semaine
+      this.old_nb_semaine = periode.nb_semaine
       this.nb_groupe_defaut_cm = periode.nb_groupe_defaut_cm
       this.nb_groupe_defaut_td = periode.nb_groupe_defaut_td
       this.nb_groupe_defaut_tp = periode.nb_groupe_defaut_tp

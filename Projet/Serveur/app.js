@@ -129,7 +129,7 @@ app.get('/volumes-hebdomadaires/get/:id', volumeHebdomadaireController.getVolume
 
 app.post('/volumes-hebdomadaires/create/',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumeHebdomadaire);
 
-app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaine',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumesHebdomadaires);
+app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaineDeb/:semaineFin',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumesHebdomadaires);
 
 app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.copyVolumeHebdomadaire);
 

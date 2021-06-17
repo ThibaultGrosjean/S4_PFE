@@ -345,7 +345,12 @@
                                                                   <thead>
                                                                   <tr>
                                                                     <th class="text-right right-border"></th>
-                                                                    <th v-for="item in parseInt(findPeriodeBySemestre(semestre.id).nb_semaine)" :key="item">{{ item }}</th>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <th :key="v.id" v-if="v.element_id === module.id">
+                                                                        {{ v.num_semaine }}
+                                                                      </th>
+                                                                    </template>
+<!--                                                                    <th v-for="item in parseInt(findPeriodeBySemestre(semestre.id).nb_semaine)" :key="item">{{ item }}</th>-->
                                                                     <th class="text-left left-border">Total</th>
                                                                   </tr>
                                                                   </thead>
