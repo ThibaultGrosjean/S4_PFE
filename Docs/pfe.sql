@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : Dim 13 juin 2021 à 09:13
+-- Généré le : jeu. 17 juin 2021 à 11:34
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -317,7 +317,15 @@ INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_c
 (11, 8, 11, 2, 1, 1, 3),
 (13, 9, 1, 1, 1, 2, 0),
 (14, 9, 3, 1, 1, 2, 0),
-(15, 9, 2, 1, 1, 2, 0);
+(15, 9, 2, 1, 1, 2, 0),
+(16, 9, 4, 1, 1, 2, 0),
+(17, 9, 5, 1, 1, 2, 0),
+(18, 9, 6, 1, 1, 2, 0),
+(19, 9, 7, 1, 1, 2, 0),
+(20, 9, 8, 1, 1, 2, 0),
+(21, 9, 9, 1, 1, 2, 0),
+(22, 9, 10, 1, 1, 2, 0),
+(23, 9, 11, 1, 1, 2, 0);
 
 --
 -- Index pour les tables déchargées
@@ -471,7 +479,7 @@ ALTER TABLE `volume_globale`
 -- AUTO_INCREMENT pour la table `volume_hebdomadaire`
 --
 ALTER TABLE `volume_hebdomadaire`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Contraintes pour les tables déchargées

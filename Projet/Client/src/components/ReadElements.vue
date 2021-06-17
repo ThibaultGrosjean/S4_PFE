@@ -35,7 +35,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 class="ma-1"
-                                @click="edit(formation)"
+                                @click="edit(formation, null)"
                             >
                               <v-icon>edit</v-icon>
                             </v-btn>
@@ -122,7 +122,7 @@
                                             v-bind="attrs"
                                             v-on="on"
                                             class="ma-1"
-                                            @click="edit(semestre)"
+                                            @click="edit(semestre, findPeriodeBySemestre(semestre.id))"
                                         >
                                           <v-icon>edit</v-icon>
                                         </v-btn>
@@ -209,7 +209,7 @@
                                                         v-bind="attrs"
                                                         v-on="on"
                                                         class="ma-1"
-                                                        @click="edit(ue)"
+                                                        @click="edit(ue, null)"
                                                     >
                                                       <v-icon>edit</v-icon>
                                                     </v-btn>
@@ -295,7 +295,7 @@
                                                                     v-bind="attrs"
                                                                     v-on="on"
                                                                     class="ma-1"
-                                                                    @click="edit(module)"
+                                                                    @click="edit(module, null)"
                                                                 >
                                                                   <v-icon>edit</v-icon>
                                                                 </v-btn>
@@ -345,7 +345,7 @@
                                                                   <thead>
                                                                   <tr>
                                                                     <th class="text-right right-border"></th>
-                                                                    <th v-for="item in findPeriodeBySemestre(semestre).nb_semaine" :key="item">{{ item }}</th>
+                                                                    <th v-for="item in parseInt(findPeriodeBySemestre(semestre.id).nb_semaine)" :key="item">{{ item }}</th>
                                                                     <th class="text-left left-border">Total</th>
                                                                   </tr>
                                                                   </thead>
@@ -407,7 +407,7 @@
                                                                     <td class="left-border">{{ total(module, 'vol_hor_td') }}</td>
                                                                   </tr>
 
-                                                                  <tr v-if="module.td_autorises">
+                                                                  <tr v-if="module.tp_autorises">
                                                                     <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
@@ -608,6 +608,55 @@
                     item-value="id"
                     label="Parent"
                 ></v-select>
+                <div class="ma-0 pa-0" v-if="this.niveau === 1 && methods !== 'PUT'">
+                  <div class="text-h5 mt-4">Période</div>
+                  <v-divider class="mt-3 mb-6"></v-divider>
+                  <v-text-field
+                      v-model="nb_semaine"
+                      :error-messages="nb_semaineErrors"
+                      label="Nombre de semaines"
+                      required
+                      clearable
+                      @input="$v.nb_semaine.$touch()"
+                      @blur="$v.nb_semaine.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="nb_groupe_defaut_cm"
+                      :error-messages="nb_groupe_defaut_cmErrors"
+                      label="Nombre de groupes par défaut pour les CM"
+                      required
+                      clearable
+                      @input="$v.nb_groupe_defaut_cm.$touch()"
+                      @blur="$v.nb_groupe_defaut_cm.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="nb_groupe_defaut_td"
+                      :error-messages="nb_groupe_defaut_tdErrors"
+                      label="Nombre de groupes par défaut pour les TD"
+                      required
+                      clearable
+                      @input="$v.nb_groupe_defaut_td.$touch()"
+                      @blur="$v.nb_groupe_defaut_td.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="nb_groupe_defaut_tp"
+                      :error-messages="nb_groupe_defaut_tpErrors"
+                      label="Nombre de groupes par défaut pour les TP"
+                      required
+                      clearable
+                      @input="$v.nb_groupe_defaut_tp.$touch()"
+                      @blur="$v.nb_groupe_defaut_tp.$touch()"
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="nb_groupe_defaut_partiel"
+                      :error-messages="nb_groupe_defaut_partielErrors"
+                      label="Nombre de groupes par défaut pour les partiels"
+                      required
+                      clearable
+                      @input="$v.nb_groupe_defaut_partiel.$touch()"
+                      @blur="$v.nb_groupe_defaut_partiel.$touch()"
+                  ></v-text-field>
+                </div>
                 <div class="ma-0 pa-0" v-if="this.mode_saisie && this.mode_saisie !== 'aucun'">
                   <br><v-divider></v-divider>
                   <v-text-field
@@ -794,6 +843,12 @@ export default {
     nb_groupe_effectif_tp: {numeric},
     nb_groupe_effectif_partiel: {numeric},
     parent: {numeric},
+
+    nb_semaine: {numeric, required},
+    nb_groupe_defaut_cm: {numeric, required},
+    nb_groupe_defaut_td: {numeric, required},
+    nb_groupe_defaut_tp: {numeric, required},
+    nb_groupe_defaut_partiel: {numeric, required},
   },
   data: () => ({
     form: false,
@@ -804,7 +859,7 @@ export default {
       {nom: 'Hebdomadaire', val: 'hebdo'},
       {nom: 'Globale', val: 'globale'},
     ],
-    id: '',
+    idElement: '',
     titre: '',
     surnom: '',
     code: '',
@@ -814,10 +869,10 @@ export default {
     vol_hor_total_prevues_etu_td: null,
     vol_hor_total_prevues_etu_tp: null,
     mode_saisie: null,
-    cm_autorises: false,
-    td_autorises: false,
-    tp_autorises: false,
-    partiel_autorises: false,
+    cm_autorises: true,
+    td_autorises: true,
+    tp_autorises: true,
+    partiel_autorises: true,
     forfait_globale_cm: null,
     forfait_globale_td: null,
     forfait_globale_tp: null,
@@ -828,6 +883,14 @@ export default {
     nb_groupe_effectif_partiel: null,
     parent: null,
     nbfils: null,
+
+    idPeriode: '',
+    nb_semaine: 1,
+    old_nb_semaine: '',
+    nb_groupe_defaut_cm: 1,
+    nb_groupe_defaut_td: 1,
+    nb_groupe_defaut_tp: 1,
+    nb_groupe_defaut_partiel: 1,
     vol_hor: v  => {
       if (!isNaN(parseFloat(v)) && v >= 0 && v <= 50.0) return true;
       return 'Le volume horaire doit être compris entre 0 et 50.0';
@@ -936,13 +999,48 @@ export default {
       !this.$v.nb_groupe_effectif_partiel.numeric && errors.push('Nombre de groupes effectifs pour les partiel doit être un entier')
       return errors
     },
+    nb_semaineErrors() {
+      const errors = []
+      if (!this.$v.nb_semaine.$dirty) return errors
+      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique')
+      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire')
+      return errors
+    },
+    nb_groupe_defaut_cmErrors() {
+      const errors = []
+      if (!this.$v.nb_groupe_defaut_cm.$dirty) return errors
+      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique')
+      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire')
+      return errors
+    },
+    nb_groupe_defaut_tdErrors() {
+      const errors = []
+      if (!this.$v.nb_groupe_defaut_td.$dirty) return errors
+      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique')
+      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire')
+      return errors
+    },
+    nb_groupe_defaut_tpErrors() {
+      const errors = []
+      if (!this.$v.nb_groupe_defaut_tp.$dirty) return errors
+      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique')
+      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire')
+      return errors
+    },
+    nb_groupe_defaut_partielErrors() {
+      const errors = []
+      if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors
+      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
+      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
+      return errors
+    },
   },
   methods: {
     submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       const element = {
-        id: this.id,
+        id: this.idElement,
         titre: this.titre,
         surnom: this.surnom,
         code: this.code,
@@ -965,8 +1063,26 @@ export default {
         nb_groupe_effectif_tp: this.nb_groupe_effectif_tp,
         nb_groupe_effectif_partiel: this.nb_groupe_effectif_partiel,
         parent: this.parent,
-        nbfils: this.nbfils
+        nbfils: this.nbfils,
+        periode: null,
       }
+      if (element.niveau === 1){
+        element.periode = {
+          id: this.idPeriode,
+          nb_semaine: this.nb_semaine,
+          old_nb_semaine: this.old_nb_semaine,
+          nb_groupe_defaut_cm: this.nb_groupe_defaut_cm,
+          nb_groupe_defaut_td: this.nb_groupe_defaut_td,
+          nb_groupe_defaut_tp: this.nb_groupe_defaut_tp,
+          nb_groupe_defaut_partiel: this.nb_groupe_defaut_partiel,
+        }
+      }
+      if (element.niveau === 3){
+        let index = this.elements.findIndex(e => e.id === element.parent);
+        var grand_pere_id = this.elements[index].parent
+        element.periode = this.findPeriodeBySemestre(grand_pere_id)
+      }
+
       if (this.methods === 'POST') {
         this.$store.dispatch('ADD_Element', element);
       } else {
@@ -977,20 +1093,20 @@ export default {
     },
     clear() {
       this.$v.$reset()
-      this.id = ''
+      this.idElement = ''
       this.titre = ''
       this.surnom = ''
       this.code = ''
       this.niveau = ''
       this.indice = ''
-      this.vol_hor_total_prevues_etu_cm = ''
-      this.vol_hor_total_prevues_etu_td = ''
-      this.vol_hor_total_prevues_etu_tp = ''
+      this.vol_hor_total_prevues_etu_cm = null
+      this.vol_hor_total_prevues_etu_td = null
+      this.vol_hor_total_prevues_etu_tp = null
       this.mode_saisie = ''
-      this.cm_autorises = false
-      this.td_autorises = false
-      this.tp_autorises = false
-      this.partiel_autorises = false
+      this.cm_autorises = true
+      this.td_autorises = true
+      this.tp_autorises = true
+      this.partiel_autorises = true
       this.forfait_globale_cm = null
       this.forfait_globale_td = null
       this.forfait_globale_tp = null
@@ -1001,16 +1117,24 @@ export default {
       this.nb_groupe_effectif_partiel = ''
       this.parent = null
       this.nbfils = null
+
+      this.idPeriode = ''
+      this.nb_semaine = 1
+      this.old_nb_semaine = ''
+      this.nb_groupe_defaut_cm = 1
+      this.nb_groupe_defaut_td = 1
+      this.nb_groupe_defaut_tp = 1
+      this.nb_groupe_defaut_partiel = 1
     },
     close() {
       this.form = !this.form
       this.methods = 'POST'
       this.clear()
     },
-    edit(element) {
+    edit(element, periode) {
       this.methods = 'PUT'
 
-      this.id = element.id
+      this.idElement = element.id
       this.titre = element.titre
       this.surnom = element.surnom
       this.code = element.code
@@ -1034,20 +1158,22 @@ export default {
       this.nb_groupe_effectif_partiel = element.nb_groupe_effectif_partiel
       this.parent = element.parent
 
+      if (periode !== null){
+        this.idPeriode = periode.id
+        this.nb_semaine = periode.nb_semaine
+        this.old_nb_semaine = periode.nb_semaine
+        this.nb_groupe_defaut_cm = periode.nb_groupe_defaut_cm
+        this.nb_groupe_defaut_td = periode.nb_groupe_defaut_td
+        this.nb_groupe_defaut_tp = periode.nb_groupe_defaut_tp
+        this.nb_groupe_defaut_partiel = periode.nb_groupe_defaut_partiel
+        this.element_id = element.id
+      }
+
       this.formation = this.parent === null;
       this.form = true;
     },
     save(volume){
       this.$store.commit('EDIT_VolumesHebdomadaires', volume);
-    },
-    sortedByTitre() {
-      if (this.sortTitre) {
-        this.sortTitre = false
-        this.elements.sort((a, b) => a.titre.toUpperCase() < b.titre.toUpperCase())
-      } else {
-        this.sortTitre = true
-        this.elements.sort((a, b) => a.titre.toUpperCase() > b.titre.toUpperCase())
-      }
     },
     addFormation(){
       this.niveau = 0
@@ -1059,6 +1185,8 @@ export default {
     },
     addSemester(element) {
       var nbfils = element.nbfils
+      console.log(nbfils)
+      if (nbfils === null) nbfils = 0
       this.titre = "Semestre " + (nbfils + 1)
       this.surnom = "S" + (nbfils + 1)
       this.niveau = 1
@@ -1071,13 +1199,14 @@ export default {
     addUE(element) {
       var indice = element.indice
       var nbfils = element.nbfils
+      if (nbfils === null) nbfils = 0
       this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
       this.surnom = "UE" + (indice + 1) + (nbfils+1)
       this.niveau = 2
       this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeBySemestre(element);
+      var periode = this.findPeriodeBySemestre(element.id);
       if (periode !== -1 && periode !== undefined){
         this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
         this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
@@ -1091,6 +1220,7 @@ export default {
       var indice = element.indice
       var indiceM = module.indice
       var nbfils = element.nbfils
+      if (nbfils === null) nbfils = 0
       if (nbfils + 1 < 10) {
         this.titre = "M " + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1) + " : "
         this.surnom = "M" + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1)
@@ -1101,7 +1231,7 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeBySemestre(module);
+      var periode = this.findPeriodeBySemestre(module.id);
       if (periode !== -1 && periode !== undefined){
         this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
         this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
@@ -1111,8 +1241,8 @@ export default {
       this.formation = false;
       this.form = true;
     },
-    findPeriodeBySemestre(semestre){
-      let index = this.periodes.findIndex(p => p.element_id === semestre.id);
+    findPeriodeBySemestre(id){
+      let index = this.periodes.findIndex(p => p.element_id === id);
       return this.periodes[index];
     },
     total(module, type) {

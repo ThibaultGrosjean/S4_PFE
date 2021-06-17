@@ -76,6 +76,43 @@ exports.addVolumeHebdomadaire = (req, res) => {
 };
 
 
+exports.addVolumesHebdomadaires = (req, res) => {
+  var moduleId = req.params.module
+  var nbSemaine = req.params.semaine
+
+  var data = {
+    num_semaine : 0,
+    vol_hor_cm : 0,
+    vol_hor_td : 0,
+    vol_hor_tp : 0,
+    vol_hor_partiel : 0,
+    element_id : moduleId,  
+  };
+
+  for (let i = 1; i <= nbSemaine; i++) {
+    data['num_semaine'] = i;
+
+    var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
+      + data['num_semaine'] + "','"
+      + data['vol_hor_cm'] + "','"
+      + data['vol_hor_td'] + "','"
+      + data['vol_hor_tp'] + "','"
+      + data['vol_hor_partiel'] + "','"
+      + data['element_id'] + "');"
+    ;
+    db.query(requete,
+      function(err) {
+        if (!err) {
+          res.status(200); 
+        } else  {
+          res.send(err);
+        }
+      }
+    );
+  }
+};
+
+
 exports.copyVolumeHebdomadaire = (req, res) => {
   db.query('SELECT * FROM volume_hebdomadaire where id = ? ;', [req.params.id],
     function(err, volume_hebdomadaire) {

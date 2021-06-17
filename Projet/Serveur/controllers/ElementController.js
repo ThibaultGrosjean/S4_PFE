@@ -28,10 +28,12 @@ exports.validator = [
 
 
 exports.getAllElements = (req, res) => {
-  db.query('SELECT e.*, COUNT(ee.id) AS nbfils'
+  db.query('SELECT e.*, COUNT(ee.id) AS nbfils, eee.parent AS grand_pere_id'
         +' FROM element AS e'
         +' LEFT JOIN element AS ee'
         +' ON e.id = ee.parent'
+        +' LEFT JOIN element AS eee'
+        +' ON eee.id = e.parent'
         +' GROUP BY e.id ORDER BY parent;',
     function(err, elements) {
       if (!err) {
@@ -200,24 +202,25 @@ exports.editElement = (req, res) => {
     code : req.body.code,
     niveau : req.body.niveau,
     indice : req.body.indice,
-    vol_hor_total_prevues_etu_cm : req.body.vol_hor_total_prevues_etu_cm,
-    vol_hor_total_prevues_etu_td : req.body.vol_hor_total_prevues_etu_td,
-    vol_hor_total_prevues_etu_tp : req.body.vol_hor_total_prevues_etu_tp,
+    vol_hor_total_prevues_etu_cm : req.body.vol_hor_total_prevues_etu_cm | null,
+    vol_hor_total_prevues_etu_td : req.body.vol_hor_total_prevues_etu_td | null,
+    vol_hor_total_prevues_etu_tp : req.body.vol_hor_total_prevues_etu_tp | null,
     mode_saisie : req.body.mode_saisie,
     cm_autorises : req.body.cm_autorises,
     td_autorises : req.body.td_autorises,
     tp_autorises : req.body.tp_autorises,
     partiel_autorises : req.body.partiel_autorises,
-    forfait_globale_cm : req.body.forfait_globale_cm,
-    forfait_globale_td : req.body.forfait_globale_td,
-    forfait_globale_tp : req.body.forfait_globale_tp,
-    forfait_globale_partiel : req.body.forfait_globale_partiel,
-    nb_groupe_effectif_cm : req.body.nb_groupe_effectif_cm,
-    nb_groupe_effectif_td : req.body.nb_groupe_effectif_td,
-    nb_groupe_effectif_tp : req.body.nb_groupe_effectif_tp,
-    nb_groupe_effectif_partiel : req.body.nb_groupe_effectif_partiel,
+    forfait_globale_cm : req.body.forfait_globale_cm | null,
+    forfait_globale_td : req.body.forfait_globale_td | null,
+    forfait_globale_tp : req.body.forfait_globale_tp | null,
+    forfait_globale_partiel : req.body.forfait_globale_partiel | null,
+    nb_groupe_effectif_cm : req.body.nb_groupe_effectif_cm | null,
+    nb_groupe_effectif_td : req.body.nb_groupe_effectif_td | null,
+    nb_groupe_effectif_tp : req.body.nb_groupe_effectif_tp | null,
+    nb_groupe_effectif_partiel : req.body.nb_groupe_effectif_partiel | null,
     parent : req.body.parent,
   };
+  
   var requete="UPDATE element SET titre ='" + data['titre'] 
   +"', surnom ='" + data['surnom']
   +"', code ='" + data['code'] 

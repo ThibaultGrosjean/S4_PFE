@@ -224,6 +224,16 @@ export default new Vuex.Store({
       });
       state.volumesHebdomadaires.push(volumesHebdomadaires)
     },
+    ADD_AllVolumesHebdomadairesForModule(state, params ) {
+      axios.post('/volumes-hebdomadaires/create/'+ params.module +'/nbsemaine/' + params.nb_semaine)
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+          console.log("volumes hebdomadaire créer ??,");
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
     ADD_VolumesGlobaux(state, volumesGlobaux) {
       axios.post('/volumes-globaux/create/', volumesGlobaux)
         .then(response => response.data)
@@ -287,6 +297,10 @@ export default new Vuex.Store({
       });
       let index = state.elements.findIndex(e => e.id === element.id);
       state.elements[index] = element
+      if (element.niveau === 0){
+        let indexL = state.elementsLevel.findIndex(e => e.id === element.id);
+        state.elementsLevel[indexL] = element
+      }
     },
     EDIT_Intervenant(state, intervenant) {
       axios.put('/intervenants/edit/' + intervenant.id, intervenant)
@@ -554,16 +568,18 @@ export default new Vuex.Store({
           if (this.state.elementsLevel[indexL]) this.state.elementsLevel[indexL].nbfils += 1
 
           if (element.niveau === 1) {
-            var periode = {
-              nb_semaine: 0,
-              nb_groupe_defaut_cm: 1,
-              nb_groupe_defaut_td:1,
-              nb_groupe_defaut_tp: 1,
-              nb_groupe_defaut_partiel: 1,
-              element_id: elements.insertId
-            }
-            commit('ADD_Periodes', periode)
+            element.periode.element_id = element.id;
+            commit('ADD_Periodes',  element.periode)
           }
+
+          if (element.niveau === 3){
+            if (element.mode_saisie === 'hebdo'){
+              commit('ADD_AllVolumesHebdomadairesForModule', {module:element.id, nb_semaine: element.periode.nb_semaine} )
+            } else if (element.mode_saisie === 'globale'){
+              console.log("mode de saisie gloable")
+            }
+          }
+
         }).catch(error => {
         console.log('Erreur : ', error)
       });

@@ -57,3 +57,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 5 : 16-22 juin
 
 * Changement de niveau (sauf 0 et 1) et cacher les champs inutiles selon le niveau
+* Création de tous les volumes hebdomadaires lors de la création d'un Module
