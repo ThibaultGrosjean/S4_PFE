@@ -16,6 +16,7 @@ export default new Vuex.Store({
     elementsLevel: [],
     elements: [],
     intervenants: [],
+    intervenantsModules: [],
     formations: [],
     periodes: [],
     volumesHebdomadaires: [],
@@ -59,6 +60,9 @@ export default new Vuex.Store({
     groupesIntervenants: state => {
       return state.groupesIntervenants;
     },
+    intervenantsModules: state => {
+      return state.intervenantsModules;
+    },
   },
   mutations: {
     SET_Enseignant(state, enseignants) {
@@ -96,6 +100,9 @@ export default new Vuex.Store({
     },
     SET_GroupesIntervenants(state, groupesIntervenants) {
       state.groupesIntervenants = groupesIntervenants
+    },
+    SET_IntervenantsModules(state, intervenantsModules) {
+      state.intervenantsModules = intervenantsModules
     },
     SET_ValeurTtesSem(state, objs){
       axios.put('/volumes-hebdomadaires/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.type)
@@ -384,6 +391,19 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
     },
+    COPY_GroupeIntervenant(state, i_groupeIntervenant) {
+      axios.post('/groupes-intervenants/copy/' + i_groupeIntervenant)
+        .then(response => response.data)
+        .then(groupeIntervenant => {
+          let index = state.groupesIntervenants.findIndex(v => v.id === i_groupeIntervenant);
+          var copy =  Object.assign({}, state.groupesIntervenants[index])
+          copy.id = groupeIntervenant.insertId
+          copy.num_semaine = parseInt(copy.num_semaine)+1
+          state.groupesIntervenants.push(copy)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
     COPY_Statut(state, id_statut) {
       axios.post('/statuts/copy/' + id_statut)
         .then(response => response.data)
@@ -413,6 +433,15 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(elementsLevel => {
           commit('SET_ElementLevel', elementsLevel)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadIntervenantsModules({commit}) {
+      axios.get('/groupes-intervenants/module/get')
+        .then(response => response.data)
+        .then(intervenantGroupe => {
+          commit('SET_IntervenantsModules', intervenantGroupe)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

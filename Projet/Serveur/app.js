@@ -157,7 +157,11 @@ app.get('/groupes-intervenants/get', groupeIntervenantController.getAllGroupeInt
 
 app.get('/groupes-intervenants/get/:id', groupeIntervenantController.getGroupeIntervenant);
 
+app.get('/groupes-intervenants/module/get', groupeIntervenantController.getIntervenantByModule);
+
 app.post('/groupes-intervenants/create/',groupeIntervenantController.validator, groupeIntervenantController.addGroupeIntervenant);
+
+app.post('/groupes-intervenants/copy/:id',groupeIntervenantController.validator, groupeIntervenantController.copyGroupeIntervenant);
 
 app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
 

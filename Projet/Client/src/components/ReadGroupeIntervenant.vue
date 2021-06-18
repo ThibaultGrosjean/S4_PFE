@@ -46,7 +46,7 @@
                   >
                     <v-icon small>edit</v-icon>
                   </v-btn>
-                  <v-btn icon>
+                  <v-btn icon @click="copy(g)">
                     <v-icon small>file_copy</v-icon>
                   </v-btn>
                   <v-btn
@@ -333,6 +333,9 @@ export default {
       this.element_id = groupeIntervenant.element_id
       this.intervenant_id = groupeIntervenant.intervenant_id
       this.form = true;
+    },
+    copy(groupeIntervenant) {
+      this.$store.commit('COPY_GroupeIntervenant', groupeIntervenant.id);
     },
     deleteItem(groupeIntervenant){
       this.$store.commit('DELETE_GroupesIntervenants', groupeIntervenant.id);

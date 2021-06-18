@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 17 juin 2021 à 11:34
+-- Généré le : ven. 18 juin 2021 à 15:02
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -135,7 +135,39 @@ CREATE TABLE `groupe_intervenant` (
 --
 
 INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
-(1, 8, 1, 1, 1, 1, 1, 1);
+(1, 8, 1, 1, 1, 1, 1, 1),
+(2, 8, 1, 2, 1, 1, 1, 1),
+(3, 8, 1, 3, 1, 1, 1, 1),
+(4, 8, 1, 4, 1, 1, 1, 1),
+(5, 8, 1, 5, 1, 1, 1, 1),
+(6, 8, 1, 6, 1, 1, 1, 1),
+(7, 8, 1, 7, 1, 1, 1, 1),
+(8, 8, 1, 8, 1, 1, 1, 1),
+(9, 8, 1, 9, 1, 1, 1, 1),
+(10, 8, 1, 10, 1, 1, 1, 1),
+(11, 8, 1, 11, 1, 1, 1, 1),
+(12, 9, 1, 1, 2, 1, 1, 1),
+(13, 9, 1, 2, 1, 1, 1, 1),
+(14, 9, 1, 3, 1, 1, 1, 1),
+(15, 9, 1, 4, 1, 1, 1, 1),
+(16, 9, 1, 5, 1, 1, 1, 1),
+(17, 9, 1, 6, 1, 1, 1, 1),
+(18, 9, 1, 7, 1, 1, 1, 1),
+(19, 9, 1, 8, 1, 1, 1, 1),
+(20, 9, 1, 9, 1, 1, 1, 1),
+(21, 9, 1, 10, 1, 1, 1, 1),
+(22, 9, 1, 11, 1, 1, 1, 1),
+(23, 9, 2, 1, 3, 1, 1, 1),
+(24, 9, 2, 2, 1, 1, 1, 1),
+(25, 9, 2, 3, 1, 1, 1, 1),
+(26, 9, 2, 4, 1, 1, 1, 1),
+(27, 9, 2, 5, 1, 1, 1, 1),
+(28, 9, 2, 6, 1, 1, 1, 1),
+(29, 9, 2, 7, 1, 1, 1, 1),
+(30, 9, 2, 8, 1, 1, 1, 1),
+(31, 9, 2, 9, 1, 1, 1, 1),
+(32, 9, 2, 10, 1, 1, 1, 1),
+(33, 9, 2, 11, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -443,7 +475,7 @@ ALTER TABLE `formation`
 -- AUTO_INCREMENT pour la table `groupe_intervenant`
 --
 ALTER TABLE `groupe_intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT pour la table `intervenant`
