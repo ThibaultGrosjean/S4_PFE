@@ -94,6 +94,7 @@
                     <v-expansion-panels
                         multiple
                         accordion
+                        hover
                         flat
                     >
                       <v-expansion-panel
@@ -101,7 +102,7 @@
                           :key="semestre.id"
                       >
                         <v-expansion-panel-header v-if="formation.id === semestre.parent">
-                          <div>
+                          <div class="ml-n3">
                             <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                               <template v-slot:activator="{ on, attrs }">
                                 <v-btn
@@ -181,13 +182,14 @@
                                 <v-expansion-panels
                                     multiple
                                     accordion
+                                    hover
                                 >
                                   <v-expansion-panel
                                       v-for="ue in elements"
                                       :key="ue.id"
                                   >
                                     <v-expansion-panel-header v-if="semestre.id === ue.parent">
-                                      <div>
+                                      <div class="ml-2">
                                         <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                           <template v-slot:activator="{ on, attrs }">
                                             <v-btn
@@ -266,13 +268,14 @@
                                             <v-expansion-panels
                                                 multiple
                                                 accordion
+                                                hover
                                             >
                                               <v-expansion-panel
                                                   v-for="module in elements"
                                                   :key="module.id"
                                               >
                                                   <v-expansion-panel-header v-if="ue.id === module.parent">
-                                                    <div>
+                                                    <div class="ml-7">
                                                       <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                                                         <template v-slot:activator="{ on, attrs }">
                                                           <v-btn
@@ -334,12 +337,17 @@
                                                   <v-expansion-panel-content v-if="ue.id === module.parent">
                                                     <v-container>
                                                       <v-row>
-                                                        <v-col class="pa-6 pl-4 pt-1">
+                                                        <v-col class="pl-16 pr-6 pt-0 pb-0">
                                                           <div v-if="module.mode_saisie !=='aucun'">
                                                             <div v-if="module.mode_saisie ==='hebdo'">
                                                               <v-simple-table dense fixed-header>
                                                                 <template v-slot:default>
                                                                   <thead>
+                                                                  <tr>
+                                                                    <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                      <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                    </th>
+                                                                  </tr>
                                                                   <tr>
                                                                     <th class="text-right right-border"></th>
                                                                     <template v-for="v in volumesHebdomadaires">
@@ -464,149 +472,152 @@
                                                                 </template>
                                                               </v-simple-table>
                                                               <v-divider></v-divider>
-                                                              <v-expansion-panels flat accordion>
+                                                              <v-expansion-panels hover flat focusable>
                                                                 <v-expansion-panel>
-                                                                  <v-expansion-panel-header>
+                                                                  <v-expansion-panel-header class="height-row">
                                                                     <template v-slot:actions>
                                                                       <v-icon class="icon-intervenant">$expand</v-icon>
                                                                     </template>
-                                                                    <span class="header-intervenant ml-2">Afficher les intervenants</span>
+                                                                    <template v-slot:default="{ open }">
+                                                                      <v-row no-gutters class="header-intervenant">
+                                                                        <span v-if="!open" class="ml-2">Afficher les intervenants de {{ module.surnom }}</span>
+                                                                        <span v-else class="ml-2">Masquer les intervenants de {{ module.surnom }}</span>
+                                                                      </v-row>
+                                                                    </template>
                                                                   </v-expansion-panel-header>
-                                                                  <v-expansion-panel-content class="content-intervenant">
+                                                                  <v-expansion-panel-content>
                                                                     <template v-for="i in intervenantsModules">
-
-                                                                        <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
-                                                                          <template v-slot:default>
-                                                                            <thead>
-                                                                            <tr>
-                                                                              <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
-                                                                                <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                      <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
+                                                                        <template v-slot:default>
+                                                                          <thead>
+                                                                          <tr>
+                                                                            <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                              <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                            </th>
+                                                                          </tr>
+                                                                          <tr>
+                                                                            <th class="text-right right-border"></th>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                                {{ g.num_semaine }}
                                                                               </th>
-                                                                            </tr>
-                                                                            <tr>
-                                                                              <th class="text-right right-border"></th>
-                                                                              <template v-for="g in groupesIntervenants">
-                                                                                <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                  {{ g.num_semaine }}
-                                                                                </th>
-                                                                              </template>
-                                                                              <th class="text-left left-border">Total</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                            <tr v-if="module.cm_autorises">
-                                                                              <TDContexteMenu :type="'cm'" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                              <template v-for="g in groupesIntervenants">
-                                                                                <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                  <v-edit-dialog
-                                                                                      :disabled="disabled"
-                                                                                      :return-value.sync="g.nb_groupe_cm"
-                                                                                      large
-                                                                                      @save="save(g)"
-                                                                                      cancel-text="Annuler"
-                                                                                      save-text="Valider"
-                                                                                  >
-                                                                                    <div>{{ g.nb_groupe_cm }}</div>
-                                                                                    <template v-slot:input>
-                                                                                      <div class="mt-4 text-subtitle-1">Volume horaire CM - semaine {{ g.num_semaine }}</div>
-                                                                                      <v-text-field
-                                                                                          :disabled="disabled"
-                                                                                          v-model="g.nb_groupe_cm"
-                                                                                          :rules="[vol_hor]"
-                                                                                          clearable
-                                                                                          autofocus
-                                                                                      ></v-text-field>
-                                                                                    </template>
-                                                                                  </v-edit-dialog>
-                                                                                </td>
-                                                                              </template>
-                                                                              <td class="left-border">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
-                                                                            </tr>
+                                                                            </template>
+                                                                            <th class="text-left left-border">Total</th>
+                                                                          </tr>
+                                                                          </thead>
+                                                                          <tbody>
+                                                                          <tr v-if="module.cm_autorises">
+                                                                            <TDContexteMenu :type="'cm'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                                <v-edit-dialog
+                                                                                    :disabled="disabled"
+                                                                                    :return-value.sync="g.nb_groupe_cm"
+                                                                                    large
+                                                                                    @save="save(g)"
+                                                                                    cancel-text="Annuler"
+                                                                                    save-text="Valider"
+                                                                                >
+                                                                                  <div>{{ g.nb_groupe_cm }}</div>
+                                                                                  <template v-slot:input>
+                                                                                    <div class="mt-4 text-subtitle-1">Volume horaire CM - semaine {{ g.num_semaine }}</div>
+                                                                                    <v-text-field
+                                                                                        :disabled="disabled"
+                                                                                        v-model="g.nb_groupe_cm"
+                                                                                        :rules="[vol_hor]"
+                                                                                        clearable
+                                                                                        autofocus
+                                                                                    ></v-text-field>
+                                                                                  </template>
+                                                                                </v-edit-dialog>
+                                                                              </td>
+                                                                            </template>
+                                                                            <td class="left-border">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
+                                                                          </tr>
 
-                                                                            <tr v-if="module.td_autorises">
-                                                                              <TDContexteMenu :type="'td'" :element="module.id"></TDContexteMenu>
-                                                                              <template v-for="g in groupesIntervenants">
-                                                                                <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                  <v-edit-dialog
-                                                                                      :return-value.sync="g.nb_groupe_td"
-                                                                                      large
-                                                                                      @save="save(g)"
-                                                                                      cancel-text="Annuler"
-                                                                                      save-text="Valider"
-                                                                                  >
-                                                                                    <div>{{ g.nb_groupe_td }}</div>
-                                                                                    <template v-slot:input>
-                                                                                      <div class="mt-4 text-subtitle-2">Volume horaire TD - semaine {{ g.num_semaine }}</div>
-                                                                                      <v-text-field
-                                                                                          v-model="g.nb_groupe_td"
-                                                                                          :rules="[vol_hor]"
-                                                                                          clearable
-                                                                                          autofocus
-                                                                                      ></v-text-field>
-                                                                                    </template>
-                                                                                  </v-edit-dialog>
-                                                                                </td>
-                                                                              </template>
-                                                                              <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
-                                                                            </tr>
+                                                                          <tr v-if="module.td_autorises">
+                                                                            <TDContexteMenu :type="'td'" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                                <v-edit-dialog
+                                                                                    :return-value.sync="g.nb_groupe_td"
+                                                                                    large
+                                                                                    @save="save(g)"
+                                                                                    cancel-text="Annuler"
+                                                                                    save-text="Valider"
+                                                                                >
+                                                                                  <div>{{ g.nb_groupe_td }}</div>
+                                                                                  <template v-slot:input>
+                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire TD - semaine {{ g.num_semaine }}</div>
+                                                                                    <v-text-field
+                                                                                        v-model="g.nb_groupe_td"
+                                                                                        :rules="[vol_hor]"
+                                                                                        clearable
+                                                                                        autofocus
+                                                                                    ></v-text-field>
+                                                                                  </template>
+                                                                                </v-edit-dialog>
+                                                                              </td>
+                                                                            </template>
+                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
+                                                                          </tr>
 
-                                                                            <tr v-if="module.tp_autorises">
-                                                                              <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
-                                                                              <template v-for="g in groupesIntervenants">
-                                                                                <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                  <v-edit-dialog
-                                                                                      :return-value.sync="g.nb_groupe_tp"
-                                                                                      large
-                                                                                      @save="save(g)"
-                                                                                      cancel-text="Annuler"
-                                                                                      save-text="Valider"
-                                                                                  >
-                                                                                    <div>{{ g.nb_groupe_tp }}</div>
-                                                                                    <template v-slot:input>
-                                                                                      <div class="mt-4 text-subtitle-2">Volume horaire TP - semaine {{ g.num_semaine }}</div>
-                                                                                      <v-text-field
-                                                                                          v-model="g.nb_groupe_tp"
-                                                                                          :rules="[vol_hor]"
-                                                                                          clearable
-                                                                                          autofocus
-                                                                                      ></v-text-field>
-                                                                                    </template>
-                                                                                  </v-edit-dialog>
-                                                                                </td>
-                                                                              </template>
-                                                                              <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
-                                                                            </tr>
+                                                                          <tr v-if="module.tp_autorises">
+                                                                            <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                                <v-edit-dialog
+                                                                                    :return-value.sync="g.nb_groupe_tp"
+                                                                                    large
+                                                                                    @save="save(g)"
+                                                                                    cancel-text="Annuler"
+                                                                                    save-text="Valider"
+                                                                                >
+                                                                                  <div>{{ g.nb_groupe_tp }}</div>
+                                                                                  <template v-slot:input>
+                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire TP - semaine {{ g.num_semaine }}</div>
+                                                                                    <v-text-field
+                                                                                        v-model="g.nb_groupe_tp"
+                                                                                        :rules="[vol_hor]"
+                                                                                        clearable
+                                                                                        autofocus
+                                                                                    ></v-text-field>
+                                                                                  </template>
+                                                                                </v-edit-dialog>
+                                                                              </td>
+                                                                            </template>
+                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
+                                                                          </tr>
 
-                                                                            <tr v-if="module.partiel_autorises">
-                                                                              <TDContexteMenu :type="'partiel'" :element="module.id"></TDContexteMenu>
-                                                                              <template v-for="g in groupesIntervenants">
-                                                                                <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                  <v-edit-dialog
-                                                                                      :return-value.sync="g.nb_groupe_partiel"
-                                                                                      large
-                                                                                      @save="save(g)"
-                                                                                      cancel-text="Annuler"
-                                                                                      save-text="Valider"
-                                                                                  >
-                                                                                    <div>{{ g.nb_groupe_partiel }}</div>
-                                                                                    <template v-slot:input>
-                                                                                      <div class="mt-4 text-subtitle-2">Volume horaire partiel - semaine {{ g.num_semaine }}</div>
-                                                                                      <v-text-field
-                                                                                          v-model="g.nb_groupe_partiel"
-                                                                                          :rules="[vol_hor]"
-                                                                                          clearable
-                                                                                          autofocus
-                                                                                      ></v-text-field>
-                                                                                    </template>
-                                                                                  </v-edit-dialog>
-                                                                                </td>
-                                                                              </template>
-                                                                              <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
-                                                                            </tr>
-                                                                            </tbody>
-                                                                          </template>
-                                                                        </v-simple-table>
-
+                                                                          <tr v-if="module.partiel_autorises">
+                                                                            <TDContexteMenu :type="'partiel'" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                                <v-edit-dialog
+                                                                                    :return-value.sync="g.nb_groupe_partiel"
+                                                                                    large
+                                                                                    @save="save(g)"
+                                                                                    cancel-text="Annuler"
+                                                                                    save-text="Valider"
+                                                                                >
+                                                                                  <div>{{ g.nb_groupe_partiel }}</div>
+                                                                                  <template v-slot:input>
+                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire partiel - semaine {{ g.num_semaine }}</div>
+                                                                                    <v-text-field
+                                                                                        v-model="g.nb_groupe_partiel"
+                                                                                        :rules="[vol_hor]"
+                                                                                        clearable
+                                                                                        autofocus
+                                                                                    ></v-text-field>
+                                                                                  </template>
+                                                                                </v-edit-dialog>
+                                                                              </td>
+                                                                            </template>
+                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
+                                                                          </tr>
+                                                                          </tbody>
+                                                                        </template>
+                                                                      </v-simple-table>
                                                                     </template>
                                                                   </v-expansion-panel-content>
                                                                 </v-expansion-panel>
@@ -1414,7 +1425,7 @@ export default {
   box-shadow: none !important;
 }
 .v-expansion-panel-content__wrap {
-  padding: 0 0 0 24px !important;
+  padding: 0 0 0 0 !important;
 }
 .right-border {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
@@ -1424,6 +1435,12 @@ export default {
 }
 .top-border{
   border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  color: #353535 !important;
+}
+.height-row{
+  max-height: 2em !important;
+  min-height: 2em !important;
 }
 td, th {
   width: 5em;
@@ -1435,8 +1452,5 @@ td, th {
 }
 .header-intervenant {
   order: 1;
-}
-.v-expansion-panel-content__wrap > .content-intervenant {
-  padding: 0 0 0 0 !important;
 }
 </style>
