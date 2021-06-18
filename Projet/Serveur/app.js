@@ -140,7 +140,7 @@ app.put('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadai
 app.delete('/volumes-hebdomadaires/delete/:id', volumeHebdomadaireController.deleteVolumeHebdomadaire);
 
 
-app.get('/volume-globaux/get', volumeGlobaleController.getAllVolumeGlobales);
+app.get('/volumes-globaux/get', volumeGlobaleController.getAllVolumeGlobales);
 
 app.get('/volumes-globaux/get/:id', volumeGlobaleController.getVolumeGlobale);
 

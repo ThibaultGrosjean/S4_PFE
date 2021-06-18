@@ -266,8 +266,8 @@ export default {
     statut_id: null,
   }),
   mounted() {
-    this.$store.dispatch('loadEnseignants')
-    this.$store.dispatch('loadStatuts')
+    this.$store.dispatch('loadGenerique', 'enseignants')
+    this.$store.dispatch('loadGenerique', 'statuts')
   },
   computed: {
     ...mapState(['statuts', 'enseignants']),

@@ -229,9 +229,9 @@ export default {
     enseignant_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadEnseignants')
-    this.$store.dispatch('loadProjets')
-    this.$store.dispatch('loadIntervenants')
+    this.$store.dispatch('loadGenerique', 'enseignants')
+    this.$store.dispatch('loadGenerique', 'projets')
+    this.$store.dispatch('loadGenerique', 'intervenants')
     this.$store.dispatch('loadProjetsNonArchive')
   },
   computed: {

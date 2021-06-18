@@ -214,9 +214,9 @@ export default {
     element_id: '',
   }),
   mounted() {
+    this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires')
     this.$store.dispatch('loadElementsLevel', 3)
-    this.$store.dispatch('loadElements')
-    this.$store.dispatch('loadVolumesHebdomadaires')
+    this.$store.dispatch('loadGenerique', 'elements')
   },
   computed: {
     ...mapState(['elementsLevel', 'elements', 'volumesHebdomadaires']),

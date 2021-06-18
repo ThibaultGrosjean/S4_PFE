@@ -53,8 +53,8 @@ export default {
     },
   }),
   mounted() {
-    this.$store.dispatch('loadVolumesHebdomadaires');
-    this.$store.dispatch('loadElements');
+    this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
+    this.$store.dispatch('loadGenerique', 'elements');
   },
   computed: {
     ...mapState(['volumesHebdomadaires', 'elements'])

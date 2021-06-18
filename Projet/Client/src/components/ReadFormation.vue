@@ -219,11 +219,11 @@ export default {
     element_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadProjets')
+    this.$store.dispatch('loadGenerique', 'projets')
     this.$store.dispatch('loadProjetsNonArchive')
-    this.$store.dispatch('loadElements')
+    this.$store.dispatch('loadGenerique', 'elements')
     this.$store.dispatch('loadElementsLevel', 0)
-    this.$store.dispatch('loadFormations')
+    this.$store.dispatch('loadGenerique', 'formations')
   },
   computed: {
     ...mapState(['projets', 'elements', 'elementsLevel', 'projetsArchive', 'formations']),

@@ -214,14 +214,13 @@ export default {
 
   validations: {
     nom: {required, maxLength: maxLength(255)},
-    surnom: {required, maxLength: maxLength(3)},
+    surnom: {required, maxLength: maxLength(255)},
     nb_he_td_min_attendu: {required, decimal},
     nb_he_td_max_attendu: {required, decimal},
     nb_he_td_min_sup: {required, decimal},
     nb_he_td_max_sup: {required, decimal},
   },
   data: () => ({
-    showDetails: false,
     form: false,
     methods: "POST",
     sortNom: false,
@@ -234,7 +233,7 @@ export default {
     nb_he_td_max_sup: '',
   }),
   mounted() {
-    this.$store.dispatch('loadStatuts');
+    this.$store.dispatch('loadGenerique', 'statuts');
   },
   computed: {
     ...mapState(['statuts', 'enseignants']),

@@ -231,10 +231,10 @@ export default {
   }),
   mounted() {
     this.$store.dispatch('loadElementsLevel', 3)
-    this.$store.dispatch('loadElements')
-    this.$store.dispatch('loadIntervenants')
-    this.$store.dispatch('loadEnseignants')
-    this.$store.dispatch('loadVolumesGlobaux')
+    this.$store.dispatch('loadGenerique', 'elements')
+    this.$store.dispatch('loadGenerique', 'intervenants')
+    this.$store.dispatch('loadGenerique', 'enseignants')
+    this.$store.dispatch('loadGenerique', 'volumes-globaux')
   },
   computed: {
     ...mapState(['elementsLevel', 'elements', 'intervenants', 'enseignants', 'volumesGlobaux']),

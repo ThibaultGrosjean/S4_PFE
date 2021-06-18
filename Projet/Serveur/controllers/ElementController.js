@@ -28,12 +28,10 @@ exports.validator = [
 
 
 exports.getAllElements = (req, res) => {
-  db.query('SELECT e.*, COUNT(ee.id) AS nbfils, eee.parent AS grand_pere_id'
+  db.query('SELECT e.*, COUNT(ee.id) AS nbfils'
         +' FROM element AS e'
         +' LEFT JOIN element AS ee'
         +' ON e.id = ee.parent'
-        +' LEFT JOIN element AS eee'
-        +' ON eee.id = e.parent'
         +' GROUP BY e.id ORDER BY parent;',
     function(err, elements) {
       if (!err) {

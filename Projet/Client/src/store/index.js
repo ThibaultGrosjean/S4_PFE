@@ -323,17 +323,6 @@ export default new Vuex.Store({
       let index = state.formations.findIndex(f => f.id === formations.id);
       state.formations[index] = formations
     },
-    EDIT_VolumesHebdomadaires(state, volumesHebdomadaires) {
-      axios.put('/volumes-hebdomadaires/edit/' + volumesHebdomadaires.id, volumesHebdomadaires)
-        .then(response => response.data)
-        .then(volumesHebdomadaires => {
-          console.log(volumesHebdomadaires);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.volumesHebdomadaires.findIndex(p => p.id === volumesHebdomadaires.id);
-      state.volumesHebdomadaires[index] = volumesHebdomadaires
-    },
     EDIT_VolumesGlobaux(state, volumesGlobaux) {
       axios.put('/volumes-globaux/edit/' + volumesGlobaux.id, volumesGlobaux)
         .then(response => response.data)
@@ -410,39 +399,8 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loadEnseignants({commit}) {
-      axios
-        .get('enseignants/get')
-        .then(response => response.data)
-        .then(enseignants => {
-          commit('SET_Enseignant', enseignants)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadStatuts({commit}) {
-      axios
-        .get('statuts/get')
-        .then(response => response.data)
-        .then(statuts => {
-          commit('SET_Statut', statuts)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadProjets({commit}) {
-      axios
-        .get('projets/get')
-        .then(response => response.data)
-        .then(projets => {
-          commit('SET_Projet', projets)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
     loadProjetsNonArchive({commit}) {
-      axios
-        .get('projets/non-archive/get')
+      axios.get('projets/non-archive/get')
         .then(response => response.data)
         .then(projetsArchive => {
           commit('SET_Projet_archive', projetsArchive)
@@ -450,19 +408,8 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
-    loadElements({commit}) {
-      axios
-        .get('elements/get')
-        .then(response => response.data)
-        .then(elements => {
-          commit('SET_Element', elements)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
     loadElementsLevel({commit}, level) {
-      axios
-        .get('/elements/get/level/' + level)
+      axios.get('/elements/get/level/' + level)
         .then(response => response.data)
         .then(elementsLevel => {
           commit('SET_ElementLevel', elementsLevel)
@@ -470,67 +417,48 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
-    loadIntervenants({commit}) {
-      axios
-        .get('intervenants/get')
+    loadGenerique({commit}, table) {
+      axios.get(table + '/get')
         .then(response => response.data)
-        .then(intervenants => {
-          commit('SET_Intervenant', intervenants)
+        .then(responce => {
+          switch (table) {
+            case 'enseignants':
+              commit('SET_Enseignant', responce);
+              break;
+            case 'statuts':
+              commit('SET_Statut', responce);
+              break;
+            case 'projets':
+              commit('SET_Projet', responce);
+              break;
+            case 'elements':
+              commit('SET_Element', responce);
+              break;
+            case 'intervenants':
+              commit('SET_Intervenant', responce);
+              break;
+            case 'formations':
+              commit('SET_Formations', responce);
+              break;
+            case 'periodes':
+              commit('SET_Periodes', responce);
+              break;
+            case 'volumes-hebdomadaires':
+              commit('SET_VolumesHebdomadaires', responce);
+              break;
+            case 'volumes-globaux':
+              commit('SET_VolumesGlobaux', responce);
+              break;
+            case 'groupes-intervenants':
+              commit('SET_GroupesIntervenants', responce);
+              break;
+            default:
+          }
         }).catch(error => {
         console.log('Erreur : ', error)
       })
     },
-    loadFormations({commit}) {
-      axios
-        .get('formations/get')
-        .then(response => response.data)
-        .then(formations => {
-          commit('SET_Formations', formations)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadPeriodes({commit}) {
-      axios
-        .get('periodes/get')
-        .then(response => response.data)
-        .then(periodes => {
-          commit('SET_Periodes', periodes)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadVolumesHebdomadaires({commit}) {
-      axios
-        .get('volumes-hebdomadaires/get')
-        .then(response => response.data)
-        .then(volumesHebdomadaires => {
-          commit('SET_VolumesHebdomadaires', volumesHebdomadaires)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadVolumesGlobaux({commit}) {
-      axios
-        .get('volume-globaux/get')
-        .then(response => response.data)
-        .then(volumesGlobaux => {
-          commit('SET_VolumesGlobaux', volumesGlobaux)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    loadGroupesIntervenants({commit}) {
-      axios
-        .get('groupes-intervenants/get')
-        .then(response => response.data)
-        .then(groupesIntervenants => {
-          commit('SET_GroupesIntervenants', groupesIntervenants)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
-    ADD_Element({commit}, element) {
+    ADD_Element({commit, dispatch}, element) {
       axios.post('/elements/create/', element)
         .then(response => response.data)
         .then(elements => {
@@ -576,25 +504,23 @@ export default new Vuex.Store({
       if (diff < 0 ){
         var toDelete = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine > periode.nb_semaine))
         for (let j = 0; j < toDelete.length; j++) commit('DELETE_VolumesHebdomadaires', toDelete[j].id)
-
       } else if (diff > 0){
-        const volume = {
-          num_semaine: periode.nb_semaine,
-          vol_hor_cm: 0,
-          vol_hor_td: 0,
-          vol_hor_tp: 0,
-          vol_hor_partiel: 0,
-          element_id: null,
-        }
         var toAdd = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine === periode.old_nb_semaine));
-
         for (let i = 0; i < toAdd.length ; i++) {
-          var deb = periode.old_nb_semaine +1
-          console.log(deb)
-          commit('ADD_AllVolumesHebdomadairesForModule', {module: toAdd[i].element_id, nb_semaine_deb: deb, nb_semaine_fin: periode.nb_semaine})
+          commit('ADD_AllVolumesHebdomadairesForModule', {module: toAdd[i].element_id, nb_semaine_deb: periode.old_nb_semaine +1, nb_semaine_fin: periode.nb_semaine})
         }
-        dispatch('loadVolumesHebdomadaires')
+        dispatch('loadGenerique', 'volumes-hebdomadaires')
       }
+    },
+    EDIT_VolumesHebdomadaires({dispatch}, volumesHebdomadaires) {
+      axios.put('/volumes-hebdomadaires/edit/' + volumesHebdomadaires.id, volumesHebdomadaires)
+        .then(response => response.data)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+          dispatch('loadGenerique', 'volumes-hebdomadaires')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
     },
   },
   modules: {}

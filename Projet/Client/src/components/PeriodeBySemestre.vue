@@ -136,7 +136,7 @@ export default {
     element_id: '',
   }),
   mounted() {
-    this.$store.dispatch('loadPeriodes')
+    this.$store.dispatch('loadGenerique', 'periodes')
   },
   computed: {
     ...mapState(['periodes']),

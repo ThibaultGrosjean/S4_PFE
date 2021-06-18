@@ -59,3 +59,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Changement de niveau (sauf 0 et 1) et cacher les champs inutiles selon le niveau
 * Création de tous les volumes hebdomadaires lors de la création d'un Module
 * Ajout et suppr. des volumes hebdo. si changement du nb semaine d'une période
+* Restructuration des fonctions loadNomTable en 1 fonction

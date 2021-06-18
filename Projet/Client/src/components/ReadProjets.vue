@@ -137,7 +137,7 @@
                     v-model="menu"
                     :close-on-content-click="false"
                     :return-value.sync="date"
-                    transition="scale-transition"
+                    transition="slide-y-transition"
                     offset-y
                     min-width="auto"
                     v-if="this.methods !== 'POST'"
@@ -251,7 +251,7 @@ export default {
     archive: false,
   }),
   mounted() {
-    this.$store.dispatch('loadProjets');
+    this.$store.dispatch('loadGenerique', 'projets');
   },
   computed: {
     ...mapState(['projets']),
