@@ -250,8 +250,8 @@ export default {
     num_semaineErrors() {
       const errors = []
       if (!this.$v.num_semaine.$dirty) return errors
-      !this.$v.num_semaine.numeric && errors.push('Le Numéro de semaines doit être un numérique')
-      !this.$v.num_semaine.required && errors.push('Le Numéro de semaines est obligatoire')
+      !this.$v.num_semaine.numeric && errors.push('Le numéro de semaines doit être un numérique')
+      !this.$v.num_semaine.required && errors.push('Le numéro de semaines est obligatoire')
       return errors
     },
     nb_groupe_cmErrors() {

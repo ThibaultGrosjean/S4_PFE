@@ -105,32 +105,81 @@ export default new Vuex.Store({
       state.intervenantsModules = intervenantsModules
     },
     SET_ValeurTtesSem(state, objs){
-      axios.put('/volumes-hebdomadaires/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.type)
+      var url = '/'+ objs.tab +'/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.typeCours
+      if (objs.tab === 'volumes-globaux' || objs.tab === 'groupes-intervenants') {
+        url = url + '/intervenant/' + objs.intervenant
+      }
+      axios.put(url)
         .then(response => response.data)
-        .then(volumesHebdomadaires => {
-          console.log(volumesHebdomadaires);
+        .then(responce => {
+          console.log(responce);
         }).catch(error => {
         console.log('Erreur : ', error)
       });
-      for (let i = 0; i < state.volumesHebdomadaires.length; i++) {
-        if(state.volumesHebdomadaires[i].element_id === objs.element){
-          switch(objs.type) {
-            case 'cm':
-              state.volumesHebdomadaires[i].vol_hor_cm = objs.value
-              break;
-            case 'td':
-              state.volumesHebdomadaires[i].vol_hor_td = objs.value
-              break;
-            case 'tp':
-              state.volumesHebdomadaires[i].vol_hor_tp = objs.value
-              break;
-            case 'partiel':
-              state.volumesHebdomadaires[i].vol_hor_partiel = objs.value
-              break;
-            default:
+      if (objs.tab === 'volumes-hebdomadaires') {
+        for (let i = 0; i < state.volumesHebdomadaires.length; i++) {
+          if(state.volumesHebdomadaires[i].element_id === objs.element){
+            switch(objs.typeCours) {
+              case 'cm':
+                state.volumesHebdomadaires[i].vol_hor_cm = objs.value
+                break;
+              case 'td':
+                state.volumesHebdomadaires[i].vol_hor_td = objs.value
+                break;
+              case 'tp':
+                state.volumesHebdomadaires[i].vol_hor_tp = objs.value
+                break;
+              case 'partiel':
+                state.volumesHebdomadaires[i].vol_hor_partiel = objs.value
+                break;
+              default:
+            }
           }
         }
       }
+      if (objs.tab === 'groupes-intervenants') {
+        for (let i = 0; i < state.groupesIntervenants.length; i++) {
+          if(state.groupesIntervenants[i].element_id === objs.element && state.groupesIntervenants[i].intervenant_id === objs.intervenant){
+            switch(objs.typeCours) {
+              case 'cm':
+                state.groupesIntervenants[i].nb_groupe_cm = objs.value
+                break;
+              case 'td':
+                state.groupesIntervenants[i].nb_groupe_td = objs.value
+                break;
+              case 'tp':
+                state.groupesIntervenants[i].nb_groupe_tp = objs.value
+                break;
+              case 'partiel':
+                state.groupesIntervenants[i].nb_groupe_partiel = objs.value
+                break;
+              default:
+            }
+          }
+        }
+      }
+      if (objs.tab === 'volumes-globaux') {
+        for (let i = 0; i < state.volumesGlobaux.length; i++) {
+          if(state.volumesGlobaux[i].element_id === objs.element && state.volumesGlobaux[i].intervenant_id === objs.intervenant){
+            switch(objs.typeCours) {
+              case 'cm':
+                state.volumesGlobaux[i].vol_hor_cm = objs.value
+                break;
+              case 'td':
+                state.volumesGlobaux[i].vol_hor_td = objs.value
+                break;
+              case 'tp':
+                state.volumesGlobaux[i].vol_hor_tp = objs.value
+                break;
+              case 'partiel':
+                state.volumesGlobaux[i].vol_hor_partiel = objs.value
+                break;
+              default:
+            }
+          }
+        }
+      }
+
     },
     DELETE_Enseignant(state, id_enseignant) {
       let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);

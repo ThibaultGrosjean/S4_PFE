@@ -50,7 +50,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Formulaire de création et de modification des Groupes d'enseignants
 * Modification des Volumes hebdomadaires depuis le tableau des heures hebdo. prévues
 * Surnom d'un enseignant calculé automatiquement
-* Menu contextuel pour copier la même valeur à toutes les semaines
+* Menu contextuel pour copier la même valeur à toutes les semaines (Volumes Hebdo.)
 * Accéder à la période (d'un semestre) depuis la hiérarchie
 * Accéder à la composition hiérarchique depuis la formation
 
@@ -61,3 +61,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ajout et suppr. des volumes hebdo. si changement du nb semaine d'une période
 * Restructuration des fonctions loadNomTable en 1 fonction
 * Affichage des enseignants intervenants sur le module
+* Affichage volumes globaux
+* Menu contextuel pour copier la même valeur à toutes les semaines (Grp. Intervenant)

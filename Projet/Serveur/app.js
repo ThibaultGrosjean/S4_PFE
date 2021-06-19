@@ -165,6 +165,8 @@ app.post('/groupes-intervenants/copy/:id',groupeIntervenantController.validator,
 
 app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
 
+app.put('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant',groupeIntervenantController.validator, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
+
 app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
 
 

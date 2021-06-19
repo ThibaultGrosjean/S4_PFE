@@ -229,40 +229,40 @@ export default {
     num_semaineErrors() {
       const errors = []
       if (!this.$v.num_semaine.$dirty) return errors
-      !this.$v.num_semaine.decimal && errors.push('Le Numéro de semaines doit être un numérique')
-      !this.$v.num_semaine.required && errors.push('Le Numéro de semaines est obligatoire')
+      !this.$v.num_semaine.decimal && errors.push('Le numéro de semaines doit être un numérique')
+      !this.$v.num_semaine.required && errors.push('Le numéro de semaines est obligatoire')
       return errors
     },
     vol_hor_cmErrors() {
       const errors = []
       if (!this.$v.vol_hor_cm.$dirty) return errors
-      !this.$v.vol_hor_cm.decimal && errors.push('Le Volume horaire pour les CM doit être un numérique')
-      !this.$v.vol_hor_cm.between && errors.push('Le Volume horaire pour les CM doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_cm.required && errors.push('Le Volume horaire pour les CM est obligatoire')
+      !this.$v.vol_hor_cm.decimal && errors.push('Le volume horaire pour les CM doit être un numérique')
+      !this.$v.vol_hor_cm.between && errors.push('Le volume horaire pour les CM doit être compris entre 0 et 50.0')
+      !this.$v.vol_hor_cm.required && errors.push('Le volume horaire pour les CM est obligatoire')
       return errors
     },
     vol_hor_tdErrors() {
       const errors = []
       if (!this.$v.vol_hor_td.$dirty) return errors
-      !this.$v.vol_hor_td.decimal && errors.push('Le Volume horaire pour les TD doit être un numérique')
-      !this.$v.vol_hor_td.between && errors.push('Le Volume horaire pour les TD doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_td.required && errors.push('Le Volume horaire pour les TD est obligatoire')
+      !this.$v.vol_hor_td.decimal && errors.push('Le volume horaire pour les TD doit être un numérique')
+      !this.$v.vol_hor_td.between && errors.push('Le volume horaire pour les TD doit être compris entre 0 et 50.0')
+      !this.$v.vol_hor_td.required && errors.push('Le volume horaire pour les TD est obligatoire')
       return errors
     },
     vol_hor_tpErrors() {
       const errors = []
       if (!this.$v.vol_hor_tp.$dirty) return errors
-      !this.$v.vol_hor_tp.decimal && errors.push('Le Volume horaire pour les TP doit être un numérique')
-      !this.$v.vol_hor_tp.between && errors.push('Le Volume horaire pour les TP doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_tp.required && errors.push('Le Volume horaire pour les TP est obligatoire')
+      !this.$v.vol_hor_tp.decimal && errors.push('Le volume horaire pour les TP doit être un numérique')
+      !this.$v.vol_hor_tp.between && errors.push('Le volume horaire pour les TP doit être compris entre 0 et 50.0')
+      !this.$v.vol_hor_tp.required && errors.push('Le volume horaire pour les TP est obligatoire')
       return errors
     },
     vol_hor_partielErrors() {
       const errors = []
       if (!this.$v.vol_hor_partiel.$dirty) return errors
-      !this.$v.vol_hor_partiel.decimal && errors.push('Le Volume horaire pour les partiels doit être un numérique')
-      !this.$v.vol_hor_partiel.between && errors.push('Le Volume horaire pour les partiels doit être compris entre 0 et 50.0')
-      !this.$v.vol_hor_partiel.required && errors.push('Le Volume horaire pour les partiels est obligatoire')
+      !this.$v.vol_hor_partiel.decimal && errors.push('Le volume horaire pour les partiels doit être un numérique')
+      !this.$v.vol_hor_partiel.between && errors.push('Le volume horaire pour les partiels doit être compris entre 0 et 50.0')
+      !this.$v.vol_hor_partiel.required && errors.push('Le volume horaire pour les partiels est obligatoire')
       return errors
     },
   },

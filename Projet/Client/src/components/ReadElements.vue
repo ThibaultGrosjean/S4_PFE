@@ -360,7 +360,7 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :type="'cm'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                    <TDContexteMenu :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
@@ -389,7 +389,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <TDContexteMenu :type="'td'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
@@ -416,7 +416,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
-                                                                    <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
@@ -443,7 +443,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <TDContexteMenu :type="'partiel'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
@@ -507,7 +507,7 @@
                                                                           </thead>
                                                                           <tbody>
                                                                           <tr v-if="module.cm_autorises">
-                                                                            <TDContexteMenu :type="'cm'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                            <TDContexteMenu :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
@@ -520,11 +520,11 @@
                                                                                 >
                                                                                   <div>{{ g.nb_groupe_cm }}</div>
                                                                                   <template v-slot:input>
-                                                                                    <div class="mt-4 text-subtitle-1">Volume horaire CM - semaine {{ g.num_semaine }}</div>
+                                                                                    <div class="mt-4 text-subtitle-1">Nombre de groupes CM - semaine {{ g.num_semaine }}</div>
                                                                                     <v-text-field
                                                                                         :disabled="disabled"
                                                                                         v-model="g.nb_groupe_cm"
-                                                                                        :rules="[vol_hor]"
+                                                                                        :rules="[nb_groupe]"
                                                                                         clearable
                                                                                         autofocus
                                                                                     ></v-text-field>
@@ -536,7 +536,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.td_autorises">
-                                                                            <TDContexteMenu :type="'td'" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
@@ -548,10 +548,10 @@
                                                                                 >
                                                                                   <div>{{ g.nb_groupe_td }}</div>
                                                                                   <template v-slot:input>
-                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire TD - semaine {{ g.num_semaine }}</div>
+                                                                                    <div class="mt-4 text-subtitle-2">Nombre de groupes TD - semaine {{ g.num_semaine }}</div>
                                                                                     <v-text-field
                                                                                         v-model="g.nb_groupe_td"
-                                                                                        :rules="[vol_hor]"
+                                                                                        :rules="[nb_groupe]"
                                                                                         clearable
                                                                                         autofocus
                                                                                     ></v-text-field>
@@ -563,7 +563,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.tp_autorises">
-                                                                            <TDContexteMenu :type="'tp'" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
@@ -575,10 +575,10 @@
                                                                                 >
                                                                                   <div>{{ g.nb_groupe_tp }}</div>
                                                                                   <template v-slot:input>
-                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire TP - semaine {{ g.num_semaine }}</div>
+                                                                                    <div class="mt-4 text-subtitle-2">Nombre de groupes TP - semaine {{ g.num_semaine }}</div>
                                                                                     <v-text-field
                                                                                         v-model="g.nb_groupe_tp"
-                                                                                        :rules="[vol_hor]"
+                                                                                        :rules="[nb_groupe]"
                                                                                         clearable
                                                                                         autofocus
                                                                                     ></v-text-field>
@@ -590,7 +590,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.partiel_autorises">
-                                                                            <TDContexteMenu :type="'partiel'" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
@@ -602,10 +602,10 @@
                                                                                 >
                                                                                   <div>{{ g.nb_groupe_partiel }}</div>
                                                                                   <template v-slot:input>
-                                                                                    <div class="mt-4 text-subtitle-2">Volume horaire partiel - semaine {{ g.num_semaine }}</div>
+                                                                                    <div class="mt-4 text-subtitle-2">Nombre de groupes partiel - semaine {{ g.num_semaine }}</div>
                                                                                     <v-text-field
                                                                                         v-model="g.nb_groupe_partiel"
-                                                                                        :rules="[vol_hor]"
+                                                                                        :rules="[nb_groupe]"
                                                                                         clearable
                                                                                         autofocus
                                                                                     ></v-text-field>
@@ -624,7 +624,131 @@
                                                               </v-expansion-panels>
                                                             </div>
                                                             <div v-if="module.mode_saisie ==='globale'">
-                                                              Globale <!--TODO : Affichage saisie globale -->
+                                                              <!--TODO : Edit volume globale -->
+                                                              <template v-for="i in volumesGlobaux">
+                                                                <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
+                                                                  <template v-slot:default>
+                                                                    <thead>
+                                                                    <tr>
+                                                                      <th :colspan="3" class="text-center top-border">
+                                                                        <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                      </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                      <th class="text-right right-border"></th>
+                                                                      <th>{{ module.surnom }}</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr v-if="module.cm_autorises">
+                                                                      <TDContexteMenu :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                      <template v-for="g in volumesGlobaux">
+                                                                        <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                          <v-edit-dialog
+                                                                              :disabled="disabled"
+                                                                              :return-value.sync="g.vol_hor_cm"
+                                                                              large
+                                                                              @save="save(g)"
+                                                                              cancel-text="Annuler"
+                                                                              save-text="Valider"
+                                                                          >
+                                                                            <div>{{ g.vol_hor_cm }}</div>
+                                                                            <template v-slot:input>
+                                                                              <div class="mt-4 text-subtitle-1">Nombre de groupes CM - semaine {{ g.num_semaine }}</div>
+                                                                              <v-text-field
+                                                                                  :disabled="disabled"
+                                                                                  v-model="g.vol_hor_cm"
+                                                                                  :rules="[nb_groupe]"
+                                                                                  clearable
+                                                                                  autofocus
+                                                                              ></v-text-field>
+                                                                            </template>
+                                                                          </v-edit-dialog>
+                                                                        </td>
+                                                                      </template>
+                                                                    </tr>
+
+                                                                    <tr v-if="module.td_autorises">
+                                                                      <TDContexteMenu :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <template v-for="g in volumesGlobaux">
+                                                                        <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                          <v-edit-dialog
+                                                                              :return-value.sync="g.vol_hor_td"
+                                                                              large
+                                                                              @save="save(g)"
+                                                                              cancel-text="Annuler"
+                                                                              save-text="Valider"
+                                                                          >
+                                                                            <div>{{ g.vol_hor_td }}</div>
+                                                                            <template v-slot:input>
+                                                                              <div class="mt-4 text-subtitle-2">Nombre de groupes TD - semaine {{ g.num_semaine }}</div>
+                                                                              <v-text-field
+                                                                                  v-model="g.vol_hor_td"
+                                                                                  :rules="[nb_groupe]"
+                                                                                  clearable
+                                                                                  autofocus
+                                                                              ></v-text-field>
+                                                                            </template>
+                                                                          </v-edit-dialog>
+                                                                        </td>
+                                                                      </template>
+                                                                    </tr>
+
+                                                                    <tr v-if="module.tp_autorises">
+                                                                      <TDContexteMenu :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <template v-for="g in volumesGlobaux">
+                                                                        <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                          <v-edit-dialog
+                                                                              :return-value.sync="g.vol_hor_tp"
+                                                                              large
+                                                                              @save="save(g)"
+                                                                              cancel-text="Annuler"
+                                                                              save-text="Valider"
+                                                                          >
+                                                                            <div>{{ g.vol_hor_tp }}</div>
+                                                                            <template v-slot:input>
+                                                                              <div class="mt-4 text-subtitle-2">Nombre de groupes TP - semaine {{ g.num_semaine }}</div>
+                                                                              <v-text-field
+                                                                                  v-model="g.vol_hor_tp"
+                                                                                  :rules="[nb_groupe]"
+                                                                                  clearable
+                                                                                  autofocus
+                                                                              ></v-text-field>
+                                                                            </template>
+                                                                          </v-edit-dialog>
+                                                                        </td>
+                                                                      </template>
+                                                                    </tr>
+
+                                                                    <tr v-if="module.partiel_autorises">
+                                                                      <TDContexteMenu :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <template v-for="g in volumesGlobaux">
+                                                                        <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                          <v-edit-dialog
+                                                                              :return-value.sync="g.vol_hor_partiel"
+                                                                              large
+                                                                              @save="save(g)"
+                                                                              cancel-text="Annuler"
+                                                                              save-text="Valider"
+                                                                          >
+                                                                            <div>{{ g.vol_hor_partiel }}</div>
+                                                                            <template v-slot:input>
+                                                                              <div class="mt-4 text-subtitle-2">Nombre de groupes partiel - semaine {{ g.num_semaine }}</div>
+                                                                              <v-text-field
+                                                                                  v-model="g.vol_hor_partiel"
+                                                                                  :rules="[nb_groupe]"
+                                                                                  clearable
+                                                                                  autofocus
+                                                                              ></v-text-field>
+                                                                            </template>
+                                                                          </v-edit-dialog>
+                                                                        </td>
+                                                                      </template>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                  </template>
+                                                                </v-simple-table>
+                                                              </template>
                                                             </div>
                                                           </div>
                                                         </v-col>
@@ -1034,18 +1158,23 @@ export default {
       if (!isNaN(parseFloat(v)) && v >= 0 && v <= 50.0) return true;
       return 'Le volume horaire doit être compris entre 0 et 50.0';
     },
+    nb_groupe: v  => {
+      if (!isNaN(parseInt(v)) && v >= 0) return true;
+      return 'Le nombre de groupes doit être un entier';
+    },
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'elements');
     this.$store.dispatch('loadGenerique', 'periodes');
     this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
+    this.$store.dispatch('loadGenerique', 'volumes-globaux');
     this.$store.dispatch('loadGenerique', 'intervenants');
     this.$store.dispatch('loadGenerique', 'enseignants');
     this.$store.dispatch('loadIntervenantsModules');
     this.$store.dispatch('loadGenerique', 'groupes-intervenants');
   },
   computed: {
-    ...mapState(['elements','periodes', 'volumesHebdomadaires', 'intervenants', 'enseignants', 'intervenantsModules', 'groupesIntervenants']),
+    ...mapState(['elements','periodes', 'volumesHebdomadaires', 'volumesGlobaux', 'intervenants', 'enseignants', 'intervenantsModules', 'groupesIntervenants']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -1442,7 +1571,7 @@ export default {
   max-height: 2em !important;
   min-height: 2em !important;
 }
-td, th {
+td, th, tr {
   width: 5em;
   min-width: 5em;
   max-width: 5em;

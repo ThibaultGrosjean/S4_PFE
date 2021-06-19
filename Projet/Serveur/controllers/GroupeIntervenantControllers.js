@@ -154,6 +154,39 @@ exports.editGroupeIntervenant = (req, res) => {
 };
 
 
+exports.editTypeValueElementGroupeIntervenant = (req, res) => {
+  var typeUpdate = ''
+  switch(req.params.type) {
+    case 'cm':
+      typeUpdate = "nb_groupe_cm =" + req.params.value
+      break;
+    case 'td':
+      typeUpdate = "nb_groupe_td =" + req.params.value
+      break;
+    case 'tp':
+      typeUpdate = "nb_groupe_tp =" + req.params.value
+      break;
+    case 'partiel':
+      typeUpdate = "nb_groupe_partiel =" + req.params.value
+      break;
+    default:
+  } 
+
+  var requete="UPDATE groupe_intervenant SET " + typeUpdate
+  +" WHERE element_id = " + req.params.id +" AND intervenant_id  = " + req.params.intervenant + ";";
+
+  db.query(requete,
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      } else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.deleteGroupeIntervenant = (req, res) => {
   db.query('DELETE FROM groupe_intervenant WHERE id = ? ;',[req.params.id],
     function(err) {

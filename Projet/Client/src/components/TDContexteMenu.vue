@@ -2,12 +2,15 @@
   <v-menu :disabled="disabled" offset-y right>
     <template v-slot:activator="{ on }">
       <td class="text-right right-border first-col" @contextmenu.prevent="on.click">
-        {{ type.toUpperCase() }}
+        {{ typeCours.toUpperCase() }}
       </td>
     </template>
     <v-card>
-      <v-card-title class="text-h6 text-center">Valeur pour toutes les semaines</v-card-title>
-      <v-card-subtitle class="text-subtitle-1 text-center">{{ type.toUpperCase() }}</v-card-subtitle>
+      <v-card-title class="text-h6 text-center">
+        <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
+        <span v-else>Volume horaire pour toutes les semaines</span>
+      </v-card-title>
+      <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
       <v-card-text>
         <v-text-field
             v-model="volHorSemaineDefaut"
@@ -41,16 +44,13 @@ import {mapState} from "vuex";
 
 export default {
   name: "TDContexteMenu",
-  props: ['type', 'element', 'disabled'],
+  props: ['typeCours', 'table', 'element', 'intervenant', 'disabled'],
   data: () => ({
     showMenuVolHor: false,
     volHorSemaineDefaut: 0,
     x: 0,
     y: 0,
-    vol_hor: v => {
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 50.0) return true;
-      return 'Le volume horaire doit être compris entre 0 et 50.0';
-    },
+
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
@@ -70,7 +70,32 @@ export default {
       })
     },
     appliquerTtesSem() {
-      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, type:this.type})
+      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, typeCours:this.typeCours, tab:this.table, intervenant:this.intervenant})
+    },
+    vol_hor() {
+      let index = this.elements.findIndex(i => i.id === this.element);
+      var el = this.elements[index]
+      if (this.table === 'groupes-intervenants'){
+        switch (this.typeCours){
+          case 'cm' :
+            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_cm) return true;
+            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_cm;
+          case 'td':
+            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_td) return true;
+            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_td;
+          case 'tp' :
+            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_tp) return true;
+            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_tp;
+          case 'partiel' :
+            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_partiel) return true;
+            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_partiel;
+          default:
+            return 'Le nombre de groupe doit être un entier';
+        }
+      } else {
+        if (!isNaN(parseFloat(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= 50.0) return true;
+        return 'Le volume horaire doit être compris entre 0 et 50.0';
+      }
     },
   }
 }
