@@ -96,6 +96,7 @@
                         accordion
                         hover
                         flat
+                        focusable
                     >
                       <v-expansion-panel
                           v-for="semestre in elements"
@@ -360,14 +361,14 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :disabled="disabled"
                                                                             :return-value.sync="v.vol_hor_cm"
                                                                             large
-                                                                            @save="save(v)"
+                                                                            @save="save(v, 'volume')"
                                                                             cancel-text="Annuler"
                                                                             save-text="Valider"
                                                                         >
@@ -389,13 +390,13 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <TDContexteMenu :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_td"
                                                                             large
-                                                                            @save="save(v)"
+                                                                            @save="save(v, 'volume')"
                                                                             cancel-text="Annuler"
                                                                             save-text="Valider"
                                                                         >
@@ -416,13 +417,13 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
-                                                                    <TDContexteMenu :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_tp"
                                                                             large
-                                                                            @save="save(v)"
+                                                                            @save="save(v, 'volume')"
                                                                             cancel-text="Annuler"
                                                                             save-text="Valider"
                                                                         >
@@ -443,13 +444,13 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <TDContexteMenu :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <td :key="v.id" v-if="v.element_id === module.id">
                                                                         <v-edit-dialog
                                                                             :return-value.sync="v.vol_hor_partiel"
                                                                             large
-                                                                            @save="save(v)"
+                                                                            @save="save(v, 'volume')"
                                                                             cancel-text="Annuler"
                                                                             save-text="Valider"
                                                                         >
@@ -507,14 +508,14 @@
                                                                           </thead>
                                                                           <tbody>
                                                                           <tr v-if="module.cm_autorises">
-                                                                            <TDContexteMenu :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
                                                                                     :disabled="disabled"
                                                                                     :return-value.sync="g.nb_groupe_cm"
                                                                                     large
-                                                                                    @save="save(g)"
+                                                                                    @save="save(g, 'groupe')"
                                                                                     cancel-text="Annuler"
                                                                                     save-text="Valider"
                                                                                 >
@@ -536,13 +537,13 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.td_autorises">
-                                                                            <TDContexteMenu :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
                                                                                     :return-value.sync="g.nb_groupe_td"
                                                                                     large
-                                                                                    @save="save(g)"
+                                                                                    @save="save(g, 'groupe')"
                                                                                     cancel-text="Annuler"
                                                                                     save-text="Valider"
                                                                                 >
@@ -563,13 +564,13 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.tp_autorises">
-                                                                            <TDContexteMenu :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
                                                                                     :return-value.sync="g.nb_groupe_tp"
                                                                                     large
-                                                                                    @save="save(g)"
+                                                                                    @save="save(g, 'groupe')"
                                                                                     cancel-text="Annuler"
                                                                                     save-text="Valider"
                                                                                 >
@@ -590,13 +591,13 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.partiel_autorises">
-                                                                            <TDContexteMenu :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                                 <v-edit-dialog
                                                                                     :return-value.sync="g.nb_groupe_partiel"
                                                                                     large
-                                                                                    @save="save(g)"
+                                                                                    @save="save(g, 'groupe')"
                                                                                     cancel-text="Annuler"
                                                                                     save-text="Valider"
                                                                                 >
@@ -630,7 +631,7 @@
                                                                   <template v-slot:default>
                                                                     <thead>
                                                                     <tr>
-                                                                      <th :colspan="3" class="text-center top-border">
+                                                                      <th :colspan="2" class="text-center top-border">
                                                                         <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
                                                                       </th>
                                                                     </tr>
@@ -641,14 +642,14 @@
                                                                     </thead>
                                                                     <tbody>
                                                                     <tr v-if="module.cm_autorises">
-                                                                      <TDContexteMenu :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                      <td>CM</td>
                                                                       <template v-for="g in volumesGlobaux">
                                                                         <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                           <v-edit-dialog
                                                                               :disabled="disabled"
                                                                               :return-value.sync="g.vol_hor_cm"
                                                                               large
-                                                                              @save="save(g)"
+                                                                              @save="save(g, 'globale')"
                                                                               cancel-text="Annuler"
                                                                               save-text="Valider"
                                                                           >
@@ -669,13 +670,13 @@
                                                                     </tr>
 
                                                                     <tr v-if="module.td_autorises">
-                                                                      <TDContexteMenu :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <td>TD</td>
                                                                       <template v-for="g in volumesGlobaux">
                                                                         <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                           <v-edit-dialog
                                                                               :return-value.sync="g.vol_hor_td"
                                                                               large
-                                                                              @save="save(g)"
+                                                                              @save="save(g, 'globale')"
                                                                               cancel-text="Annuler"
                                                                               save-text="Valider"
                                                                           >
@@ -695,13 +696,13 @@
                                                                     </tr>
 
                                                                     <tr v-if="module.tp_autorises">
-                                                                      <TDContexteMenu :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <td>TP</td>
                                                                       <template v-for="g in volumesGlobaux">
                                                                         <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                           <v-edit-dialog
                                                                               :return-value.sync="g.vol_hor_tp"
                                                                               large
-                                                                              @save="save(g)"
+                                                                              @save="save(g, 'globale')"
                                                                               cancel-text="Annuler"
                                                                               save-text="Valider"
                                                                           >
@@ -721,13 +722,13 @@
                                                                     </tr>
 
                                                                     <tr v-if="module.partiel_autorises">
-                                                                      <TDContexteMenu :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                      <td>PARTIEL</td>
                                                                       <template v-for="g in volumesGlobaux">
                                                                         <td :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
                                                                           <v-edit-dialog
                                                                               :return-value.sync="g.vol_hor_partiel"
                                                                               large
-                                                                              @save="save(g)"
+                                                                              @save="save(g, 'globale')"
                                                                               cancel-text="Annuler"
                                                                               save-text="Valider"
                                                                           >
@@ -1429,6 +1430,7 @@ export default {
       this.nb_groupe_effectif_tp = element.nb_groupe_effectif_tp
       this.nb_groupe_effectif_partiel = element.nb_groupe_effectif_partiel
       this.parent = element.parent
+      this.nbfils = element.nbfils
 
       if (periode !== null){
         this.idPeriode = periode.id
@@ -1444,8 +1446,14 @@ export default {
       this.formation = this.parent === null;
       this.form = true;
     },
-    save(volume){
-      this.$store.dispatch('EDIT_VolumesHebdomadaires', volume);
+    save(data, type){
+      if (type === 'groupe'){
+          this.$store.dispatch('EDIT_GroupeIntervenant', data);
+      } else if (type === 'volume'){
+        this.$store.dispatch('EDIT_VolumesHebdomadaires', data);
+      } else if (type === 'globale'){
+        this.$store.dispatch('EDIT_VolumesGlobaux', data);
+      }
     },
     addFormation(){
       this.niveau = 0

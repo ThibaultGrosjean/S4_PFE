@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : ven. 18 juin 2021 à 15:02
+-- Généré le : lun. 21 juin 2021 à 13:20
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `pfe`
 --
-DROP TABLE IF EXISTS `element`, `enseignant`, `formation`, `groupe_intervenant`, `groupe_sous_total`, `intervenant`, `limite_sous_total`, `periode`, `projet`, `statut`, `volume_globale`, `volume_hebdomadaire`;
+DROP TABLE `element`, `enseignant`, `formation`, `groupe_intervenant`, `groupe_sous_total`, `intervenant`, `limite_sous_total`, `periode`, `projet`, `statut`, `volume_globale`, `volume_hebdomadaire`;
 -- --------------------------------------------------------
 
 --
@@ -135,18 +135,18 @@ CREATE TABLE `groupe_intervenant` (
 --
 
 INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
-(1, 8, 1, 1, 1, 1, 1, 1),
-(2, 8, 1, 2, 1, 1, 1, 1),
-(3, 8, 1, 3, 1, 1, 1, 1),
-(4, 8, 1, 4, 1, 1, 1, 1),
-(5, 8, 1, 5, 1, 1, 1, 1),
-(6, 8, 1, 6, 1, 1, 1, 1),
-(7, 8, 1, 7, 1, 1, 1, 1),
-(8, 8, 1, 8, 1, 1, 1, 1),
-(9, 8, 1, 9, 1, 1, 1, 1),
-(10, 8, 1, 10, 1, 1, 1, 1),
-(11, 8, 1, 11, 1, 1, 1, 1),
-(12, 9, 1, 1, 2, 1, 1, 1),
+(1, 8, 1, 1, 1, 1, 1, 0),
+(2, 8, 1, 2, 1, 1, 1, 0),
+(3, 8, 1, 3, 1, 1, 1, 0),
+(4, 8, 1, 4, 1, 1, 1, 0),
+(5, 8, 1, 5, 1, 1, 1, 0),
+(6, 8, 1, 6, 1, 1, 1, 0),
+(7, 8, 1, 7, 1, 1, 1, 0),
+(8, 8, 1, 8, 1, 1, 1, 0),
+(9, 8, 1, 9, 1, 1, 1, 0),
+(10, 8, 1, 10, 1, 1, 1, 0),
+(11, 8, 1, 11, 0, 0, 0, 1),
+(12, 9, 1, 1, 1, 1, 1, 1),
 (13, 9, 1, 2, 1, 1, 1, 1),
 (14, 9, 1, 3, 1, 1, 1, 1),
 (15, 9, 1, 4, 1, 1, 1, 1),
@@ -156,7 +156,7 @@ INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_sem
 (19, 9, 1, 8, 1, 1, 1, 1),
 (20, 9, 1, 9, 1, 1, 1, 1),
 (21, 9, 1, 10, 1, 1, 1, 1),
-(22, 9, 1, 11, 1, 1, 1, 1),
+(22, 9, 1, 11, 0, 0, 0, 1),
 (23, 9, 2, 1, 3, 1, 1, 1),
 (24, 9, 2, 2, 1, 1, 1, 1),
 (25, 9, 2, 3, 1, 1, 1, 1),
@@ -167,7 +167,7 @@ INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_sem
 (30, 9, 2, 8, 1, 1, 1, 1),
 (31, 9, 2, 9, 1, 1, 1, 1),
 (32, 9, 2, 10, 1, 1, 1, 1),
-(33, 9, 2, 11, 1, 1, 1, 1);
+(33, 9, 2, 11, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -336,17 +336,17 @@ CREATE TABLE `volume_hebdomadaire` (
 --
 
 INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
-(1, 8, 1, 2, 1, 1.5, 0),
-(2, 8, 3, 1, 3, 3, 0),
+(1, 8, 1, 1, 1, 1.5, 0),
+(2, 8, 3, 1, 1, 1.5, 0),
 (3, 8, 2, 1, 1, 1.5, 0),
-(4, 8, 4, 1, 1, 2, 0),
+(4, 8, 4, 1, 1, 1.5, 0),
 (5, 8, 5, 1, 1, 1.5, 0),
 (6, 8, 6, 1, 1, 1.5, 0),
 (7, 8, 7, 1, 1, 1.5, 0),
 (8, 8, 8, 1, 1, 1.5, 0),
-(9, 8, 9, 2, 1, 1.5, 0),
-(10, 8, 10, 1, 1, 2, 0),
-(11, 8, 11, 2, 1, 1, 3),
+(9, 8, 9, 1, 1, 1.5, 0),
+(10, 8, 10, 1, 1, 1.5, 0),
+(11, 8, 11, 0, 0, 0, 3),
 (13, 9, 1, 1, 1, 2, 0),
 (14, 9, 3, 1, 1, 2, 0),
 (15, 9, 2, 1, 1, 2, 0),
@@ -357,7 +357,7 @@ INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_c
 (20, 9, 8, 1, 1, 2, 0),
 (21, 9, 9, 1, 1, 2, 0),
 (22, 9, 10, 1, 1, 2, 0),
-(23, 9, 11, 1, 1, 2, 0);
+(23, 9, 11, 0, 0, 0, 0);
 
 --
 -- Index pour les tables déchargées

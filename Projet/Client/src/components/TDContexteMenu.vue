@@ -1,5 +1,12 @@
 <template>
-  <v-menu :disabled="disabled" offset-y right>
+  <v-menu
+      :disabled="disabled"
+      offset-y
+      right
+      transition="slide-y-transition"
+      :close-on-click="validForm"
+      :close-on-content-click="validForm"
+  >
     <template v-slot:activator="{ on }">
       <td class="text-right right-border first-col" @contextmenu.prevent="on.click">
         {{ typeCours.toUpperCase() }}
@@ -12,11 +19,21 @@
       </v-card-title>
       <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
       <v-card-text>
-        <v-text-field
-            v-model="volHorSemaineDefaut"
-            :rules="[vol_hor]"
+        <v-text-field v-if="table === 'groupes-intervenants'"
+            v-model="nbGroupeSemaineDefaut"
+            :error-messages="nbGroupeSemaineDefautErrors"
             clearable
             autofocus
+            @input="$v.nbGroupeSemaineDefaut.$touch()"
+            @blur="$v.nbGroupeSemaineDefaut.$touch()"
+        ></v-text-field>
+        <v-text-field v-else
+            v-model="volHorSemaineDefaut"
+            :error-messages="volHorSemaineDefautErrors"
+            clearable
+            autofocus
+            @input="$v.volHorSemaineDefaut.$touch()"
+            @blur="$v.volHorSemaineDefaut.$touch()"
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
@@ -24,6 +41,7 @@
         <v-btn
             text
             color="primary"
+            @click="close"
         >
           Annuler
         </v-btn>
@@ -41,23 +59,48 @@
 
 <script>
 import {mapState} from "vuex";
+import {validationMixin} from "vuelidate";
+import {decimal,numeric, between, required} from "vuelidate/lib/validators";
 
 export default {
   name: "TDContexteMenu",
-  props: ['typeCours', 'table', 'element', 'intervenant', 'disabled'],
+  mixins: [validationMixin],
+  props: ['typeCours', 'table', 'element', 'intervenant', 'disabled', 'lim'],
+
+  validations: {
+    volHorSemaineDefaut: {required, decimal, between:between(0,50)},
+    nbGroupeSemaineDefaut: {required, numeric, between(value) {return between(0, this.lim)(value)}},
+  },
   data: () => ({
     showMenuVolHor: false,
+    validForm: false,
     volHorSemaineDefaut: 0,
+    nbGroupeSemaineDefaut: 0,
     x: 0,
     y: 0,
-
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
     this.$store.dispatch('loadGenerique', 'elements');
   },
   computed: {
-    ...mapState(['volumesHebdomadaires', 'elements'])
+    ...mapState(['volumesHebdomadaires', 'elements']),
+    volHorSemaineDefautErrors() {
+      const errors = []
+      if (!this.$v.volHorSemaineDefaut.$dirty) return errors
+      !this.$v.volHorSemaineDefaut.required && errors.push('Ce champs est requis')
+      !this.$v.volHorSemaineDefaut.decimal && errors.push('Le volume horaire doit être un nombre à virgule')
+      !this.$v.volHorSemaineDefaut.between && errors.push('Le volume horaire doit être compris entre 0 et 50.0')
+      return errors
+    },
+    nbGroupeSemaineDefautErrors() {
+      const errors = []
+      if (!this.$v.nbGroupeSemaineDefaut.$dirty) return errors
+      !this.$v.nbGroupeSemaineDefaut.required && errors.push('Ce champs est requis')
+      !this.$v.nbGroupeSemaineDefaut.numeric && errors.push('Le nombre de groupes doit être un entier')
+      !this.$v.nbGroupeSemaineDefaut.between && errors.push('Le nombre de groupes doit être compris entre 0 et ' + this.lim)
+      return errors
+    },
   },
   methods: {
     show(e) {
@@ -69,33 +112,26 @@ export default {
         this.showMenuVolHor = true
       })
     },
-    appliquerTtesSem() {
-      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, typeCours:this.typeCours, tab:this.table, intervenant:this.intervenant})
+    clear() {
+      this.$v.$reset()
+      this.volHorSemaineDefaut = 0
+      this.nbGroupeSemaineDefaut = 0
     },
-    vol_hor() {
-      let index = this.elements.findIndex(i => i.id === this.element);
-      var el = this.elements[index]
-      if (this.table === 'groupes-intervenants'){
-        switch (this.typeCours){
-          case 'cm' :
-            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_cm) return true;
-            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_cm;
-          case 'td':
-            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_td) return true;
-            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_td;
-          case 'tp' :
-            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_tp) return true;
-            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_tp;
-          case 'partiel' :
-            if (!isNaN(parseInt(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= el.nb_groupe_effectif_partiel) return true;
-            return 'Le nombre de groupes doit être compris entre 0 et ' + el.nb_groupe_effectif_partiel;
-          default:
-            return 'Le nombre de groupe doit être un entier';
-        }
-      } else {
-        if (!isNaN(parseFloat(this.volHorSemaineDefaut)) && this.volHorSemaineDefaut >= 0 && this.volHorSemaineDefaut <= 50.0) return true;
-        return 'Le volume horaire doit être compris entre 0 et 50.0';
+    close() {
+      this.validForm = true
+      this.clear()
+    },
+    appliquerTtesSem() {
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        this.validForm = false
+        return;
       }
+      if (this.table === 'groupes-intervenants'){
+        this.volHorSemaineDefaut = this.nbGroupeSemaineDefaut
+      }
+      this.validForm = true
+      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, typeCours:this.typeCours, tab:this.table, intervenant:this.intervenant})
     },
   }
 }

@@ -250,15 +250,16 @@ export default new Vuex.Store({
       });
       state.intervenants.push(intervenant)
     },
-    ADD_Formations(state, formations) {
-      axios.post('/formations/create/', formations)
+    ADD_Formations(state, formation) {
+      axios.post('/formations/create/', formation)
         .then(response => response.data)
         .then(formations => {
+          formation.id = formations.insertId
           console.log(formations);
         }).catch(error => {
         console.log('Erreur : ', error)
       });
-      state.formations.push(formations)
+      state.formations.push(formation)
     },
     ADD_Periodes(state, periodes) {
       axios.post('/periodes/create/', periodes)
@@ -596,6 +597,26 @@ export default new Vuex.Store({
         .then(volumesHebdomadaires => {
           console.log(volumesHebdomadaires);
           dispatch('loadGenerique', 'volumes-hebdomadaires')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    EDIT_GroupeIntervenant({dispatch}, groupeIntervenant) {
+      axios.put('/groupes-intervenants/edit/' + groupeIntervenant.id, groupeIntervenant)
+        .then(response => response.data)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+          dispatch('loadGenerique', 'groupes-intervenants')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    EDIT_VolumesGlobaux({dispatch}, volumeGlobale) {
+      axios.put('/volumes-globaux/edit/' + volumeGlobale.id, volumeGlobale)
+        .then(response => response.data)
+        .then(volumesGlobaux => {
+          console.log(volumesGlobaux);
+          dispatch('loadGenerique', 'volumes-globaux')
         }).catch(error => {
         console.log('Erreur : ', error)
       });

@@ -50,9 +50,9 @@ exports.addFormation = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, formation) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(formation); 
       } else  {
         res.send(err);
       }
