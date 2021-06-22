@@ -7,9 +7,20 @@
       :close-on-click="validForm"
       :close-on-content-click="validForm"
   >
-    <template v-slot:activator="{ on }">
-      <td class="text-right right-border first-col" @contextmenu.prevent="on.click">
-        {{ typeCours.toUpperCase() }}
+    <template v-slot:activator="{ on, attrs }">
+      <td v-bind="attrs" v-on="on">
+        <div v-if="table === 'groupes-intervenants'">
+          <span v-if="typeCours === 'cm'">{{ data.nb_groupe_cm }}</span>
+          <span v-if="typeCours === 'td'">{{ data.nb_groupe_td }}</span>
+          <span v-if="typeCours === 'tp'">{{ data.nb_groupe_tp }}</span>
+          <span v-if="typeCours === 'partiel'">{{ data.nb_groupe_partiel }}</span>
+        </div>
+        <div v-else>
+          <span v-if="typeCours === 'cm'">{{ data.vol_hor_cm }}</span>
+          <span v-if="typeCours === 'td'">{{ data.vol_hor_td }}</span>
+          <span v-if="typeCours === 'tp'">{{ data.vol_hor_tp }}</span>
+          <span v-if="typeCours === 'partiel'">{{ data.vol_hor_partiel }}</span>
+        </div>
       </td>
     </template>
     <v-card>
@@ -17,7 +28,8 @@
         <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
         <span v-else>Volume horaire pour toutes les semaines</span>
       </v-card-title>
-      <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
+      <v-card-subtitle class="text-subtitle-1 text-center" v-if="table === 'groupes-intervenants'">Nombre de groupe {{ typeCours.toUpperCase() }} - semaine {{ data.num_semaine }}</v-card-subtitle>
+      <v-card-subtitle class="text-subtitle-1 text-center" v-else>Volume horaire {{ typeCours.toUpperCase() }} - semaine {{ data.num_semaine }}</v-card-subtitle>
       <v-card-text>
         <v-text-field v-if="table === 'groupes-intervenants'"
             v-model="nbGroupeSemaineDefaut"
@@ -48,7 +60,7 @@
         <v-btn
             text
             color="primary"
-            @click="appliquerTtesSem()"
+            @click="save"
         >
           Valider
         </v-btn>
@@ -58,14 +70,13 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
-import {decimal,numeric, between, required} from "vuelidate/lib/validators";
+import {between, decimal, numeric, required} from "vuelidate/lib/validators";
 
 export default {
-  name: "TDContexteMenu",
+  name: "TDVEditDialog",
   mixins: [validationMixin],
-  props: ['typeCours', 'table', 'element', 'intervenant', 'disabled', 'lim'],
+  props: ['typeCours', 'table', 'data', 'disabled', 'lim'],
 
   validations: {
     volHorSemaineDefaut: {required, decimal, between:between(0,50)},
@@ -79,12 +90,8 @@ export default {
     x: 0,
     y: 0,
   }),
-  mounted() {
-    this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
-    this.$store.dispatch('loadGenerique', 'elements');
-  },
   computed: {
-    ...mapState(['volumesHebdomadaires', 'elements']),
+    //VolHorGlobaleDefautErrors getPériodeUE
     volHorSemaineDefautErrors() {
       const errors = []
       if (!this.$v.volHorSemaineDefaut.$dirty) return errors
@@ -121,29 +128,37 @@ export default {
       this.validForm = true
       this.clear()
     },
-    appliquerTtesSem() {
+    save(){
       this.$v.$touch()
       if (this.$v.$invalid) {
         this.validForm = false
         return;
       }
-      if (this.table === 'groupes-intervenants'){
-        this.volHorSemaineDefaut = this.nbGroupeSemaineDefaut
-      }
       this.validForm = true
-      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, typeCours:this.typeCours, tab:this.table, intervenant:this.intervenant})
+      if (this.table === 'groupes-intervenants'){
+        if (this.typeCours ==='cm') this.data.nb_groupe_cm = this.nbGroupeSemaineDefaut
+        if (this.typeCours ==='td') this.data.nb_groupe_td = this.nbGroupeSemaineDefaut
+        if (this.typeCours ==='tp') this.data.nb_groupe_tp = this.nbGroupeSemaineDefaut
+        if (this.typeCours ==='partiel')this.data.nb_groupe_partiel = this.nbGroupeSemaineDefaut
+        this.$store.dispatch('EDIT_GroupeIntervenant', this.data);
+      } else if (this.table === 'volumes-hebdomadaires'){
+        if (this.typeCours ==='cm')this.data.vol_hor_cm = this.volHorSemaineDefaut
+        if (this.typeCours ==='td') this.data.vol_hor_td = this.volHorSemaineDefaut
+        if (this.typeCours ==='tp') this.data.vol_hor_tp = this.volHorSemaineDefaut
+        if (this.typeCours ==='partiel')this.data.vol_hor_partiel = this.volHorSemaineDefaut
+        this.$store.dispatch('EDIT_VolumesHebdomadaires', this.data);
+      } else if (this.table === 'volumes-globaux'){
+        if (this.typeCours ==='cm')this.data.vol_hor_cm = this.volHorSemaineDefaut
+        if (this.typeCours ==='td') this.data.vol_hor_td = this.volHorSemaineDefaut
+        if (this.typeCours ==='tp') this.data.vol_hor_tp = this.volHorSemaineDefaut
+        if (this.typeCours ==='partiel')this.data.vol_hor_partiel = this.volHorSemaineDefaut
+        this.$store.dispatch('EDIT_VolumesGlobaux', this.data);
+      }
     },
   }
 }
 </script>
 
 <style scoped>
-.right-border {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-td.first-col {
-  width: 7em;
-  min-width: 7em;
-  max-width: 7em;
-}
+
 </style>
