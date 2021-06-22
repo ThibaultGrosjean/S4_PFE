@@ -35,10 +35,75 @@
         <v-col
             v-for="p in projets"
             :key="p.id"
-            sm="4"
+            sm="6"
         >
           <v-card>
-            <v-card-title class="text-h5">{{ p.nom }}</v-card-title>
+            <v-card-title class="text-h5">
+              <span>{{ p.nom }}</span>
+              <v-spacer></v-spacer>
+              <v-edit-dialog
+                  :return-value.sync="p.verrou"
+                  large
+                  @save="save(p)"
+                  cancel-text="Annuler"
+                  save-text="Valider"
+              >
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        :color="p.verrou ? 'success' : 'gray'"
+                    >
+                      <v-icon>{{ p.verrou ? "lock" : "lock_open" }}</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
+                </v-tooltip>
+                <template v-slot:input>
+                  <v-switch
+                      v-model="p.verrou"
+                      :true-value="1"
+                      :false-value="0"
+                      color="success"
+                      :label="p.verrou ? 'Verrouiller' : 'Déverrouiller'"
+                  >
+                  </v-switch>
+                </template>
+              </v-edit-dialog>
+              <v-edit-dialog
+                  :return-value.sync="p.archive"
+                  large
+                  @save="save(p)"
+                  cancel-text="Annuler"
+                  save-text="Valider"
+              >
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        :color="p.verrou ? 'success' : 'gray'"
+                    >
+                      <v-icon>{{ p.archive ? "archive" : "unarchive" }}</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ p.archive ? "Désarchiver" : "Archiver " }}</span>
+                </v-tooltip>
+                <template v-slot:input>
+                  <v-switch
+                      v-model="p.archive"
+                      :true-value="1"
+                      :false-value="0"
+                      color="success"
+                      label="Archive"
+                  >
+                  </v-switch>
+                </template>
+              </v-edit-dialog>
+            </v-card-title>
             <v-card-text>
               <p class="mb-0">Date : <b>{{ toTime(p.date) }}</b></p>
               <p class="mb-0">Verrou :
@@ -139,6 +204,8 @@
                     :return-value.sync="date"
                     transition="slide-y-transition"
                     offset-y
+                    bottom
+                    :nudge-left="16"
                     min-width="auto"
                     v-if="this.methods !== 'POST'"
                 >
@@ -153,24 +220,25 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
+                      width="600px"
                       v-model="date"
                       no-title
                       scrollable
                   >
+                    <v-btn
+                        text
+                        color="red darken-1"
+                        @click="menu = false"
+                    >
+                      Annuler
+                    </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
                         text
-                        color="primary"
-                        @click="menu = false"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                        text
-                        color="primary"
+                        color="green darken-1"
                         @click="$refs.menu.save(date)"
                     >
-                      OK
+                      Valider
                     </v-btn>
                   </v-date-picker>
                 </v-menu>
@@ -305,6 +373,10 @@ export default {
       this.verrou = projet.verrou
       this.archive = projet.archive
       this.form = true;
+    },
+    save(projet){
+      projet.date = this.toTime(projet.date)
+      this.$store.commit('EDIT_Projet', projet);
     },
     sortedByDate() {
       if (this.sortDate) {

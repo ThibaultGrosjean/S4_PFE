@@ -2,7 +2,7 @@
   <v-dialog
       v-model="dialog"
       persistent
-      max-width="290"
+      max-width="350"
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn icon color="red darken-1">
@@ -20,7 +20,6 @@
       </v-card-title>
       <v-card-text>Êtes-vous sûr de vouloir supprimer cet enregistrement ?</v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
             color="red darken-1"
             text
@@ -28,6 +27,7 @@
         >
           Annuler
         </v-btn>
+        <v-spacer></v-spacer>
         <v-btn
             color="green darken-1"
             text

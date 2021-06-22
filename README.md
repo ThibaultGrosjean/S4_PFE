@@ -63,3 +63,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Affichage des enseignants intervenants sur le module
 * Affichage volumes globaux
 * Menu contextuel pour copier la même valeur à toutes les semaines (Grp. Intervenant)
+* Accéder au nombre de groupes depuis le module

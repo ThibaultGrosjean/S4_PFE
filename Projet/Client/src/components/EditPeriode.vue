@@ -7,12 +7,12 @@
             v-bind="attrs"
             v-on="on"
             class="ma-1"
-            @click="edit(findPeriodeSemestre(semestre))"
+            @click="edit(findPeriodeSemestre(element))"
         >
           <v-icon>access_time</v-icon>
         </v-btn>
       </template>
-      <span>Accéder à la période</span>
+      <span>Modifier à la période</span>
     </v-tooltip>
     <v-dialog
         v-model="form"
@@ -22,7 +22,7 @@
       <v-card>
         <v-form lazy-validation>
           <v-card-title>
-            <span class="headline">Modifier la période du {{ semestre.titre }}</span>
+            <span class="headline">Modifier la période du {{ element.titre }}</span>
             <v-spacer></v-spacer>
             <v-btn
                 icon
@@ -113,9 +113,9 @@ import {numeric, required} from "vuelidate/lib/validators";
 import {mapState} from "vuex";
 
 export default {
-  name: "PeriodeBySemestre",
+  name: "EditPeriode",
   mixins: [validationMixin],
-  props: ['semestre'],
+  props: ['element'],
   validations: {
     nb_semaine: {required, numeric},
     nb_groupe_defaut_cm: {required, numeric},
@@ -221,7 +221,7 @@ export default {
       this.form = true;
     },
     findPeriodeSemestre(){
-      let index = this.periodes.findIndex(p => p.element_id === this.semestre.id);
+      let index = this.periodes.findIndex(p => p.element_id === this.element.id);
       return this.periodes[index];
     },
   }
