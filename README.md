@@ -64,3 +64,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Affichage volumes globaux
 * Menu contextuel pour copier la même valeur à toutes les semaines (Grp. Intervenant)
 * Accéder au nombre de groupes depuis le module
+
+## Semaine 6 : 23-29 juin
+
+* Accéder aux formations et aux intervenants liés au projet depuis le projet

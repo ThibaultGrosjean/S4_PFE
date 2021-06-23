@@ -16,8 +16,10 @@ export default new Vuex.Store({
     elementsLevel: [],
     elements: [],
     intervenants: [],
+    intervenantsByProjet: [],
     intervenantsModules: [],
     formations: [],
+    formationsByProjet: [],
     periodes: [],
     volumesHebdomadaires: [],
     volumesGlobaux: [],
@@ -45,8 +47,14 @@ export default new Vuex.Store({
     intervenants: state => {
       return state.intervenants;
     },
+    intervenantsByProjet: state => {
+      return state.intervenantsByProjet;
+    },
     formations: state => {
       return state.formations;
+    },
+    formationsByProjet: state => {
+      return state.formationsByProjet;
     },
     periodes: state => {
       return state.periodes;
@@ -86,8 +94,14 @@ export default new Vuex.Store({
     SET_Intervenant(state, intervenants) {
       state.intervenants = intervenants
     },
+    SET_IntervenantsByProjet(state, intervenantsByProjet) {
+      state.intervenantsByProjet = intervenantsByProjet
+    },
     SET_Formations(state, formations) {
       state.formations = formations
+    },
+    SET_FormationsByProjet(state, formationsByProjet) {
+      state.formationsByProjet = formationsByProjet
     },
     SET_Periodes(state, periodes) {
       state.periodes = periodes
@@ -474,6 +488,24 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(projetsArchive => {
           commit('SET_Projet_archive', projetsArchive)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadFormationProjet({commit}, id) {
+      axios.get('/formations/projets/get/'+id)
+        .then(response => response.data)
+        .then(formationProjet => {
+          commit('SET_FormationsByProjet', formationProjet)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    loadIntervenantsProjet({commit}, id) {
+      axios.get('/intervenants/projets/get/'+id)
+        .then(response => response.data)
+        .then(intervenantsProjet => {
+          commit('SET_IntervenantsByProjet', intervenantsProjet)
         }).catch(error => {
         console.log('Erreur : ', error)
       })

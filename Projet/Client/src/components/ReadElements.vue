@@ -1,819 +1,818 @@
 <template>
-  <v-row>
-    <v-container>
-      <v-row>
-        <template v-for="formation in racine">
-          <v-col
-              :key="formation.id"
-              v-if="formation.parent === null"
-              cols="12"
-          >
-            <v-card :flat="flat">
-              <v-card-title>
-                <v-spacer></v-spacer>
-                <v-divider></v-divider>
-                <span class="mr-2 ml-2 text-h5">{{ formation.titre }}</span>
-                <v-divider></v-divider>
-                <v-spacer></v-spacer>
-                <div>
-                  <v-menu :disabled="disabled" :close-on-content-click="false" offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        <v-icon>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item>
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                v-bind="attrs"
-                                v-on="on"
-                                class="ma-1"
-                                @click="edit(formation, null)"
-                            >
-                              <v-icon>edit</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Modifier {{ formation.surnom }}</span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                v-bind="attrs"
-                                v-on="on"
-                                class="ma-1"
-                                @click="addSemester(formation)"
-                            >
-                              <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Ajouter un semestre</span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                v-bind="attrs"
-                                v-on="on"
-                                class="ma-1"
-                            >
-                              <v-icon>file_copy</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Dupliquer</span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                v-bind="attrs"
-                                v-on="on"
-                                class="ma-1"
-                            >
-                              <v-icon color="red darken-1">delete</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Supprimer</span>
-                        </v-tooltip>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </div>
-              </v-card-title>
-              <v-card-subtitle class="text-center text-subtitle-1">{{ formation.surnom }}</v-card-subtitle>
-              <v-card-text class="pa-0">
-                <v-container>
-                  <v-row>
-                    <v-expansion-panels
-                        multiple
-                        accordion
-                        hover
-                        flat
-                        focusable
+  <v-container>
+    <v-row>
+      <template v-for="formation in racine">
+        <v-col
+            :key="formation.id"
+            v-if="formation.parent === null"
+            cols="12"
+        >
+          <v-card :flat="flat">
+            <v-card-title>
+              <v-spacer></v-spacer>
+              <v-divider></v-divider>
+              <span class="mr-2 ml-2 text-h5">{{ formation.titre }}</span>
+              <v-divider></v-divider>
+              <v-spacer></v-spacer>
+              <div>
+                <v-menu :disabled="disabled" :close-on-content-click="false" offset-x left nudge-bottom="-14" rounded="pill" transition="slide-x-reverse-transition">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
                     >
-                      <v-expansion-panel
-                          v-for="semestre in elements"
-                          :key="semestre.id"
-                      >
-                        <v-expansion-panel-header v-if="formation.id === semestre.parent">
-                          <div class="ml-n3">
-                            <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    icon
-                                    v-bind="attrs"
-                                    v-on="on"
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              icon
+                              v-bind="attrs"
+                              v-on="on"
+                              class="ma-1"
+                              @click="edit(formation, null)"
+                          >
+                            <v-icon>edit</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Modifier {{ formation.surnom }}</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              icon
+                              v-bind="attrs"
+                              v-on="on"
+                              class="ma-1"
+                              @click="addSemester(formation)"
+                          >
+                            <v-icon>mdi-plus</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Ajouter un semestre</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              icon
+                              v-bind="attrs"
+                              v-on="on"
+                              class="ma-1"
+                          >
+                            <v-icon>file_copy</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Dupliquer</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              icon
+                              v-bind="attrs"
+                              v-on="on"
+                              class="ma-1"
+                          >
+                            <v-icon color="red darken-1">delete</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Supprimer</span>
+                      </v-tooltip>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
+            </v-card-title>
+            <v-card-subtitle class="text-center text-subtitle-1">{{ formation.surnom }}</v-card-subtitle>
+            <v-card-text class="pa-0">
+              <v-container>
+                <v-row>
+                  <v-expansion-panels
+                      multiple
+                      accordion
+                      hover
+                      flat
+                      focusable
+                  >
+                    <v-expansion-panel
+                        v-for="semestre in elements"
+                        :key="semestre.id"
+                    >
+                      <v-expansion-panel-header v-if="formation.id === semestre.parent">
+                        <div class="ml-n3">
+                          <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  icon
+                                  v-bind="attrs"
+                                  v-on="on"
+                              >
+                                <v-icon>mdi-dots-vertical</v-icon>
+                              </v-btn>
+                            </template>
+                            <v-list>
+                              <v-list-item>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        class="ma-1"
+                                        @click="edit(semestre, findPeriodeBySemestre(semestre.id))"
+                                    >
+                                      <v-icon>edit</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Modifier {{ semestre.titre }}</span>
+                                </v-tooltip>
+                                <EditPeriode :element="semestre"></EditPeriode>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        class="ma-1"
+                                        @click="addUE(semestre)"
+                                    >
+                                      <v-icon>mdi-plus</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Ajouter une UE au {{ semestre.titre }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        class="ma-1"
+                                    >
+                                      <v-icon>file_copy</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Dupliquer</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        class="ma-1"
+                                    >
+                                      <v-icon color="red darken-1">delete</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <span>Supprimer</span>
+                                </v-tooltip>
+                              </v-list-item>
+                            </v-list>
+                          </v-menu>
+                          <span class="overline">{{ semestre.titre }}</span>
+                        </div>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content v-if="formation.id === semestre.parent">
+                          <v-container>
+                            <v-row>
+                              <v-expansion-panels
+                                  multiple
+                                  accordion
+                                  hover
+                              >
+                                <v-expansion-panel
+                                    v-for="ue in elements"
+                                    :key="ue.id"
                                 >
-                                  <v-icon>mdi-dots-vertical</v-icon>
-                                </v-btn>
-                              </template>
-                              <v-list>
-                                <v-list-item>
-                                  <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-btn
-                                          icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                          class="ma-1"
-                                          @click="edit(semestre, findPeriodeBySemestre(semestre.id))"
-                                      >
-                                        <v-icon>edit</v-icon>
-                                      </v-btn>
-                                    </template>
-                                    <span>Modifier {{ semestre.titre }}</span>
-                                  </v-tooltip>
-                                  <EditPeriode :element="semestre"></EditPeriode>
-                                  <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-btn
-                                          icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                          class="ma-1"
-                                          @click="addUE(semestre)"
-                                      >
-                                        <v-icon>mdi-plus</v-icon>
-                                      </v-btn>
-                                    </template>
-                                    <span>Ajouter une UE au {{ semestre.titre }}</span>
-                                  </v-tooltip>
-                                  <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-btn
-                                          icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                          class="ma-1"
-                                      >
-                                        <v-icon>file_copy</v-icon>
-                                      </v-btn>
-                                    </template>
-                                    <span>Dupliquer</span>
-                                  </v-tooltip>
-                                  <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-btn
-                                          icon
-                                          v-bind="attrs"
-                                          v-on="on"
-                                          class="ma-1"
-                                      >
-                                        <v-icon color="red darken-1">delete</v-icon>
-                                      </v-btn>
-                                    </template>
-                                    <span>Supprimer</span>
-                                  </v-tooltip>
-                                </v-list-item>
-                              </v-list>
-                            </v-menu>
-                            <span class="overline">{{ semestre.titre }}</span>
-                          </div>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content v-if="formation.id === semestre.parent">
-                            <v-container>
-                              <v-row>
-                                <v-expansion-panels
-                                    multiple
-                                    accordion
-                                    hover
-                                >
-                                  <v-expansion-panel
-                                      v-for="ue in elements"
-                                      :key="ue.id"
-                                  >
-                                    <v-expansion-panel-header v-if="semestre.id === ue.parent">
-                                      <div class="ml-2">
-                                        <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
-                                          <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                                icon
-                                                v-bind="attrs"
-                                                v-on="on"
+                                  <v-expansion-panel-header v-if="semestre.id === ue.parent">
+                                    <div class="ml-2">
+                                      <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                        <template v-slot:activator="{ on, attrs }">
+                                          <v-btn
+                                              icon
+                                              v-bind="attrs"
+                                              v-on="on"
+                                          >
+                                            <v-icon>mdi-dots-vertical</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <v-list>
+                                          <v-list-item>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    class="ma-1"
+                                                    @click="edit(ue, null)"
+                                                >
+                                                  <v-icon>edit</v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Modifier {{ ue.titre }}</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    class="ma-1"
+                                                    @click="addModule(ue, semestre)"
+                                                >
+                                                  <v-icon>mdi-plus</v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Ajouter un module à l'{{ ue.titre }}</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    class="ma-1"
+                                                >
+                                                  <v-icon>file_copy</v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Dupliquer</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    class="ma-1"
+                                                >
+                                                  <v-icon color="red darken-1">delete</v-icon>
+                                                </v-btn>
+                                              </template>
+                                              <span>Supprimer</span>
+                                            </v-tooltip>
+                                          </v-list-item>
+                                        </v-list>
+                                      </v-menu>
+                                      <span class="subtitle-1">{{ ue.titre }}</span>
+                                    </div>
+                                  </v-expansion-panel-header>
+                                  <v-expansion-panel-content v-if="semestre.id === ue.parent">
+                                      <v-container>
+                                        <v-row>
+                                          <v-expansion-panels
+                                              multiple
+                                              accordion
+                                              hover
+                                          >
+                                            <v-expansion-panel
+                                                v-for="module in elements"
+                                                :key="module.id"
                                             >
-                                              <v-icon>mdi-dots-vertical</v-icon>
-                                            </v-btn>
-                                          </template>
-                                          <v-list>
-                                            <v-list-item>
-                                              <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                  <v-btn
-                                                      icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                      class="ma-1"
-                                                      @click="edit(ue, null)"
-                                                  >
-                                                    <v-icon>edit</v-icon>
-                                                  </v-btn>
-                                                </template>
-                                                <span>Modifier {{ ue.titre }}</span>
-                                              </v-tooltip>
-                                              <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                  <v-btn
-                                                      icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                      class="ma-1"
-                                                      @click="addModule(ue, semestre)"
-                                                  >
-                                                    <v-icon>mdi-plus</v-icon>
-                                                  </v-btn>
-                                                </template>
-                                                <span>Ajouter un module à l'{{ ue.titre }}</span>
-                                              </v-tooltip>
-                                              <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                  <v-btn
-                                                      icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                      class="ma-1"
-                                                  >
-                                                    <v-icon>file_copy</v-icon>
-                                                  </v-btn>
-                                                </template>
-                                                <span>Dupliquer</span>
-                                              </v-tooltip>
-                                              <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                  <v-btn
-                                                      icon
-                                                      v-bind="attrs"
-                                                      v-on="on"
-                                                      class="ma-1"
-                                                  >
-                                                    <v-icon color="red darken-1">delete</v-icon>
-                                                  </v-btn>
-                                                </template>
-                                                <span>Supprimer</span>
-                                              </v-tooltip>
-                                            </v-list-item>
-                                          </v-list>
-                                        </v-menu>
-                                        <span class="subtitle-1">{{ ue.titre }}</span>
-                                      </div>
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content v-if="semestre.id === ue.parent">
-                                        <v-container>
-                                          <v-row>
-                                            <v-expansion-panels
-                                                multiple
-                                                accordion
-                                                hover
-                                            >
-                                              <v-expansion-panel
-                                                  v-for="module in elements"
-                                                  :key="module.id"
-                                              >
-                                                  <v-expansion-panel-header v-if="ue.id === module.parent">
-                                                    <div class="ml-7">
-                                                      <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                          <v-btn
-                                                              icon
-                                                              v-bind="attrs"
-                                                              v-on="on"
-                                                          >
-                                                            <v-icon>mdi-dots-vertical</v-icon>
-                                                          </v-btn>
-                                                        </template>
-                                                        <v-list>
-                                                          <v-list-item>
-                                                            <v-tooltip top>
-                                                              <template v-slot:activator="{ on, attrs }">
-                                                                <v-btn
-                                                                    icon
-                                                                    v-bind="attrs"
-                                                                    v-on="on"
-                                                                    class="ma-1"
-                                                                    @click="edit(module, null)"
-                                                                >
-                                                                  <v-icon>edit</v-icon>
-                                                                </v-btn>
+                                                <v-expansion-panel-header v-if="ue.id === module.parent">
+                                                  <div class="ml-7">
+                                                    <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
+                                                      <template v-slot:activator="{ on, attrs }">
+                                                        <v-btn
+                                                            icon
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        >
+                                                          <v-icon>mdi-dots-vertical</v-icon>
+                                                        </v-btn>
+                                                      </template>
+                                                      <v-list>
+                                                        <v-list-item>
+                                                          <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                              <v-btn
+                                                                  icon
+                                                                  v-bind="attrs"
+                                                                  v-on="on"
+                                                                  class="ma-1"
+                                                                  @click="edit(module, null)"
+                                                              >
+                                                                <v-icon>edit</v-icon>
+                                                              </v-btn>
+                                                            </template>
+                                                            <span>Modifier {{ module.surnom }}</span>
+                                                          </v-tooltip>
+                                                          <EditNbGroupeModule :element="module"/>
+                                                          <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                              <v-btn
+                                                                  icon
+                                                                  v-bind="attrs"
+                                                                  v-on="on"
+                                                                  class="ma-1"
+                                                              >
+                                                                <v-icon>file_copy</v-icon>
+                                                              </v-btn>
+                                                            </template>
+                                                            <span>Dupliquer</span>
+                                                          </v-tooltip>
+                                                          <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                              <v-btn
+                                                                  icon
+                                                                  v-bind="attrs"
+                                                                  v-on="on"
+                                                                  class="ma-1"
+                                                              >
+                                                                <v-icon color="red darken-1">delete</v-icon>
+                                                              </v-btn>
+                                                            </template>
+                                                            <span>Supprimer</span>
+                                                          </v-tooltip>
+                                                        </v-list-item>
+                                                      </v-list>
+                                                    </v-menu>
+                                                    <span class="subtitle-2">{{ module.titre }}</span>
+                                                  </div>
+                                                </v-expansion-panel-header>
+                                                <v-expansion-panel-content v-if="ue.id === module.parent">
+                                                  <v-container>
+                                                    <v-row>
+                                                      <v-col class="pl-16 pr-6 pt-0 pb-0">
+                                                        <div v-if="module.mode_saisie !=='aucun'">
+                                                          <div v-if="module.mode_saisie ==='hebdo'">
+                                                            <v-simple-table dense fixed-header>
+                                                              <template v-slot:default>
+                                                                <thead>
+                                                                <tr>
+                                                                  <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                    <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                  </th>
+                                                                </tr>
+
+                                                                <tr>
+                                                                  <th class="text-right right-border"></th>
+                                                                  <template v-for="v in volumesHebdomadaires">
+                                                                    <th :key="v.id" v-if="v.element_id === module.id">
+                                                                      {{ v.num_semaine }}
+                                                                    </th>
+                                                                  </template>
+                                                                  <th class="text-left left-border">Total</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr v-if="module.cm_autorises">
+                                                                  <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                  <template v-for="v in volumesHebdomadaires">
+                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                  </template>
+                                                                  <td class="left-border">{{ totalVolume(module, 'vol_hor_cm') }}</td>
+                                                                </tr>
+
+                                                                <tr v-if="module.td_autorises">
+                                                                  <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                  <template v-for="v in volumesHebdomadaires">
+                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                  </template>
+                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_td') }}</td>
+                                                                </tr>
+
+                                                                <tr v-if="module.tp_autorises">
+                                                                  <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                  <template v-for="v in volumesHebdomadaires">
+                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                  </template>
+                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_tp') }}</td>
+                                                                </tr>
+
+                                                                <tr v-if="module.partiel_autorises">
+                                                                  <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                  <template v-for="v in volumesHebdomadaires">
+                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                  </template>
+                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_partiel') }}</td>
+                                                                </tr>
+                                                                </tbody>
                                                               </template>
-                                                              <span>Modifier {{ module.surnom }}</span>
-                                                            </v-tooltip>
-                                                            <EditNbGroupeModule :element="module"/>
-                                                            <v-tooltip top>
-                                                              <template v-slot:activator="{ on, attrs }">
-                                                                <v-btn
-                                                                    icon
-                                                                    v-bind="attrs"
-                                                                    v-on="on"
-                                                                    class="ma-1"
-                                                                >
-                                                                  <v-icon>file_copy</v-icon>
-                                                                </v-btn>
-                                                              </template>
-                                                              <span>Dupliquer</span>
-                                                            </v-tooltip>
-                                                            <v-tooltip top>
-                                                              <template v-slot:activator="{ on, attrs }">
-                                                                <v-btn
-                                                                    icon
-                                                                    v-bind="attrs"
-                                                                    v-on="on"
-                                                                    class="ma-1"
-                                                                >
-                                                                  <v-icon color="red darken-1">delete</v-icon>
-                                                                </v-btn>
-                                                              </template>
-                                                              <span>Supprimer</span>
-                                                            </v-tooltip>
-                                                          </v-list-item>
-                                                        </v-list>
-                                                      </v-menu>
-                                                      <span class="subtitle-2">{{ module.titre }}</span>
-                                                    </div>
-                                                  </v-expansion-panel-header>
-                                                  <v-expansion-panel-content v-if="ue.id === module.parent">
-                                                    <v-container>
-                                                      <v-row>
-                                                        <v-col class="pl-16 pr-6 pt-0 pb-0">
-                                                          <div v-if="module.mode_saisie !=='aucun'">
-                                                            <div v-if="module.mode_saisie ==='hebdo'">
-                                                              <v-simple-table dense fixed-header>
+                                                            </v-simple-table>
+                                                            <v-divider></v-divider>
+                                                            <v-expansion-panels hover flat focusable>
+                                                              <v-expansion-panel>
+                                                                <v-expansion-panel-header class="height-row">
+                                                                  <template v-slot:actions>
+                                                                    <v-icon class="icon-intervenant">$expand</v-icon>
+                                                                  </template>
+                                                                  <template v-slot:default="{ open }">
+                                                                    <v-row no-gutters class="header-intervenant">
+                                                                      <span v-if="!open" class="ml-2">Afficher les intervenants de {{ module.surnom }}</span>
+                                                                      <span v-else class="ml-2">Masquer les intervenants de {{ module.surnom }}</span>
+                                                                    </v-row>
+                                                                  </template>
+                                                                </v-expansion-panel-header>
+                                                                <v-expansion-panel-content>
+                                                                  <template v-for="i in intervenantsModules">
+                                                                    <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
+                                                                      <template v-slot:default>
+                                                                        <thead>
+                                                                        <tr>
+                                                                          <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                            <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                          </th>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                          <th class="text-right right-border"></th>
+                                                                          <template v-for="g in groupesIntervenants">
+                                                                            <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                              {{ g.num_semaine }}
+                                                                            </th>
+                                                                          </template>
+                                                                          <th class="text-left left-border">Total</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr v-if="module.cm_autorises">
+                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                          <template v-for="g in groupesIntervenants">
+                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                          </template>
+                                                                          <td class="left-border">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
+                                                                        </tr>
+
+                                                                        <tr v-if="module.td_autorises">
+                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                          <template v-for="g in groupesIntervenants">
+                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                          </template>
+                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
+                                                                        </tr>
+
+                                                                        <tr v-if="module.tp_autorises">
+                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                          <template v-for="g in groupesIntervenants">
+                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                          </template>
+                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
+                                                                        </tr>
+
+                                                                        <tr v-if="module.partiel_autorises">
+                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                          <template v-for="g in groupesIntervenants">
+                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                          </template>
+                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                      </template>
+                                                                    </v-simple-table>
+                                                                  </template>
+                                                                </v-expansion-panel-content>
+                                                              </v-expansion-panel>
+                                                            </v-expansion-panels>
+                                                          </div>
+                                                          <div v-if="module.mode_saisie ==='globale'">
+                                                            <template v-for="i in volumesGlobaux">
+                                                              <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
                                                                 <template v-slot:default>
                                                                   <thead>
                                                                   <tr>
-                                                                    <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
-                                                                      <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                    <th :colspan="2" class="text-center top-border">
+                                                                      <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
                                                                     </th>
                                                                   </tr>
-
                                                                   <tr>
                                                                     <th class="text-right right-border"></th>
-                                                                    <template v-for="v in volumesHebdomadaires">
-                                                                      <th :key="v.id" v-if="v.element_id === module.id">
-                                                                        {{ v.num_semaine }}
-                                                                      </th>
-                                                                    </template>
-                                                                    <th class="text-left left-border">Total</th>
+                                                                    <th>{{ module.surnom }}</th>
                                                                   </tr>
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                    <template v-for="v in volumesHebdomadaires">
-                                                                      <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <td>CM</td>
+                                                                    <template v-for="g in volumesGlobaux">
+                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
-                                                                    <td class="left-border">{{ totalVolume(module, 'vol_hor_cm') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                    <template v-for="v in volumesHebdomadaires">
-                                                                      <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <td>TD</td>
+                                                                    <template v-for="g in volumesGlobaux">
+                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
-                                                                    <td class="left-border">{{totalVolume(module, 'vol_hor_td') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                    <template v-for="v in volumesHebdomadaires">
-                                                                      <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <td>TP</td>
+                                                                    <template v-for="g in volumesGlobaux">
+                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
-                                                                    <td class="left-border">{{totalVolume(module, 'vol_hor_tp') }}</td>
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                    <template v-for="v in volumesHebdomadaires">
-                                                                      <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <td>PARTIEL</td>
+                                                                    <template v-for="g in volumesGlobaux">
+                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
-                                                                    <td class="left-border">{{totalVolume(module, 'vol_hor_partiel') }}</td>
                                                                   </tr>
                                                                   </tbody>
                                                                 </template>
                                                               </v-simple-table>
-                                                              <v-divider></v-divider>
-                                                              <v-expansion-panels hover flat focusable>
-                                                                <v-expansion-panel>
-                                                                  <v-expansion-panel-header class="height-row">
-                                                                    <template v-slot:actions>
-                                                                      <v-icon class="icon-intervenant">$expand</v-icon>
-                                                                    </template>
-                                                                    <template v-slot:default="{ open }">
-                                                                      <v-row no-gutters class="header-intervenant">
-                                                                        <span v-if="!open" class="ml-2">Afficher les intervenants de {{ module.surnom }}</span>
-                                                                        <span v-else class="ml-2">Masquer les intervenants de {{ module.surnom }}</span>
-                                                                      </v-row>
-                                                                    </template>
-                                                                  </v-expansion-panel-header>
-                                                                  <v-expansion-panel-content>
-                                                                    <template v-for="i in intervenantsModules">
-                                                                      <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
-                                                                        <template v-slot:default>
-                                                                          <thead>
-                                                                          <tr>
-                                                                            <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
-                                                                              <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
-                                                                            </th>
-                                                                          </tr>
-
-                                                                          <tr>
-                                                                            <th class="text-right right-border"></th>
-                                                                            <template v-for="g in groupesIntervenants">
-                                                                              <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
-                                                                                {{ g.num_semaine }}
-                                                                              </th>
-                                                                            </template>
-                                                                            <th class="text-left left-border">Total</th>
-                                                                          </tr>
-                                                                          </thead>
-                                                                          <tbody>
-                                                                          <tr v-if="module.cm_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                            <template v-for="g in groupesIntervenants">
-                                                                              <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                            </template>
-                                                                            <td class="left-border">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
-                                                                          </tr>
-
-                                                                          <tr v-if="module.td_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                            <template v-for="g in groupesIntervenants">
-                                                                              <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                            </template>
-                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
-                                                                          </tr>
-
-                                                                          <tr v-if="module.tp_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                            <template v-for="g in groupesIntervenants">
-                                                                              <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                            </template>
-                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
-                                                                          </tr>
-
-                                                                          <tr v-if="module.partiel_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                            <template v-for="g in groupesIntervenants">
-                                                                              <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                            </template>
-                                                                            <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
-                                                                          </tr>
-                                                                          </tbody>
-                                                                        </template>
-                                                                      </v-simple-table>
-                                                                    </template>
-                                                                  </v-expansion-panel-content>
-                                                                </v-expansion-panel>
-                                                              </v-expansion-panels>
-                                                            </div>
-                                                            <div v-if="module.mode_saisie ==='globale'">
-                                                              <template v-for="i in volumesGlobaux">
-                                                                <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
-                                                                  <template v-slot:default>
-                                                                    <thead>
-                                                                    <tr>
-                                                                      <th :colspan="2" class="text-center top-border">
-                                                                        <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
-                                                                      </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                      <th class="text-right right-border"></th>
-                                                                      <th>{{ module.surnom }}</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <tr v-if="module.cm_autorises">
-                                                                      <td>CM</td>
-                                                                      <template v-for="g in volumesGlobaux">
-                                                                        <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                      </template>
-                                                                    </tr>
-
-                                                                    <tr v-if="module.td_autorises">
-                                                                      <td>TD</td>
-                                                                      <template v-for="g in volumesGlobaux">
-                                                                        <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                      </template>
-                                                                    </tr>
-
-                                                                    <tr v-if="module.tp_autorises">
-                                                                      <td>TP</td>
-                                                                      <template v-for="g in volumesGlobaux">
-                                                                        <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                      </template>
-                                                                    </tr>
-
-                                                                    <tr v-if="module.partiel_autorises">
-                                                                      <td>PARTIEL</td>
-                                                                      <template v-for="g in volumesGlobaux">
-                                                                        <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                      </template>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                  </template>
-                                                                </v-simple-table>
-                                                              </template>
-                                                            </div>
+                                                            </template>
                                                           </div>
-                                                        </v-col>
-                                                      </v-row>
-                                                    </v-container>
-                                                  </v-expansion-panel-content>
+                                                        </div>
+                                                      </v-col>
+                                                    </v-row>
+                                                  </v-container>
+                                                </v-expansion-panel-content>
 
-                                              </v-expansion-panel>
-                                            </v-expansion-panels>
-                                          </v-row>
-                                        </v-container>
-                                      </v-expansion-panel-content>
+                                            </v-expansion-panel>
+                                          </v-expansion-panels>
+                                        </v-row>
+                                      </v-container>
+                                    </v-expansion-panel-content>
 
-                                  </v-expansion-panel>
-                                </v-expansion-panels>
-                              </v-row>
-                            </v-container>
-                          </v-expansion-panel-content>
+                                </v-expansion-panel>
+                              </v-expansion-panels>
+                            </v-row>
+                          </v-container>
+                        </v-expansion-panel-content>
 
-                      </v-expansion-panel>
-                    </v-expansion-panels>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </template>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="form"
+          persistent
+          max-width="600px"
+      >
+
+        <v-card>
+          <v-form lazy-validation>
+            <v-card-title>
+              <span class="headline" v-if="methods === 'POST'">Ajouter un élément constitutif</span>
+              <span class="headline" v-else>Modifier un élément constitutif</span>
+              <v-spacer></v-spacer>
+              <v-btn
+                  icon
+                  @click="close"
+              >
+                <v-icon>
+                  close
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-text-field
+                  v-model="titre"
+                  :error-messages="titreErrors"
+                  :counter="255"
+                  label="Titre"
+                  required
+                  clearable
+                  @input="$v.titre.$touch()"
+                  @blur="$v.titre.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="surnom"
+                  :error-messages="surnomErrors"
+                  :counter="255"
+                  label="Surnom"
+                  required
+                  clearable
+                  @input="$v.surnom.$touch()"
+                  @blur="$v.surnom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="code"
+                  :error-messages="codeErrors"
+                  :counter="255"
+                  label="Code"
+                  required
+                  clearable
+                  @input="$v.code.$touch()"
+                  @blur="$v.code.$touch()"
+              ></v-text-field>
+              <v-text-field v-if="this.methods !=='POST' && this.niveau > 1 && !this.formation"
+                  v-model="niveau"
+                  :error-messages="niveauErrors"
+                  label="Niveau"
+                  required
+                  clearable
+                  @input="$v.niveau.$touch()"
+                  @blur="$v.niveau.$touch()"
+              ></v-text-field>
+              <v-text-field v-if="!this.formation"
+                  v-model="indice"
+                  :error-messages="indiceErrors"
+                  label="Indice"
+                  required
+                  clearable
+                  @input="$v.indice.$touch()"
+                  @blur="$v.indice.$touch()"
+              ></v-text-field>
+              <v-select v-if="!this.formation"
+                  v-model="mode_saisie"
+                  :items="item_mode_saisie"
+                  item-text="nom"
+                  item-value="val"
+                  label="Mode de saisie"
+                  :error-messages="mode_saisieErrors"
+                  @change="$v.mode_saisie.$touch()"
+                  @blur="$v.mode_saisie.$touch()"
+                  required
+                  clearable
+              ></v-select>
+              <v-select v-if="!this.formation"
+                  v-model="parent"
+                  :items="elements"
+                  clearable
+                  hint="Laisser vide pour un élément racine"
+                  persistent-hint
+                  item-text="titre"
+                  item-value="id"
+                  label="Parent"
+              ></v-select>
+              <div class="ma-0 pa-0" v-if="this.niveau === 1 && methods !== 'PUT'">
+                <div class="text-h5 mt-4">Période</div>
+                <v-divider class="mt-3 mb-6"></v-divider>
+                <v-text-field
+                    v-model="nb_semaine"
+                    :error-messages="nb_semaineErrors"
+                    label="Nombre de semaines"
+                    required
+                    clearable
+                    @input="$v.nb_semaine.$touch()"
+                    @blur="$v.nb_semaine.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="nb_groupe_defaut_cm"
+                    :error-messages="nb_groupe_defaut_cmErrors"
+                    label="Nombre de groupes par défaut pour les CM"
+                    required
+                    clearable
+                    @input="$v.nb_groupe_defaut_cm.$touch()"
+                    @blur="$v.nb_groupe_defaut_cm.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="nb_groupe_defaut_td"
+                    :error-messages="nb_groupe_defaut_tdErrors"
+                    label="Nombre de groupes par défaut pour les TD"
+                    required
+                    clearable
+                    @input="$v.nb_groupe_defaut_td.$touch()"
+                    @blur="$v.nb_groupe_defaut_td.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="nb_groupe_defaut_tp"
+                    :error-messages="nb_groupe_defaut_tpErrors"
+                    label="Nombre de groupes par défaut pour les TP"
+                    required
+                    clearable
+                    @input="$v.nb_groupe_defaut_tp.$touch()"
+                    @blur="$v.nb_groupe_defaut_tp.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="nb_groupe_defaut_partiel"
+                    :error-messages="nb_groupe_defaut_partielErrors"
+                    label="Nombre de groupes par défaut pour les partiels"
+                    required
+                    clearable
+                    @input="$v.nb_groupe_defaut_partiel.$touch()"
+                    @blur="$v.nb_groupe_defaut_partiel.$touch()"
+                ></v-text-field>
+              </div>
+              <div class="ma-0 pa-0" v-if="this.mode_saisie && this.mode_saisie !== 'aucun'">
+                <v-container class="mt-4">
+                  <v-row class="mb-3">
+                    <span class="subtitle-1">Volume horaire total prévu par le programme pour les étudiants</span>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex justify-center">
+                      <v-text-field
+                          v-model="vol_hor_total_prevues_etu_cm"
+                          :error-messages="vol_hor_total_prevues_etu_cmErrors"
+                          label="CM"
+                          @input="$v.vol_hor_total_prevues_etu_cm.$touch()"
+                          @blur="$v.vol_hor_total_prevues_etu_cm.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col class="d-flex justify-center">
+                      <v-text-field
+                          v-model="vol_hor_total_prevues_etu_td"
+                          :error-messages="vol_hor_total_prevues_etu_tdErrors"
+                          label="TD"
+                          @input="$v.vol_hor_total_prevues_etu_td.$touch()"
+                          @blur="$v.vol_hor_total_prevues_etu_td.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col class="d-flex justify-center">
+                      <v-text-field
+                          v-model="vol_hor_total_prevues_etu_tp"
+                          :error-messages="vol_hor_total_prevues_etu_tpErrors"
+                          label="TP"
+                          @input="$v.vol_hor_total_prevues_etu_tp.$touch()"
+                          @blur="$v.vol_hor_total_prevues_etu_tp.$touch()"
+                      ></v-text-field>
+                    </v-col>
                   </v-row>
                 </v-container>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </template>
-      </v-row>
-      <v-row justify="center">
-        <v-dialog
-            v-model="form"
-            persistent
-            max-width="600px"
-        >
 
-          <v-card>
-            <v-form lazy-validation>
-              <v-card-title>
-                <span class="headline" v-if="methods === 'POST'">Ajouter un élément constitutif</span>
-                <span class="headline" v-else>Modifier un élément constitutif</span>
+                <v-container>
+                  <v-row>
+                    <span class="subtitle-1">Cours autorisés</span>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex justify-center">
+                      <v-switch v-model="cm_autorises" :label="'CM'"></v-switch>
+                    </v-col>
+                    <v-col class="d-flex justify-center">
+                      <v-switch v-model="td_autorises" :label="'TD'"></v-switch>
+                    </v-col>
+                    <v-col class="d-flex justify-center">
+                      <v-switch v-model="tp_autorises" :label="'TP'"></v-switch>
+                    </v-col>
+                    <v-col class="d-flex justify-center">
+                      <v-switch v-model="partiel_autorises" :label="'Partiel'"></v-switch>
+                    </v-col>
+                  </v-row>
+                </v-container>
+
+                <v-container v-if="this.mode_saisie ==='globale'">
+                  <v-row>
+                    <span class="subtitle-1">Forfait horaire global</span>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex justify-center" v-if="Boolean(this.cm_autorises)">
+                      <v-text-field
+                        v-model="forfait_globale_cm"
+                        :error-messages="forfait_globale_cmErrors"
+                        label="CM"
+                        @input="$v.forfait_globale_cm.$touch()"
+                        @blur="$v.forfait_globale_cm.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col class="d-flex justify-center" v-if="Boolean(this.td_autorises)">
+                      <v-text-field
+                          v-model="forfait_globale_td"
+                          :error-messages="forfait_globale_tdErrors"
+                          label="TD"
+                          @input="$v.forfait_globale_td.$touch()"
+                          @blur="$v.forfait_globale_td.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col class="d-flex justify-center" v-if="Boolean(this.tp_autorises)">
+                      <v-text-field
+                          v-model="forfait_globale_tp"
+                          :error-messages="forfait_globale_tpErrors"
+                          label="TP"
+                          @input="$v.forfait_globale_tp.$touch()"
+                          @blur="$v.forfait_globale_tp.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col class="d-flex justify-center" v-if="Boolean(this.partiel_autorises)">
+                      <v-text-field
+                          v-model="forfait_globale_partiel"
+                          :error-messages="forfait_globale_partielErrors"
+                          label="Partiel"
+                          @input="$v.forfait_globale_partiel.$touch()"
+                          @blur="$v.forfait_globale_partiel.$touch()"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </div>
+              <v-card-actions>
+                <v-btn
+                    color="red darken-1"
+                    class="mr-4"
+                    text
+                    @click="clear"
+                >
+                  Vider
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    icon
-                    @click="close"
+                    color="green darken-1"
+                    class="mr-4"
+                    text
+                    @click="submit"
                 >
-                  <v-icon>
-                    close
-                  </v-icon>
+                  Valider
                 </v-btn>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-text-field
-                    v-model="titre"
-                    :error-messages="titreErrors"
-                    :counter="255"
-                    label="Titre"
-                    required
-                    clearable
-                    @input="$v.titre.$touch()"
-                    @blur="$v.titre.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="surnom"
-                    :error-messages="surnomErrors"
-                    :counter="255"
-                    label="Surnom"
-                    required
-                    clearable
-                    @input="$v.surnom.$touch()"
-                    @blur="$v.surnom.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="code"
-                    :error-messages="codeErrors"
-                    :counter="255"
-                    label="Code"
-                    required
-                    clearable
-                    @input="$v.code.$touch()"
-                    @blur="$v.code.$touch()"
-                ></v-text-field>
-                <v-text-field v-if="this.methods !=='POST' && this.niveau > 1 && !this.formation"
-                    v-model="niveau"
-                    :error-messages="niveauErrors"
-                    label="Niveau"
-                    required
-                    clearable
-                    @input="$v.niveau.$touch()"
-                    @blur="$v.niveau.$touch()"
-                ></v-text-field>
-                <v-text-field v-if="!this.formation"
-                    v-model="indice"
-                    :error-messages="indiceErrors"
-                    label="Indice"
-                    required
-                    clearable
-                    @input="$v.indice.$touch()"
-                    @blur="$v.indice.$touch()"
-                ></v-text-field>
-                <v-select v-if="!this.formation"
-                    v-model="mode_saisie"
-                    :items="item_mode_saisie"
-                    item-text="nom"
-                    item-value="val"
-                    label="Mode de saisie"
-                    :error-messages="mode_saisieErrors"
-                    @change="$v.mode_saisie.$touch()"
-                    @blur="$v.mode_saisie.$touch()"
-                    required
-                    clearable
-                ></v-select>
-                <v-select v-if="!this.formation"
-                    v-model="parent"
-                    :items="elements"
-                    clearable
-                    hint="Laisser vide pour un élément racine"
-                    persistent-hint
-                    item-text="titre"
-                    item-value="id"
-                    label="Parent"
-                ></v-select>
-                <div class="ma-0 pa-0" v-if="this.niveau === 1 && methods !== 'PUT'">
-                  <div class="text-h5 mt-4">Période</div>
-                  <v-divider class="mt-3 mb-6"></v-divider>
-                  <v-text-field
-                      v-model="nb_semaine"
-                      :error-messages="nb_semaineErrors"
-                      label="Nombre de semaines"
-                      required
-                      clearable
-                      @input="$v.nb_semaine.$touch()"
-                      @blur="$v.nb_semaine.$touch()"
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="nb_groupe_defaut_cm"
-                      :error-messages="nb_groupe_defaut_cmErrors"
-                      label="Nombre de groupes par défaut pour les CM"
-                      required
-                      clearable
-                      @input="$v.nb_groupe_defaut_cm.$touch()"
-                      @blur="$v.nb_groupe_defaut_cm.$touch()"
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="nb_groupe_defaut_td"
-                      :error-messages="nb_groupe_defaut_tdErrors"
-                      label="Nombre de groupes par défaut pour les TD"
-                      required
-                      clearable
-                      @input="$v.nb_groupe_defaut_td.$touch()"
-                      @blur="$v.nb_groupe_defaut_td.$touch()"
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="nb_groupe_defaut_tp"
-                      :error-messages="nb_groupe_defaut_tpErrors"
-                      label="Nombre de groupes par défaut pour les TP"
-                      required
-                      clearable
-                      @input="$v.nb_groupe_defaut_tp.$touch()"
-                      @blur="$v.nb_groupe_defaut_tp.$touch()"
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="nb_groupe_defaut_partiel"
-                      :error-messages="nb_groupe_defaut_partielErrors"
-                      label="Nombre de groupes par défaut pour les partiels"
-                      required
-                      clearable
-                      @input="$v.nb_groupe_defaut_partiel.$touch()"
-                      @blur="$v.nb_groupe_defaut_partiel.$touch()"
-                  ></v-text-field>
-                </div>
-                <div class="ma-0 pa-0" v-if="this.mode_saisie && this.mode_saisie !== 'aucun'">
-                  <v-container class="mt-4">
-                    <v-row class="mb-3">
-                      <span class="subtitle-1">Volume horaire total prévu par le programme pour les étudiants</span>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" md="4" class="pa-0 pr-6">
-                        <v-text-field
-                            v-model="vol_hor_total_prevues_etu_cm"
-                            :error-messages="vol_hor_total_prevues_etu_cmErrors"
-                            label="CM"
-                            @input="$v.vol_hor_total_prevues_etu_cm.$touch()"
-                            @blur="$v.vol_hor_total_prevues_etu_cm.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="4" class="pa-0 pl-6 pr-6">
-                        <v-text-field
-                            v-model="vol_hor_total_prevues_etu_td"
-                            :error-messages="vol_hor_total_prevues_etu_tdErrors"
-                            label="TD"
-                            @input="$v.vol_hor_total_prevues_etu_td.$touch()"
-                            @blur="$v.vol_hor_total_prevues_etu_td.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="4" class="pa-0 pl-6">
-                        <v-text-field
-                            v-model="vol_hor_total_prevues_etu_tp"
-                            :error-messages="vol_hor_total_prevues_etu_tpErrors"
-                            label="TP"
-                            @input="$v.vol_hor_total_prevues_etu_tp.$touch()"
-                            @blur="$v.vol_hor_total_prevues_etu_tp.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-
-                  <v-container>
-                    <v-row>
-                      <span class="subtitle-1">Cours autorisés</span>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" md="3" class="pa-0 pl-4">
-                        <v-switch v-model="cm_autorises" :label="'CM'"></v-switch>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-4">
-                        <v-switch v-model="td_autorises" :label="'TD'"></v-switch>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-4">
-                        <v-switch v-model="tp_autorises" :label="'TP'"></v-switch>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-4">
-                        <v-switch v-model="partiel_autorises" :label="'Partiel'"></v-switch>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-
-                  <v-container v-if="this.mode_saisie ==='globale'">
-                    <v-row class="mb-3">
-                      <span class="subtitle-1">Forfait horaire global</span>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" md="3" class="pa-0 pr-3" v-if="Boolean(this.cm_autorises)">
-                        <v-text-field
-                          v-model="forfait_globale_cm"
-                          :error-messages="forfait_globale_cmErrors"
-                          label="CM"
-                          @input="$v.forfait_globale_cm.$touch()"
-                          @blur="$v.forfait_globale_cm.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-3 pr-3" v-if="Boolean(this.td_autorises)">
-                        <v-text-field
-                            v-model="forfait_globale_td"
-                            :error-messages="forfait_globale_tdErrors"
-                            label="TD"
-                            @input="$v.forfait_globale_td.$touch()"
-                            @blur="$v.forfait_globale_td.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-3 pr-3" v-if="Boolean(this.tp_autorises)">
-                        <v-text-field
-                            v-model="forfait_globale_tp"
-                            :error-messages="forfait_globale_tpErrors"
-                            label="TP"
-                            @input="$v.forfait_globale_tp.$touch()"
-                            @blur="$v.forfait_globale_tp.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="3" class="pa-0 pl-3" v-if="Boolean(this.partiel_autorises)">
-                        <v-text-field
-                            v-model="forfait_globale_partiel"
-                            :error-messages="forfait_globale_partielErrors"
-                            label="Partiel"
-                            @input="$v.forfait_globale_partiel.$touch()"
-                            @blur="$v.forfait_globale_partiel.$touch()"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </div>
-                <v-card-actions>
-                  <v-btn
-                      color="red darken-1"
-                      class="mr-4"
-                      text
-                      @click="clear"
-                  >
-                    Vider
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                      color="green darken-1"
-                      class="mr-4"
-                      text
-                      @click="submit"
-                  >
-                    Valider
-                  </v-btn>
-                </v-card-actions>
-              </v-card-text>
-            </v-form>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row v-if="addBtn">
+              </v-card-actions>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row v-if="addBtn">
         <v-col>
           <v-btn
               class="v-btn--addElement"
@@ -826,8 +825,7 @@
           </v-btn>
         </v-col>
       </v-row>
-    </v-container>
-  </v-row>
+  </v-container>
 </template>
 
 <script>

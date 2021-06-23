@@ -1,240 +1,196 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col>
-          <h1 class="text-center text-h4">Liste des enseignants</h1>
-        </v-col>
-      </v-row>
-      <v-row
-          align="center"
-          justify="center"
+  <v-container>
+    <v-row>
+      <v-col
+          v-for="e in enseignants"
+          :key="e.id"
+          sm="4"
       >
-        <v-btn-toggle
-            v-if="enseignants.length"
-            borderless
-            rounded
-            dense
-            mandatory
-            color="blue--text text--accent-4"
-        >
-          <v-btn
-              @click="sortedByPrenom"
-          >
-            <span class="hidden-sm-and-down">Prénom</span>
-            <v-icon right>sort_by_alpha</v-icon>
-          </v-btn>
-          <v-btn
-              @click="sortedByNom"
-          >
-            <span class="hidden-sm-and-down">Nom</span>
-            <v-icon right>sort_by_alpha</v-icon>
-          </v-btn>
-          <v-btn
-              @click="sortedByStatut"
-          >
-            <span class="hidden-sm-and-down">Statut</span>
-            <v-icon right>sort_by_alpha</v-icon>
-          </v-btn>
-        </v-btn-toggle>
-      </v-row>
-      <v-row>
-        <v-col v-if="!enseignants.length">
-          <p class="text-center">Aucune donnée trouvée</p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-for="e in enseignants"
-               :key="e.id"
-               sm="4"
-        >
-          <v-card>
-            <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
-            <v-card-subtitle class="text-subtitle-1">{{ e.surnom.toUpperCase() }}</v-card-subtitle>
-            <v-divider></v-divider>
-            <v-card-text>
-              <p>Adresse mail : <b>{{ e.email }}</b></p>
-              <p class="mb-0">Statut : <b>{{ e.statut.nom }} ({{ e.statut.surnom }})</b></p>
-              <div class="text-center">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon @click="showDetails = !showDetails">
-                      <v-icon
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        {{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Détails des statuts</span>
-                </v-tooltip>
+        <v-card>
+          <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
+          <v-card-subtitle class="text-subtitle-1">{{ e.surnom.toUpperCase() }}</v-card-subtitle>
+          <v-divider></v-divider>
+          <v-card-text>
+            <p>Adresse mail : <b>{{ e.email }}</b></p>
+            <p class="mb-0">Statut : <b>{{ e.statut.nom }} ({{ e.statut.surnom }})</b></p>
+            <div class="text-center">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon @click="showDetails = !showDetails">
+                    <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      {{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Détails des statuts</span>
+              </v-tooltip>
+            </div>
+
+            <v-expand-transition>
+              <div v-show="showDetails">
+                <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
+                <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
+                <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
+                <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
+                <small>* HeTD : Nombre d’heures équivalent TD</small>
               </div>
-
-
-              <v-expand-transition>
-                <div v-show="showDetails">
-                  <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
-                  <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
-                  <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
-                  <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
-                  <small>* HeTD : Nombre d’heures équivalent TD</small>
-                </div>
-              </v-expand-transition>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="edit(e)"
-                    >
-                      edit
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="copy(e)"
-                    >
-                      file_copy
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Dupliquer</span>
-              </v-tooltip>
-              <v-spacer></v-spacer>
-              <Delete :item="e.id"></Delete>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-dialog
-            v-model="form"
-            persistent
-            max-width="600px"
-        >
-          <v-card>
-            <v-form lazy-validation>
-              <v-card-title>
-                <span class="headline" v-if="methods === 'POST'">Ajouter un enseignant</span>
-                <span class="headline" v-else>Modifier un enseignant</span>
-                <v-spacer></v-spacer>
-                <v-btn
-                    icon
-                    @click="close"
-                >
-                  <v-icon>
-                    close
+            </v-expand-transition>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="edit(e)"
+                  >
+                    edit
                   </v-icon>
                 </v-btn>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-text-field
-                    v-model="prenom"
-                    :error-messages="prenomErrors"
-                    :counter="255"
-                    label="Prénom"
-                    required
-                    clearable
-                    @input="$v.prenom.$touch()"
-                    @blur="$v.prenom.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="nom"
-                    :error-messages="nomErrors"
-                    :counter="255"
-                    label="Nom"
-                    required
-                    clearable
-                    @input="$v.nom.$touch()"
-                    @blur="$v.nom.$touch()"
-                ></v-text-field>
-                <v-text-field v-if="this.methods === 'PUT'"
-                    v-model="surnom"
-                    :error-messages="surnomErrors"
-                    :counter="3"
-                    label="Surnom"
-                    clearable
-                    @input="$v.surnom.$touch()"
-                    @blur="$v.surnom.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="email"
-                    :error-messages="emailErrors"
-                    label="E-mail"
-                    :counter="255"
-                    required
-                    clearable
-                    @input="$v.email.$touch()"
-                    @blur="$v.email.$touch()"
-                ></v-text-field>
-                <v-select
-                    v-model="statut_id"
-                    :items="statuts"
-                    :item-text="item => item.nom +' ('+ item.surnom + ')'"
-                    item-value="id"
-                    label="Statut"
-                    clearable
-                    :error-messages="statutErrors"
-                    @change="$v.statut_id.$touch()"
-                    @blur="$v.statut_id.$touch()"
-                    required
-                ></v-select>
-                <v-card-actions>
-                  <v-btn
-                      color="red darken-1"
-                      class="mr-4"
-                      text
-                      @click="clear"
+              </template>
+              <span>Modifier</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="copy(e)"
                   >
-                    Vider
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                      color="green darken-1"
-                      class="mr-4"
-                      text
-                      @click="submit"
-                  >
-                    Valider
-                  </v-btn>
-                </v-card-actions>
-              </v-card-text>
-            </v-form>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-              class="v-btn--addElement"
-              color="green"
-              fab
-              dark
-              @click="close"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+                    file_copy
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Dupliquer</span>
+            </v-tooltip>
+            <v-spacer></v-spacer>
+            <Delete :item="e.id"></Delete>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="form"
+          persistent
+          max-width="600px"
+      >
+        <v-card>
+          <v-form lazy-validation>
+            <v-card-title>
+              <span class="headline" v-if="methods === 'POST'">Ajouter un enseignant</span>
+              <span class="headline" v-else>Modifier un enseignant</span>
+              <v-spacer></v-spacer>
+              <v-btn
+                  icon
+                  @click="close"
+              >
+                <v-icon>
+                  close
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-text-field
+                  v-model="prenom"
+                  :error-messages="prenomErrors"
+                  :counter="255"
+                  label="Prénom"
+                  required
+                  clearable
+                  @input="$v.prenom.$touch()"
+                  @blur="$v.prenom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="nom"
+                  :error-messages="nomErrors"
+                  :counter="255"
+                  label="Nom"
+                  required
+                  clearable
+                  @input="$v.nom.$touch()"
+                  @blur="$v.nom.$touch()"
+              ></v-text-field>
+              <v-text-field v-if="this.methods === 'PUT'"
+                  v-model="surnom"
+                  :error-messages="surnomErrors"
+                  :counter="3"
+                  label="Surnom"
+                  clearable
+                  @input="$v.surnom.$touch()"
+                  @blur="$v.surnom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="email"
+                  :error-messages="emailErrors"
+                  label="E-mail"
+                  :counter="255"
+                  required
+                  clearable
+                  @input="$v.email.$touch()"
+                  @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-select
+                  v-model="statut_id"
+                  :items="statuts"
+                  :item-text="item => item.nom +' ('+ item.surnom + ')'"
+                  item-value="id"
+                  label="Statut"
+                  clearable
+                  :error-messages="statutErrors"
+                  @change="$v.statut_id.$touch()"
+                  @blur="$v.statut_id.$touch()"
+                  required
+              ></v-select>
+              <v-card-actions>
+                <v-btn
+                    color="red darken-1"
+                    class="mr-4"
+                    text
+                    @click="clear"
+                >
+                  Vider
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="green darken-1"
+                    class="mr-4"
+                    text
+                    @click="submit"
+                >
+                  Valider
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+            class="v-btn--addElement"
+            color="green"
+            fab
+            dark
+            @click="close"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import Delete from "@/components/DeleteConfirmation";
+import Delete from "../components/DeleteConfirmation";
 import {mapState} from 'vuex';
 import {validationMixin} from "vuelidate";
 import {email, maxLength, required} from "vuelidate/lib/validators";
@@ -243,6 +199,7 @@ export default {
   name: "ReadEnseignants",
   components: {Delete},
   mixins: [validationMixin],
+  props: ['enseignants'],
 
   validations: {
     nom: {required, maxLength: maxLength(255)},
@@ -266,11 +223,10 @@ export default {
     statut_id: null,
   }),
   mounted() {
-    this.$store.dispatch('loadGenerique', 'enseignants')
     this.$store.dispatch('loadGenerique', 'statuts')
   },
   computed: {
-    ...mapState(['statuts', 'enseignants']),
+    ...mapState(['statuts']),
     statutErrors() {
       const errors = []
       if (!this.$v.statut_id.$dirty) return errors
@@ -369,33 +325,6 @@ export default {
       let index = this.statuts.findIndex(statut => statut.id === id)
       return this.statuts[index]
     },
-    sortedByPrenom() {
-      if (this.sortPrenom) {
-        this.sortPrenom = false
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase())
-      } else {
-        this.sortPrenom = true
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase())
-      }
-    },
-    sortedByNom() {
-      if (this.sortNom) {
-        this.sortNom = false
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase())
-      } else {
-        this.sortNom = true
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
-      }
-    },
-    sortedByStatut() {
-      if (this.sortStatut) {
-        this.sortStatut = false
-        this.enseignants.sort((a, b) => a.statut.id < b.statut.id)
-      } else {
-        this.sortStatut = true
-        this.enseignants.sort((a, b) => a.statut.id > b.statut.id)
-      }
-    }
   },
 }
 </script>

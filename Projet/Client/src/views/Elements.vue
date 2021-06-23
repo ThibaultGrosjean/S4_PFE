@@ -1,39 +1,39 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col>
-          <h1 class="text-center text-h4">Liste des hiérarchies arborescentes</h1>
-        </v-col>
-      </v-row>
-      <v-row
-          align="center"
-          justify="center"
+  <v-container>
+    <v-row>
+      <v-col>
+        <h1 class="text-center text-h4">Liste des hiérarchies arborescentes</h1>
+      </v-col>
+    </v-row>
+    <v-row
+        align="center"
+        justify="center"
+    >
+      <v-btn-toggle
+          v-if="elementsLevel.length"
+          borderless
+          rounded
+          dense
+          mandatory
+          color="blue--text text--accent-4"
       >
-        <v-btn-toggle
-            v-if="elementsLevel.length"
-            borderless
-            rounded
-            dense
-            mandatory
-            color="blue--text text--accent-4"
+        <v-btn
+            @click="sortedByTitre"
         >
-          <v-btn
-              @click="sortedByTitre"
-          >
-            <span class="hidden-sm-and-down">Titre</span>
-            <v-icon right>sort_by_alpha</v-icon>
-          </v-btn>
-        </v-btn-toggle>
-      </v-row>
-      <v-row>
-        <v-col v-if="!elementsLevel.length">
-          <p class="text-center">Aucune donnée trouvée</p>
-        </v-col>
-      </v-row>
+          <span class="hidden-sm-and-down">Titre</span>
+          <v-icon right>sort_by_alpha</v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-row>
+    <v-row>
+      <v-col v-if="!elementsLevel.length">
+        <p class="text-center">Aucune donnée trouvée</p>
+      </v-col>
+    </v-row>
+    <v-row>
       <ReadElements :racine="elementsLevel" :flat="false" :add-btn="true" :disabled="false"/>
-    </v-container>
-  </div>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

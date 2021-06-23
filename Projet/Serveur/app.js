@@ -94,6 +94,8 @@ app.get('/intervenants/get', intervenantController.getAllIntervenants);
 
 app.get('/intervenants/get/:id', intervenantController.getIntervenant);
 
+app.get('/intervenants/projets/get/:id', intervenantController.getIntervenantsByProjet);
+
 app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
 
 app.put('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
@@ -104,6 +106,8 @@ app.delete('/intervenants/delete/:id', intervenantController.deleteIntervenant);
 app.get('/formations/get', formationController.getAllFormations);
 
 app.get('/formations/get/:id', formationController.getFormation);
+
+app.get('/formations/projets/get/:id', formationController.getFormationByProjet);
 
 app.post('/formations/create/',formationController.validator, formationController.addFormation);
 

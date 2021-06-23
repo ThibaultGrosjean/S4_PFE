@@ -15,15 +15,6 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Accueil',
-    component: Accueil,
-    meta: {
-      auth: true,
-      title: 'Accueil'
-    }
-  },
-  {
     path: '/accueil',
     name: 'Accueil',
     component: Accueil
@@ -49,13 +40,13 @@ const routes = [
     component: Elements
   },
   {
-    path: '/intervenants',
-    name: 'Intervenants',
+    path: '/intervenants/projets/:id',
+    name: 'Intervenants par Projet',
     component: Intervenant
   },
   {
-    path: '/formations',
-    name: 'Formations',
+    path: '/formations/projets/:id',
+    name: 'Formations par Projet',
     component: Formation
   },
   {

@@ -1,216 +1,184 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col>
-          <h1 class="text-center text-h4">Liste des statuts</h1>
-        </v-col>
-      </v-row>
-      <v-row
-          align="center"
-          justify="center"
+  <v-container>
+    <v-row>
+      <v-col v-for="s in statuts"
+             :key="s.id"
+             sm="4"
       >
-        <v-btn-toggle
-            v-if="statuts.length"
-            borderless
-            rounded
-            dense
-            mandatory
-            color="blue--text text--accent-4"
-        >
-          <v-btn
-              @click="sortedByNom"
-          >
-            <span class="hidden-sm-and-down">Nom</span>
-            <v-icon right>sort_by_alpha</v-icon>
-          </v-btn>
-        </v-btn-toggle>
-      </v-row>
-      <v-row>
-        <v-col v-if="!statuts.length">
-          <p class="text-center">Aucune donnée trouvée</p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-for="s in statuts"
-               :key="s.id"
-               sm="4"
-        >
-          <v-card>
-            <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
-            <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
-            <v-divider></v-divider>
-            <v-card-text>
-              <p>HeTD* minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b></p>
-              <p>HeTD* maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b></p>
-              <p>HeTD* minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
-              <p>HeTD* maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
-              <small>* HeTD : Nombre d’heures équivalent TD</small>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="edit(s)"
-                    >
-                      edit
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="copy(s)"
-                    >
-                      file_copy
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Dupliquer</span>
-              </v-tooltip>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-dialog
-            v-model="form"
-            persistent
-            max-width="600px"
-        >
-
-          <v-card>
-            <v-form lazy-validation>
-              <v-card-title>
-                <span class="headline" v-if="methods === 'POST'">Ajouter un statut</span>
-                <span class="headline" v-else>Modifier un statut</span>
-                <v-spacer></v-spacer>
-                <v-btn
-                    icon
-                    @click="close"
-                >
-                  <v-icon>
-                    close
+        <v-card>
+          <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
+          <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
+          <v-divider></v-divider>
+          <v-card-text>
+            <p>HeTD* minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b></p>
+            <p>HeTD* maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b></p>
+            <p>HeTD* minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
+            <p>HeTD* maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
+            <small>* HeTD : Nombre d’heures équivalent TD</small>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="edit(s)"
+                  >
+                    edit
                   </v-icon>
                 </v-btn>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-text-field
-                    v-model="nom"
-                    :error-messages="nomErrors"
-                    :counter="255"
-                    label="Nom"
-                    required
-                    clearable
-                    @input="$v.nom.$touch()"
-                    @blur="$v.nom.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="surnom"
-                    :error-messages="surnomErrors"
-                    :counter="255"
-                    label="Surnom"
-                    required
-                    clearable
-                    @input="$v.surnom.$touch()"
-                    @blur="$v.surnom.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="nb_he_td_min_attendu"
-                    :error-messages="heTDMinAttenduErrors"
-                    label="Nombre d'heures (équivalent TD) minimales attendues"
-                    required
-                    clearable
-                    @input="$v.nb_he_td_min_attendu.$touch()"
-                    @blur="$v.nb_he_td_min_attendu.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="nb_he_td_max_attendu"
-                    :error-messages="heTDMaxAttenduErrors"
-                    label="Nombre d'heures (équivalent TD) maximales attendues"
-                    required
-                    clearable
-                    @input="$v.nb_he_td_max_attendu.$touch()"
-                    @blur="$v.nb_he_td_max_attendu.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="nb_he_td_min_sup"
-                    :error-messages="heTDMinSupErrors"
-                    label="Nombre d'heures (équivalent TD) minimales supplémentaires attendues"
-                    required
-                    clearable
-                    @input="$v.nb_he_td_min_sup.$touch()"
-                    @blur="$v.nb_he_td_min_sup.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model="nb_he_td_max_sup"
-                    :error-messages="heTDMaxSupErrors"
-                    label="Nombre d'heures (équivalent TD) maximales supplémentaires attendues"
-                    required
-                    clearable
-                    @input="$v.nb_he_td_max_sup.$touch()"
-                    @blur="$v.nb_he_td_max_sup.$touch()"
-                ></v-text-field>
-                <v-card-actions>
-                  <v-btn
-                      color="red darken-1"
-                      class="mr-4"
-                      text
-                      @click="clear"
+              </template>
+              <span>Modifier</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="copy(s)"
                   >
-                    Vider
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                      color="green darken-1"
-                      class="mr-4"
-                      text
-                      @click="submit"
-                  >
-                    Valider
-                  </v-btn>
-                </v-card-actions>
-              </v-card-text>
-            </v-form>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-              class="v-btn--addElement"
-              color="green"
-              fab
-              dark
-              @click="close"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+                    file_copy
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Dupliquer</span>
+            </v-tooltip>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="form"
+          persistent
+          max-width="600px"
+      >
+
+        <v-card>
+          <v-form lazy-validation>
+            <v-card-title>
+              <span class="headline" v-if="methods === 'POST'">Ajouter un statut</span>
+              <span class="headline" v-else>Modifier un statut</span>
+              <v-spacer></v-spacer>
+              <v-btn
+                  icon
+                  @click="close"
+              >
+                <v-icon>
+                  close
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-text-field
+                  v-model="nom"
+                  :error-messages="nomErrors"
+                  :counter="255"
+                  label="Nom"
+                  required
+                  clearable
+                  @input="$v.nom.$touch()"
+                  @blur="$v.nom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="surnom"
+                  :error-messages="surnomErrors"
+                  :counter="255"
+                  label="Surnom"
+                  required
+                  clearable
+                  @input="$v.surnom.$touch()"
+                  @blur="$v.surnom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="nb_he_td_min_attendu"
+                  :error-messages="heTDMinAttenduErrors"
+                  label="Nombre d'heures (équivalent TD) minimales attendues"
+                  required
+                  clearable
+                  @input="$v.nb_he_td_min_attendu.$touch()"
+                  @blur="$v.nb_he_td_min_attendu.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="nb_he_td_max_attendu"
+                  :error-messages="heTDMaxAttenduErrors"
+                  label="Nombre d'heures (équivalent TD) maximales attendues"
+                  required
+                  clearable
+                  @input="$v.nb_he_td_max_attendu.$touch()"
+                  @blur="$v.nb_he_td_max_attendu.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="nb_he_td_min_sup"
+                  :error-messages="heTDMinSupErrors"
+                  label="Nombre d'heures (équivalent TD) minimales supplémentaires attendues"
+                  required
+                  clearable
+                  @input="$v.nb_he_td_min_sup.$touch()"
+                  @blur="$v.nb_he_td_min_sup.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="nb_he_td_max_sup"
+                  :error-messages="heTDMaxSupErrors"
+                  label="Nombre d'heures (équivalent TD) maximales supplémentaires attendues"
+                  required
+                  clearable
+                  @input="$v.nb_he_td_max_sup.$touch()"
+                  @blur="$v.nb_he_td_max_sup.$touch()"
+              ></v-text-field>
+              <v-card-actions>
+                <v-btn
+                    color="red darken-1"
+                    class="mr-4"
+                    text
+                    @click="clear"
+                >
+                  Vider
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="green darken-1"
+                    class="mr-4"
+                    text
+                    @click="submit"
+                >
+                  Valider
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+            class="v-btn--addElement"
+            color="green"
+            fab
+            dark
+            @click="close"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
 import {maxLength, required, decimal} from "vuelidate/lib/validators";
 
 export default {
   name: "ReadStatuts",
   mixins: [validationMixin],
+  props: ['statuts'],
 
   validations: {
     nom: {required, maxLength: maxLength(255)},
@@ -223,7 +191,6 @@ export default {
   data: () => ({
     form: false,
     methods: "POST",
-    sortNom: false,
     id: '',
     nom: '',
     surnom: '',
@@ -232,11 +199,7 @@ export default {
     nb_he_td_min_sup: '',
     nb_he_td_max_sup: '',
   }),
-  mounted() {
-    this.$store.dispatch('loadGenerique', 'statuts');
-  },
   computed: {
-    ...mapState(['statuts', 'enseignants']),
     nomErrors() {
       const errors = []
       if (!this.$v.nom.$dirty) return errors
@@ -330,15 +293,6 @@ export default {
     },
     copy(statut) {
       this.$store.commit('COPY_Statut', statut.id);
-    },
-    sortedByNom() {
-      if (this.sortNom) {
-        this.sortNom = false
-        this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase())
-      } else {
-        this.sortNom = true
-        this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
-      }
     },
   },
 }

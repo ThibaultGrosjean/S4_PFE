@@ -61,19 +61,17 @@ export default {
     subMenu: [
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
-      {text: "Formations",icon:"auto_stories", path: "/formations"},
-      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},
-      {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},
-      {text: "Intervenants",icon:"assignment_ind", path: "/intervenants"},
+      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},//
+      {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},//
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
-      {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},
-      {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},
+      {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},//
+      {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},//
 
     ]
   }),
   methods: {
-    redirect: function (path){
+    redirect(path) {
       this.$router.push({path:path}).catch(()=>{});
     },
   }

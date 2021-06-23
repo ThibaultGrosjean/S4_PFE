@@ -25,6 +25,24 @@ exports.getAllIntervenants = (req, res) => {
 };
 
 
+exports.getIntervenantsByProjet = (req, res) => {
+  db.query('SELECT i.*, p.nom, p.date'
+        +' FROM intervenant AS i'
+        +' JOIN projet AS p'
+        +' ON p.id = i.projet_id'
+        +' WHERE i.projet_id = ? ;', [req.params.id],
+    function(err, intervenant) {
+      if (!err) {
+        res.status(200).json(intervenant);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getIntervenant = (req, res) => {
   db.query('SELECT * FROM intervenant WHERE id = ? ;', [req.params.id],
     function(err, intervenant) {

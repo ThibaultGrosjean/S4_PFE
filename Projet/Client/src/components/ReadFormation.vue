@@ -1,199 +1,187 @@
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col>
-          <h1 class="text-center text-h4">Liste des formations</h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-if="!formations.length">
-          <p class="text-center">Aucune donnée trouvée</p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-for="f in formations"
-               :key="f.id"
-               sm="12"
-        >
-          <v-card>
-            <v-card-title class="text-h5">
-              <span>{{ returnProjet(f.projet_id).nom }} {{ toTime(returnProjet(f.projet_id).date, 4) }}</span>
-              <v-spacer></v-spacer>
-              <small class="text-body-1 mr-2">Verrou</small>
-              <v-edit-dialog
-                  :return-value.sync="f.verrou"
-                  large
-                  @save="save(f)"
-                  cancel-text="Annuler"
-                  save-text="Valider"
+  <v-container>
+    <v-row>
+      <v-col
+          v-for="f in formations"
+          :key="f.id"
+          sm="12"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            <v-spacer></v-spacer>
+            <small class="text-body-1 mr-2">Verrou</small>
+            <v-edit-dialog
+                :return-value.sync="f.verrou"
+                large
+                @save="save(f)"
+                cancel-text="Annuler"
+                save-text="Valider"
+            >
+              <v-btn
+                  outlined
+                  rounded
+                  :color="f.verrou ? 'success' : 'error'"
               >
-                <v-btn
-                    outlined
-                    rounded
-                    :color="f.verrou ? 'success' : 'error'"
-                >
-                  {{ f.verrou ? "Activé" : "Désactivé" }}
-                </v-btn>
-                <template v-slot:input>
+                {{ f.verrou ? "Activé" : "Désactivé" }}
+              </v-btn>
+              <template v-slot:input>
+                <div class="d-flex justify-center">
                   <v-switch
                       v-model="f.verrou"
-                      inset
                       :true-value="1"
                       :false-value="0"
                       color="success"
                       label="Verrou"
+                  ></v-switch>
+                </div>
+              </template>
+            </v-edit-dialog>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text class="pa-0">
+            <ReadElements :racine="returnElement(f.element_id)" :flat="true" :add-btn="false" :disabled="Boolean(f.verrou)"></ReadElements>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="edit(f)"
                   >
-                  </v-switch>
-                </template>
-              </v-edit-dialog>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text class="pa-0">
-              <ReadElements :racine="returnElement(f.element_id)" :flat="true" :add-btn="false" :disabled="Boolean(f.verrou)"></ReadElements>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="edit(f)"
-                    >
-                      edit
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      file_copy
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Dupliquer</span>
-              </v-tooltip>
-              <v-spacer></v-spacer>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon>
-                    <v-icon
-                        color="red darken-1"
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      delete
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Supprimer</span>
-              </v-tooltip>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-dialog
-            v-model="form"
-            persistent
-            max-width="600px"
-        >
-
-          <v-card>
-            <v-form lazy-validation>
-              <v-card-title>
-                <span class="headline" v-if="methods === 'POST'">Ajouter une formation</span>
-                <span class="headline" v-else>Modifier une formation</span>
-                <v-spacer></v-spacer>
-                <v-btn
-                    icon
-                    @click="close"
-                >
-                  <v-icon>
-                    close
+                    edit
                   </v-icon>
                 </v-btn>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-select
-                    v-model="projet_id"
-                    :items="projetsArchive"
-                    :item-text="item => item.nom +' ('+ toTime(item.date, 4) + ')'"
-                    no-data-text="Aucun projet non archivé disponible"
-                    item-value="id"
-                    label="Projet"
-                    clearable
-                    :error-messages="projetErrors"
-                    @change="$v.projet_id.$touch()"
-                    @blur="$v.projet_id.$touch()"
-                    required
-                ></v-select>
-                <v-select
-                    v-model="element_id"
-                    :items="elementsLevel"
-                    item-text="titre"
-                    item-value="id"
-                    label="Hierarchies arborescentes"
-                    clearable
-                    :error-messages="elementErrors"
-                    @change="$v.element_id.$touch()"
-                    @blur="$v.element_id.$touch()"
-                    required
-                ></v-select>
-                <v-switch
-                    v-if="this.methods !== 'POST'"
-                    v-model="verrou"
-                    inset
-                    :label="'Verrouiller'"
-                ></v-switch>
-                <v-card-actions>
-                  <v-btn
+              </template>
+              <span>Modifier</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                  >
+                    file_copy
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Dupliquer</span>
+            </v-tooltip>
+            <v-spacer></v-spacer>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon>
+                  <v-icon
                       color="red darken-1"
-                      class="mr-4"
-                      text
-                      @click="clear"
+                      v-bind="attrs"
+                      v-on="on"
                   >
-                    Vider
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                      color="green darken-1"
-                      class="mr-4"
-                      text
-                      @click="submit"
-                  >
-                    Valider
-                  </v-btn>
-                </v-card-actions>
-              </v-card-text>
-            </v-form>
-          </v-card>
-        </v-dialog>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-              class="v-btn--addElement"
-              color="green"
-              fab
-              dark
-              @click="close"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+                    delete
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Supprimer</span>
+            </v-tooltip>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="form"
+          persistent
+          max-width="600px"
+      >
+
+        <v-card>
+          <v-form lazy-validation>
+            <v-card-title>
+              <span class="headline" v-if="methods === 'POST'">Ajouter une formation</span>
+              <span class="headline" v-else>Modifier la formation</span>
+              <v-spacer></v-spacer>
+              <v-btn
+                  icon
+                  @click="close"
+              >
+                <v-icon>
+                  close
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-select
+                  v-model="projet_id"
+                  :items="projetsArchive"
+                  :item-text="item => item.nom +' ('+ toTime(item.date, 4) + ')'"
+                  no-data-text="Aucun projet non archivé disponible"
+                  item-value="id"
+                  label="Projet"
+                  clearable
+                  :error-messages="projetErrors"
+                  @change="$v.projet_id.$touch()"
+                  @blur="$v.projet_id.$touch()"
+                  required
+              ></v-select>
+              <v-select
+                  v-model="element_id"
+                  :items="elementsLevel"
+                  item-text="titre"
+                  item-value="id"
+                  label="Hierarchies arborescentes"
+                  clearable
+                  :error-messages="elementErrors"
+                  @change="$v.element_id.$touch()"
+                  @blur="$v.element_id.$touch()"
+                  required
+              ></v-select>
+              <v-switch
+                  v-if="this.methods !== 'POST'"
+                  v-model="verrou"
+                  :label="'Verrouiller'"
+                  color="success"
+              ></v-switch>
+              <v-card-actions>
+                <v-btn
+                    color="red darken-1"
+                    class="mr-4"
+                    text
+                    @click="clear"
+                >
+                  Vider
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="green darken-1"
+                    class="mr-4"
+                    text
+                    @click="submit"
+                >
+                  Valider
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+            class="v-btn--addElement"
+            color="green"
+            fab
+            dark
+            @click="close"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -206,6 +194,7 @@ export default {
   name: "ReadFormation",
   components: {ReadElements},
   mixins: [validationMixin],
+  props: ['formations'],
 
   validations: {
     projet_id: {required, numeric},
@@ -223,10 +212,9 @@ export default {
     this.$store.dispatch('loadProjetsNonArchive')
     this.$store.dispatch('loadGenerique', 'elements')
     this.$store.dispatch('loadElementsLevel', 0)
-    this.$store.dispatch('loadGenerique', 'formations')
   },
   computed: {
-    ...mapState(['projets', 'elements', 'elementsLevel', 'projetsArchive', 'formations']),
+    ...mapState(['projets', 'elements', 'elementsLevel', 'projetsArchive']),
     projetErrors() {
       const errors = []
       if (!this.$v.projet_id.$dirty) return errors
@@ -281,10 +269,6 @@ export default {
     },
     save(formation){
       this.$store.commit('EDIT_Formations', formation);
-    },
-    returnProjet(id) {
-      let index = this.projets.findIndex(projet => projet.id === id)
-      return this.projets[index]
     },
     returnElement(id){
       let index = this.elements.findIndex(element => element.id === id);
