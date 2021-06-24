@@ -653,6 +653,30 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
     },
+    ADD_AllGroupeIntervenantForModule({dispatch}, params ) {
+      axios.post('/groupes-intervenants/create/module/'+ params.module + '/intervenant/'+ params.intervenant +'/nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
+        .then(response => response.data)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      dispatch('loadIntervenantsModules')
+      dispatch('loadGenerique', 'groupes-intervenants')
+    },
+    DELETE_AllGroupeIntervenant({commit, dispatch}, params ) {
+      axios.delete('/groupes-intervenants/delete/element/'+ params.element_id +'/intervenant/' + params.intervenant_id)
+        .then(groupesIntervenants => {
+          console.log(groupesIntervenants);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      var toDelete = this.state.groupesIntervenants.filter(e => (e.intervenant_id === params.intervenant_id && e.element_id === params.element_id))
+      for (let j = 0; j < toDelete.length; j++) this.state.groupesIntervenants.splice(toDelete[j])
+
+      dispatch('loadGenerique', 'groupes-intervenants')
+      dispatch('loadIntervenantsModules')
+    }
   },
   modules: {}
 })

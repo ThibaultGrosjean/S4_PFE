@@ -62,7 +62,6 @@ export default {
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},//
-      {text: "Hiérarchies  arborescentes",icon: "account_tree", path: "/hierarchies-arborescentes"},//
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
       {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},//

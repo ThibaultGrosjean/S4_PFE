@@ -8,7 +8,7 @@
       :close-on-content-click="validForm"
   >
     <template v-slot:activator="{ on, attrs }">
-      <td v-bind="attrs" v-on="on">
+      <td v-bind="attrs" v-on="on" class="text-center">
         <div v-if="table === 'groupes-intervenants'">
           <span v-if="typeCours === 'cm'">{{ data.nb_groupe_cm }}</span>
           <span v-if="typeCours === 'td'">{{ data.nb_groupe_td }}</span>
@@ -49,17 +49,19 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
+            color="red darken-1"
+            class="ml-4 mb-3"
             text
-            color="primary"
             @click="close"
         >
           Annuler
         </v-btn>
+        <v-spacer></v-spacer>
         <v-btn
+            color="green darken-1"
+            class="mr-4 mb-3"
             text
-            color="primary"
             @click="save"
         >
           Valider
@@ -91,7 +93,7 @@ export default {
     y: 0,
   }),
   computed: {
-    //VolHorGlobaleDefautErrors getPériodeUE
+    //TODO VolHorGlobaleDefautErrors getPériodeUE
     volHorSemaineDefautErrors() {
       const errors = []
       if (!this.$v.volHorSemaineDefaut.$dirty) return errors

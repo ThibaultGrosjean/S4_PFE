@@ -90,6 +90,48 @@ exports.addGroupeIntervenant = (req, res) => {
 };
 
 
+exports.addVolumesHebdomadaires = (req, res) => {
+  var moduleId = req.params.module
+  var intervenantId = req.params.intervenant
+  var nbSemaineDeb = req.params.semaineDeb
+  var nbSemaineFin = req.params.semaineFin
+
+  var data = {
+    num_semaine : 0,
+    nb_groupe_cm : 0,
+    nb_groupe_td : 0,
+    nb_groupe_tp : 0,
+    nb_groupe_partiel : 0,
+    element_id : moduleId,
+    intervenant_id : intervenantId,
+  };
+
+  for (let i = nbSemaineDeb; i <= nbSemaineFin; i++) {
+    data['num_semaine'] = i;
+
+    var requete="INSERT INTO groupe_intervenant(num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel, element_id, intervenant_id) VALUES ('" 
+      + data['num_semaine'] + "','"
+      + data['nb_groupe_cm'] + "','"
+      + data['nb_groupe_td'] + "','"
+      + data['nb_groupe_tp'] + "','"
+      + data['nb_groupe_partiel'] + "','"
+      + data['element_id'] + "','"
+      + data['intervenant_id'] + "');"
+    ;
+    ;
+    db.query(requete,
+      function(err) {
+        if (!err) {
+          res.status(200); 
+        } else  {
+          res.send(err);
+        }
+      }
+    );
+  }
+};
+
+
 exports.copyGroupeIntervenant = (req, res) => {
   db.query('SELECT * FROM groupe_intervenant WHERE id = ? ;', [req.params.id],
     function(err, groupe_intervenant) {
@@ -188,7 +230,21 @@ exports.editTypeValueElementGroupeIntervenant = (req, res) => {
 
 
 exports.deleteGroupeIntervenant = (req, res) => {
-  db.query('DELETE FROM groupe_intervenant WHERE id = ? ;',[req.params.id],
+  db.query('DELETE FROM groupe_intervenant WHERE eleme = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.deleteAllGroupesIntervenants = (req, res) => {
+  db.query('DELETE FROM groupe_intervenant WHERE element_id = ' + req.params.element + ' AND intervenant_id = ' + req.params.intervenant,
     function(err) {
       if (!err) {
         res.status(200); 

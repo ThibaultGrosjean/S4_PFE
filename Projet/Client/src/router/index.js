@@ -36,11 +36,6 @@ const routes = [
     component: Projets
   },
   {
-    path: '/hierarchies-arborescentes',
-    name: 'Hierarchies Arborescentes',
-    component: Elements
-  },
-  {
     path: '/intervenants/projets/:id',
     name: 'Intervenants par Projet',
     component: Intervenant

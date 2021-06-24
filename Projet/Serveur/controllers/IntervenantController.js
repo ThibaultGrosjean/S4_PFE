@@ -43,6 +43,30 @@ exports.getIntervenantsByProjet = (req, res) => {
 };
 
 
+exports.getIntervenantsByProjetNotInModule = (req, res) => {
+  db.query('SELECT i.id, i.projet_id, e.prenom, e.nom, s.nom AS statut'
+        +' FROM intervenant AS i'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' JOIN statut AS s'
+        +' ON s.id = e.statut_id'
+        +' WHERE i.projet_id = ' + req.params.idProjet
+        +' AND i.id NOT IN (SELECT g2.intervenant_id'
+                         +' FROM groupe_intervenant AS g2'
+                         +' WHERE g2.element_id = ' + req.params.idModule
+                         +' GROUP BY g2.element_id, g2.intervenant_id);',
+    function(err, intervenant) {
+      if (!err) {
+        res.status(200).json(intervenant);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getIntervenant = (req, res) => {
   db.query('SELECT * FROM intervenant WHERE id = ? ;', [req.params.id],
     function(err, intervenant) {

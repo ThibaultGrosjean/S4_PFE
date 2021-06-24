@@ -69,3 +69,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 
 * Accéder aux formations et aux intervenants liés au projet depuis le projet
 * Page d'erreur 404
+* Ajouter un intervenant à un module
+* Supprimer un intervannt à un module

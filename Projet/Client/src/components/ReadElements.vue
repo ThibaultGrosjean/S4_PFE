@@ -6,6 +6,7 @@
             :key="formation.id"
             v-if="formation.parent === null"
             cols="12"
+            class="pa-0"
         >
           <v-card :flat="flat">
             <v-card-title>
@@ -353,44 +354,44 @@
                                                                 <tr>
                                                                   <th class="text-right right-border"></th>
                                                                   <template v-for="v in volumesHebdomadaires">
-                                                                    <th :key="v.id" v-if="v.element_id === module.id">
+                                                                    <th :key="v.id" v-if="v.element_id === module.id" class="text-center">
                                                                       {{ v.num_semaine }}
                                                                     </th>
                                                                   </template>
-                                                                  <th class="text-left left-border">Total</th>
+                                                                  <th class="text-center left-border">Total</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                 <tr v-if="module.cm_autorises">
                                                                   <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                   <template v-for="v in volumesHebdomadaires">
-                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                   </template>
-                                                                  <td class="left-border">{{ totalVolume(module, 'vol_hor_cm') }}</td>
+                                                                  <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_cm') }}</td>
                                                                 </tr>
 
                                                                 <tr v-if="module.td_autorises">
                                                                   <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                   <template v-for="v in volumesHebdomadaires">
-                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                   </template>
-                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_td') }}</td>
+                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
                                                                 </tr>
 
                                                                 <tr v-if="module.tp_autorises">
                                                                   <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                   <template v-for="v in volumesHebdomadaires">
-                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                   </template>
-                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_tp') }}</td>
+                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}</td>
                                                                 </tr>
 
                                                                 <tr v-if="module.partiel_autorises">
                                                                   <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
                                                                   <template v-for="v in volumesHebdomadaires">
-                                                                    <TDVEditDialog :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                   </template>
-                                                                  <td class="left-border">{{totalVolume(module, 'vol_hor_partiel') }}</td>
+                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_partiel') }}</td>
                                                                 </tr>
                                                                 </tbody>
                                                               </template>
@@ -415,57 +416,68 @@
                                                                       <template v-slot:default>
                                                                         <thead>
                                                                         <tr>
-                                                                          <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                          <th class="top-border"></th>
+                                                                          <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
                                                                             <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                          </th>
+                                                                          <th class="text-center top-border">
+                                                                            <v-btn icon small color="red darken-1" @click="deleteAllGroupe(module.id, i.intervenant_id)">
+                                                                              <v-icon>close</v-icon>
+                                                                            </v-btn>
                                                                           </th>
                                                                         </tr>
 
                                                                         <tr>
-                                                                          <th class="text-right right-border"></th>
+                                                                          <th class="right-border"></th>
                                                                           <template v-for="g in groupesIntervenants">
-                                                                            <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id">
+                                                                            <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" class="text-center">
                                                                               {{ g.num_semaine }}
                                                                             </th>
                                                                           </template>
-                                                                          <th class="text-left left-border">Total</th>
+                                                                          <th class="text-center left-border">Total</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                         <tr v-if="module.cm_autorises">
                                                                           <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
                                                                           <template v-for="g in groupesIntervenants">
-                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                           </template>
-                                                                          <td class="left-border">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
+                                                                          <td class="left-border text-center">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
                                                                         </tr>
 
                                                                         <tr v-if="module.td_autorises">
                                                                           <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                           <template v-for="g in groupesIntervenants">
-                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                           </template>
-                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
+                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
                                                                         </tr>
 
                                                                         <tr v-if="module.tp_autorises">
                                                                           <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                           <template v-for="g in groupesIntervenants">
-                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                           </template>
-                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
+                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
                                                                         </tr>
 
                                                                         <tr v-if="module.partiel_autorises">
                                                                           <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
                                                                           <template v-for="g in groupesIntervenants">
-                                                                            <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                           </template>
-                                                                          <td class="left-border">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
+                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
                                                                         </tr>
                                                                         </tbody>
                                                                       </template>
                                                                     </v-simple-table>
                                                                   </template>
+                                                                  <v-divider></v-divider>
+                                                                  <v-btn text block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
+                                                                    Ajouter un intervenant
+                                                                    <v-icon v-if="!intervenantByProjetNotInModule">mdi-plus</v-icon>
+                                                                  </v-btn>
                                                                 </v-expansion-panel-content>
                                                               </v-expansion-panel>
                                                             </v-expansion-panels>
@@ -489,28 +501,28 @@
                                                                   <tr v-if="module.cm_autorises">
                                                                     <td>CM</td>
                                                                     <template v-for="g in volumesGlobaux">
-                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
+                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
                                                                     <td>TD</td>
                                                                     <template v-for="g in volumesGlobaux">
-                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
+                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
                                                                     <td>TP</td>
                                                                     <template v-for="g in volumesGlobaux">
-                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
+                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
                                                                     <td>PARTIEL</td>
                                                                     <template v-for="g in volumesGlobaux">
-                                                                      <TDVEditDialog :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
+                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
                                                                     </template>
                                                                   </tr>
                                                                   </tbody>
@@ -812,6 +824,53 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="formIntervenant"
+          persistent
+          max-width="600px"
+      >
+
+        <v-card>
+          <v-form lazy-validation>
+            <v-card-title>
+              <span class="headline">Ajouter un intervenant</span>
+              <v-spacer></v-spacer>
+              <v-btn icon @click="closeGrpIntev">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-select
+                  v-model="intervenant_id"
+                  :items="intervenantByProjetNotInModule"
+                  :item-text="item => item.prenom + ' ' + item.nom + ' (' + item.statut + ')'"
+                  item-value="id"
+                  label="Intervenant"
+                  clearable
+                  :error-messages="intervenantErrors"
+                  no-data-text="Tous les intervenants du projet sont déjà assignés au module"
+                  @input="$v.intervenant_id.$touch()"
+                  @blur="$v.intervenant_id.$touch()"
+                  required
+              ></v-select>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="green darken-1"
+                    class="mr-4"
+                    text
+                    @click="submitGrpInterv"
+                >
+                  Valider
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row v-if="addBtn">
         <v-col>
           <v-btn
@@ -834,12 +893,13 @@ import {validationMixin} from "vuelidate";
 import {decimal, maxLength, numeric, required} from "vuelidate/lib/validators";
 import TDContexteMenu from "./TDContexteMenu";
 import EditPeriode from "./EditPeriode";
-import TDVEditDialog from "./TDVEditDialog";
+import TDEditValue from "./TDEditValue";
 import EditNbGroupeModule from "./EditNbGroupeModule";
+import axios from "axios";
 
 export default {
   name: "ReadElements",
-  components: {EditNbGroupeModule, TDVEditDialog, EditPeriode, TDContexteMenu},
+  components: {EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
   mixins: [validationMixin],
   props: ['racine', 'flat', 'addBtn', 'disabled'],
 
@@ -864,9 +924,12 @@ export default {
     nb_groupe_defaut_td: {numeric, required},
     nb_groupe_defaut_tp: {numeric, required},
     nb_groupe_defaut_partiel: {numeric, required},
+
+    intervenant_id : {required},
   },
   data: () => ({
     form: false,
+    formIntervenant: false,
     formation: false,
     methods: "POST",
     item_mode_saisie: [
@@ -906,6 +969,9 @@ export default {
     nb_groupe_defaut_td: 1,
     nb_groupe_defaut_tp: 1,
     nb_groupe_defaut_partiel: 1,
+
+    intervenantByProjetNotInModule: [],
+    intervenant_id: null,
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'elements');
@@ -1028,6 +1094,12 @@ export default {
       if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors
       !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
       !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
+      return errors
+    },
+    intervenantErrors() {
+      const errors = []
+      if (!this.$v.intervenant_id .$dirty) return errors
+      !this.$v.intervenant_id .required && errors.push('Veuillez sélectionner un intervenant')
       return errors
     },
   },
@@ -1218,9 +1290,9 @@ export default {
       this.formation = false;
       this.form = true;
     },
-    addModule(element, module) {
+    addModule(element, semestre) {
       var indice = element.indice
-      var indiceM = module.indice
+      var indiceM = semestre.indice
       var nbfils = element.nbfils
       if (nbfils === null) nbfils = 0
       if (nbfils + 1 < 10) {
@@ -1233,7 +1305,7 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeBySemestre(module.id);
+      var periode = this.findPeriodeBySemestre(semestre.id);
       if (periode !== -1 && periode !== undefined){
         this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
         this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
@@ -1276,6 +1348,39 @@ export default {
         return (total += +currentValue[type])
       }, 0)
     },
+    addGrpInterv(idModule, idSemestre){
+      this.getIntervenantProjetNotInModule(idModule)
+      this.formIntervenant = true
+      this.idElement = idModule
+      this.nb_semaine = this.findPeriodeBySemestre(idSemestre).nb_semaine
+    },
+    getIntervenantProjetNotInModule(idModule){
+      axios.get('/intervenants/projets/'+ this.$route.params.id +'/module/'+ idModule +'/get')
+          .then(response => (this.intervenantByProjetNotInModule = response.data))
+          .catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    submitGrpInterv() {
+      this.$v.$touch()
+      if (!this.intervenant_id) return;
+      this.$store.dispatch('ADD_AllGroupeIntervenantForModule', {module: this.idElement, intervenant: this.intervenant_id, nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+      this.closeGrpIntev()
+    },
+    closeGrpIntev() {
+      this.formIntervenant = false
+      this.getIntervenantProjetNotInModule(this.idElement)
+      this.clearGrpInterv()
+    },
+    clearGrpInterv() {
+      this.$v.$reset()
+      this.idElement = ''
+      this.intervenant_id = ''
+      this.nb_semaine = 1
+    },
+    deleteAllGroupe(idModule, idIntervenant){
+      this.$store.dispatch('DELETE_AllGroupeIntervenant', {element_id: idModule, intervenant_id: idIntervenant})
+    }
   }
 }
 </script>

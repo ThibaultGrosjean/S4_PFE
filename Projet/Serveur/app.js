@@ -96,6 +96,8 @@ app.get('/intervenants/get/:id', intervenantController.getIntervenant);
 
 app.get('/intervenants/projets/get/:id', intervenantController.getIntervenantsByProjet);
 
+app.get('/intervenants/projets/:idProjet/module/:idModule/get', intervenantController.getIntervenantsByProjetNotInModule);
+
 app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
 
 app.put('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
@@ -165,6 +167,8 @@ app.get('/groupes-intervenants/module/get', groupeIntervenantController.getInter
 
 app.post('/groupes-intervenants/create/',groupeIntervenantController.validator, groupeIntervenantController.addGroupeIntervenant);
 
+app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/nbsemaine/:semaineDeb/:semaineFin',groupeIntervenantController.validator, groupeIntervenantController.addVolumesHebdomadaires);
+
 app.post('/groupes-intervenants/copy/:id',groupeIntervenantController.validator, groupeIntervenantController.copyGroupeIntervenant);
 
 app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
@@ -172,6 +176,8 @@ app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, 
 app.put('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant',groupeIntervenantController.validator, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
 
 app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
+
+app.delete('/groupes-intervenants/delete/element/:element/intervenant/:intervenant', groupeIntervenantController.deleteAllGroupesIntervenants);
 
 
 app.listen(port, () => {

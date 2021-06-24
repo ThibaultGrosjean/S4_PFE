@@ -37,17 +37,19 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
+            color="red darken-1"
+            class="ml-4 mb-3"
             text
-            color="primary"
             @click="close"
         >
           Annuler
         </v-btn>
+        <v-spacer></v-spacer>
         <v-btn
+            color="green darken-1"
+            class="mr-4 mb-3"
             text
-            color="primary"
             @click="appliquerTtesSem()"
         >
           Valider
