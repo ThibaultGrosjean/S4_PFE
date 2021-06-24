@@ -68,3 +68,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 6 : 23-29 juin
 
 * Accéder aux formations et aux intervenants liés au projet depuis le projet
+* Page d'erreur 404

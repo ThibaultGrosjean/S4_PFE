@@ -10,6 +10,7 @@ import Formation from "../views/Formation";
 import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 import VolumeGlobale from "../views/VolumeGlobale";
 import GroupeIntervenant from "../views/GroupeIntervenant";
+import Erreur404 from "../views/Erreur404";
 
 Vue.use(VueRouter)
 
@@ -63,6 +64,11 @@ const routes = [
     path: '/groupes-intervenants',
     name: 'Groupes Intervenants',
     component: GroupeIntervenant
+  },
+  {
+    path: '*',
+    name: '404 Page introuvable',
+    component: Erreur404
   },
 ]
 
