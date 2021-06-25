@@ -62,9 +62,9 @@ exports.addVolumeGlobale = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, volume_globale) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(volume_globale); 
       } else  {
         res.send(err);
       }

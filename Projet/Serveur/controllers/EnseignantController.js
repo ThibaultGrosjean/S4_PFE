@@ -43,6 +43,24 @@ exports.getAllEnseignants = (req, res) => {
 };
 
 
+exports.getEnseignantByProjetNotInIntervenant = (req, res) => {
+  db.query('SELECT e.*'
+         +' FROM enseignant AS e'
+         +' WHERE e.id NOT IN (SELECT i.enseignant_id'
+                            +' FROM intervenant AS i'
+                            +' WHERE projet_id = '+ req.params.idProjet +');',
+    function(err, enseignants) {
+      if (!err) {
+        res.status(200).json(enseignants);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getEnseignant = (req, res) => {
   db.query('SELECT e.id, e.prenom, e.nom, e.surnom, e.email, e.statut_id, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id WHERE e.id = ? ;', [req.params.id],
     function(err, rows) {

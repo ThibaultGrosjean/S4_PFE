@@ -101,9 +101,9 @@ exports.addIntervenant = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(intervenant); 
       } else  {
         res.send(err);
       }

@@ -59,9 +59,9 @@ exports.addPeriode = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, periode) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(periode); 
       } else  {
         res.send(err);
       }

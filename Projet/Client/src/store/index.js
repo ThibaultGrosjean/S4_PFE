@@ -125,8 +125,8 @@ export default new Vuex.Store({
       }
       axios.put(url)
         .then(response => response.data)
-        .then(responce => {
-          console.log(responce);
+        .then(response => {
+          console.log(response);
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -226,8 +226,8 @@ export default new Vuex.Store({
     ADD_Enseignant(state, enseignant) {
       axios.post('/enseignants/create/', enseignant)
         .then(response => response.data)
-        .then(enseignants => {
-          console.log(enseignants);
+        .then(response => {
+          enseignant.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -236,8 +236,8 @@ export default new Vuex.Store({
     ADD_Statut(state, statut) {
       axios.post('/statuts/create/', statut)
         .then(response => response.data)
-        .then(statuts => {
-          console.log(statuts);
+        .then(response => {
+          statut.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -246,10 +246,9 @@ export default new Vuex.Store({
     ADD_Projet(state, nom) {
       axios.put('/projets/create/' + nom)
         .then(response => response.data)
-        .then(projet => {
-          console.log(projet);
+        .then(response => {
           const dateNow = new Date().toISOString().substr(0, 10)
-          state.projets.push({id: projet.insertId, nom: nom, date: dateNow, verrou: 0, archive: 0})
+          state.projets.push({id: response.insertId, nom: nom, date: dateNow, verrou: 0, archive: 0})
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -257,18 +256,18 @@ export default new Vuex.Store({
     ADD_Intervenant(state, intervenant) {
       axios.post('/intervenants/create/', intervenant)
         .then(response => response.data)
-        .then(intervenant => {
-          console.log(intervenant);
+        .then(response => {
+          intervenant.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
       state.intervenants.push(intervenant)
+      state.intervenantsByProjet.push(intervenant)
     },
     ADD_Formation(state, formation) {
       axios.post('/formations/create/', formation)
         .then(response => response.data)
         .then(response => {
-          console.log(response);
           formation.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -276,21 +275,21 @@ export default new Vuex.Store({
       state.formations.push(formation)
       state.formationsByProjet.push(formation)
     },
-    ADD_Periodes(state, periodes) {
-      axios.post('/periodes/create/', periodes)
+    ADD_Periodes(state, periode) {
+      axios.post('/periodes/create/', periode)
         .then(response => response.data)
-        .then(periodes => {
-          console.log(periodes);
+        .then(response => {
+          periode.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
-      state.periodes.push(periodes)
+      state.periodes.push(periode)
     },
     ADD_VolumesHebdomadaires(state, volumesHebdomadaires) {
       axios.post('/volumes-hebdomadaires/create/', volumesHebdomadaires)
         .then(response => response.data)
-        .then(volumesHebdomadaires => {
-          console.log(volumesHebdomadaires);
+        .then(response => {
+          volumesHebdomadaires.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -299,8 +298,8 @@ export default new Vuex.Store({
     ADD_AllVolumesHebdomadairesForModule(state, params ) {
       axios.post('/volumes-hebdomadaires/create/'+ params.module + '/'+'nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
         .then(response => response.data)
-        .then(volumesHebdomadaires => {
-          console.log(volumesHebdomadaires);
+        .then(response => {
+          console.log(response);
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -308,8 +307,8 @@ export default new Vuex.Store({
     ADD_VolumesGlobaux(state, volumesGlobaux) {
       axios.post('/volumes-globaux/create/', volumesGlobaux)
         .then(response => response.data)
-        .then(volumesGlobaux => {
-          console.log(volumesGlobaux);
+        .then(response => {
+          volumesGlobaux.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -318,8 +317,8 @@ export default new Vuex.Store({
     ADD_GroupesIntervenants(state, groupesIntervenants) {
       axios.post('/groupes-intervenants/create/', groupesIntervenants)
         .then(response => response.data)
-        .then(groupesIntervenants => {
-          console.log(groupesIntervenants);
+        .then(response => {
+          groupesIntervenants.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -383,6 +382,8 @@ export default new Vuex.Store({
       });
       let index = state.intervenants.findIndex(i => i.id === intervenant.id);
       state.intervenants[index] = intervenant
+      let indexP = state.intervenantsByProjet.findIndex(i => i.id === intervenant.id);
+      state.intervenantsByProjet[indexP] = intervenant
     },
     EDIT_Formations(state, formations) {
       axios.put('/formations/edit/' + formations.id, formations)
@@ -532,37 +533,37 @@ export default new Vuex.Store({
     loadGenerique({commit}, table) {
       axios.get(table + '/get')
         .then(response => response.data)
-        .then(responce => {
+        .then(response => {
           switch (table) {
             case 'enseignants':
-              commit('SET_Enseignant', responce);
+              commit('SET_Enseignant', response);
               break;
             case 'statuts':
-              commit('SET_Statut', responce);
+              commit('SET_Statut', response);
               break;
             case 'projets':
-              commit('SET_Projet', responce);
+              commit('SET_Projet', response);
               break;
             case 'elements':
-              commit('SET_Element', responce);
+              commit('SET_Element', response);
               break;
             case 'intervenants':
-              commit('SET_Intervenant', responce);
+              commit('SET_Intervenant', response);
               break;
             case 'formations':
-              commit('SET_Formations', responce);
+              commit('SET_Formations', response);
               break;
             case 'periodes':
-              commit('SET_Periodes', responce);
+              commit('SET_Periodes', response);
               break;
             case 'volumes-hebdomadaires':
-              commit('SET_VolumesHebdomadaires', responce);
+              commit('SET_VolumesHebdomadaires', response);
               break;
             case 'volumes-globaux':
-              commit('SET_VolumesGlobaux', responce);
+              commit('SET_VolumesGlobaux', response);
               break;
             case 'groupes-intervenants':
-              commit('SET_GroupesIntervenants', responce);
+              commit('SET_GroupesIntervenants', response);
               break;
             default:
           }
@@ -674,7 +675,7 @@ export default new Vuex.Store({
       });
       var toDelete = this.state.groupesIntervenants.filter(e => (e.intervenant_id === params.intervenant_id && e.element_id === params.element_id))
       for (let j = 0; j < toDelete.length; j++) this.state.groupesIntervenants.splice(toDelete[j])
-      
+
       dispatch('loadIntervenantsModules')
       dispatch('loadGenerique', 'groupes-intervenants')
     },

@@ -8,7 +8,6 @@
       >
         <v-card>
           <v-card-title class="text-h5">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
-          <v-card-subtitle class="text-subtitle-1">{{ returnProjet(i.projet_id).nom }} {{ toTime(returnProjet(i.projet_id).date, 4) }}</v-card-subtitle>
           <v-divider></v-divider>
           <v-card-text>
             <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
@@ -74,7 +73,7 @@
           <v-form lazy-validation>
             <v-card-title>
               <span class="headline" v-if="methods === 'POST'">Ajouter un intervenant</span>
-              <span class="headline" v-else>Modifier un intervenant</span>
+              <span class="headline" v-else>Modifier l'intervenant</span>
               <v-spacer></v-spacer>
               <v-btn
                   icon
@@ -88,26 +87,14 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-select
-                  v-model="projet_id"
-                  :items="projetsArchive"
-                  :item-text="item => item.nom +' ('+ toTime(item.date) + ')'"
-                  no-data-text="Aucun projet non archivé disponible"
-                  item-value="id"
-                  label="Projet"
-                  clearable
-                  :disabled="this.methods === 'POST'"
-                  :error-messages="projetErrors"
-                  @change="$v.projet_id.$touch()"
-                  @blur="$v.projet_id.$touch()"
-                  required
-              ></v-select>
-              <v-select
                   v-model="enseignant_id"
-                  :items="enseignants"
-                  :item-text="item => item.prenom +' '+ item.nom +' ('+item.statut.nom+')'"
+                  :items="enseignantByProjetNotInIntervenant"
+                  :item-text="item => item.prenom +' '+ item.nom"
                   item-value="id"
                   label="Enseignant"
                   clearable
+                  :disabled="methods === 'PUT'"
+                  no-data-text="Tous les enseignants interviennent déjà dans le projet"
                   :error-messages="enseignantErrors"
                   @change="initHoraire"
                   required
@@ -193,7 +180,8 @@
 <script>
 import {mapState} from "vuex";
 import {validationMixin} from "vuelidate";
-import {decimal, required} from "vuelidate/lib/validators";
+import {decimal, numeric, required} from "vuelidate/lib/validators";
+import axios from "axios";
 
 export default {
   name: "ReadIntervenants",
@@ -205,7 +193,6 @@ export default {
     nb_he_td_max_attendu_projet: {required, decimal},
     nb_he_td_min_sup_projet: {required, decimal},
     nb_he_td_max_sup_projet: {required, decimal},
-    projet_id: {required},
     enseignant_id: {required},
   },
   data: () => ({
@@ -218,20 +205,15 @@ export default {
     nb_he_td_max_sup_projet: '',
     projet_id: '',
     enseignant_id: '',
+
+    enseignantByProjetNotInIntervenant: [],
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'enseignants')
     this.$store.dispatch('loadGenerique', 'projets')
-    this.$store.dispatch('loadProjetsNonArchive')
   },
   computed: {
-    ...mapState(['enseignants', 'projets', 'projetsArchive']),
-    projetErrors() {
-      const errors = []
-      if (!this.$v.projet_id.$dirty) return errors
-      !this.$v.projet_id.required && errors.push('Veuillez sélectionner un projet')
-      return errors
-    },
+    ...mapState(['enseignants', 'projets']),
     enseignantErrors() {
       const errors = []
       if (!this.$v.enseignant_id.$dirty) return errors
@@ -271,7 +253,6 @@ export default {
     submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
-      this.form = false;
       const intervenant = {
         id: this.id,
         nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
@@ -286,6 +267,7 @@ export default {
       } else {
         this.$store.commit('EDIT_Intervenant', intervenant);
       }
+      this.form = false
       this.clear()
     },
     clear() {
@@ -299,17 +281,19 @@ export default {
       this.enseignant_id = null
     },
     close() {
-      this.form = !this.form
+      this.form = false
       this.methods = 'POST'
       this.clear()
     },
     addIntervenant() {
+      this.getEnseignantProjetNotInIntervenant()
       this.projet_id = Number(this.$route.params.id)
       this.methods = 'POST'
-      this.form = !this.form
+      this.form = true
     },
     edit(intervenant) {
       this.methods = 'PUT'
+      this.getEnseignant()
 
       this.id = intervenant.id
       this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet
@@ -319,10 +303,6 @@ export default {
       this.projet_id = intervenant.projet_id
       this.enseignant_id = intervenant.enseignant_id
       this.form = true;
-    },
-    returnProjet(id) {
-      let index = this.projets.findIndex(projet => projet.id === id)
-      return this.projets[index]
     },
     returnEnseignant(id){
       let index = this.enseignants.findIndex(enseignant => enseignant.id === id);
@@ -337,6 +317,20 @@ export default {
     },
     toTime(date) {
       return new Date(date).toISOString().substr(0, 4)
+    },
+    getEnseignantProjetNotInIntervenant(){
+      axios.get('/enseignants/projets/'+ this.$route.params.id +'/get')
+        .then(response => (this.enseignantByProjetNotInIntervenant = response.data))
+        .catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    getEnseignant(){
+      axios.get('/enseignants/get')
+        .then(response => (this.enseignantByProjetNotInIntervenant = response.data))
+        .catch(error => {
+        console.log('Erreur : ', error)
+      });
     },
   }
 }

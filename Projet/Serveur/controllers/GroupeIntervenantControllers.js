@@ -79,9 +79,9 @@ exports.addGroupeIntervenant = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, groupe_intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(groupe_intervenant); 
       } else  {
         res.send(err);
       }

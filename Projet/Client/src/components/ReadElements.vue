@@ -8,7 +8,7 @@
             cols="12"
             class="pa-0"
         >
-          <v-card :flat="flat">
+          <v-card flat>
             <v-card-title>
               <v-spacer></v-spacer>
               <v-divider></v-divider>
@@ -741,16 +741,16 @@
                   </v-row>
                   <v-row>
                     <v-col class="d-flex justify-center">
-                      <v-switch v-model="cm_autorises" :label="'CM'"></v-switch>
+                      <v-switch v-model="cm_autorises" :label="'CM'" color="success"></v-switch>
                     </v-col>
                     <v-col class="d-flex justify-center">
-                      <v-switch v-model="td_autorises" :label="'TD'"></v-switch>
+                      <v-switch v-model="td_autorises" :label="'TD'" color="success"></v-switch>
                     </v-col>
                     <v-col class="d-flex justify-center">
-                      <v-switch v-model="tp_autorises" :label="'TP'"></v-switch>
+                      <v-switch v-model="tp_autorises" :label="'TP'" color="success"></v-switch>
                     </v-col>
                     <v-col class="d-flex justify-center">
-                      <v-switch v-model="partiel_autorises" :label="'Partiel'"></v-switch>
+                      <v-switch v-model="partiel_autorises" :label="'Partiel'" color="success"></v-switch>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -844,7 +844,7 @@
               <v-select
                   v-model="intervenant_id"
                   :items="intervenantByProjetNotInModule"
-                  :item-text="item => item.prenom + ' ' + item.nom + ' (' + item.statut + ')'"
+                  :item-text="item => item.prenom + ' ' + item.nom"
                   item-value="id"
                   label="Intervenant"
                   clearable
@@ -870,19 +870,6 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row v-if="addBtn">
-        <v-col>
-          <v-btn
-              class="v-btn--addElement"
-              color="green"
-              fab
-              dark
-              @click="addFormation()"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
   </v-container>
 </template>
 
@@ -900,7 +887,7 @@ export default {
   name: "ReadElements",
   components: {EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
   mixins: [validationMixin],
-  props: ['racine', 'flat', 'addBtn', 'disabled'],
+  props: ['racine', 'disabled'],
 
   validations: {
     titre: {required, maxLength: maxLength(255)},
@@ -1248,14 +1235,6 @@ export default {
       } else if (type === 'globale'){
         this.$store.dispatch('EDIT_VolumesGlobaux', data);
       }
-    },
-    addFormation(){
-      this.niveau = 0
-      this.indice = 0
-      this.mode_saisie = 'aucun'
-      this.parent = null
-      this.formation = true;
-      this.form = true;
     },
     addSemester(element) {
       var nbfils = element.nbfils

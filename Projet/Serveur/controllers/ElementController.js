@@ -32,7 +32,7 @@ exports.getAllElements = (req, res) => {
         +' FROM element AS e'
         +' LEFT JOIN element AS ee'
         +' ON e.id = ee.parent'
-        +' GROUP BY e.id ORDER BY parent;',
+        +' GROUP BY e.id ORDER BY e.parent, e.indice;',
     function(err, elements) {
       if (!err) {
         res.status(200).send(elements);

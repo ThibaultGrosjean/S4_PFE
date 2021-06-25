@@ -2,25 +2,19 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4">Liste des formations<span v-if="formationsByProjet.length"> de {{ formationsByProjet[0].nom }} - {{ toTime(formationsByProjet[0].date, 4) }}</span></h1>
+        <h1 class="text-center text-h4">Liste des formations</h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-tooltip right>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                class="ma-1"
-                @click="redirect('/projets')"
-            >
-              <v-icon large>arrow_back</v-icon>
-            </v-btn>
-          </template>
-          <span>Retourner aux projets</span>
-        </v-tooltip>
+      <v-col class="d-flex justify-start">
+        <v-btn outlined rounded color="blue" @click="redirect('/projets')">
+          <v-icon class="mr-2">folder</v-icon>Retourner aux projets
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex justify-end">
+        <v-btn outlined rounded color="blue" @click="redirect('/intervenants/projets/' + Number($route.params.id))">
+          <v-icon class="mr-2">groups</v-icon>Aller au Intervenant
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>

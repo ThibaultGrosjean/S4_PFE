@@ -72,9 +72,9 @@ exports.addVolumeHebdomadaire = (req, res) => {
   ;
 
   db.query(requete,
-    function(err) {
+    function(err, volume_hebdomadaire) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(volume_hebdomadaire); 
       } else  {
         res.send(err);
       }

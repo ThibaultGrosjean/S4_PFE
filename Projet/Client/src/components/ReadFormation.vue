@@ -39,7 +39,7 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-0">
-            <ReadElements :racine="returnElement(f.element_id)" :flat="true" :add-btn="false" :disabled="Boolean(f.verrou)"></ReadElements>
+            <ReadElements :racine="returnElement(f.element_id)" :disabled="Boolean(f.verrou)"></ReadElements>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>

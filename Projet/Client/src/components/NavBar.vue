@@ -27,7 +27,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="title" disabled>
+            <v-list-item-title class="menu-title" disabled>
               Menu Principale
             </v-list-item-title>
           </v-list-item-content>
@@ -61,9 +61,9 @@ export default {
     subMenu: [
       {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
-      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},//
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
+      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},//
       {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},//
       {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},//
 
@@ -76,3 +76,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .menu-title {
+    line-height: 2rem !important;
+    font-size: 1.25rem !important;
+    letter-spacing: 0.0125em !important;
+  }
+</style>
