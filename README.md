@@ -70,4 +70,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Accéder aux formations et aux intervenants liés au projet depuis le projet
 * Page d'erreur 404
 * Ajouter un intervenant à un module
-* Supprimer un intervannt à un module
+* Supprimer un intervenant à un module
+* Ajouter un élément racine depuis les formations du projet (Création de l'élément puis de la formation dans la bdd)

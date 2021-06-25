@@ -264,16 +264,17 @@ export default new Vuex.Store({
       });
       state.intervenants.push(intervenant)
     },
-    ADD_Formations(state, formation) {
+    ADD_Formation(state, formation) {
       axios.post('/formations/create/', formation)
         .then(response => response.data)
-        .then(formations => {
-          formation.id = formations.insertId
-          console.log(formations);
+        .then(response => {
+          console.log(response);
+          formation.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
       });
       state.formations.push(formation)
+      state.formationsByProjet.push(formation)
     },
     ADD_Periodes(state, periodes) {
       axios.post('/periodes/create/', periodes)
@@ -673,10 +674,27 @@ export default new Vuex.Store({
       });
       var toDelete = this.state.groupesIntervenants.filter(e => (e.intervenant_id === params.intervenant_id && e.element_id === params.element_id))
       for (let j = 0; j < toDelete.length; j++) this.state.groupesIntervenants.splice(toDelete[j])
-
-      dispatch('loadGenerique', 'groupes-intervenants')
+      
       dispatch('loadIntervenantsModules')
-    }
+      dispatch('loadGenerique', 'groupes-intervenants')
+    },
+    ADD_FormationsElement({commit, dispatch}, data) {
+      axios.post('/elements/create/', data.element)
+        .then(response => response.data)
+        .then(elements => {
+          data.element.id = elements.insertId
+          this.state.elements.push(data.element)
+          this.state.elementsLevel.push(data.element)
+          const formation = {
+            verrou: Number(false),
+            projet_id: data.projet_id,
+            element_id: elements.insertId,
+          }
+          commit('ADD_Formation', formation)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
   },
   modules: {}
 })

@@ -49,20 +49,6 @@
                   <v-icon
                       v-bind="attrs"
                       v-on="on"
-                      @click="edit(f)"
-                  >
-                    edit
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Modifier</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
                   >
                     file_copy
                   </v-icon>
@@ -99,8 +85,7 @@
         <v-card>
           <v-form lazy-validation>
             <v-card-title>
-              <span class="headline" v-if="methods === 'POST'">Ajouter une formation</span>
-              <span class="headline" v-else>Modifier la formation</span>
+              <span class="headline">Ajouter une formation</span>
               <v-spacer></v-spacer>
               <v-btn
                   icon
@@ -113,37 +98,36 @@
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-select
-                  v-model="projet_id"
-                  :items="projetsArchive"
-                  :item-text="item => item.nom +' ('+ toTime(item.date, 4) + ')'"
-                  no-data-text="Aucun projet non archivé disponible"
-                  item-value="id"
-                  label="Projet"
-                  clearable
-                  :error-messages="projetErrors"
-                  @change="$v.projet_id.$touch()"
-                  @blur="$v.projet_id.$touch()"
+              <v-text-field
+                  v-model="titre"
+                  :error-messages="titreErrors"
+                  :counter="255"
+                  label="Titre"
                   required
-              ></v-select>
-              <v-select
-                  v-model="element_id"
-                  :items="elementsLevel"
-                  item-text="titre"
-                  item-value="id"
-                  label="Hierarchies arborescentes"
                   clearable
-                  :error-messages="elementErrors"
-                  @change="$v.element_id.$touch()"
-                  @blur="$v.element_id.$touch()"
+                  @input="$v.titre.$touch()"
+                  @blur="$v.titre.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="surnom"
+                  :error-messages="surnomErrors"
+                  :counter="255"
+                  label="Surnom"
                   required
-              ></v-select>
-              <v-switch
-                  v-if="this.methods !== 'POST'"
-                  v-model="verrou"
-                  :label="'Verrouiller'"
-                  color="success"
-              ></v-switch>
+                  clearable
+                  @input="$v.surnom.$touch()"
+                  @blur="$v.surnom.$touch()"
+              ></v-text-field>
+              <v-text-field
+                  v-model="code"
+                  :error-messages="codeErrors"
+                  :counter="255"
+                  label="Code"
+                  required
+                  clearable
+                  @input="$v.code.$touch()"
+                  @blur="$v.code.$touch()"
+              ></v-text-field>
               <v-card-actions>
                 <v-btn
                     color="red darken-1"
@@ -175,7 +159,7 @@
             color="green"
             fab
             dark
-            @click="close"
+            @click="form = !form"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -186,7 +170,7 @@
 
 <script>
 import {validationMixin} from "vuelidate";
-import {numeric, required} from "vuelidate/lib/validators";
+import {maxLength, numeric, required} from "vuelidate/lib/validators";
 import {mapState} from "vuex";
 import ReadElements from "./ReadElements";
 
@@ -197,24 +181,21 @@ export default {
   props: ['formations'],
 
   validations: {
-    projet_id: {required, numeric},
-    element_id: {required, numeric},
+    titre: {required, maxLength: maxLength(255)},
+    surnom: {required, maxLength: maxLength(255)},
+    code: {required, maxLength: maxLength(255)},
   },
   data: () => ({
     form: false,
-    methods: "POST",
-    verrou: false,
-    projet_id: '',
-    element_id: '',
+    titre: '',
+    surnom: '',
+    code: '',
   }),
   mounted() {
-    this.$store.dispatch('loadGenerique', 'projets')
-    this.$store.dispatch('loadProjetsNonArchive')
     this.$store.dispatch('loadGenerique', 'elements')
-    this.$store.dispatch('loadElementsLevel', 0)
   },
   computed: {
-    ...mapState(['projets', 'elements', 'elementsLevel', 'projetsArchive']),
+    ...mapState(['elements']),
     projetErrors() {
       const errors = []
       if (!this.$v.projet_id.$dirty) return errors
@@ -227,45 +208,72 @@ export default {
       !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément')
       return errors
     },
+    titreErrors() {
+      const errors = []
+      if (!this.$v.titre.$dirty) return errors
+      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères')
+      !this.$v.titre.required && errors.push('Le titre est obligatoire.')
+      return errors
+    },
+    surnomErrors() {
+      const errors = []
+      if (!this.$v.surnom.$dirty) return errors
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
+      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.')
+      return errors
+    },
+    codeErrors() {
+      const errors = []
+      if (!this.$v.code.$dirty) return errors
+      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères')
+      !this.$v.code.required && errors.push('Le code est obligatoire')
+      return errors
+    },
   },
   methods: {
     submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       this.form = false;
-      const formation = {
-        id: this.id,
-        verrou: Number(this.verrou),
-        projet_id: this.projet_id,
-        element_id: this.element_id,
+
+      const element = {
+        titre: this.titre,
+        surnom: this.surnom,
+        code: this.code,
+        niveau: 0,
+        indice: 0,
+        vol_hor_total_prevues_etu_cm: null,
+        vol_hor_total_prevues_etu_td: null,
+        vol_hor_total_prevues_etu_tp: null,
+        mode_saisie: 'aucun',
+        cm_autorises: Number(false),
+        td_autorises: Number(false),
+        tp_autorises: Number(false),
+        partiel_autorises: Number(false),
+        forfait_globale_cm: null,
+        forfait_globale_td: null,
+        forfait_globale_tp: null,
+        forfait_globale_partiel: null,
+        nb_groupe_effectif_cm: null,
+        nb_groupe_effectif_td: null,
+        nb_groupe_effectif_tp: null,
+        nb_groupe_effectif_partiel: null,
+        parent: null,
+        nbfils: 0,
       }
-      if (this.methods === 'POST'){
-        this.$store.commit('ADD_Formations', formation);
-      } else {
-        this.$store.commit('EDIT_Formations', formation);
-      }
+
+      this.$store.dispatch('ADD_FormationsElement', {element: element,projet_id: Number(this.$route.params.id)});
       this.clear()
     },
     clear() {
       this.$v.$reset()
-      this.id = ''
-      this.verrou = false
-      this.projet_id = null
-      this.element_id = null
+      this.titre = ''
+      this.surnom = ''
+      this.code = ''
     },
     close() {
       this.form = !this.form
-      this.methods = 'POST'
       this.clear()
-    },
-    edit(formation) {
-      this.methods = 'PUT'
-
-      this.id = formation.id
-      this.verrou = formation.verrou
-      this.projet_id = formation.projet_id
-      this.element_id = formation.element_id
-      this.form = true;
     },
     save(formation){
       this.$store.commit('EDIT_Formations', formation);

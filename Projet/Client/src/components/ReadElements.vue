@@ -476,7 +476,6 @@
                                                                   <v-divider></v-divider>
                                                                   <v-btn text block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
                                                                     Ajouter un intervenant
-                                                                    <v-icon v-if="!intervenantByProjetNotInModule">mdi-plus</v-icon>
                                                                   </v-btn>
                                                                 </v-expansion-panel-content>
                                                               </v-expansion-panel>
@@ -850,7 +849,7 @@
                   label="Intervenant"
                   clearable
                   :error-messages="intervenantErrors"
-                  no-data-text="Tous les intervenants du projet sont déjà assignés au module"
+                  no-data-text="Tous les intervenants du projet sont déjà assignés au module ou aucun intervenant dans le projet"
                   @input="$v.intervenant_id.$touch()"
                   @blur="$v.intervenant_id.$touch()"
                   required
@@ -925,7 +924,7 @@ export default {
     nb_groupe_defaut_tp: {numeric, required},
     nb_groupe_defaut_partiel: {numeric, required},
 
-    intervenant_id : {required},
+    intervenant_id : {numeric},
   },
   data: () => ({
     form: false,
@@ -1099,7 +1098,7 @@ export default {
     intervenantErrors() {
       const errors = []
       if (!this.$v.intervenant_id .$dirty) return errors
-      !this.$v.intervenant_id .required && errors.push('Veuillez sélectionner un intervenant')
+      !this.$v.intervenant_id.numeric && errors.push('Veuillez sélectionner un intervenant')
       return errors
     },
   },

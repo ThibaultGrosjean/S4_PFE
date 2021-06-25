@@ -95,6 +95,7 @@
                   item-value="id"
                   label="Projet"
                   clearable
+                  :disabled="this.methods === 'POST'"
                   :error-messages="projetErrors"
                   @change="$v.projet_id.$touch()"
                   @blur="$v.projet_id.$touch()"
@@ -180,7 +181,7 @@
             color="green"
             fab
             dark
-            @click="close"
+            @click="addIntervenant"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -301,6 +302,11 @@ export default {
       this.form = !this.form
       this.methods = 'POST'
       this.clear()
+    },
+    addIntervenant() {
+      this.projet_id = Number(this.$route.params.id)
+      this.methods = 'POST'
+      this.form = !this.form
     },
     edit(intervenant) {
       this.methods = 'PUT'
