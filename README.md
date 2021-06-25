@@ -74,3 +74,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ajouter un élément racine depuis les formations du projet (Création de l'élément puis de la formation dans la bdd)
 * Ne pas afficher les enseignants qui sont déjà intervenants dans le projet (formulaire création intervenant)
 * Accéder aux intervenants depuis les formations et vice-versa, retourner aux projets depuis les formations et les intervenants
+* Boîte de confirmation lors du changement du nombre de semaines d'un semestre

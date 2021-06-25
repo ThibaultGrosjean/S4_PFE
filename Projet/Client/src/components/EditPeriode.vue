@@ -28,9 +28,7 @@
                 icon
                 @click="close"
             >
-              <v-icon>
-                close
-              </v-icon>
+              <v-icon>close</v-icon>
             </v-btn>
           </v-card-title>
           <v-divider></v-divider>
@@ -95,7 +93,7 @@
                   color="green darken-1"
                   class="mr-4"
                   text
-                  @click="submit"
+                  @click="valideForm"
               >
                 Valider
               </v-btn>
@@ -104,6 +102,39 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <v-dialog
+          v-model="confirmEditPeriode"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 red darken-2 white--text">
+            Confirmation de modification
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir changer le numéro de semaine pour le semestre ?<br><br>
+            Cela augmentera le nombre de semaine pour tous les modules où la saisie est hebdomadaire.
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="red darken-1"
+                text
+                @click="cancel"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="green darken-1"
+                class="mr-4"
+                text
+                @click="submit"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+  </v-dialog>
   </div>
 </template>
 
@@ -126,6 +157,7 @@ export default {
   },
   data: () => ({
     form: false,
+    confirmEditPeriode: false,
     id: '',
     nb_semaine: '',
     old_nb_semaine: '',
@@ -180,7 +212,6 @@ export default {
     submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
-      this.form = false;
       const periode = {
         id: this.id,
         nb_semaine: this.nb_semaine,
@@ -192,6 +223,9 @@ export default {
         element_id: this.element_id,
       }
       this.$store.dispatch('EDIT_Periodes', periode);
+
+      this.form = false;
+      this.confirmEditPeriode = false;
       this.clear()
     },
     clear() {
@@ -209,6 +243,10 @@ export default {
       this.form = !this.form
       this.clear()
     },
+    cancel() {
+      this.confirmEditPeriode = false
+      this.close()
+    },
     edit(periode) {
       this.id = periode.id
       this.nb_semaine = periode.nb_semaine
@@ -219,6 +257,13 @@ export default {
       this.nb_groupe_defaut_partiel = periode.nb_groupe_defaut_partiel
       this.element_id = periode.element_id
       this.form = true;
+    },
+    valideForm() {
+      if (this.nb_semaine !== this.old_nb_semaine){
+        this.confirmEditPeriode = true
+      } else {
+        this.submit()
+      }
     },
     findPeriodeSemestre(){
       let index = this.periodes.findIndex(p => p.element_id === this.element.id);

@@ -346,8 +346,14 @@
                                                               <template v-slot:default>
                                                                 <thead>
                                                                 <tr>
-                                                                  <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine + 2" class="text-center top-border">
+                                                                  <th class="top-border"></th>
+                                                                  <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
                                                                     <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                  </th>
+                                                                  <th class="text-center top-border">
+                                                                    <v-btn icon small color="red darken-1">
+                                                                      <v-icon>close</v-icon>
+                                                                    </v-btn>
                                                                   </th>
                                                                 </tr>
 
