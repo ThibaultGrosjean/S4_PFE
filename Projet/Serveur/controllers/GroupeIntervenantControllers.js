@@ -13,7 +13,14 @@ exports.validator = [
 
 
 exports.getAllGroupeIntervenants = (req, res) => {
-  db.query('SELECT * FROM groupe_intervenant;',
+  db.query('SELECT g.*, eee.parent AS semestre_id'
+        +' FROM groupe_intervenant AS g'
+        +' LEFT JOIN element as ee'
+        +' ON g.element_id = ee.id'
+        +' LEFT JOIN element as eee'
+        +' ON ee.parent = eee.id'
+        +' GROUP BY g.element_id, g.id'
+        +' ORDER BY g.element_id, g.intervenant_id, g.num_semaine',
     function(err, groupe_intervenants) {
       if (!err) {
         res.status(200).json(groupe_intervenants);  
@@ -27,7 +34,15 @@ exports.getAllGroupeIntervenants = (req, res) => {
 
 
 exports.getGroupeIntervenant = (req, res) => {
-  db.query('SELECT * FROM groupe_intervenant WHERE id = ? ;', [req.params.id],
+  db.query('SELECT g.*, eee.parent AS semestre_id'
+        +' FROM groupe_intervenant AS g'
+        +' LEFT JOIN element as ee'
+        +' ON g.element_id = ee.id'
+        +' LEFT JOIN element as eee'
+        +' ON ee.parent = eee.id'
+        +' WHERE id = ' +  req.params.id
+        +' GROUP BY g.element_id, g.id'
+        +' ORDER BY g.element_id, g.intervenant_id, g.num_semaine;',
     function(err, groupe_intervenant) {
       if (!err) {
         res.status(200).json(groupe_intervenant);  

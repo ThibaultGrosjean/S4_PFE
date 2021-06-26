@@ -82,12 +82,12 @@
             <v-container>
               <v-row>
                 <v-btn block outlined rounded color="blue" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
-                  <v-icon class="mr-2">groups</v-icon>Accéder aux intervenants
+                  <v-icon class="mr-2">groups</v-icon>Intervenants
                 </v-btn>
               </v-row>
               <v-row>
                 <v-btn block outlined rounded color="blue" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
-                  <v-icon class="mr-2">auto_stories</v-icon>Accéder aux formations
+                  <v-icon class="mr-2">auto_stories</v-icon>Formations
                 </v-btn>
               </v-row>
             </v-container>

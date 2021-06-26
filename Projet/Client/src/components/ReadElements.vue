@@ -350,11 +350,7 @@
                                                                   <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
                                                                     <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
                                                                   </th>
-                                                                  <th class="text-center top-border">
-                                                                    <v-btn icon small color="red darken-1">
-                                                                      <v-icon>close</v-icon>
-                                                                    </v-btn>
-                                                                  </th>
+                                                                  <th class="top-border"></th>
                                                                 </tr>
 
                                                                 <tr>
@@ -403,7 +399,7 @@
                                                               </template>
                                                             </v-simple-table>
                                                             <v-divider></v-divider>
-                                                            <v-expansion-panels hover flat focusable>
+                                                            <v-expansion-panels hover flat focusable tile>
                                                               <v-expansion-panel>
                                                                 <v-expansion-panel-header class="height-row">
                                                                   <template v-slot:actions>
@@ -426,11 +422,7 @@
                                                                           <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
                                                                             <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
                                                                           </th>
-                                                                          <th class="text-center top-border">
-                                                                            <v-btn icon small color="red darken-1" @click="deleteAllGroupe(module.id, i.intervenant_id)">
-                                                                              <v-icon>close</v-icon>
-                                                                            </v-btn>
-                                                                          </th>
+                                                                          <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i"/>
                                                                         </tr>
 
                                                                         <tr>
@@ -480,7 +472,7 @@
                                                                     </v-simple-table>
                                                                   </template>
                                                                   <v-divider></v-divider>
-                                                                  <v-btn text block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
+                                                                  <v-btn text tile block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
                                                                     Ajouter un intervenant
                                                                   </v-btn>
                                                                 </v-expansion-panel-content>
@@ -888,10 +880,11 @@ import EditPeriode from "./EditPeriode";
 import TDEditValue from "./TDEditValue";
 import EditNbGroupeModule from "./EditNbGroupeModule";
 import axios from "axios";
+import SupprimerTableau from "./SupprimerTableau";
 
 export default {
   name: "ReadElements",
-  components: {EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
+  components: {SupprimerTableau, EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
   mixins: [validationMixin],
   props: ['racine', 'disabled'],
 
@@ -1362,9 +1355,6 @@ export default {
       this.intervenant_id = ''
       this.nb_semaine = 1
     },
-    deleteAllGroupe(idModule, idIntervenant){
-      this.$store.dispatch('DELETE_AllGroupeIntervenant', {element_id: idModule, intervenant_id: idIntervenant})
-    }
   }
 }
 </script>

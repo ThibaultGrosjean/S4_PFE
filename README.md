@@ -75,3 +75,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ne pas afficher les enseignants qui sont déjà intervenants dans le projet (formulaire création intervenant)
 * Accéder aux intervenants depuis les formations et vice-versa, retourner aux projets depuis les formations et les intervenants
 * Boîte de confirmation lors du changement du nombre de semaines d'un semestre
+* Boîte de confirmation lors de la suppression d'un intervenant d'un module
