@@ -76,3 +76,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Accéder aux intervenants depuis les formations et vice-versa, retourner aux projets depuis les formations et les intervenants
 * Boîte de confirmation lors du changement du nombre de semaines d'un semestre
 * Boîte de confirmation lors de la suppression d'un intervenant d'un module
+* Ajouter plusieurs intervenants en même temps à un module.

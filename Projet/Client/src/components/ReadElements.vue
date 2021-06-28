@@ -80,7 +80,7 @@
                             <v-icon color="red darken-1">delete</v-icon>
                           </v-btn>
                         </template>
-                        <span>Supprimer</span>
+                        <span>Supprimer la décomposition</span>
                       </v-tooltip>
                     </v-list-item>
                   </v-list>
@@ -560,7 +560,6 @@
           persistent
           max-width="600px"
       >
-
         <v-card>
           <v-form lazy-validation>
             <v-card-title>
@@ -827,7 +826,6 @@
           persistent
           max-width="600px"
       >
-
         <v-card>
           <v-form lazy-validation>
             <v-card-title>
@@ -846,12 +844,27 @@
                   item-value="id"
                   label="Intervenant"
                   clearable
-                  :error-messages="intervenantErrors"
+                  multiple
+                  chips
+                  :rules="rules.selectIntervenant"
                   no-data-text="Tous les intervenants du projet sont déjà assignés au module ou aucun intervenant dans le projet"
-                  @input="$v.intervenant_id.$touch()"
-                  @blur="$v.intervenant_id.$touch()"
                   required
-              ></v-select>
+              >
+                <template v-slot:selection="{ item, index }">
+                  <v-chip v-if="index === 0 ">
+                    <span>{{ item.prenom + ' ' + item.nom }}</span>
+                  </v-chip>
+                  <v-chip v-if="index === 1 ">
+                    <span>{{ item.prenom + ' ' + item.nom }}</span>
+                  </v-chip>
+                  <span
+                      v-if="index === 2"
+                      class="grey--text text-caption"
+                  >
+                    (+{{ intervenant_id.length - 2 }})
+                  </span>
+                </template>
+              </v-select>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -909,8 +922,6 @@ export default {
     nb_groupe_defaut_td: {numeric, required},
     nb_groupe_defaut_tp: {numeric, required},
     nb_groupe_defaut_partiel: {numeric, required},
-
-    intervenant_id : {numeric},
   },
   data: () => ({
     form: false,
@@ -956,7 +967,11 @@ export default {
     nb_groupe_defaut_partiel: 1,
 
     intervenantByProjetNotInModule: [],
-    intervenant_id: null,
+    intervenant_id: [],
+
+    rules: {
+      selectIntervenant: [(v) =>  v.length > 0 || "Veuillez sélectionner un intervenant"],
+    }
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'elements');
@@ -1079,12 +1094,6 @@ export default {
       if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors
       !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
       !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
-      return errors
-    },
-    intervenantErrors() {
-      const errors = []
-      if (!this.$v.intervenant_id .$dirty) return errors
-      !this.$v.intervenant_id.numeric && errors.push('Veuillez sélectionner un intervenant')
       return errors
     },
   },
@@ -1340,8 +1349,13 @@ export default {
     },
     submitGrpInterv() {
       this.$v.$touch()
-      if (!this.intervenant_id) return;
-      this.$store.dispatch('ADD_AllGroupeIntervenantForModule', {module: this.idElement, intervenant: this.intervenant_id, nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+      if (this.intervenant_id.length <= 0) {
+        return;
+      } else {
+        for (let i = 0; i < this.intervenant_id.length; i++) {
+          this.$store.dispatch('ADD_AllGroupeIntervenantForModule', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+        }
+      }
       this.closeGrpIntev()
     },
     closeGrpIntev() {
@@ -1352,7 +1366,7 @@ export default {
     clearGrpInterv() {
       this.$v.$reset()
       this.idElement = ''
-      this.intervenant_id = ''
+      this.intervenant_id = []
       this.nb_semaine = 1
     },
   }
