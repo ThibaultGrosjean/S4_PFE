@@ -11,7 +11,7 @@ exports.validator = [
 
 
 exports.getAllEnseignants = (req, res) => {
-  db.query('SELECT e.id, e.prenom, e.nom, e.surnom, e.email, e.statut_id, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id',
+  db.query('SELECT e.*, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id',
     function(errE, rows) {
       if (!errE) {
         var obj = []
@@ -44,14 +44,35 @@ exports.getAllEnseignants = (req, res) => {
 
 
 exports.getEnseignantByProjetNotInIntervenant = (req, res) => {
-  db.query('SELECT e.*'
-         +' FROM enseignant AS e'
-         +' WHERE e.id NOT IN (SELECT i.enseignant_id'
-                            +' FROM intervenant AS i'
-                            +' WHERE projet_id = '+ req.params.idProjet +');',
-    function(err, enseignants) {
+  db.query('SELECT e.*, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup'
+       +' FROM enseignant AS e'
+       +' JOIN statut AS s'
+       +' ON s.id = e.statut_id'
+       +' WHERE e.id NOT IN (SELECT i.enseignant_id'
+                          +' FROM intervenant AS i'
+                          +' WHERE projet_id = '+ req.params.idProjet +');',
+    function(err, rows) {
       if (!err) {
-        res.status(200).json(enseignants);  
+        var obj = []
+        for (var i = 0; i < rows.length; i++) {
+          obj.push({
+            id: rows[i].id,
+            prenom: rows[i].prenom,
+            nom: rows[i].nom,
+            surnom: rows[i].surnom,
+            email: rows[i].email,
+            statut: {
+              id: rows[i].id_statut,
+              nom: rows[i].statut_nom,
+              surnom: rows[i].statut_surnom,
+              nb_he_td_min_attendu: rows[i].nb_he_td_min_attendu,
+              nb_he_td_max_attendu: rows[i].nb_he_td_max_attendu,
+              nb_he_td_min_sup: rows[i].nb_he_td_min_sup,
+              nb_he_td_max_sup: rows[i].nb_he_td_max_sup,
+            },
+          });
+        }
+        res.status(200).json(obj);  
       }
       else {
         res.send(err);

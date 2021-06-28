@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     formationsByProjet: [],
     periodes: [],
     volumesHebdomadaires: [],
+    volumesHebdomadairesModules: [],
     volumesGlobaux: [],
     groupesIntervenants: [],
   },
@@ -71,6 +73,9 @@ export default new Vuex.Store({
     intervenantsModules: state => {
       return state.intervenantsModules;
     },
+    volumesHebdomadairesModules: state => {
+      return state.volumesHebdomadairesModules;
+    },
   },
   mutations: {
     SET_Enseignant(state, enseignants) {
@@ -117,6 +122,9 @@ export default new Vuex.Store({
     },
     SET_IntervenantsModules(state, intervenantsModules) {
       state.intervenantsModules = intervenantsModules
+    },
+    SET_VolumesHebdomadairesModules(state, volumesHebdomadairesModules) {
+      state.volumesHebdomadairesModules = volumesHebdomadairesModules
     },
     SET_ValeurTtesSem(state, objs){
       var url = '/'+ objs.tab +'/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.typeCours
@@ -294,15 +302,6 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
       state.volumesHebdomadaires.push(volumesHebdomadaires)
-    },
-    ADD_AllVolumesHebdomadairesForModule(state, params ) {
-      axios.post('/volumes-hebdomadaires/create/'+ params.module + '/'+'nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
-        .then(response => response.data)
-        .then(response => {
-          console.log(response);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
     },
     ADD_VolumesGlobaux(state, volumesGlobaux) {
       axios.post('/volumes-globaux/create/', volumesGlobaux)
@@ -530,6 +529,15 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
+    loadVolumesHorairesByModule({commit}) {
+      axios.get('/volumes-hebdomadaires/module/get')
+        .then(response => response.data)
+        .then(volumeHebdomadaire => {
+          commit('SET_VolumesHebdomadairesModules', volumeHebdomadaire)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
     loadGenerique({commit}, table) {
       axios.get(table + '/get')
         .then(response => response.data)
@@ -591,7 +599,7 @@ export default new Vuex.Store({
 
           if (element.niveau === 3){
             if (element.mode_saisie === 'hebdo'){
-              commit('ADD_AllVolumesHebdomadairesForModule', {module: element.id, nb_semaine_deb: 1, nb_semaine_fin: element.periode.nb_semaine})
+              dispatch('ADD_AllVolumesHebdomadairesForModule', {module: element.id, nb_semaine_deb: 1, nb_semaine_fin: element.periode.nb_semaine})
             } else if (element.mode_saisie === 'globale'){
               console.log("mode de saisie gloable")
             }
@@ -615,14 +623,19 @@ export default new Vuex.Store({
       var diff = periode.nb_semaine - periode.old_nb_semaine
 
       if (diff < 0 ){
-        var toDelete = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine > periode.nb_semaine))
-        for (let j = 0; j < toDelete.length; j++) commit('DELETE_VolumesHebdomadaires', toDelete[j].id)
-      } else if (diff > 0){
-        var toAdd = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine === periode.old_nb_semaine));
-        for (let i = 0; i < toAdd.length ; i++) {
-          commit('ADD_AllVolumesHebdomadairesForModule', {module: toAdd[i].element_id, nb_semaine_deb: periode.old_nb_semaine +1, nb_semaine_fin: periode.nb_semaine})
+        dispatch('DELETE_AllVolumesHebdomadairesBySemaine', {semestre_id: periode.element_id, nb_semaine_deb: periode.nb_semaine, nb_semaine_fin: periode.old_nb_semaine})
+        dispatch('DELETE_AllGroupesIntervenantsBySemaine', {semestre_id: periode.element_id, nb_semaine_deb: periode.nb_semaine, nb_semaine_fin: periode.old_nb_semaine})
+      }
+      else if (diff > 0){
+        var toAddVolHebdo = this.state.volumesHebdomadaires.filter(e => (e.semestre_id === periode.element_id && e.num_semaine === periode.old_nb_semaine));
+        for (let i = 0; i < toAddVolHebdo.length ; i++) {
+          dispatch('ADD_AllVolumesHebdomadairesForModule', {module: toAddVolHebdo[i].element_id, nb_semaine_deb: periode.old_nb_semaine +1, nb_semaine_fin: periode.nb_semaine})
         }
-        dispatch('loadGenerique', 'volumes-hebdomadaires')
+
+        var toAddGrpInterv = this.state.groupesIntervenants.filter(e => (e.semestre_id === periode.element_id && e.num_semaine === periode.old_nb_semaine));
+        for (let i = 0; i < toAddGrpInterv.length ; i++) {
+          dispatch('ADD_AllGroupeIntervenantForModule', {module: toAddGrpInterv[i].element_id, intervenant: toAddGrpInterv[i].intervenant_id, nb_semaine_deb: periode.old_nb_semaine +1, nb_semaine_fin: periode.nb_semaine})
+        }
       }
     },
     EDIT_VolumesHebdomadaires({dispatch}, volumesHebdomadaires) {
@@ -630,6 +643,7 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(volumesHebdomadaires => {
           console.log(volumesHebdomadaires);
+          dispatch('loadVolumesHorairesByModule')
           dispatch('loadGenerique', 'volumes-hebdomadaires')
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -666,6 +680,17 @@ export default new Vuex.Store({
       dispatch('loadIntervenantsModules')
       dispatch('loadGenerique', 'groupes-intervenants')
     },
+    ADD_AllVolumesHebdomadairesForModule({dispatch}, params ) {
+      axios.post('/volumes-hebdomadaires/create/'+ params.module + '/'+'nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
+        .then(response => response.data)
+        .then(response => {
+          console.log(response);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      dispatch('loadVolumesHorairesByModule')
+      dispatch('loadGenerique', 'volumes-hebdomadaires')
+    },
     DELETE_AllGroupeIntervenant({commit, dispatch}, params ) {
       axios.delete('/groupes-intervenants/delete/element/'+ params.element_id +'/intervenant/' + params.intervenant_id)
         .then(groupesIntervenants => {
@@ -678,6 +703,19 @@ export default new Vuex.Store({
 
       dispatch('loadIntervenantsModules')
       dispatch('loadGenerique', 'groupes-intervenants')
+    },
+    DELETE_AllVolumesHebdomadaires({commit, dispatch}, element_id ) {
+      axios.delete('/volumes-hebdomadaires/delete/element/'+ element_id)
+        .then(volumesHebdomadaires => {
+          console.log(volumesHebdomadaires);
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+      var toDelete = this.state.volumesHebdomadaires.filter(e => (e.element_id === element_id))
+      for (let j = 0; j < toDelete.length; j++) this.state.volumesHebdomadaires.splice(toDelete[j])
+
+      dispatch('loadVolumesHorairesByModule')
+      dispatch('loadGenerique', 'volumes-hebdomadaires')
     },
     ADD_FormationsElement({commit, dispatch}, data) {
       axios.post('/elements/create/', data.element)
@@ -692,6 +730,50 @@ export default new Vuex.Store({
             element_id: elements.insertId,
           }
           commit('ADD_Formation', formation)
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    DELETE_AllVolumesHebdomadairesBySemaine({dispatch}, params) {
+      axios.delete('/volumes-hebdomadaires/semestre/'+ params.semestre_id +'/nbsemaine/' + params.nb_semaine_deb + '/' + params.nb_semaine_fin + '/delete')
+        .then(response => {
+          console.log(response);
+          this.state.volumesHebdomadaires.splice(0, this.state.volumesHebdomadaires.length)
+          dispatch('loadVolumesHorairesByModule')
+          dispatch('loadGenerique', 'volumes-hebdomadaires')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    DELETE_AllGroupesIntervenantsBySemaine({dispatch}, params) {
+      axios.delete('/groupes-intervenants/semestre/'+ params.semestre_id +'/nbsemaine/' + params.nb_semaine_deb + '/' + params.nb_semaine_fin + '/delete')
+        .then(response => {
+          console.log(response);
+          this.state.groupesIntervenants.splice(0, this.state.groupesIntervenants.length)
+          dispatch('loadIntervenantsModules')
+          dispatch('loadGenerique', 'groupes-intervenants')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    DELETE_AllVolumesHebdomadairesByFormation({dispatch}, id_racine) {
+      axios.delete('/volumes-hebdomadaires/formation/'+ id_racine +'/delete')
+        .then(response => {
+          console.log(response);
+          this.state.volumesHebdomadaires.splice(0, this.state.volumesHebdomadaires.length)
+          dispatch('loadVolumesHorairesByModule')
+          dispatch('loadGenerique', 'volumes-hebdomadaires')
+        }).catch(error => {
+        console.log('Erreur : ', error)
+      });
+    },
+    DELETE_AllGroupesIntervenantsByFormation({dispatch}, id_racine) {
+      axios.delete('/groupes-intervenants/formation/'+ id_racine +'/delete')
+        .then(response => {
+          console.log(response);
+          this.state.groupesIntervenants.splice(0, this.state.groupesIntervenants.length)
+          dispatch('loadIntervenantsModules')
+          dispatch('loadGenerique', 'groupes-intervenants')
         }).catch(error => {
         console.log('Erreur : ', error)
       });

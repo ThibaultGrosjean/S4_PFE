@@ -38,6 +38,22 @@ exports.getAllVolumeHebdomadaires = (req, res) => {
 };
 
 
+exports.getVolumesHebdoByModule = (req, res) => {
+  db.query('SELECT element_id'
+        +' FROM volume_hebdomadaire'
+        +' GROUP BY element_id;',
+    function(err, volume_hebdomadaire) {
+      if (!err) {
+        res.status(200).json(volume_hebdomadaire);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getVolumeHebdomadaire = (req, res) => {
   db.query('SELECT * FROM volume_hebdomadaire WHERE id = ? ;', [req.params.id],
     function(err, volume_hebdomadaire) {
@@ -212,6 +228,66 @@ exports.editTypeValueElementVolumeHebdomadaire = (req, res) => {
       }
     }
   );
+};
+
+
+exports.deleteAllVolumesHebdomadairesBySemaine = (req, res) => {
+  var nbSemaineDeb = req.params.semaineDeb
+  var nbSemaineFin = req.params.semaineFin
+
+  db.query('DELETE v'
+        +' FROM volume_hebdomadaire AS v'
+        +' LEFT JOIN element as e'
+        +' ON v.element_id = e.id'
+        +' LEFT JOIN element as e2'
+        +' ON e.parent = e2.id'
+        +' WHERE e2.parent = '+ req.params.id
+        +' AND v.num_semaine > '+ nbSemaineDeb +' AND v.num_semaine <= '+ nbSemaineFin +';',
+    function(err, volume_hebdomadaires) {
+      if (!err) {
+        res.status(200).json(volume_hebdomadaires);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.deleteAllVolumesHebdomadairesByFormation = (req, res) => {
+  db.query('DELETE v'
+        +' FROM volume_hebdomadaire AS v'
+        +' LEFT JOIN element as e'
+        +' ON v.element_id = e.id'
+        +' LEFT JOIN element as e2'
+        +' ON e.parent = e2.id'
+        +' LEFT JOIN element as e3'
+        +' ON e2.parent = e3.id'
+        +' WHERE e3.parent = ?',[req.params.id],
+    function(err, volume_hebdomadaires) {
+      if (!err) {
+        res.status(200).json(volume_hebdomadaires);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.deleteAllVolumesHebdomadaires = (req, res) => {
+  db.query('DELETE FROM volume_hebdomadaire WHERE element_id = ' + req.params.element,
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
 };
 
 

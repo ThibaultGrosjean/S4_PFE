@@ -13,7 +13,7 @@
       </v-col>
       <v-col class="d-flex justify-end">
         <v-btn outlined rounded color="blue" @click="redirect('/formations/projets/'+ Number($route.params.id))">
-          <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation du projet
+          <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
         </v-btn>
       </v-col>
     </v-row>

@@ -77,3 +77,6 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Boîte de confirmation lors du changement du nombre de semaines d'un semestre
 * Boîte de confirmation lors de la suppression d'un intervenant d'un module
 * Ajouter plusieurs intervenants en même temps à un module.
+* Supprimer les volumes hebdomadaires d'un module
+* Supprimer tous les volumes hebdomadaires de la formation depuis l'élémént racine
+* Supprimer tous les groupes d'intervenants de la formation depuis l'élémént racine

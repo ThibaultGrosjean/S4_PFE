@@ -54,7 +54,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Dupliquer</span>
+              <span>Dupliquer la formation</span>
             </v-tooltip>
             <v-spacer></v-spacer>
             <v-tooltip top>
@@ -69,7 +69,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-              <span>Supprimer</span>
+              <span>Supprimer la formation</span>
             </v-tooltip>
           </v-card-actions>
         </v-card>

@@ -1,5 +1,5 @@
 <template>
-  <th class="text-center top-border">
+  <div>
     <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">
       <v-btn
@@ -57,7 +57,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </th>
+  </div>
 </template>
 
 <script>
@@ -73,7 +73,7 @@ export default {
       if (this.type === 'groupes-intervenants'){
         this.$store.dispatch('DELETE_AllGroupeIntervenant', {element_id: this.module.id, intervenant_id: this.intervenant.intervenant_id})
       } else if (this.type === 'volumes-hebdomadaires') {
-        console.log()
+        this.$store.dispatch('DELETE_AllVolumesHebdomadaires', this.module.id);
       } else if (this.type === 'volumes-globaux') {
         console.log()
       }

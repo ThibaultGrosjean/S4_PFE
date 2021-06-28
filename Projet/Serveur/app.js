@@ -135,6 +135,8 @@ app.get('/volumes-hebdomadaires/get', volumeHebdomadaireController.getAllVolumeH
 
 app.get('/volumes-hebdomadaires/get/:id', volumeHebdomadaireController.getVolumeHebdomadaire);
 
+app.get('/volumes-hebdomadaires/module/get', volumeHebdomadaireController.getVolumesHebdoByModule);
+
 app.post('/volumes-hebdomadaires/create/',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumeHebdomadaire);
 
 app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaineDeb/:semaineFin',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumesHebdomadaires);
@@ -144,6 +146,12 @@ app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validato
 app.put('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
 
 app.put('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadaireController.validator, volumeHebdomadaireController.editTypeValueElementVolumeHebdomadaire);
+
+app.delete('/volumes-hebdomadaires/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', volumeHebdomadaireController.deleteAllVolumesHebdomadairesBySemaine);
+
+app.delete('/volumes-hebdomadaires/formation/:id/delete', volumeHebdomadaireController.deleteAllVolumesHebdomadairesByFormation);
+
+app.delete('/volumes-hebdomadaires/delete/element/:element', volumeHebdomadaireController.deleteAllVolumesHebdomadaires);
 
 app.delete('/volumes-hebdomadaires/delete/:id', volumeHebdomadaireController.deleteVolumeHebdomadaire);
 
@@ -177,9 +185,13 @@ app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, 
 
 app.put('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant',groupeIntervenantController.validator, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
 
-app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
+app.delete('/groupes-intervenants/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', groupeIntervenantController.deleteAllGroupesIntervenantsBySemaine);
+
+app.delete('/groupes-intervenants/formation/:id/delete', groupeIntervenantController.deleteAllGroupesIntervenantsByFormation);
 
 app.delete('/groupes-intervenants/delete/element/:element/intervenant/:intervenant', groupeIntervenantController.deleteAllGroupesIntervenants);
+
+app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
 
 
 app.listen(port, () => {

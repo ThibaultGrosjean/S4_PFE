@@ -69,6 +69,8 @@
                         </template>
                         <span>Dupliquer</span>
                       </v-tooltip>
+                      <SupprimerTousVolHorFormation :formation="formation"/>
+                      <SupprimerTousGrpIntervenantFormation :formation="formation"/>
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
@@ -340,146 +342,155 @@
                                                   <v-container>
                                                     <v-row>
                                                       <v-col class="pl-16 pr-6 pt-0 pb-0">
-                                                        <div v-if="module.mode_saisie !=='aucun'">
-                                                          <div v-if="module.mode_saisie ==='hebdo'">
-                                                            <v-simple-table dense fixed-header>
-                                                              <template v-slot:default>
-                                                                <thead>
-                                                                <tr>
-                                                                  <th class="top-border"></th>
-                                                                  <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
-                                                                    <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                        <div v-if="module.mode_saisie ==='hebdo'">
+                                                          <template v-for="v in volumesHebdomadairesModules">
+                                                            <div :key="v.id" v-if="v.element_id === module.id">
+                                                              <v-container>
+                                                              <v-row>
+                                                                <v-col class="top-border pa-1"></v-col>
+                                                                <v-col class="top-border d-flex justify-center pa-1">
+                                                                  <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                </v-col>
+                                                                <v-col class="top-border pa-1 d-flex justify-end">
+                                                                  <SupprimerTableau :type="'volumes-hebdomadaires'" :module="module" :intervenant="null"/>
+                                                                </v-col>
+                                                              </v-row>
+                                                            </v-container>
+                                                              <v-simple-table dense fixed-header>
+                                                            <template v-slot:default>
+                                                              <thead>
+                                                              <tr>
+                                                                <th class="text-right right-border"></th>
+                                                                <template v-for="v in volumesHebdomadaires">
+                                                                  <th :key="v.id" v-if="v.element_id === module.id" class="text-center">
+                                                                    {{ v.num_semaine }}
                                                                   </th>
-                                                                  <th class="top-border"></th>
-                                                                </tr>
+                                                                </template>
+                                                                <th class="text-center left-border">Total</th>
+                                                              </tr>
+                                                              </thead>
+                                                              <tbody>
+                                                              <tr v-if="module.cm_autorises">
+                                                                <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                <template v-for="v in volumesHebdomadaires">
+                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                </template>
+                                                                <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_cm') }}</td>
+                                                              </tr>
 
-                                                                <tr>
-                                                                  <th class="text-right right-border"></th>
-                                                                  <template v-for="v in volumesHebdomadaires">
-                                                                    <th :key="v.id" v-if="v.element_id === module.id" class="text-center">
-                                                                      {{ v.num_semaine }}
-                                                                    </th>
-                                                                  </template>
-                                                                  <th class="text-center left-border">Total</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr v-if="module.cm_autorises">
-                                                                  <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                  <template v-for="v in volumesHebdomadaires">
-                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                  </template>
-                                                                  <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_cm') }}</td>
-                                                                </tr>
+                                                              <tr v-if="module.td_autorises">
+                                                                <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                <template v-for="v in volumesHebdomadaires">
+                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                </template>
+                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
+                                                              </tr>
 
-                                                                <tr v-if="module.td_autorises">
-                                                                  <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                  <template v-for="v in volumesHebdomadaires">
-                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                  </template>
-                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
-                                                                </tr>
+                                                              <tr v-if="module.tp_autorises">
+                                                                <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                <template v-for="v in volumesHebdomadaires">
+                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                </template>
+                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}</td>
+                                                              </tr>
 
-                                                                <tr v-if="module.tp_autorises">
-                                                                  <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                  <template v-for="v in volumesHebdomadaires">
-                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                  </template>
-                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}</td>
-                                                                </tr>
-
-                                                                <tr v-if="module.partiel_autorises">
-                                                                  <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                  <template v-for="v in volumesHebdomadaires">
-                                                                    <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                  </template>
-                                                                  <td class="left-border text-center">{{totalVolume(module, 'vol_hor_partiel') }}</td>
-                                                                </tr>
-                                                                </tbody>
-                                                              </template>
+                                                              <tr v-if="module.partiel_autorises">
+                                                                <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                <template v-for="v in volumesHebdomadaires">
+                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                </template>
+                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_partiel') }}</td>
+                                                              </tr>
+                                                              </tbody>
+                                                            </template>
                                                             </v-simple-table>
-                                                            <v-divider></v-divider>
-                                                            <v-expansion-panels hover flat focusable tile>
-                                                              <v-expansion-panel>
-                                                                <v-expansion-panel-header class="height-row">
-                                                                  <template v-slot:actions>
-                                                                    <v-icon class="icon-intervenant">$expand</v-icon>
-                                                                  </template>
-                                                                  <template v-slot:default="{ open }">
-                                                                    <v-row no-gutters class="header-intervenant">
-                                                                      <span v-if="!open" class="ml-2">Afficher les intervenants de {{ module.surnom }}</span>
-                                                                      <span v-else class="ml-2">Masquer les intervenants de {{ module.surnom }}</span>
-                                                                    </v-row>
-                                                                  </template>
-                                                                </v-expansion-panel-header>
-                                                                <v-expansion-panel-content>
-                                                                  <template v-for="i in intervenantsModules">
-                                                                    <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
-                                                                      <template v-slot:default>
-                                                                        <thead>
-                                                                        <tr>
-                                                                          <th class="top-border"></th>
-                                                                          <th :colspan="findPeriodeBySemestre(semestre.id).nb_semaine" class="text-center top-border">
+                                                              <v-divider></v-divider>
+                                                              <v-expansion-panels hover flat focusable tile>
+                                                                <v-expansion-panel>
+                                                                  <v-expansion-panel-header class="height-row">
+                                                                    <template v-slot:actions>
+                                                                      <v-icon class="icon-intervenant">$expand</v-icon>
+                                                                    </template>
+                                                                    <template v-slot:default="{ open }">
+                                                                      <v-row no-gutters class="header-intervenant">
+                                                                        <span v-if="!open" class="ml-2">Afficher les intervenants de {{ module.surnom }}</span>
+                                                                        <span v-else class="ml-2">Masquer les intervenants de {{ module.surnom }}</span>
+                                                                      </v-row>
+                                                                    </template>
+                                                                  </v-expansion-panel-header>
+                                                                  <v-expansion-panel-content>
+                                                                    <template v-for="i in intervenantsModules">
+                                                                      <v-container :key="i.id" v-if="i.element_id === module.id">
+                                                                        <v-row>
+                                                                          <v-col class="top-border pa-1"></v-col>
+                                                                          <v-col class="top-border d-flex justify-center pa-1">
                                                                             <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
-                                                                          </th>
-                                                                          <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i"/>
-                                                                        </tr>
+                                                                          </v-col>
+                                                                          <v-col class="top-border pa-1 d-flex justify-end">
+                                                                            <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i"/>
+                                                                          </v-col>
+                                                                        </v-row>
+                                                                      </v-container>
+                                                                      <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
+                                                                        <template v-slot:default>
+                                                                          <thead>
+                                                                          <tr>
+                                                                            <th class="right-border"></th>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" class="text-center">
+                                                                                {{ g.num_semaine }}
+                                                                              </th>
+                                                                            </template>
+                                                                            <th class="text-center left-border">Total</th>
+                                                                          </tr>
+                                                                          </thead>
+                                                                          <tbody>
+                                                                          <tr v-if="module.cm_autorises">
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            </template>
+                                                                            <td class="left-border text-center">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
+                                                                          </tr>
 
-                                                                        <tr>
-                                                                          <th class="right-border"></th>
-                                                                          <template v-for="g in groupesIntervenants">
-                                                                            <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" class="text-center">
-                                                                              {{ g.num_semaine }}
-                                                                            </th>
-                                                                          </template>
-                                                                          <th class="text-center left-border">Total</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <tr v-if="module.cm_autorises">
-                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                          <template v-for="g in groupesIntervenants">
-                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                          </template>
-                                                                          <td class="left-border text-center">{{ totalNbGroupe(module,i.intervenant_id , 'nb_groupe_cm') }}</td>
-                                                                        </tr>
+                                                                          <tr v-if="module.td_autorises">
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            </template>
+                                                                            <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
+                                                                          </tr>
 
-                                                                        <tr v-if="module.td_autorises">
-                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                          <template v-for="g in groupesIntervenants">
-                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                          </template>
-                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_td') }}</td>
-                                                                        </tr>
+                                                                          <tr v-if="module.tp_autorises">
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            </template>
+                                                                            <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
+                                                                          </tr>
 
-                                                                        <tr v-if="module.tp_autorises">
-                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                          <template v-for="g in groupesIntervenants">
-                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                          </template>
-                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_tp') }}</td>
-                                                                        </tr>
-
-                                                                        <tr v-if="module.partiel_autorises">
-                                                                          <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
-                                                                          <template v-for="g in groupesIntervenants">
-                                                                            <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
-                                                                          </template>
-                                                                          <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                      </template>
-                                                                    </v-simple-table>
-                                                                  </template>
-                                                                  <v-divider></v-divider>
-                                                                  <v-btn text tile block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
-                                                                    Ajouter un intervenant
-                                                                  </v-btn>
-                                                                </v-expansion-panel-content>
-                                                              </v-expansion-panel>
-                                                            </v-expansion-panels>
-                                                          </div>
-                                                          <div v-if="module.mode_saisie ==='globale'">
+                                                                          <tr v-if="module.partiel_autorises">
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <template v-for="g in groupesIntervenants">
+                                                                              <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
+                                                                            </template>
+                                                                            <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id , 'nb_groupe_partiel') }}</td>
+                                                                          </tr>
+                                                                          </tbody>
+                                                                        </template>
+                                                                      </v-simple-table>
+                                                                    </template>
+                                                                    <v-divider></v-divider>
+                                                                    <v-btn text tile block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
+                                                                      Ajouter un intervenant
+                                                                    </v-btn>
+                                                                  </v-expansion-panel-content>
+                                                                </v-expansion-panel>
+                                                              </v-expansion-panels>
+                                                            </div>
+                                                          </template>
+                                                        </div>
+                                                        <div v-if="module.mode_saisie ==='globale'">
                                                             <template v-for="i in volumesGlobaux">
                                                               <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
                                                                 <template v-slot:default>
@@ -527,7 +538,6 @@
                                                               </v-simple-table>
                                                             </template>
                                                           </div>
-                                                        </div>
                                                       </v-col>
                                                     </v-row>
                                                   </v-container>
@@ -894,10 +904,15 @@ import TDEditValue from "./TDEditValue";
 import EditNbGroupeModule from "./EditNbGroupeModule";
 import axios from "axios";
 import SupprimerTableau from "./SupprimerTableau";
+import SupprimerTousVolHorFormation from "./SupprimerTousVolHorFormation";
+import SupprimerTousGrpIntervenantFormation from "./SupprimerTousGrpIntervenantFormation";
 
 export default {
   name: "ReadElements",
-  components: {SupprimerTableau, EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
+  components: {
+    SupprimerTousGrpIntervenantFormation,
+    SupprimerTousVolHorFormation,
+    SupprimerTableau, EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
   mixins: [validationMixin],
   props: ['racine', 'disabled'],
 
@@ -982,9 +997,10 @@ export default {
     this.$store.dispatch('loadGenerique', 'enseignants');
     this.$store.dispatch('loadIntervenantsModules');
     this.$store.dispatch('loadGenerique', 'groupes-intervenants');
+    this.$store.dispatch('loadVolumesHorairesByModule');
   },
   computed: {
-    ...mapState(['elements','periodes', 'volumesHebdomadaires', 'volumesGlobaux', 'intervenants', 'enseignants', 'intervenantsModules', 'groupesIntervenants']),
+    ...mapState(['elements','periodes', 'volumesHebdomadaires', 'volumesGlobaux', 'intervenants', 'enseignants', 'intervenantsModules', 'groupesIntervenants', 'volumesHebdomadairesModules']),
     mode_saisieErrors() {
       const errors = []
       if (!this.$v.mode_saisie.$dirty) return errors
@@ -1346,6 +1362,18 @@ export default {
           .catch(error => {
         console.log('Erreur : ', error)
       });
+    },
+    getIfVolHebdo(idModule){
+      var val = '';
+      axios.get('/volumes-hebdomadaires/module/get/'+ idModule)
+          .then(response => (val = response.data))
+          .catch(error => {
+        console.log('Erreur : ', error)
+      });
+      if (!val)
+        return false;
+      else
+      return true;
     },
     submitGrpInterv() {
       this.$v.$touch()

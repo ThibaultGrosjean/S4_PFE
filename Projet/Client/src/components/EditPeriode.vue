@@ -113,7 +113,7 @@
           </v-card-title>
           <v-card-text class="text-justify pt-4">
             Êtes-vous sûr de vouloir changer le numéro de semaine pour le semestre ?<br><br>
-            Cela augmentera le nombre de semaine pour tous les modules où la saisie est hebdomadaire.
+            Cela augmentera / diminuera le nombre de semaine pour tous les modules où la saisie est hebdomadaire.
           </v-card-text>
           <v-card-actions>
             <v-btn

@@ -244,8 +244,54 @@ exports.editTypeValueElementGroupeIntervenant = (req, res) => {
 };
 
 
-exports.deleteGroupeIntervenant = (req, res) => {
-  db.query('DELETE FROM groupe_intervenant WHERE eleme = ? ;',[req.params.id],
+exports.deleteAllGroupesIntervenantsBySemaine = (req, res) => {
+  var nbSemaineDeb = req.params.semaineDeb
+  var nbSemaineFin = req.params.semaineFin
+
+  db.query('DELETE g'
+        +' FROM groupe_intervenant AS g'
+        +' LEFT JOIN element as e'
+        +' ON g.element_id = e.id'
+        +' LEFT JOIN element as e2'
+        +' ON e.parent = e2.id'
+        +' WHERE e2.parent = '+ req.params.id
+        +' AND g.num_semaine > '+ nbSemaineDeb +' AND g.num_semaine <= '+ nbSemaineFin +';',
+    function(err, groupes_intervenants) {
+      if (!err) {
+        res.status(200).json(groupes_intervenants);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.deleteAllGroupesIntervenantsByFormation = (req, res) => {
+  db.query('DELETE g'
+        +' FROM groupe_intervenant AS g'
+        +' LEFT JOIN element as e'
+        +' ON g.element_id = e.id'
+        +' LEFT JOIN element as e2'
+        +' ON e.parent = e2.id'
+        +' LEFT JOIN element as e3'
+        +' ON e2.parent = e3.id'
+        +' WHERE e3.parent = ?',[req.params.id],
+    function(err, groupes_intervenants) {
+      if (!err) {
+        res.status(200).json(groupes_intervenants);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.deleteAllGroupesIntervenants = (req, res) => {
+  db.query('DELETE FROM groupe_intervenant WHERE element_id = ' + req.params.element + ' AND intervenant_id = ' + req.params.intervenant,
     function(err) {
       if (!err) {
         res.status(200); 
@@ -258,8 +304,8 @@ exports.deleteGroupeIntervenant = (req, res) => {
 };
 
 
-exports.deleteAllGroupesIntervenants = (req, res) => {
-  db.query('DELETE FROM groupe_intervenant WHERE element_id = ' + req.params.element + ' AND intervenant_id = ' + req.params.intervenant,
+exports.deleteGroupeIntervenant = (req, res) => {
+  db.query('DELETE FROM groupe_intervenant WHERE eleme = ? ;',[req.params.id],
     function(err) {
       if (!err) {
         res.status(200); 
