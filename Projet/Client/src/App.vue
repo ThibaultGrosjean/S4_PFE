@@ -38,4 +38,18 @@ export default {
   margin: 16px;
   z-index: 1000;
 }
+.animate-pop-in {
+  animation: pop-in .3s forwards .15s;
+  opacity: 0;
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-2%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>

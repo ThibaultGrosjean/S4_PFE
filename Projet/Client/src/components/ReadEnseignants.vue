@@ -5,8 +5,9 @@
           v-for="e in enseignants"
           :key="e.id"
           sm="4"
+          class="justify-center"
       >
-        <v-card>
+        <v-card class="animate-pop-in">
           <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
           <v-card-subtitle class="text-subtitle-1">{{ e.surnom.toUpperCase() }}</v-card-subtitle>
           <v-divider></v-divider>

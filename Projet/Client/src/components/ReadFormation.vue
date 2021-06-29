@@ -5,8 +5,9 @@
           v-for="f in formations"
           :key="f.id"
           sm="12"
+          class="justify-center"
       >
-        <v-card>
+        <v-card class="animate-pop-in">
           <v-card-title class="text-h5">
             <v-spacer></v-spacer>
             <small class="text-body-1 mr-2">Verrou</small>

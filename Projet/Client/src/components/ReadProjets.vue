@@ -5,8 +5,9 @@
           v-for="p in projets"
           :key="p.id"
           sm="4"
+          class="justify-center"
       >
-        <v-card>
+        <v-card class="animate-pop-in">
           <v-card-title class="text-h5">
             <span>{{ p.nom }}</span>
             <v-spacer></v-spacer>

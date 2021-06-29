@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4">Liste des statuts</h1>
+        <h1 class="text-center text-h4 animate-pop-in">Liste des statuts</h1>
       </v-col>
     </v-row>
     <v-row
@@ -16,6 +16,7 @@
           dense
           mandatory
           color="blue--text text--accent-4"
+          class="animate-pop-in"
       >
         <v-btn
             @click="sortedByNom"
@@ -27,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col v-if="!statuts.length">
-        <p class="text-center">Aucune donnée trouvée</p>
+        <p class="text-center animate-pop-in">Aucune donnée trouvée</p>
       </v-col>
     </v-row>
     <v-row>

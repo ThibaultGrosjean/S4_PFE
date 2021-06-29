@@ -5,8 +5,9 @@
           v-for="i in intervenants"
           :key="i.id"
           sm="4"
+          class="justify-center"
       >
-        <v-card>
+        <v-card class="animate-pop-in">
           <v-card-title class="text-h5">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
           <v-divider></v-divider>
           <v-card-text>

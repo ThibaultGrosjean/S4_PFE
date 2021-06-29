@@ -6,9 +6,9 @@
             :key="formation.id"
             v-if="formation.parent === null"
             cols="12"
-            class="pa-0"
+            class="pa-0 justify-center"
         >
-          <v-card flat>
+          <v-card flat class="animate-pop-in">
             <v-card-title>
               <v-spacer></v-spacer>
               <v-divider></v-divider>

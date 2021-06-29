@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4">Liste des projets</h1>
+        <h1 class="text-center text-h4 animate-pop-in">Liste des projets</h1>
       </v-col>
     </v-row>
     <v-row
@@ -16,6 +16,7 @@
           dense
           mandatory
           color="blue--text text--accent-4"
+          class="animate-pop-in"
       >
         <v-btn
             @click="sortedByDate"
@@ -27,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col v-if="!projets.length">
-        <p class="text-center">Aucun projet trouvé</p>
+        <p class="text-center animate-pop-in">Aucun projet trouvé</p>
       </v-col>
     </v-row>
     <v-row>

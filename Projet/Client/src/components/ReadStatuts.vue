@@ -4,8 +4,9 @@
       <v-col v-for="s in statuts"
              :key="s.id"
              sm="4"
+             class="justify-center"
       >
-        <v-card>
+        <v-card class="animate-pop-in">
           <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
           <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
           <v-divider></v-divider>

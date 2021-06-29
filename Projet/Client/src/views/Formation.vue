@@ -2,16 +2,16 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4">Liste des formations</h1>
+        <h1 class="text-center text-h4 animate-pop-in">Liste des formations</h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex justify-start">
+      <v-col class="d-flex justify-start animate-pop-in">
         <v-btn outlined rounded color="blue" @click="redirect('/projets')">
           <v-icon class="mr-2">folder</v-icon>Retourner aux projets
         </v-btn>
       </v-col>
-      <v-col class="d-flex justify-end">
+      <v-col class="d-flex justify-end animate-pop-in">
         <v-btn outlined rounded color="blue" @click="redirect('/intervenants/projets/' + Number($route.params.id))">
           <v-icon class="mr-2">groups</v-icon>Aller au Intervenant
         </v-btn>
@@ -19,7 +19,7 @@
     </v-row>
     <v-row>
       <v-col v-if="!formationsByProjet.length">
-        <p class="text-center">Aucune formation sur ce projet</p>
+        <p class="text-center animate-pop-in">Aucune formation sur ce projet</p>
       </v-col>
     </v-row>
     <v-row>

@@ -2,16 +2,16 @@
   <v-container>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4">Liste des intervenants</h1>
+        <h1 class="text-center text-h4 animate-pop-in">Liste des intervenants</h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex justify-start">
+      <v-col class="d-flex justify-start animate-pop-in">
         <v-btn outlined rounded color="blue" @click="redirect('/projets')">
           <v-icon class="mr-2">folder</v-icon>Retourner aux projets
         </v-btn>
       </v-col>
-      <v-col class="d-flex justify-end">
+      <v-col class="d-flex justify-end animate-pop-in">
         <v-btn outlined rounded color="blue" @click="redirect('/formations/projets/'+ Number($route.params.id))">
           <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
         </v-btn>
@@ -19,7 +19,7 @@
     </v-row>
     <v-row>
       <v-col v-if="!intervenantsByProjet.length">
-        <p class="text-center">Aucun intervenant sur ce projet</p>
+        <p class="text-center animate-pop-in">Aucun intervenant sur ce projet</p>
       </v-col>
     </v-row>
     <v-row>
