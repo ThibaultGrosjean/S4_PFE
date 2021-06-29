@@ -5,7 +5,7 @@
       max-width="350"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-btn icon color="red darken-1">
+      <v-btn icon color="error darken-1">
         <v-icon
             v-bind="attrs"
             v-on="on"
@@ -21,7 +21,7 @@
       <v-card-text>Êtes-vous sûr de vouloir supprimer cet enregistrement ?</v-card-text>
       <v-card-actions>
         <v-btn
-            color="red darken-1"
+            color="error darken-1"
             text
             @click="dialog = false"
         >
@@ -29,7 +29,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-            color="green darken-1"
+            color="success darken-1"
             text
             @click="deleteItem(item)"
         >

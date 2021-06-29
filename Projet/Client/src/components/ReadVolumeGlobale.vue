@@ -56,7 +56,7 @@
                       icon
                       @click="deleteItem(v)"
                   >
-                    <v-icon small color="red darken-1">delete</v-icon>
+                    <v-icon small color="error darken-1">delete</v-icon>
                   </v-btn>
                 </td>
               </tr>
@@ -160,7 +160,7 @@
 
                 <v-card-actions>
                   <v-btn
-                      color="red darken-1"
+                      color="error darken-1"
                       class="mr-4"
                       text
                       @click="clear"
@@ -169,7 +169,7 @@
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                      color="green darken-1"
+                      color="success darken-1"
                       class="mr-4"
                       text
                       @click="submit"
@@ -186,7 +186,7 @@
         <v-col>
           <v-btn
               class="v-btn--addElement"
-              color="green"
+              color="success"
               fab
               dark
               @click="close"

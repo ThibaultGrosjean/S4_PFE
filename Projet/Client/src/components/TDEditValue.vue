@@ -50,7 +50,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-            color="red darken-1"
+            color="error darken-1"
             class="ml-4 mb-3"
             text
             @click="close"
@@ -59,7 +59,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-            color="green darken-1"
+            color="success darken-1"
             class="mr-4 mb-3"
             text
             @click="save"

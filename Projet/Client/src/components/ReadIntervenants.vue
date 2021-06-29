@@ -50,7 +50,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon>
                   <v-icon
-                      color="red darken-1"
+                      color="error darken-1"
                       v-bind="attrs"
                       v-on="on"
                   >
@@ -94,13 +94,29 @@
                   item-value="id"
                   label="Enseignant"
                   clearable
+                  multiple
+                  chips
                   :disabled="methods === 'PUT'"
                   no-data-text="Tous les enseignants interviennent déjà dans le projet"
-                  :error-messages="enseignantErrors"
-                  @change="initHoraire"
+                  :rules="rules.selectEnseignant"
                   required
-              ></v-select>
-              <div class="ma-0 pa-0" v-if="this.enseignant_id">
+              >
+                <template v-slot:selection="{ item, index }">
+                  <v-chip v-if="index === 0 ">
+                    <span>{{ item.prenom + ' ' + item.nom }}</span>
+                  </v-chip>
+                  <v-chip v-if="index === 1 ">
+                    <span>{{ item.prenom + ' ' + item.nom }}</span>
+                  </v-chip>
+                  <span
+                      v-if="index === 2"
+                      class="grey--text text-caption"
+                  >
+                    (+{{ enseignant_id.length - 2 }})
+                  </span>
+                </template>
+              </v-select>
+              <div class="ma-0 pa-0" v-if="methods === 'PUT'">
                 <v-text-field
                     v-model="nb_he_td_min_attendu_projet"
                     :error-messages="nb_he_td_min_attendu_projetErrors"
@@ -140,7 +156,7 @@
               </div>
               <v-card-actions>
                 <v-btn
-                    color="red darken-1"
+                    color="error darken-1"
                     class="mr-4"
                     text
                     @click="clear"
@@ -149,7 +165,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="green darken-1"
+                    color="success darken-1"
                     class="mr-4"
                     text
                     @click="submit"
@@ -166,7 +182,7 @@
       <v-col>
         <v-btn
             class="v-btn--addElement"
-            color="green"
+            color="success"
             fab
             dark
             @click="addIntervenant"
@@ -194,7 +210,6 @@ export default {
     nb_he_td_max_attendu_projet: {required, decimal},
     nb_he_td_min_sup_projet: {required, decimal},
     nb_he_td_max_sup_projet: {required, decimal},
-    enseignant_id: {required},
   },
   data: () => ({
     form: false,
@@ -205,9 +220,13 @@ export default {
     nb_he_td_min_sup_projet: '',
     nb_he_td_max_sup_projet: '',
     projet_id: '',
-    enseignant_id: '',
+    enseignant_id: [],
 
     enseignantByProjetNotInIntervenant: [],
+
+    rules: {
+      selectEnseignant: [(v) =>  v.length > 0 || "Veuillez sélectionner un enseignant"],
+    }
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'enseignants')
@@ -215,12 +234,6 @@ export default {
   },
   computed: {
     ...mapState(['enseignants', 'projets']),
-    enseignantErrors() {
-      const errors = []
-      if (!this.$v.enseignant_id.$dirty) return errors
-      !this.$v.enseignant_id.required && errors.push('Veuillez sélectionner un enseignant')
-      return errors
-    },
     nb_he_td_min_attendu_projetErrors() {
       const errors = []
       if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors
@@ -252,20 +265,36 @@ export default {
   },
   methods: {
     submit() {
-      this.$v.$touch()
-      if (this.$v.$invalid) return;
-      const intervenant = {
-        id: this.id,
-        nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
-        nb_he_td_max_attendu_projet: this.nb_he_td_max_attendu_projet,
-        nb_he_td_min_sup_projet: this.nb_he_td_min_sup_projet,
-        nb_he_td_max_sup_projet: this.nb_he_td_max_sup_projet,
-        projet_id: this.projet_id,
-        enseignant_id: this.enseignant_id,
-      }
       if (this.methods === 'POST'){
-        this.$store.commit('ADD_Intervenant', intervenant);
+        this.$v.$touch()
+        if (this.enseignant_id.length <= 0) {
+          return;
+        } else {
+          for (let i = 0; i < this.enseignant_id.length; i++) {
+            var enseignant = this.returnEnseignant(this.enseignant_id[i])
+            var intervenant = {
+              enseignant_id : this.enseignant_id[i],
+              projet_id : Number(this.$route.params.id),
+              nb_he_td_min_attendu_projet : enseignant.statut.nb_he_td_min_attendu,
+              nb_he_td_max_attendu_projet : enseignant.statut.nb_he_td_max_attendu,
+              nb_he_td_min_sup_projet : enseignant.statut.nb_he_td_min_sup,
+              nb_he_td_max_sup_projet : enseignant.statut.nb_he_td_max_sup,
+            }
+           this.$store.commit('ADD_Intervenant', intervenant)
+          }
+        }
       } else {
+        this.$v.$touch()
+        if (this.$v.$invalid) return;
+        const intervenant = {
+          id: this.id,
+          nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
+          nb_he_td_max_attendu_projet: this.nb_he_td_max_attendu_projet,
+          nb_he_td_min_sup_projet: this.nb_he_td_min_sup_projet,
+          nb_he_td_max_sup_projet: this.nb_he_td_max_sup_projet,
+          projet_id: this.projet_id,
+          enseignant_id: this.enseignant_id,
+        }
         this.$store.commit('EDIT_Intervenant', intervenant);
       }
       this.form = false
@@ -279,10 +308,11 @@ export default {
       this.nb_he_td_min_sup_projet = ''
       this.nb_he_td_max_sup_projet = ''
       this.projet_id = null
-      this.enseignant_id = null
+      this.enseignant_id = []
     },
     close() {
       this.form = false
+      this.getEnseignantProjetNotInIntervenant()
       this.methods = 'POST'
       this.clear()
     },
@@ -309,8 +339,8 @@ export default {
       let index = this.enseignants.findIndex(enseignant => enseignant.id === id);
       return this.enseignants[index]
     },
-    initHoraire(){
-      var enseignant = this.returnEnseignant(this.enseignant_id)
+    initHoraire(enseignant_id){
+      var enseignant = this.returnEnseignant(enseignant_id)
       this.nb_he_td_min_attendu_projet = enseignant.statut.nb_he_td_min_attendu
       this.nb_he_td_max_attendu_projet = enseignant.statut.nb_he_td_max_attendu
       this.nb_he_td_min_sup_projet = enseignant.statut.nb_he_td_min_sup
@@ -332,6 +362,17 @@ export default {
         .catch(error => {
         console.log('Erreur : ', error)
       });
+    },
+    submitGrpInterv() {
+      this.$v.$touch()
+      if (this.enseignant_id.length <= 0) {
+        return;
+      } else {
+        for (let i = 0; i < this.enseignant_id.length; i++) {
+          this.$store.commit('ADD_Intervenant', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+        }
+      }
+      this.closeGrpIntev()
     },
   }
 }

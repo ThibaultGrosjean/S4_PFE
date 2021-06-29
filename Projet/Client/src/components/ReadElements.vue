@@ -79,7 +79,7 @@
                               v-on="on"
                               class="ma-1"
                           >
-                            <v-icon color="red darken-1">delete</v-icon>
+                            <v-icon color="error darken-1">delete</v-icon>
                           </v-btn>
                         </template>
                         <span>Supprimer la décomposition</span>
@@ -168,7 +168,7 @@
                                         v-on="on"
                                         class="ma-1"
                                     >
-                                      <v-icon color="red darken-1">delete</v-icon>
+                                      <v-icon color="error darken-1">delete</v-icon>
                                     </v-btn>
                                   </template>
                                   <span>Supprimer</span>
@@ -254,7 +254,7 @@
                                                     v-on="on"
                                                     class="ma-1"
                                                 >
-                                                  <v-icon color="red darken-1">delete</v-icon>
+                                                  <v-icon color="error darken-1">delete</v-icon>
                                                 </v-btn>
                                               </template>
                                               <span>Supprimer</span>
@@ -327,7 +327,7 @@
                                                                   v-on="on"
                                                                   class="ma-1"
                                                               >
-                                                                <v-icon color="red darken-1">delete</v-icon>
+                                                                <v-icon color="error darken-1">delete</v-icon>
                                                               </v-btn>
                                                             </template>
                                                             <span>Supprimer</span>
@@ -808,7 +808,7 @@
               </div>
               <v-card-actions>
                 <v-btn
-                    color="red darken-1"
+                    color="error darken-1"
                     class="mr-4"
                     text
                     @click="clear"
@@ -817,7 +817,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="green darken-1"
+                    color="success darken-1"
                     class="mr-4"
                     text
                     @click="submit"
@@ -876,9 +876,17 @@
                 </template>
               </v-select>
               <v-card-actions>
+                <v-btn
+                    color="error darken-1"
+                    class="mr-4"
+                    text
+                    @click="clearGrpInterv"
+                >
+                  Vider
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="green darken-1"
+                    color="success darken-1"
                     class="mr-4"
                     text
                     @click="submitGrpInterv"
@@ -1417,7 +1425,6 @@ export default {
 .top-border{
   border-top: 1px solid rgba(0, 0, 0, 0.12);
   background-color: rgba(0, 0, 0, 0.03) !important;
-  color: #353535 !important;
 }
 .height-row{
   max-height: 2em !important;

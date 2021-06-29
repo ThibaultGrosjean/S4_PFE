@@ -82,12 +82,12 @@
           <v-card-text>
             <v-container>
               <v-row>
-                <v-btn block outlined rounded color="blue" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
+                <v-btn block outlined rounded color="primary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
                   <v-icon class="mr-2">groups</v-icon>Intervenants
                 </v-btn>
               </v-row>
               <v-row>
-                <v-btn block outlined rounded color="blue" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
+                <v-btn block outlined rounded color="primary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
                   <v-icon class="mr-2">auto_stories</v-icon>Formations
                 </v-btn>
               </v-row>
@@ -127,7 +127,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon>
                   <v-icon
-                      color="red darken-1"
+                      color="error darken-1"
                       v-bind="attrs"
                       v-on="on"
                   >
@@ -205,7 +205,7 @@
                 >
                   <v-btn
                       text
-                      color="red darken-1"
+                      color="error darken-1"
                       @click="menu = false"
                   >
                     Annuler
@@ -213,7 +213,7 @@
                   <v-spacer></v-spacer>
                   <v-btn
                       text
-                      color="green darken-1"
+                      color="success darken-1"
                       @click="$refs.menu.save(date)"
                   >
                     Valider
@@ -233,7 +233,7 @@
 
               <v-card-actions>
                 <v-btn
-                    color="red darken-1"
+                    color="error darken-1"
                     class="mr-4"
                     text
                     @click="clear"
@@ -242,7 +242,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                    color="green darken-1"
+                    color="success darken-1"
                     class="mr-4"
                     text
                     @click="submit"
@@ -259,7 +259,7 @@
       <v-col>
         <v-btn
             class="v-btn--addElement"
-            color="green"
+            color="success"
             fab
             dark
             @click="close"

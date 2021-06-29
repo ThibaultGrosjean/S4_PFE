@@ -81,3 +81,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Supprimer tous les volumes hebdomadaires de la formation depuis l'élémént racine
 * Supprimer tous les groupes d'intervenants de la formation depuis l'élémént racine
 * Animation d'arrivée lors d'un chargement de page
+* Thème sombre
+* Ajouter plusieurs enseignants en même temps à un projet.

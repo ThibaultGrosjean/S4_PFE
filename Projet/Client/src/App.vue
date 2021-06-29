@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{background: $vuetify.theme.themes[theme].background}">
     <v-app>
       <NavBar></NavBar>
       <v-main>
@@ -21,6 +21,11 @@ export default {
   data: () => ({
     //
   }),
+  computed:{
+    theme(){
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    }
+  }
 };
 </script>
 
@@ -29,7 +34,6 @@ export default {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #353535;
 }
 .v-btn--addElement {
   bottom: 0;
@@ -51,5 +55,23 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.theme--dark.v-application {
+  background: #292929 !important;
+}
+.theme--dark.v-card {
+  background: #333637 !important;
+}
+.theme--dark.v-navigation-drawer {
+  background-color: #333637 !important;
+}
+.theme--dark.v-expansion-panels .v-expansion-panel {
+  background: #333637 !important;
+}
+.theme--dark.v-data-table {
+  background: #333637 !important;
+}
+.theme--dark.v-data-table.v-data-table--fixed-header thead th {
+  background: #2d2f30 !important;
 }
 </style>

@@ -9,7 +9,7 @@
             class="ma-1 mt-2"
             @click="dialog = true"
         >
-          <v-icon color="red darken-1">person_remove</v-icon>
+          <v-icon color="error darken-1">person_remove</v-icon>
         </v-btn>
       </template>
       <span>Supprimer les groupes d'intervenants</span>
@@ -20,7 +20,7 @@
         max-width="500"
     >
       <v-card>
-        <v-card-title class="text-h5 red darken-2 white--text">
+        <v-card-title class="text-h5 error darken-2 white--text">
           <span class="headline">Confirmation de suppression</span>
           <v-spacer></v-spacer>
           <v-btn icon  color="white" @click="dialog =false">
@@ -31,7 +31,7 @@
           Êtes-vous sûr de vouloir supprimer tous les groupes d'intervenants de « {{ formation.titre }} » ?</v-card-text>
         <v-card-actions>
           <v-btn
-              color="red darken-1"
+              color="error darken-1"
               text
               @click="dialog = false"
           >
@@ -39,7 +39,7 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
-              color="green darken-1"
+              color="success darken-1"
               class="mr-4"
               text
               @click="valider"

@@ -82,16 +82,6 @@ exports.getIntervenant = (req, res) => {
 
 
 exports.addIntervenant = (req, res) => {
-  db.query(requete,
-    function(err, intervenant) {
-      if (!err) {
-        res.status(200).json(intervenant); 
-      } else  {
-        res.send(err);
-      }
-    }
-  );
-
   var data = {
     nb_he_td_min_attendu_projet : req.body.nb_he_td_min_attendu_projet,
     nb_he_td_max_attendu_projet : req.body.nb_he_td_max_attendu_projet,

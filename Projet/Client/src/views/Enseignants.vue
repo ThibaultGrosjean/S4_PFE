@@ -15,7 +15,6 @@
             rounded
             dense
             mandatory
-            color="blue--text text--accent-4"
             class="animate-pop-in"
         >
           <v-btn

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app-bar
-      color="blue"
+      color="secondary"
       dark
     >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
@@ -10,7 +10,9 @@
         <v-icon>mdi-home</v-icon>
       </v-btn>
       <v-toolbar-title>Gestion des horaires annuels</v-toolbar-title>
+
       <v-spacer></v-spacer>
+      <ThemeChangerMenu/>
       <v-btn icon @click="redirect('/mon-compte')">
         <v-icon>settings</v-icon>
       </v-btn>
@@ -37,7 +39,7 @@
 
         <v-list-item-group
           v-model="group"
-          active-class="blue--text text--accent-4"
+          active-class="primary--text text--accent-4"
         >
           <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)">
             <v-list-item-icon>
@@ -53,8 +55,10 @@
 </template>
 
 <script>
+import ThemeChangerMenu from "./ThemeChangerMenu";
 export default {
   name: "NavBar",
+  components: {ThemeChangerMenu},
   data: () => ({
     drawer: false,
     group: null,
