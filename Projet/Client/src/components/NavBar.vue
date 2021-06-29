@@ -67,8 +67,6 @@ export default {
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
-      {text: "Groupes d'intervenants",icon:"groups", path: "/groupes-intervenants"},//
-      {text: "Volumes hebdomadaires",icon:"align_horizontal_left", path: "/volumes-hebdomadaires"},//
       {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},//
 
     ]

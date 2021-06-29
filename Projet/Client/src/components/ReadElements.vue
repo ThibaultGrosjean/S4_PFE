@@ -22,6 +22,7 @@
                         icon
                         v-bind="attrs"
                         v-on="on"
+                        :disabled="disabled"
                     >
                       <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
@@ -112,6 +113,7 @@
                                   icon
                                   v-bind="attrs"
                                   v-on="on"
+                                  :disabled="disabled"
                               >
                                 <v-icon>mdi-dots-vertical</v-icon>
                               </v-btn>
@@ -199,6 +201,7 @@
                                               icon
                                               v-bind="attrs"
                                               v-on="on"
+                                              :disabled="disabled"
                                           >
                                             <v-icon>mdi-dots-vertical</v-icon>
                                           </v-btn>
@@ -285,6 +288,7 @@
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
+                                                            :disabled="disabled"
                                                         >
                                                           <v-icon>mdi-dots-vertical</v-icon>
                                                         </v-btn>
@@ -654,6 +658,7 @@
                   v-model="parent"
                   :items="elements"
                   clearable
+                  disabled
                   hint="Laisser vide pour un élément racine"
                   persistent-hint
                   item-text="titre"
@@ -907,13 +912,14 @@
 
 <script>
 import {mapState} from "vuex";
+import axios from "axios";
 import {validationMixin} from "vuelidate";
 import {decimal, maxLength, numeric, required} from "vuelidate/lib/validators";
+
 import TDContexteMenu from "./TDContexteMenu";
 import EditPeriode from "./EditPeriode";
 import TDEditValue from "./TDEditValue";
 import EditNbGroupeModule from "./EditNbGroupeModule";
-import axios from "axios";
 import SupprimerTableau from "./SupprimerTableau";
 import SupprimerTousVolHorFormation from "./SupprimerTousVolHorFormation";
 import SupprimerTousGrpIntervenantFormation from "./SupprimerTousGrpIntervenantFormation";

@@ -6,9 +6,7 @@ import Enseignants from "../views/Enseignants";
 import Projets from "../views/Projets";
 import Intervenant from "../views/Intervenant";
 import Formation from "../views/Formation";
-import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 import VolumeGlobale from "../views/VolumeGlobale";
-import GroupeIntervenant from "../views/GroupeIntervenant";
 import Erreur404 from "../views/Erreur404";
 
 Vue.use(VueRouter)
@@ -49,19 +47,9 @@ const routes = [
     component: Formation
   },
   {
-    path: '/volumes-hebdomadaires',
-    name: 'Volumes Hebdomadaires',
-    component: VolumeHebdomadaire
-  },
-  {
     path: '/volumes-globaux',
     name: 'Volume Globale',
     component: VolumeGlobale
-  },
-  {
-    path: '/groupes-intervenants',
-    name: 'Groupes Intervenants',
-    component: GroupeIntervenant
   },
   {
     path: '*',

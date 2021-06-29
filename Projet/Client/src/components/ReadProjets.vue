@@ -91,6 +91,11 @@
                   <v-icon class="mr-2">auto_stories</v-icon>Formations
                 </v-btn>
               </v-row>
+              <v-row>
+                <v-btn block outlined rounded color="primary" class="mb-4">
+                  <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
+                </v-btn>
+              </v-row>
             </v-container>
           </v-card-text>
           <v-divider></v-divider>

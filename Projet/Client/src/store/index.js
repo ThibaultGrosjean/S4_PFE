@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import VolumeHebdomadaire from "../views/VolumeHebdomadaire";
 
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
@@ -365,11 +364,9 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
       let index = state.elements.findIndex(e => e.id === element.id);
-      state.elements[index] = element
-      if (element.niveau === 0){
-        let indexL = state.elementsLevel.findIndex(e => e.id === element.id);
-        state.elementsLevel[indexL] = element
-      }
+      state.elements[index].titre = element.titre
+      state.elements[index].surnom = element.surnom
+      state.elements[index].code = element.code
     },
     EDIT_Intervenant(state, intervenant) {
       axios.put('/intervenants/edit/' + intervenant.id, intervenant)
@@ -585,12 +582,9 @@ export default new Vuex.Store({
         .then(elements => {
           element.id = elements.insertId
           this.state.elements.push(element)
-          if (element.parent === null) this.state.elementsLevel.push(element)
 
           let index = this.state.elements.findIndex(e => e.id === element.parent);
           if (this.state.elements[index]) this.state.elements[index].nbfils += 1
-          let indexL = this.state.elementsLevel.findIndex(e => e.id === element.parent);
-          if (this.state.elementsLevel[indexL]) this.state.elementsLevel[indexL].nbfils += 1
 
           if (element.niveau === 1) {
             element.periode.element_id = element.id;
@@ -727,7 +721,6 @@ export default new Vuex.Store({
         .then(elements => {
           data.element.id = elements.insertId
           this.state.elements.push(data.element)
-          this.state.elementsLevel.push(data.element)
           const formation = {
             verrou: Number(false),
             projet_id: data.projet_id,
