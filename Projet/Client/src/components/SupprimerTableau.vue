@@ -8,6 +8,7 @@
           color="error darken-1"
           v-bind="attrs"
           v-on="on"
+          :disabled="disabled"
           @click="dialog = true"
       >
         <v-icon>close</v-icon>
@@ -63,7 +64,7 @@
 <script>
 export default {
   name: "SupprimerTableau",
-  props: ['type', 'module', 'intervenant'],
+  props: ['type', 'module', 'intervenant', 'disabled'],
 
   data: () => ({
     dialog: false,

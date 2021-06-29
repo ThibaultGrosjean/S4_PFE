@@ -28,10 +28,16 @@ exports.validator = [
 
 
 exports.getAllElements = (req, res) => {
-  db.query('SELECT e.*, COUNT(ee.id) AS nbfils'
+  db.query('SELECT e.*, COUNT(ee.id) AS nbfils, COUNT(vh.id) AS nbVolHebdo, COUNT(vg.id) AS nbVolGlob, COUNT(g.id) AS nbGrpInterv'
         +' FROM element AS e'
         +' LEFT JOIN element AS ee'
         +' ON e.id = ee.parent'
+        +' LEFT JOIN volume_hebdomadaire AS vh'
+        +' ON vh.element_id = e.id'
+        +' LEFT JOIN volume_globale AS vg'
+        +' ON vg.element_id = e.id'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.element_id = e.id'
         +' GROUP BY e.id ORDER BY e.parent, e.indice;',
     function(err, elements) {
       if (!err) {

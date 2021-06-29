@@ -82,4 +82,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Supprimer tous les groupes d'intervenants de la formation depuis l'élémént racine
 * Animation d'arrivée lors d'un chargement de page
 * Thème sombre
-* Ajouter plusieurs enseignants en même temps à un projet.
+* Ajouter plusieurs enseignants en même temps à un projet
+* Si aucun vol. hebdo. est associé au module affiche l'icône de suppr. du module et un bouton pour ajouter les vol. hebdo., sinon suppression impossible

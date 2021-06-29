@@ -679,6 +679,7 @@ export default new Vuex.Store({
       });
       dispatch('loadIntervenantsModules')
       dispatch('loadGenerique', 'groupes-intervenants')
+      dispatch('loadVolumesHorairesByModule') // reload nbGrpInterv pour savoir si il reste des groupes intervenant et masquer la suppression des volumes hebdos
     },
     ADD_AllVolumesHebdomadairesForModule({dispatch}, params ) {
       axios.post('/volumes-hebdomadaires/create/'+ params.module + '/'+'nbsemaine/'+ params.nb_semaine_deb + '/' + params.nb_semaine_fin)
@@ -690,6 +691,7 @@ export default new Vuex.Store({
       });
       dispatch('loadVolumesHorairesByModule')
       dispatch('loadGenerique', 'volumes-hebdomadaires')
+      dispatch('loadGenerique', 'elements')
     },
     DELETE_AllGroupeIntervenant({commit, dispatch}, params ) {
       axios.delete('/groupes-intervenants/delete/element/'+ params.element_id +'/intervenant/' + params.intervenant_id)
@@ -703,6 +705,7 @@ export default new Vuex.Store({
 
       dispatch('loadIntervenantsModules')
       dispatch('loadGenerique', 'groupes-intervenants')
+      dispatch('loadVolumesHorairesByModule')  // reload nbGrpInterv pour savoir si il reste des groupes intervenant et masquer la suppression des volumes hebdos
     },
     DELETE_AllVolumesHebdomadaires({commit, dispatch}, element_id ) {
       axios.delete('/volumes-hebdomadaires/delete/element/'+ element_id)
@@ -716,6 +719,7 @@ export default new Vuex.Store({
 
       dispatch('loadVolumesHorairesByModule')
       dispatch('loadGenerique', 'volumes-hebdomadaires')
+      dispatch('loadGenerique', 'elements')
     },
     ADD_FormationsElement({commit, dispatch}, data) {
       axios.post('/elements/create/', data.element)

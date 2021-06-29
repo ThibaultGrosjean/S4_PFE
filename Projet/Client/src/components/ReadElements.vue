@@ -319,7 +319,7 @@
                                                             </template>
                                                             <span>Dupliquer</span>
                                                           </v-tooltip>
-                                                          <v-tooltip top>
+                                                          <v-tooltip top v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
                                                             <template v-slot:activator="{ on, attrs }">
                                                               <v-btn
                                                                   icon
@@ -343,67 +343,70 @@
                                                     <v-row>
                                                       <v-col class="pl-16 pr-6 pt-0 pb-0">
                                                         <div v-if="module.mode_saisie ==='hebdo'">
+                                                          <div v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
+                                                            <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolHebdo(module.id, semestre.id)">Ajouter les volumes hebdomadaires</v-btn>
+                                                          </div>
                                                           <template v-for="v in volumesHebdomadairesModules">
                                                             <div :key="v.id" v-if="v.element_id === module.id">
                                                               <v-container>
-                                                              <v-row>
-                                                                <v-col class="top-border pa-1"></v-col>
-                                                                <v-col class="top-border d-flex justify-center pa-1">
-                                                                  <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
-                                                                </v-col>
-                                                                <v-col class="top-border pa-1 d-flex justify-end">
-                                                                  <SupprimerTableau :type="'volumes-hebdomadaires'" :module="module" :intervenant="null"/>
-                                                                </v-col>
-                                                              </v-row>
-                                                            </v-container>
+                                                                <v-row>
+                                                                  <v-col class="top-border pa-1"></v-col>
+                                                                  <v-col class="top-border d-flex justify-center pa-1">
+                                                                    <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                  </v-col>
+                                                                  <v-col class="top-border pa-1 d-flex justify-end">
+                                                                    <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled"/>
+                                                                  </v-col>
+                                                                </v-row>
+                                                              </v-container>
                                                               <v-simple-table dense fixed-header>
-                                                            <template v-slot:default>
-                                                              <thead>
-                                                              <tr>
-                                                                <th class="text-right right-border"></th>
-                                                                <template v-for="v in volumesHebdomadaires">
-                                                                  <th :key="v.id" v-if="v.element_id === module.id" class="text-center">
-                                                                    {{ v.num_semaine }}
-                                                                  </th>
-                                                                </template>
-                                                                <th class="text-center left-border">Total</th>
-                                                              </tr>
-                                                              </thead>
-                                                              <tbody>
-                                                              <tr v-if="module.cm_autorises">
-                                                                <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
-                                                                <template v-for="v in volumesHebdomadaires">
-                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                </template>
-                                                                <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_cm') }}</td>
-                                                              </tr>
+                                                                <template v-slot:default>
+                                                                  <thead>
+                                                                  <tr>
+                                                                    <th class="text-right right-border"></th>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <th :key="v.id" v-if="v.element_id === module.id" class="text-center">
+                                                                        {{ v.num_semaine }}
+                                                                      </th>
+                                                                    </template>
+                                                                    <th class="text-center left-border">Total</th>
+                                                                  </tr>
+                                                                  </thead>
+                                                                  <tbody>
+                                                                  <tr v-if="module.cm_autorises">
+                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    </template>
+                                                                    <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_cm') }}</td>
+                                                                  </tr>
 
-                                                              <tr v-if="module.td_autorises">
-                                                                <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                <template v-for="v in volumesHebdomadaires">
-                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                </template>
-                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
-                                                              </tr>
+                                                                  <tr v-if="module.td_autorises">
+                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    </template>
+                                                                    <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
+                                                                  </tr>
 
-                                                              <tr v-if="module.tp_autorises">
-                                                                <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                <template v-for="v in volumesHebdomadaires">
-                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
-                                                                </template>
-                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}</td>
-                                                              </tr>
+                                                                  <tr v-if="module.tp_autorises">
+                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    </template>
+                                                                    <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}</td>
+                                                                  </tr>
 
-                                                              <tr v-if="module.partiel_autorises">
-                                                                <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
-                                                                <template v-for="v in volumesHebdomadaires">
-                                                                  <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                  <tr v-if="module.partiel_autorises">
+                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <template v-for="v in volumesHebdomadaires">
+                                                                      <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                                                    </template>
+                                                                    <td class="left-border text-center">{{totalVolume(module, 'vol_hor_partiel') }}</td>
+                                                                  </tr>
+                                                                  </tbody>
                                                                 </template>
-                                                                <td class="left-border text-center">{{totalVolume(module, 'vol_hor_partiel') }}</td>
-                                                              </tr>
-                                                              </tbody>
-                                                            </template>
-                                                            </v-simple-table>
+                                                              </v-simple-table>
                                                               <v-divider></v-divider>
                                                               <v-expansion-panels hover flat focusable tile>
                                                                 <v-expansion-panel>
@@ -427,7 +430,7 @@
                                                                             <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
                                                                           </v-col>
                                                                           <v-col class="top-border pa-1 d-flex justify-end">
-                                                                            <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i"/>
+                                                                            <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled"/>
                                                                           </v-col>
                                                                         </v-row>
                                                                       </v-container>
@@ -481,8 +484,8 @@
                                                                       </v-simple-table>
                                                                     </template>
                                                                     <v-divider></v-divider>
-                                                                    <v-btn text tile block @click="addGrpInterv(module.id, semestre.id)" height="2.3em" :disabled="disabled">
-                                                                      Ajouter un intervenant
+                                                                    <v-btn text tile block height="2.3em" :disabled="disabled" @click="addGrpInterv(module.id, semestre.id)">
+                                                                      Ajouter des intervenants
                                                                     </v-btn>
                                                                   </v-expansion-panel-content>
                                                                 </v-expansion-panel>
@@ -617,7 +620,7 @@
                   @input="$v.code.$touch()"
                   @blur="$v.code.$touch()"
               ></v-text-field>
-              <v-text-field v-if="this.methods !=='POST' && this.niveau > 1 && !this.formation"
+              <v-text-field v-if="this.methods !=='POST' && this.niveau > 1 && !this.isFormation"
                   v-model="niveau"
                   :error-messages="niveauErrors"
                   label="Niveau"
@@ -626,7 +629,7 @@
                   @input="$v.niveau.$touch()"
                   @blur="$v.niveau.$touch()"
               ></v-text-field>
-              <v-text-field v-if="!this.formation"
+              <v-text-field v-if="!this.isFormation"
                   v-model="indice"
                   :error-messages="indiceErrors"
                   label="Indice"
@@ -635,7 +638,7 @@
                   @input="$v.indice.$touch()"
                   @blur="$v.indice.$touch()"
               ></v-text-field>
-              <v-select v-if="!this.formation"
+              <v-select v-if="!this.isFormation"
                   v-model="mode_saisie"
                   :items="item_mode_saisie"
                   item-text="nom"
@@ -647,7 +650,7 @@
                   required
                   clearable
               ></v-select>
-              <v-select v-if="!this.formation"
+              <v-select v-if="!this.isFormation"
                   v-model="parent"
                   :items="elements"
                   clearable
@@ -949,7 +952,7 @@ export default {
   data: () => ({
     form: false,
     formIntervenant: false,
-    formation: false,
+    isFormation: false,
     methods: "POST",
     item_mode_saisie: [
       {nom: 'Aucun', val: 'aucun'},
@@ -1256,7 +1259,7 @@ export default {
         this.element_id = element.id
       }
 
-      this.formation = this.parent === null;
+      this.isFormation = this.parent === null;
       this.form = true;
     },
     save(data, type){
@@ -1277,7 +1280,7 @@ export default {
       this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      this.formation = false;
+      this.isFormation = false;
       this.form = true;
     },
     addUE(element) {
@@ -1297,7 +1300,7 @@ export default {
         this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
         this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
       }
-      this.formation = false;
+      this.isFormation = false;
       this.form = true;
     },
     addModule(element, semestre) {
@@ -1322,7 +1325,7 @@ export default {
         this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
         this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
       }
-      this.formation = false;
+      this.isFormation = false;
       this.form = true;
     },
     findPeriodeBySemestre(id){
@@ -1371,18 +1374,6 @@ export default {
         console.log('Erreur : ', error)
       });
     },
-    getIfVolHebdo(idModule){
-      var val = '';
-      axios.get('/volumes-hebdomadaires/module/get/'+ idModule)
-          .then(response => (val = response.data))
-          .catch(error => {
-        console.log('Erreur : ', error)
-      });
-      if (!val)
-        return false;
-      else
-      return true;
-    },
     submitGrpInterv() {
       this.$v.$touch()
       if (this.intervenant_id.length <= 0) {
@@ -1405,6 +1396,10 @@ export default {
       this.intervenant_id = []
       this.nb_semaine = 1
     },
+    addVolHebdo(module_id, semestre_id){
+      var nb_semaine = this.findPeriodeBySemestre(semestre_id).nb_semaine
+      this.$store.dispatch('ADD_AllVolumesHebdomadairesForModule', {module: module_id, nb_semaine_deb: 1, nb_semaine_fin: nb_semaine})
+    }
   }
 }
 </script>

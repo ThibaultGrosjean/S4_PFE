@@ -39,9 +39,11 @@ exports.getAllVolumeHebdomadaires = (req, res) => {
 
 
 exports.getVolumesHebdoByModule = (req, res) => {
-  db.query('SELECT element_id'
-        +' FROM volume_hebdomadaire'
-        +' GROUP BY element_id;',
+  db.query('SELECT v.element_id, COUNT(g.id) AS nbGrpInterv'
+        +' FROM volume_hebdomadaire AS v'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.element_id = v.element_id'
+        +' GROUP BY v.element_id;',
     function(err, volume_hebdomadaire) {
       if (!err) {
         res.status(200).json(volume_hebdomadaire);  
@@ -279,6 +281,17 @@ exports.deleteAllVolumesHebdomadairesByFormation = (req, res) => {
 
 exports.deleteAllVolumesHebdomadaires = (req, res) => {
   db.query('DELETE FROM volume_hebdomadaire WHERE element_id = ' + req.params.element,
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+  // Par sécurité supprime aussi tous les groupes_intervenants
+  db.query('DELETE FROM groupe_intervenant WHERE element_id = ' + req.params.element,
     function(err) {
       if (!err) {
         res.status(200); 
