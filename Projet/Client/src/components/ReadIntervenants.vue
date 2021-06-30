@@ -1,14 +1,57 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col
+    <v-row v-if="intervenants.length" class="pa-3 pb-0">
+      <v-checkbox
+          v-model="checkboxSelectAll"
+          label="Tout sélectionner"
+          color="primary"
+          class="ma-0"
+          @click="checkAllInterv"
+      ></v-checkbox>
+      <v-tooltip top v-if="deleteSelected.length">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              class="ml-2"
+              @click="deleteAllSelectedIntervenant"
+          >
+            <v-icon color="error darken-1">delete</v-icon>
+          </v-btn>
+        </template>
+        <span>Supprimer la sélection</span>
+      </v-tooltip>
+    </v-row>
+    <v-item-group multiple v-model="deleteSelected">
+      <v-row>
+        <v-col
           v-for="i in intervenants"
           :key="i.id"
           sm="4"
           class="justify-center"
       >
-        <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</v-card-title>
+        <v-item v-slot="{ active, toggle }" :value="i">
+          <v-card class="animate-pop-in">
+          <v-card-title>
+            <span class="text-h5" >{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</span>
+            <v-spacer></v-spacer>
+<!--            <v-checkbox-->
+<!--                v-model="deleteSelected"-->
+<!--                :value="i"-->
+<!--                color="primary"-->
+<!--                @click="toggle"-->
+<!--            ></v-checkbox>-->
+            <v-btn
+                icon
+                @click="toggle"
+                :color="active ? 'primary' : 'gray'"
+            >
+              <v-icon>
+                {{ active ? 'check_box' : 'check_box_outline_blank' }}
+              </v-icon>
+            </v-btn>
+          </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
@@ -20,50 +63,23 @@
           <v-card-actions>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(i)"
-                  >
-                    edit
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="edit(i)"
+                >
+                  <v-icon>edit</v-icon>
                 </v-btn>
               </template>
               <span>Modifier</span>
             </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                  >
-                    file_copy
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Dupliquer</span>
-            </v-tooltip>
-            <v-spacer></v-spacer>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      color="error darken-1"
-                      v-bind="attrs"
-                      v-on="on"
-                  >
-                    delete
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Supprimer</span>
-            </v-tooltip>
           </v-card-actions>
         </v-card>
+        </v-item>
       </v-col>
-    </v-row>
+      </v-row>
+    </v-item-group>
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -178,6 +194,46 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 error darken-2 white--text">
+            <span class="headline">Confirmation de suppression</span>
+            <v-spacer></v-spacer>
+            <v-btn icon  color="white" @click="dialog =false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir supprimer la sélection d'intervenant ? <br><br>
+            Un ou plusieurs intervenants ont des heures saisies dans les formations du projet.
+            Si vous continuez les heures saisies dans toutes les formations seront supprimées. Voulez-vous vraiment valider l'opération ?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="error darken-1"
+                text
+                @click="dialog = false"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="success darken-1"
+                class="mr-4"
+                text
+                @click="validDeleteAllIntervenant"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row>
       <v-col>
         <v-btn
@@ -213,6 +269,7 @@ export default {
   },
   data: () => ({
     form: false,
+    dialog: false,
     methods: "POST",
     id: '',
     nb_he_td_min_attendu_projet: '',
@@ -221,9 +278,9 @@ export default {
     nb_he_td_max_sup_projet: '',
     projet_id: '',
     enseignant_id: [],
-
     enseignantByProjetNotInIntervenant: [],
-
+    deleteSelected: [],
+    checkboxSelectAll: false,
     rules: {
       selectEnseignant: [(v) =>  v.length > 0 || "Veuillez sélectionner un enseignant"],
     }
@@ -339,13 +396,6 @@ export default {
       let index = this.enseignants.findIndex(enseignant => enseignant.id === id);
       return this.enseignants[index]
     },
-    initHoraire(enseignant_id){
-      var enseignant = this.returnEnseignant(enseignant_id)
-      this.nb_he_td_min_attendu_projet = enseignant.statut.nb_he_td_min_attendu
-      this.nb_he_td_max_attendu_projet = enseignant.statut.nb_he_td_max_attendu
-      this.nb_he_td_min_sup_projet = enseignant.statut.nb_he_td_min_sup
-      this.nb_he_td_max_sup_projet = enseignant.statut.nb_he_td_max_sup
-    },
     toTime(date) {
       return new Date(date).toISOString().substr(0, 4)
     },
@@ -374,6 +424,35 @@ export default {
       }
       this.closeGrpIntev()
     },
+    checkAllInterv() {
+      this.deleteSelected.splice(0, this.deleteSelected.length)
+      if (this.checkboxSelectAll){
+        for (let i = 0; i < this.intervenants.length; i++) {
+          this.deleteSelected.push(this.intervenants[i])
+        }
+      }
+    },
+    deleteAllSelectedIntervenant() {
+      var verif = 0;
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        if (this.deleteSelected[i].nbVolHor === 0 && this.deleteSelected[i].nbGrp === 0){
+          this.$store.dispatch('DELETE_Intervenant', this.deleteSelected[i].id)
+          return verif;
+        } else {
+          verif += 1
+        }
+      }
+      if (verif > 0){
+        this.dialog = true
+      }
+      return verif
+    },
+    validDeleteAllIntervenant(){
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        this.$store.dispatch('DELETE_Intervenant', this.deleteSelected[i].id)
+      }
+      this.dialog = false
+    }
   }
 }
 </script>

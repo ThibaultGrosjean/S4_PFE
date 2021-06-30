@@ -56,9 +56,13 @@ exports.getGroupeIntervenant = (req, res) => {
 
 
 exports.getIntervenantByModule = (req, res) => {
-  db.query('SELECT element_id, intervenant_id'
-        +' FROM groupe_intervenant'
-        +' GROUP BY element_id, intervenant_id;',
+  db.query('SELECT g.element_id, g.intervenant_id, e.prenom, e.nom'
+        +' FROM groupe_intervenant AS g'
+        +' JOIN intervenant AS i' 
+        +' ON i.id = g.intervenant_id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' GROUP BY g.element_id, g.intervenant_id',
     function(err, groupe_intervenant) {
       if (!err) {
         res.status(200).json(groupe_intervenant);  
@@ -305,7 +309,7 @@ exports.deleteAllGroupesIntervenants = (req, res) => {
 
 
 exports.deleteGroupeIntervenant = (req, res) => {
-  db.query('DELETE FROM groupe_intervenant WHERE eleme = ? ;',[req.params.id],
+  db.query('DELETE FROM groupe_intervenant WHERE id = ? ;',[req.params.id],
     function(err) {
       if (!err) {
         res.status(200); 

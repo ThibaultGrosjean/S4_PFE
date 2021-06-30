@@ -41,7 +41,11 @@ exports.getFormationByProjet = (req, res) => {
 
 
 exports.getFormation = (req, res) => {
-  db.query('SELECT * FROM formation WHERE id = ? ;', [req.params.id],
+  db.query('SELECT f.*, p.nom, p.date' 
+        +' FROM formation AS f'
+        +' JOIN projet AS p'
+        +' ON p.id = f.projet_id'
+        +' AND f.id = ? ;', [req.params.id],
     function(err, formation) {
       if (!err) {
         res.status(200).json(formation);  

@@ -264,6 +264,8 @@ export default new Vuex.Store({
       axios.post('/intervenants/create/', intervenant)
         .then(response => response.data)
         .then(response => {
+          intervenant.nbVolHor = 0
+          intervenant.nbGrp = 0
           intervenant.id = response.insertId
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -754,7 +756,7 @@ export default new Vuex.Store({
       });
     },
     DELETE_AllVolumesHebdomadairesByFormation({dispatch}, id_racine) {
-      axios.delete('/volumes-hebdomadaires/formation/'+ id_racine +'/delete')
+      axios.delete('/volumes-hebdomadaires/formation/delete/' + id_racine)
         .then(response => {
           console.log(response);
           this.state.volumesHebdomadaires.splice(0, this.state.volumesHebdomadaires.length)
@@ -765,7 +767,7 @@ export default new Vuex.Store({
       });
     },
     DELETE_AllGroupesIntervenantsByFormation({dispatch}, id_racine) {
-      axios.delete('/groupes-intervenants/formation/'+ id_racine +'/delete')
+      axios.delete('/groupes-intervenants/formation/delete/'+ id_racine)
         .then(response => {
           console.log(response);
           this.state.groupesIntervenants.splice(0, this.state.groupesIntervenants.length)
@@ -774,6 +776,13 @@ export default new Vuex.Store({
         }).catch(error => {
         console.log('Erreur : ', error)
       });
+    },
+    DELETE_Intervenant({dispatch}, id_intervenant) {
+      let index = this.state.intervenantsByProjet.findIndex(i => i.id === id_intervenant);
+      this.state.intervenantsByProjet.splice(index, 1)
+      axios.delete('/intervenants/delete/' + id_intervenant).catch(error => {
+        console.log('Erreur : ', error)
+      })
     },
   },
   modules: {}

@@ -86,3 +86,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Si aucun vol. hebdo. est associé au module affiche l'icône de suppr. du module et un bouton pour ajouter les vol. hebdo., sinon suppression impossible
 
 ## Semaine 7 : 30 juin - 6 juillet
+
+* Supprimer plusieurs intervenants d'un projet

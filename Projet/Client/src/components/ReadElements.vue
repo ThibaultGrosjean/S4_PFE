@@ -431,7 +431,7 @@
                                                                         <v-row>
                                                                           <v-col class="top-border pa-1"></v-col>
                                                                           <v-col class="top-border d-flex justify-center pa-1">
-                                                                            <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                            <span class="text-subtitle-1">{{ i.prenom }} {{ i.nom }}</span>
                                                                           </v-col>
                                                                           <v-col class="top-border pa-1 d-flex justify-end">
                                                                             <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled"/>
@@ -504,7 +504,7 @@
                                                                   <thead>
                                                                   <tr>
                                                                     <th :colspan="2" class="text-center top-border">
-                                                                      <span class="text-subtitle-1">{{ returnEnseignant(i.intervenant_id).prenom }} {{ returnEnseignant(i.intervenant_id).nom }}</span>
+                                                                      <span class="text-subtitle-1">{{ i.prenom }} {{ i.nom }}</span>
                                                                     </th>
                                                                   </tr>
                                                                   <tr>
@@ -1337,11 +1337,6 @@ export default {
     findPeriodeBySemestre(id){
       let index = this.periodes.findIndex(p => p.element_id === id);
       return this.periodes[index];
-    },
-    returnEnseignant(id){
-      let index = this.intervenants.findIndex(p => p.id === id);
-      let indexE = this.enseignants.findIndex(p => p.id === this.intervenants[index].enseignant_id);
-      return this.enseignants[indexE];
     },
     totalVolume(module, type) {
       var volumeByModule = []

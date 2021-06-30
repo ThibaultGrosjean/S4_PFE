@@ -26,11 +26,18 @@ exports.getAllIntervenants = (req, res) => {
 
 
 exports.getIntervenantsByProjet = (req, res) => {
-  db.query('SELECT i.*, p.nom, p.date'
+  db.query('SELECT i.*, e.prenom, e.nom, COUNT(g.id) AS nbGrp, COUNT(v.id) AS nbVolHor' 
         +' FROM intervenant AS i'
         +' JOIN projet AS p'
         +' ON p.id = i.projet_id'
-        +' WHERE i.projet_id = ? ;', [req.params.id],
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.intervenant_id = i.id'
+        +' LEFT JOIN volume_globale AS v'
+        +' ON v.intervenant_id = i.id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' WHERE i.projet_id = ?'
+        +' GROUP BY i.id', [req.params.id],
     function(err, intervenant) {
       if (!err) {
         res.status(200).json(intervenant);  
@@ -143,6 +150,37 @@ exports.editIntervenant = (req, res) => {
 
 
 exports.deleteIntervenant = (req, res) => {
+  // Supprime les groupes_intervenants 
+  db.query('DELETE g'
+        +' FROM groupe_intervenant AS g'
+        +' JOIN intervenant AS i'
+        +' ON i.id = g.intervenant_id'
+        +' WHERE i.id = ?;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+  // Supprime les volumes Globaux
+  db.query('DELETE v'
+        +' FROM volume_globale AS v'
+        +' JOIN intervenant AS i'
+        +' ON i.id = v.intervenant_id'
+        +' WHERE i.id = ?;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+  // Supprime l'intervenant
   db.query('DELETE FROM intervenant WHERE id = ? ;',[req.params.id],
     function(err) {
       if (!err) {
@@ -152,5 +190,5 @@ exports.deleteIntervenant = (req, res) => {
         res.send(err);
       }
     }
-  );  
+  );
 };

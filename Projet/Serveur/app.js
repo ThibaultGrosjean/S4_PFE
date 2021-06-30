@@ -149,7 +149,7 @@ app.put('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadai
 
 app.delete('/volumes-hebdomadaires/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', volumeHebdomadaireController.deleteAllVolumesHebdomadairesBySemaine);
 
-app.delete('/volumes-hebdomadaires/formation/:id/delete', volumeHebdomadaireController.deleteAllVolumesHebdomadairesByFormation);
+app.delete('/volumes-hebdomadaires/formation/delete/:id', volumeHebdomadaireController.deleteAllVolumesHebdomadairesByFormation);
 
 app.delete('/volumes-hebdomadaires/delete/element/:element', volumeHebdomadaireController.deleteAllVolumesHebdomadaires);
 
@@ -187,7 +187,7 @@ app.put('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:inter
 
 app.delete('/groupes-intervenants/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', groupeIntervenantController.deleteAllGroupesIntervenantsBySemaine);
 
-app.delete('/groupes-intervenants/formation/:id/delete', groupeIntervenantController.deleteAllGroupesIntervenantsByFormation);
+app.delete('/groupes-intervenants/formation/delete/:id', groupeIntervenantController.deleteAllGroupesIntervenantsByFormation);
 
 app.delete('/groupes-intervenants/delete/element/:element/intervenant/:intervenant', groupeIntervenantController.deleteAllGroupesIntervenants);
 
