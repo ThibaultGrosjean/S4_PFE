@@ -17,13 +17,13 @@
             <div class="text-center">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon @click="showDetails = !showDetails">
-                    <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      {{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                    </v-icon>
+                  <v-btn
+                      icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="showDetails = !showDetails"
+                  >
+                    <v-icon>{{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                   </v-btn>
                 </template>
                 <span>Détails des statuts</span>
@@ -44,28 +44,26 @@
           <v-card-actions>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(e)"
-                  >
-                    edit
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="edit(e)"
+                >
+                  <v-icon>edit</v-icon>
                 </v-btn>
               </template>
               <span>Modifier</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="copy(e)"
-                  >
-                    file_copy
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="copy(e)"
+                >
+                  <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
               <span>Dupliquer</span>

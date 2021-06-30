@@ -1,24 +1,24 @@
 <template>
   <v-container>
     <v-row>
-      <v-col
-          v-for="p in projets"
-          :key="p.id"
-          sm="4"
-          class="justify-center"
-      >
-        <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">
-            <span>{{ p.nom }}</span>
-            <v-spacer></v-spacer>
-            <v-edit-dialog
-                class="d-flex justify-center"
-                :return-value.sync="p.verrou"
-                large
-                @save="save(p)"
-                cancel-text="Annuler"
-                save-text="Valider"
-            >
+      <v-switch
+          v-model="switchArchive"
+          label="Afficher les projets archivés"
+
+      ></v-switch>
+    </v-row>
+    <v-row>
+      <template v-for="p in projets">
+        <v-col
+            v-if="switchArchive === Boolean(p.archive)"
+            :key="p.id"
+            sm="4"
+            class="justify-center"
+        >
+          <v-card class="animate-pop-in">
+            <v-card-title class="text-h5">
+              <span>{{ p.nom }}</span>
+              <v-spacer></v-spacer>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -26,31 +26,14 @@
                       v-bind="attrs"
                       v-on="on"
                       :color="p.verrou ? 'success' : 'gray'"
+                      class="mr-2"
+                      @click="saveVerrou(p)"
                   >
                     <v-icon>{{ p.verrou ? "lock" : "lock_open" }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
               </v-tooltip>
-              <template v-slot:input>
-                <div class="d-flex justify-center">
-                  <v-switch
-                      v-model="p.verrou"
-                      :true-value="1"
-                      :false-value="0"
-                      color="success"
-                      :label="p.verrou ? 'Verrouiller' : 'Déverrouiller'"
-                  ></v-switch>
-                </div>
-              </template>
-            </v-edit-dialog>
-            <v-edit-dialog
-                :return-value.sync="p.archive"
-                large
-                @save="save(p)"
-                cancel-text="Annuler"
-                save-text="Valider"
-            >
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -58,93 +41,80 @@
                       v-bind="attrs"
                       v-on="on"
                       :color="p.archive ? 'success' : 'gray'"
+                      @click="saveArchive(p)"
                   >
                     <v-icon>{{ p.archive ? "archive" : "unarchive" }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ p.archive ? "Désarchiver" : "Archiver " }}</span>
               </v-tooltip>
-              <template v-slot:input>
-                <div class="d-flex justify-center">
-                  <v-switch
-                      v-model="p.archive"
-                      :true-value="1"
-                      :false-value="0"
-                      color="success"
-                      label="Archive"
-                  ></v-switch>
-                </div>
-              </template>
-            </v-edit-dialog>
-          </v-card-title>
-          <v-card-subtitle>{{ toTime(p.date) }}</v-card-subtitle>
-          <v-divider></v-divider>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-btn block outlined rounded color="primary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
-                  <v-icon class="mr-2">groups</v-icon>Intervenants
-                </v-btn>
-              </v-row>
-              <v-row>
-                <v-btn block outlined rounded color="primary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
-                  <v-icon class="mr-2">auto_stories</v-icon>Formations
-                </v-btn>
-              </v-row>
-              <v-row>
-                <v-btn block outlined rounded color="primary" class="mb-4">
-                  <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
-                </v-btn>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
+            </v-card-title>
+            <v-card-subtitle>{{ toTime(p.date) }}</v-card-subtitle>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-btn block outlined rounded color="primary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
+                    <v-icon class="mr-2">groups</v-icon>Intervenants
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-btn block outlined rounded color="primary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
+                    <v-icon class="mr-2">auto_stories</v-icon>Formations
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-btn block outlined rounded color="primary" class="mb-4">
+                    <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      icon
                       v-bind="attrs"
                       v-on="on"
                       @click="edit(p)"
                   >
-                    edit
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Modifier</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Modifier</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      icon
                       v-bind="attrs"
                       v-on="on"
                   >
-                    file_copy
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Dupliquer</span>
-            </v-tooltip>
-            <v-spacer></v-spacer>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      color="error darken-1"
+                    <v-icon>file_copy</v-icon>
+                  </v-btn>
+                </template>
+                <span>Dupliquer</span>
+              </v-tooltip>
+              <v-spacer></v-spacer>
+              <v-tooltip top v-if="!Boolean(p.archive)">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      icon
                       v-bind="attrs"
                       v-on="on"
+                      @click="saveArchive(p)"
                   >
-                    delete
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Supprimer</span>
-            </v-tooltip>
-          </v-card-actions>
-        </v-card>
-      </v-col>
+                    <v-icon color="error darken-1">delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Supprimer</span>
+              </v-tooltip>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </template>
     </v-row>
     <v-row justify="center">
       <v-dialog
@@ -291,6 +261,7 @@ export default {
   data: () => ({
     form: false,
     menu: false,
+    switchArchive: false,
     methods: "POST",
     id: '',
     nom: '',
@@ -356,6 +327,16 @@ export default {
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
+    },
+    saveVerrou(projet) {
+      projet.date = this.toTime(projet.date)
+      projet.verrou = Number(!projet.verrou)
+      this.$store.commit('EDIT_Projet', projet);
+    },
+    saveArchive(projet) {
+      projet.date = this.toTime(projet.date)
+      projet.archive = Number(!projet.archive)
+      this.$store.commit('EDIT_Projet', projet);
     }
   },
 }

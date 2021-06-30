@@ -5,13 +5,12 @@
       max-width="350"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-btn icon color="error darken-1">
-        <v-icon
-            v-bind="attrs"
-            v-on="on"
-        >
-          delete
-        </v-icon>
+      <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+          >
+        <v-icon color="error darken-1">delete</v-icon>
       </v-btn>
     </template>
     <v-card>

@@ -21,28 +21,26 @@
           <v-card-actions>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(s)"
-                  >
-                    edit
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="edit(s)"
+                >
+                  <v-icon>edit</v-icon>
                 </v-btn>
               </template>
               <span>Modifier</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="copy(s)"
-                  >
-                    file_copy
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="copy(s)"
+                >
+                  <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
               <span>Dupliquer</span>

@@ -10,33 +10,20 @@
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">
             <v-spacer></v-spacer>
-            <small class="text-body-1 mr-2">Verrou</small>
-            <v-edit-dialog
-                :return-value.sync="f.verrou"
-                large
-                @save="save(f)"
-                cancel-text="Annuler"
-                save-text="Valider"
-            >
-              <v-btn
-                  outlined
-                  rounded
-                  :color="f.verrou ? 'success' : 'error'"
-              >
-                {{ f.verrou ? "Activé" : "Désactivé" }}
-              </v-btn>
-              <template v-slot:input>
-                <div class="d-flex justify-center">
-                  <v-switch
-                      v-model="f.verrou"
-                      :true-value="1"
-                      :false-value="0"
-                      color="success"
-                      label="Verrou"
-                  ></v-switch>
-                </div>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    :color="f.verrou ? 'success' : 'gray'"
+                    @click="saveVerrou(f)"
+                >
+                  <v-icon>{{ f.verrou ? "lock" : "lock_open" }}</v-icon>
+                </v-btn>
               </template>
-            </v-edit-dialog>
+              <span>{{ f.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
+            </v-tooltip>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-0">
@@ -46,13 +33,12 @@
           <v-card-actions>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                  >
-                    file_copy
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
               <span>Dupliquer la formation</span>
@@ -60,14 +46,13 @@
             <v-spacer></v-spacer>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon>
-                  <v-icon
-                      color="error darken-1"
-                      v-bind="attrs"
-                      v-on="on"
-                  >
-                    delete
-                  </v-icon>
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    color="error darken-1"
+                >
+                  <v-icon>delete</v-icon>
                 </v-btn>
               </template>
               <span>Supprimer la formation</span>
@@ -285,6 +270,10 @@ export default {
     },
     toTime(date, length) {
       return new Date(date).toISOString().substr(0, length)
+    },
+    saveVerrou(formation) {
+      formation.verrou = Number(!formation.verrou)
+      this.$store.commit('EDIT_Formations', formation);
     },
   }
 }

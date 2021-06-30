@@ -88,3 +88,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 7 : 30 juin - 6 juillet
 
 * Supprimer plusieurs intervenants d'un projet
+* Confirmation simple s’ils n’ont aucune heure saisie dans le projet et sinon double confirmation
+* Archiver, rendre non visible, supprimer (avec un archivage automatique) un projet et restaurer un projet archivé.
