@@ -64,7 +64,7 @@ export default {
   methods: {
     valider() {
       this.$store.dispatch('DELETE_AllVolumesHebdomadairesByFormation', this.formation.id);
-      //TODO DELETE_AllVolumesGlobaleByFormation
+      this.$store.dispatch('DELETE_AllVolumesGlobauxByFormation', this.formation.id);
       this.dialog = false;
     }
   }

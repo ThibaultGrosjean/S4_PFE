@@ -26,7 +26,7 @@ exports.getAllIntervenants = (req, res) => {
 
 
 exports.getIntervenantsByProjet = (req, res) => {
-  db.query('SELECT i.*, e.prenom, e.nom, COUNT(g.id) AS nbGrp, COUNT(v.id) AS nbVolHor' 
+  db.query('SELECT i.*, e.prenom, e.nom, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT v.id) AS nbVolHorGlob' 
         +' FROM intervenant AS i'
         +' JOIN projet AS p'
         +' ON p.id = i.projet_id'

@@ -90,3 +90,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Supprimer plusieurs intervenants d'un projet
 * Confirmation simple s’ils n’ont aucune heure saisie dans le projet et sinon double confirmation
 * Archiver, rendre non visible, supprimer (avec un archivage automatique) un projet et restaurer un projet archivé.
+* Supprimer plusieurs formations d'un projet
+* Confirmation simple s’ils n’ont aucune heure saisie dans la formation et sinon double confirmation

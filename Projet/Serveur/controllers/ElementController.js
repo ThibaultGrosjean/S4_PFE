@@ -273,3 +273,42 @@ exports.deleteElement = (req, res) => {
     }
   );  
 };
+
+exports.deleteHierarchie = (req, res) => {
+  //Suppression des périodes de la hiérarchies
+  db.query('DELETE p'
+        +' FROM periode AS p'
+        +' JOIN element AS e ON p.element_id = e.id'
+        +' WHERE e.parent = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+
+  // Suppression de la hiérarchies
+  db.query('DELETE e, p, e2, e3, e4'
+        +' FROM `element` AS e'
+        +' LEFT JOIN element AS e2'
+        +' ON e2.parent = e.id'
+        +' LEFT JOIN periode AS p '
+        +' ON p.element_id = e2.id'
+        +' LEFT JOIN element AS e3'
+        +' ON e3.parent = e2.id'
+        +' LEFT JOIN element AS e4'
+        +' ON e4.parent = e3.id'
+        +' WHERE e.id = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+};

@@ -41,7 +41,7 @@ export default {
     projet: [],
   }),
   mounted() {
-    this.$store.dispatch('loadFormationProjet', this.$route.params.id);
+    this.$store.dispatch('loadFormationProjet', Number(this.$route.params.id));
     axios.get('/projets/get/'+ this.$route.params.id)
       .then(response => (this.projet = response.data))
     .catch(error => {

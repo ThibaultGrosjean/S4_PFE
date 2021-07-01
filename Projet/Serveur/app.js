@@ -91,6 +91,8 @@ app.put('/elements/edit/:id',elementController.validator, elementController.edit
 
 app.delete('/elements/delete/:id', elementController.deleteElement);
 
+app.delete('/elements/hierarchie/delete/:id', elementController.deleteHierarchie);
+
 
 app.get('/intervenants/get', intervenantController.getAllIntervenants);
 
@@ -165,6 +167,8 @@ app.post('/volumes-globaux/create/',volumeGlobaleController.validator, volumeGlo
 app.post('/volumes-globaux/copy/:id',volumeGlobaleController.validator, volumeGlobaleController.copyVolumeGlobale);
 
 app.put('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
+
+app.delete('/volumes-globaux/formation/delete/:id', volumeGlobaleController.deleteAllVolumesGlobauxByFormation);
 
 app.delete('/volumes-globaux/delete/:id', volumeGlobaleController.deleteVolumeGlobale);
 

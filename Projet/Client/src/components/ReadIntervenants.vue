@@ -33,49 +33,42 @@
       >
         <v-item v-slot="{ active, toggle }" :value="i">
           <v-card class="animate-pop-in">
-          <v-card-title>
-            <span class="text-h5" >{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</span>
-            <v-spacer></v-spacer>
-<!--            <v-checkbox-->
-<!--                v-model="deleteSelected"-->
-<!--                :value="i"-->
-<!--                color="primary"-->
-<!--                @click="toggle"-->
-<!--            ></v-checkbox>-->
-            <v-btn
-                icon
-                @click="toggle"
-                :color="active ? 'primary' : 'gray'"
-            >
-              <v-icon>
-                {{ active ? 'check_box' : 'check_box_outline_blank' }}
-              </v-icon>
-            </v-btn>
-          </v-card-title>
-          <v-divider></v-divider>
-          <v-card-text>
-            <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
-            <p>Le Nombre d'heures maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b></p>
-            <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
-            <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="edit(i)"
-                >
-                  <v-icon>edit</v-icon>
-                </v-btn>
-              </template>
-              <span>Modifier</span>
-            </v-tooltip>
-          </v-card-actions>
-        </v-card>
+            <v-card-title>
+              <v-btn
+                  icon
+                  @click="toggle"
+                  :color="active ? 'primary' : 'gray'"
+              >
+                <v-icon>
+                  {{ active ? 'check_box' : 'check_box_outline_blank' }}
+                </v-icon>
+              </v-btn>
+              <span class="text-h5 ml-2">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</span>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
+              <p>Le Nombre d'heures maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b></p>
+              <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
+              <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="edit(i)"
+                  >
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Modifier</span>
+              </v-tooltip>
+            </v-card-actions>
+          </v-card>
         </v-item>
       </v-col>
       </v-row>
@@ -204,7 +197,7 @@
           <v-card-title class="text-h5 error darken-2 white--text">
             <span class="headline">Confirmation de suppression</span>
             <v-spacer></v-spacer>
-            <v-btn icon  color="white" @click="dialog =false">
+            <v-btn icon  color="white" @click="dialog = false">
               <v-icon>close</v-icon>
             </v-btn>
           </v-card-title>
@@ -287,10 +280,9 @@ export default {
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'enseignants')
-    this.$store.dispatch('loadGenerique', 'projets')
   },
   computed: {
-    ...mapState(['enseignants', 'projets']),
+    ...mapState(['enseignants']),
     nb_he_td_min_attendu_projetErrors() {
       const errors = []
       if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors
@@ -435,8 +427,8 @@ export default {
     deleteAllSelectedIntervenant() {
       var verif = 0;
       for (let i = 0; i < this.deleteSelected.length; i++) {
-        if (this.deleteSelected[i].nbVolHor === 0 && this.deleteSelected[i].nbGrp === 0){
-          this.$store.dispatch('DELETE_Intervenant', this.deleteSelected[i].id)
+        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbGrpInterv === 0){
+          this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
           return verif;
         } else {
           verif += 1
@@ -449,7 +441,7 @@ export default {
     },
     validDeleteAllIntervenant(){
       for (let i = 0; i < this.deleteSelected.length; i++) {
-        this.$store.dispatch('DELETE_Intervenant', this.deleteSelected[i].id)
+        this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
       }
       this.dialog = false
     }

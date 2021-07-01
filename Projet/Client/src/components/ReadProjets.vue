@@ -3,8 +3,8 @@
     <v-row>
       <v-switch
           v-model="switchArchive"
-          label="Afficher les projets archivés"
-
+          :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
+          color="success"
       ></v-switch>
     </v-row>
     <v-row>

@@ -1,73 +1,94 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col
-          v-for="f in formations"
-          :key="f.id"
-          sm="12"
-          class="justify-center"
-      >
-        <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">
-            <v-spacer></v-spacer>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                    :color="f.verrou ? 'success' : 'gray'"
-                    @click="saveVerrou(f)"
-                >
-                  <v-icon>{{ f.verrou ? "lock" : "lock_open" }}</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ f.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
-            </v-tooltip>
-          </v-card-title>
-          <v-divider></v-divider>
-          <v-card-text class="pa-0">
-            <ReadElements :racine="returnElement(f.element_id)" :disabled="Boolean(f.verrou)"></ReadElements>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  <v-icon>file_copy</v-icon>
-                </v-btn>
-              </template>
-              <span>Dupliquer la formation</span>
-            </v-tooltip>
-            <v-spacer></v-spacer>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                    color="error darken-1"
-                >
-                  <v-icon>delete</v-icon>
-                </v-btn>
-              </template>
-              <span>Supprimer la formation</span>
-            </v-tooltip>
-          </v-card-actions>
-        </v-card>
-      </v-col>
+    <v-row v-if="formations.length" class="pa-3 pb-0">
+      <v-checkbox
+          v-model="checkboxSelectAll"
+          label="Tout sélectionner"
+          color="primary"
+          class="ma-0"
+          @click="checkAllInterv"
+      ></v-checkbox>
+      <v-tooltip top v-if="deleteSelected.length">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              class="ml-2"
+              @click="deleteAllSelectedFormation"
+          >
+            <v-icon color="error darken-1">delete</v-icon>
+          </v-btn>
+        </template>
+        <span>Supprimer la sélection</span>
+      </v-tooltip>
     </v-row>
+    <v-item-group multiple v-model="deleteSelected">
+      <v-row>
+        <v-col
+            v-for="f in formations"
+            :key="f.id"
+            sm="12"
+            class="justify-center"
+        >
+          <v-item v-slot="{ active, toggle }" :value="f">
+            <v-card class="animate-pop-in">
+              <v-card-title class="text-h5">
+                <v-btn
+                    icon
+                    @click="toggle"
+                    :color="active ? 'primary' : 'gray'"
+                >
+                  <v-icon>
+                    {{ active ? 'check_box' : 'check_box_outline_blank' }}
+                  </v-icon>
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        :color="f.verrou ? 'success' : 'gray'"
+                        @click="saveVerrou(f)"
+                    >
+                      <v-icon>{{ f.verrou ? "lock" : "lock_open" }}</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ f.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
+                </v-tooltip>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text class="pa-0">
+                <ReadElements :racine="returnElement(f.element_id)" :disabled="Boolean(f.verrou)"></ReadElements>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      <v-icon>file_copy</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Dupliquer la formation</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-card>
+          </v-item>
+        </v-col>
+      </v-row>
+    </v-item-group>
     <v-row justify="center">
       <v-dialog
           v-model="form"
           persistent
           max-width="600px"
       >
-
         <v-card>
           <v-form lazy-validation>
             <v-card-title>
@@ -138,6 +159,46 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 error darken-2 white--text">
+            <span class="headline">Confirmation de suppression</span>
+            <v-spacer></v-spacer>
+            <v-btn icon  color="white" @click="dialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir supprimer la sélection de formation ? <br><br>
+            Une ou plusieurs formations ont des heures saisies.
+            Si vous continuez les heures saisies (hebdomadaire et globale) ainsi que les groupes des intervenants seront supprimés de toutes les formations. Voulez-vous vraiment valider l'opération ?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="error darken-1"
+                text
+                @click="dialog = false"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="success darken-1"
+                class="mr-4"
+                text
+                @click="validDeleteAllFormation"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row>
       <v-col>
         <v-btn
@@ -156,7 +217,7 @@
 
 <script>
 import {validationMixin} from "vuelidate";
-import {maxLength, numeric, required} from "vuelidate/lib/validators";
+import {maxLength, required} from "vuelidate/lib/validators";
 import {mapState} from "vuex";
 import ReadElements from "./ReadElements";
 
@@ -173,9 +234,12 @@ export default {
   },
   data: () => ({
     form: false,
+    dialog: false,
     titre: '',
     surnom: '',
     code: '',
+    deleteSelected: [],
+    checkboxSelectAll: false,
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'elements')
@@ -275,6 +339,37 @@ export default {
       formation.verrou = Number(!formation.verrou)
       this.$store.commit('EDIT_Formations', formation);
     },
+    checkAllInterv() {
+      this.deleteSelected.splice(0, this.deleteSelected.length)
+      if (this.checkboxSelectAll){
+        for (let i = 0; i < this.formations.length; i++) {
+          this.deleteSelected.push(this.formations[i])
+        }
+      }
+    },
+    deleteAllSelectedFormation() {
+      this.$store.dispatch('loadFormationProjet', Number(this.$route.params.id));
+      var verif = 0;
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
+          this.$store.dispatch('DELETE_Formation', this.deleteSelected[i])
+          return verif;
+        } else {
+          verif += 1
+          console.log(verif)
+        }
+      }
+      if (verif > 0){
+        this.dialog = true
+      }
+      return verif
+    },
+    validDeleteAllFormation(){
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        this.$store.dispatch('DELETE_Formation', this.deleteSelected[i])
+      }
+      this.dialog = false
+    }
   }
 }
 </script>

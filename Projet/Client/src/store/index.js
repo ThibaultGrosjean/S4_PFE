@@ -230,6 +230,27 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       })
     },
+    DELETE_Intervenant(state, id_intervenant) {
+      let index = state.intervenantsByProjet.findIndex(i => i.id === id_intervenant);
+      state.intervenantsByProjet.splice(index, 1)
+      axios.delete('/intervenants/delete/' + id_intervenant).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    DELETE_Formation(state, id_formation) {
+      let index = state.formationsByProjet.findIndex(i => i.id === id_formation);
+      state.formationsByProjet.splice(index, 1)
+      axios.delete('/formations/delete/' + id_formation).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
+    DELETE_Hierarchie(state, id_element) {
+      let index = state.elements.findIndex(i => i.id === id_element);
+      state.elements.splice(index, 1)
+      axios.delete('/elements/hierarchie/delete/' + id_element).catch(error => {
+        console.log('Erreur : ', error)
+      })
+    },
     ADD_Enseignant(state, enseignant) {
       axios.post('/enseignants/create/', enseignant)
         .then(response => response.data)
@@ -278,6 +299,9 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(response => {
           formation.id = response.insertId
+          formation.nbVolHorGlob = 0
+          formation.nbVolHorHebdo = 0
+          formation.nbGrpInterv = 0
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -777,12 +801,25 @@ export default new Vuex.Store({
         console.log('Erreur : ', error)
       });
     },
-    DELETE_Intervenant({dispatch}, id_intervenant) {
-      let index = this.state.intervenantsByProjet.findIndex(i => i.id === id_intervenant);
-      this.state.intervenantsByProjet.splice(index, 1)
-      axios.delete('/intervenants/delete/' + id_intervenant).catch(error => {
+    DELETE_AllVolumesGlobauxByFormation({dispatch}, id_racine) {
+      axios.delete('/volumes-globaux/formation/delete/'+ id_racine)
+        .then(response => {
+          console.log(response);
+          this.state.volumesGlobaux.splice(0, this.state.volumesGlobaux.length)
+          dispatch('loadGenerique', 'volumes-globaux')
+        }).catch(error => {
         console.log('Erreur : ', error)
-      })
+      });
+    },
+    DELETE_Formation({commit, dispatch}, formation) {
+      commit('DELETE_Formation', formation.id)
+
+      dispatch('DELETE_AllVolumesHebdomadairesByFormation', formation.element_id)
+      dispatch('DELETE_AllGroupesIntervenantsByFormation', formation.element_id)
+      dispatch('DELETE_AllVolumesGlobauxByFormation', formation.element_id)
+      //TODO DELETE DELETE_AllBilanByFormation
+
+      commit('DELETE_Hierarchie', formation.element_id)
     },
   },
   modules: {}

@@ -93,7 +93,6 @@ export default {
     y: 0,
   }),
   computed: {
-    //TODO VolHorGlobaleDefautErrors getPériodeUE
     volHorSemaineDefautErrors() {
       const errors = []
       if (!this.$v.volHorSemaineDefaut.$dirty) return errors

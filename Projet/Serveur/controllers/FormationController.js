@@ -23,11 +23,22 @@ exports.getAllFormations = (req, res) => {
 
 
 exports.getFormationByProjet = (req, res) => {
-  db.query('SELECT f.*, p.nom, p.date'
+  db.query('SELECT f.*, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
         +' FROM formation AS f'
-        +' JOIN projet AS p'
-        +' ON p.id = f.projet_id'
-        +' WHERE f.projet_id = ? ;', [req.params.id],
+        +' JOIN element AS e'
+        +' ON e.parent = f.element_id'
+        +' JOIN element AS e2'
+        +' ON e2.parent = e.id'
+        +' JOIN element AS e3'
+        +' ON e3.parent = e2.id'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.element_id = e3.id'
+        +' LEFT JOIN volume_globale AS vg'
+        +' ON vg.element_id = e3.id'
+        +' LEFT JOIN volume_hebdomadaire AS vh'
+        +' ON vh.element_id = e3.id'
+        +' WHERE f.projet_id = ?'
+        +' GROUP BY f.id;', [req.params.id],
     function(err, formation) {
       if (!err) {
         res.status(200).json(formation);  
@@ -41,7 +52,7 @@ exports.getFormationByProjet = (req, res) => {
 
 
 exports.getFormation = (req, res) => {
-  db.query('SELECT f.*, p.nom, p.date' 
+  db.query('SELECT f.*' 
         +' FROM formation AS f'
         +' JOIN projet AS p'
         +' ON p.id = f.projet_id'
@@ -117,5 +128,5 @@ exports.deleteFormation = (req, res) => {
         res.send(err);
       }
     }
-  );  
+  );
 };

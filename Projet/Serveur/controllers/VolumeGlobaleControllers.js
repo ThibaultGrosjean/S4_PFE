@@ -137,6 +137,29 @@ exports.editVolumeGlobale = (req, res) => {
 };
 
 
+exports.deleteAllVolumesGlobauxByFormation = (req, res) => {
+  db.query('DELETE v'
+        +' FROM volume_globale AS v'
+        +' LEFT JOIN element as e'
+        +' ON v.element_id = e.id'
+        +' LEFT JOIN element as e2'
+        +' ON e.parent = e2.id'
+        +' LEFT JOIN element as e3'
+        +' ON e2.parent = e3.id'
+        +' WHERE e3.parent = ?',[req.params.id],
+    function(err, groupes_intervenants) {
+      if (!err) {
+        res.status(200).json(groupes_intervenants);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+
 exports.deleteVolumeGlobale = (req, res) => {
   db.query('DELETE FROM volume_globale WHERE id = ? ;',[req.params.id],
     function(err) {
