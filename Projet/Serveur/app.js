@@ -44,7 +44,7 @@ app.post('/enseignants/create', enseignantController.addEnseignant);
 
 app.post('/enseignants/copy/:id', enseignantController.copyEnseignant);
 
-app.put('/enseignants/edit/:id', enseignantController.editEnseignant);
+app.patch('/enseignants/edit/:id', enseignantController.editEnseignant);
 
 app.delete('/enseignants/delete/:id', enseignantController.deleteEnseignant);
 
@@ -57,7 +57,7 @@ app.post('/statuts/create/',statutController.validator, statutController.addStat
 
 app.post('/statuts/copy/:id',statutController.validator, statutController.copyStatut);
 
-app.put('/statuts/edit/:id',statutController.validator, statutController.editStatut);
+app.patch('/statuts/edit/:id',statutController.validator, statutController.editStatut);
 
 app.delete('/statuts/delete/:id', statutController.deleteStatut);
 
@@ -70,7 +70,7 @@ app.put('/projets/create/:name',projetController.validator, projetController.add
 
 app.post('/projets/copy/:id',projetController.validator, projetController.copyProjet);
 
-app.put('/projets/edit/:id',projetController.validator, projetController.editProjet);
+app.patch('/projets/edit/:id',projetController.validator, projetController.editProjet);
 
 app.delete('/projets/delete/:id', projetController.deleteProjet);
 
@@ -102,7 +102,7 @@ app.get('/intervenants/projets/:idProjet/module/:idModule/get', intervenantContr
 
 app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
 
-app.put('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
+app.patch('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
 
 app.delete('/intervenants/delete/:id', intervenantController.deleteIntervenant);
 
@@ -115,7 +115,7 @@ app.get('/formations/projets/get/:id', formationController.getFormationByProjet)
 
 app.post('/formations/create/',formationController.validator, formationController.addFormation);
 
-app.put('/formations/edit/:id',formationController.validator, formationController.editFormation);
+app.patch('/formations/edit/:id',formationController.validator, formationController.editFormation);
 
 app.delete('/formations/delete/:id', formationController.deleteFormation);
 

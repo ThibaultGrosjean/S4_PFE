@@ -138,9 +138,9 @@ exports.editIntervenant = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(intervenant); 
       } else {
         res.send(err);
       }

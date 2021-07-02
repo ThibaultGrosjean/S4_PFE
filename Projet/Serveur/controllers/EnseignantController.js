@@ -203,9 +203,9 @@ exports.editEnseignant = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, enseignant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(enseignant); 
       } else {
         res.send(err);
       }
@@ -246,7 +246,7 @@ exports.deleteEnseignant = (req, res) => {
   db.query('DELETE FROM intervenant WHERE enseignant_id = ? ;',[req.params.id],
     function(err) {
       if (!err) {
-        res.status(200); 
+        res.status(200);
       }
       else {
         res.send(err);
@@ -254,9 +254,9 @@ exports.deleteEnseignant = (req, res) => {
     }
   );
   db.query('DELETE FROM enseignant WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, enseignant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(enseignant); 
       }
       else {
         res.send(err);

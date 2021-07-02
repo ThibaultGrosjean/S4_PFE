@@ -121,9 +121,9 @@ exports.editStatut = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, statut) {
       if (!err) {
-        res.status(200);  
+        res.status(200).json(statut);  
       } else {
         res.send(err);
       }

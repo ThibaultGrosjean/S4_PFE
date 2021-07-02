@@ -63,12 +63,10 @@ export default {
     drawer: false,
     group: null,
     subMenu: [
-      {text: "Bilan",icon:"account_balance_wallet", path: "/bilan"},
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
       {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},//
-
     ]
   }),
   methods: {

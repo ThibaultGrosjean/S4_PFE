@@ -1,5 +1,18 @@
 <template>
   <v-container>
+    <v-overlay :value="loading">
+      <v-progress-circular
+          indeterminate
+          size="64"
+      ></v-progress-circular>
+    </v-overlay>
+    <v-row>
+      <v-col sm="12" class="animate-pop-in">
+        <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
+          L'intervenant a été {{ typeOperation }} avec succès.
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
       <v-checkbox
           v-model="checkboxSelectAll"
@@ -33,7 +46,7 @@
       >
         <v-item v-slot="{ active, toggle }" :value="i">
           <v-card class="animate-pop-in">
-            <v-card-title>
+            <v-card-title class="pl-2">
               <v-btn
                   icon
                   @click="toggle"
@@ -43,7 +56,7 @@
                   {{ active ? 'check_box' : 'check_box_outline_blank' }}
                 </v-icon>
               </v-btn>
-              <span class="text-h5 ml-2">{{ returnEnseignant(i.enseignant_id).prenom }} {{ returnEnseignant(i.enseignant_id).nom }}</span>
+              <span class="text-h5 ml-2">{{ i.prenom }} {{ i.nom }}</span>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
@@ -174,6 +187,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    :loading="loading"
                     color="success darken-1"
                     class="mr-4"
                     text
@@ -244,15 +258,15 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import apiIntervenant from "../services/API/intervenants";
+import apiEnseignant from "../services/API/enseignants";
 import {validationMixin} from "vuelidate";
-import {decimal, numeric, required} from "vuelidate/lib/validators";
-import axios from "axios";
+import {decimal, required} from "vuelidate/lib/validators";
+import apiStatut from "../services/API/statuts";
 
 export default {
   name: "ReadIntervenants",
   mixins: [validationMixin],
-  props: ['intervenants'],
 
   validations: {
     nb_he_td_min_attendu_projet: {required, decimal},
@@ -261,9 +275,14 @@ export default {
     nb_he_td_max_sup_projet: {required, decimal},
   },
   data: () => ({
+    enseignants: [],
+    intervenants: [],
     form: false,
     dialog: false,
+    loading: false,
+    responseSuccess: false,
     methods: "POST",
+    typeOperation: 'ajouté',
     id: '',
     nb_he_td_min_attendu_projet: '',
     nb_he_td_max_attendu_projet: '',
@@ -278,11 +297,145 @@ export default {
       selectEnseignant: [(v) =>  v.length > 0 || "Veuillez sélectionner un enseignant"],
     }
   }),
-  mounted() {
-    this.$store.dispatch('loadGenerique', 'enseignants')
+  methods: {
+    async getIntervenantsByProjet() {
+      this.intervenants = await apiIntervenant.getIntervenantsByProjet(this.$route.params.id);
+    },
+    async submit() {
+      this.loading = true
+      if (this.methods === 'POST'){
+        this.$v.$touch()
+        if (this.enseignant_id.length <= 0) {
+          return;
+        } else {
+          for (let i = 0; i < this.enseignant_id.length; i++) {
+            var enseignant = await this.returnEnseignant(this.enseignant_id[i])
+            var intervenant = {
+              enseignant_id: this.enseignant_id[i],
+              projet_id: Number(this.$route.params.id),
+              nb_he_td_min_attendu_projet: enseignant[0].statut.nb_he_td_min_attendu,
+              nb_he_td_max_attendu_projet: enseignant[0].statut.nb_he_td_max_attendu,
+              nb_he_td_min_sup_projet: enseignant[0].statut.nb_he_td_min_sup,
+              nb_he_td_max_sup_projet: enseignant[0].statut.nb_he_td_max_sup,
+            }
+            await apiIntervenant.createIntervenant(intervenant);
+          }
+          this.typeOperation = 'ajouté';
+        }
+      } else {
+        this.$v.$touch()
+        if (this.$v.$invalid) return;
+        const intervenant = {
+          id: this.id,
+          nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
+          nb_he_td_max_attendu_projet: this.nb_he_td_max_attendu_projet,
+          nb_he_td_min_sup_projet: this.nb_he_td_min_sup_projet,
+          nb_he_td_max_sup_projet: this.nb_he_td_max_sup_projet,
+          projet_id: this.projet_id,
+          enseignant_id: this.enseignant_id,
+        }
+        await apiIntervenant.editIntervenant(intervenant);
+        this.typeOperation = 'modifié';
+      }
+      await this.getIntervenantsByProjet();
+      this.clear()
+      this.loading = false
+      this.form = false
+      this.responseSuccess = true;
+    },
+    clear() {
+      this.$v.$reset()
+      this.id = ''
+      this.nb_he_td_min_attendu_projet = ''
+      this.nb_he_td_max_attendu_projet = ''
+      this.nb_he_td_min_sup_projet = ''
+      this.nb_he_td_max_sup_projet = ''
+      this.projet_id = null
+      this.enseignant_id = []
+    },
+    close() {
+      this.form = false
+      this.getEnseignantProjetNotInIntervenant()
+      this.methods = 'POST'
+      this.clear()
+    },
+    addIntervenant() {
+      this.getEnseignantProjetNotInIntervenant()
+      this.projet_id = Number(this.$route.params.id)
+      this.methods = 'POST'
+      this.form = true
+    },
+    edit(intervenant) {
+      this.methods = 'PUT'
+      this.getEnseignants()
+
+      this.id = intervenant.id
+      this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet
+      this.nb_he_td_max_attendu_projet = intervenant.nb_he_td_max_attendu_projet
+      this.nb_he_td_min_sup_projet = intervenant.nb_he_td_min_sup_projet
+      this.nb_he_td_max_sup_projet = intervenant.nb_he_td_max_sup_projet
+      this.projet_id = intervenant.projet_id
+      this.enseignant_id = intervenant.enseignant_id
+      this.form = true;
+    },
+    async returnEnseignant(id){
+      return await apiEnseignant.getEnseignant(id)
+    },
+    toTime(date) {
+      return new Date(date).toISOString().substr(0, 4)
+    },
+    async getEnseignantProjetNotInIntervenant(){
+      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignantByProjetNotInIntervenant(Number(this.$route.params.id));
+    },
+    async getEnseignants() {
+      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignants();
+    },
+    submitGrpInterv() {
+      this.$v.$touch()
+      if (this.enseignant_id.length <= 0) {
+        return;
+      } else {
+        for (let i = 0; i < this.enseignant_id.length; i++) {
+          this.$store.commit('ADD_Intervenant', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+        }
+      }
+      this.closeGrpIntev()
+    },
+    checkAllInterv() {
+      this.deleteSelected.splice(0, this.deleteSelected.length)
+      if (this.checkboxSelectAll){
+        for (let i = 0; i < this.intervenants.length; i++) {
+          this.deleteSelected.push(this.intervenants[i])
+        }
+      }
+    },
+    async deleteAllSelectedIntervenant() {
+      var verif = 0;
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbGrpInterv === 0){
+          this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
+          await this.getIntervenantsByProjet();
+          return verif;
+        } else {
+          verif += 1
+        }
+      }
+      if (verif > 0){
+        this.dialog = true
+      }
+      await this.getIntervenantsByProjet();
+      return verif
+    },
+    //TODO Delete
+    async validDeleteAllIntervenant(){
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
+      }
+      await this.getIntervenantsByProjet();
+      this.dialog = false
+    }
   },
   computed: {
-    ...mapState(['enseignants']),
     nb_he_td_min_attendu_projetErrors() {
       const errors = []
       if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors
@@ -312,140 +465,10 @@ export default {
       return errors
     },
   },
-  methods: {
-    submit() {
-      if (this.methods === 'POST'){
-        this.$v.$touch()
-        if (this.enseignant_id.length <= 0) {
-          return;
-        } else {
-          for (let i = 0; i < this.enseignant_id.length; i++) {
-            var enseignant = this.returnEnseignant(this.enseignant_id[i])
-            var intervenant = {
-              enseignant_id : this.enseignant_id[i],
-              projet_id : Number(this.$route.params.id),
-              nb_he_td_min_attendu_projet : enseignant.statut.nb_he_td_min_attendu,
-              nb_he_td_max_attendu_projet : enseignant.statut.nb_he_td_max_attendu,
-              nb_he_td_min_sup_projet : enseignant.statut.nb_he_td_min_sup,
-              nb_he_td_max_sup_projet : enseignant.statut.nb_he_td_max_sup,
-            }
-           this.$store.commit('ADD_Intervenant', intervenant)
-          }
-        }
-      } else {
-        this.$v.$touch()
-        if (this.$v.$invalid) return;
-        const intervenant = {
-          id: this.id,
-          nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
-          nb_he_td_max_attendu_projet: this.nb_he_td_max_attendu_projet,
-          nb_he_td_min_sup_projet: this.nb_he_td_min_sup_projet,
-          nb_he_td_max_sup_projet: this.nb_he_td_max_sup_projet,
-          projet_id: this.projet_id,
-          enseignant_id: this.enseignant_id,
-        }
-        this.$store.commit('EDIT_Intervenant', intervenant);
-      }
-      this.form = false
-      this.clear()
-    },
-    clear() {
-      this.$v.$reset()
-      this.id = ''
-      this.nb_he_td_min_attendu_projet = ''
-      this.nb_he_td_max_attendu_projet = ''
-      this.nb_he_td_min_sup_projet = ''
-      this.nb_he_td_max_sup_projet = ''
-      this.projet_id = null
-      this.enseignant_id = []
-    },
-    close() {
-      this.form = false
-      this.getEnseignantProjetNotInIntervenant()
-      this.methods = 'POST'
-      this.clear()
-    },
-    addIntervenant() {
-      this.getEnseignantProjetNotInIntervenant()
-      this.projet_id = Number(this.$route.params.id)
-      this.methods = 'POST'
-      this.form = true
-    },
-    edit(intervenant) {
-      this.methods = 'PUT'
-      this.getEnseignant()
-
-      this.id = intervenant.id
-      this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet
-      this.nb_he_td_max_attendu_projet = intervenant.nb_he_td_max_attendu_projet
-      this.nb_he_td_min_sup_projet = intervenant.nb_he_td_min_sup_projet
-      this.nb_he_td_max_sup_projet = intervenant.nb_he_td_max_sup_projet
-      this.projet_id = intervenant.projet_id
-      this.enseignant_id = intervenant.enseignant_id
-      this.form = true;
-    },
-    returnEnseignant(id){
-      let index = this.enseignants.findIndex(enseignant => enseignant.id === id);
-      return this.enseignants[index]
-    },
-    toTime(date) {
-      return new Date(date).toISOString().substr(0, 4)
-    },
-    getEnseignantProjetNotInIntervenant(){
-      axios.get('/enseignants/projets/'+ this.$route.params.id +'/get')
-        .then(response => (this.enseignantByProjetNotInIntervenant = response.data))
-        .catch(error => {
-        console.log('Erreur : ', error)
-      });
-    },
-    getEnseignant(){
-      axios.get('/enseignants/get')
-        .then(response => (this.enseignantByProjetNotInIntervenant = response.data))
-        .catch(error => {
-        console.log('Erreur : ', error)
-      });
-    },
-    submitGrpInterv() {
-      this.$v.$touch()
-      if (this.enseignant_id.length <= 0) {
-        return;
-      } else {
-        for (let i = 0; i < this.enseignant_id.length; i++) {
-          this.$store.commit('ADD_Intervenant', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
-        }
-      }
-      this.closeGrpIntev()
-    },
-    checkAllInterv() {
-      this.deleteSelected.splice(0, this.deleteSelected.length)
-      if (this.checkboxSelectAll){
-        for (let i = 0; i < this.intervenants.length; i++) {
-          this.deleteSelected.push(this.intervenants[i])
-        }
-      }
-    },
-    deleteAllSelectedIntervenant() {
-      var verif = 0;
-      for (let i = 0; i < this.deleteSelected.length; i++) {
-        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbGrpInterv === 0){
-          this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
-          return verif;
-        } else {
-          verif += 1
-        }
-      }
-      if (verif > 0){
-        this.dialog = true
-      }
-      return verif
-    },
-    validDeleteAllIntervenant(){
-      for (let i = 0; i < this.deleteSelected.length; i++) {
-        this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
-      }
-      this.dialog = false
-    }
-  }
+  mounted() {
+    this.getIntervenantsByProjet()
+    this.getEnseignantProjetNotInIntervenant()
+  },
 }
 </script>
 

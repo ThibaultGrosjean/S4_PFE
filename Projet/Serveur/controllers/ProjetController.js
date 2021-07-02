@@ -103,14 +103,14 @@ exports.editProjet = (req, res) => {
   };
   var requete="UPDATE projet SET nom ='" + donnees['nom'] 
   +"', date ='" + donnees['date'] 
-  +"', verrou ='" + donnees['verrou'] 
-  +"', archive ='" + donnees['archive']
-  +"' WHERE id = " + req.params.id + ";";
+  +"', verrou =" + donnees['verrou'] 
+  +", archive =" + donnees['archive']
+  +" WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, projet) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(projet); 
       } else {
         res.send(err);
       }

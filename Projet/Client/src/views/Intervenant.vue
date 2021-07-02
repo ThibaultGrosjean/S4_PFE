@@ -24,7 +24,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <ReadIntervenants :intervenants="intervenantsByProjet"/>
+      <ReadIntervenants/>
     </v-row>
   </v-container>
 </template>

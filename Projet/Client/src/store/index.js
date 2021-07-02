@@ -9,9 +9,6 @@ Vue.axios.defaults.baseURL = "http://localhost:8888/";
 
 export default new Vuex.Store({
   state: {
-    enseignants: [],
-    statuts: [],
-    projets: [],
     elementsLevel: [],
     elements: [],
     intervenants: [],
@@ -26,15 +23,6 @@ export default new Vuex.Store({
     groupesIntervenants: [],
   },
   getters: {
-    enseignants: state => {
-      return state.enseignants;
-    },
-    statuts: state => {
-      return state.statuts;
-    },
-    projets: state => {
-      return state.projets;
-    },
     elements: state => {
       return state.elements;
     },
@@ -73,15 +61,6 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    SET_Enseignant(state, enseignants) {
-      state.enseignants = enseignants
-    },
-    SET_Statut(state, statuts) {
-      state.statuts = statuts
-    },
-    SET_Projet(state, projets) {
-      state.projets = projets
-    },
     SET_Element(state, elements) {
       state.elements = elements
     },
@@ -118,8 +97,8 @@ export default new Vuex.Store({
     SET_VolumesHebdomadairesModules(state, volumesHebdomadairesModules) {
       state.volumesHebdomadairesModules = volumesHebdomadairesModules
     },
-    SET_ValeurTtesSem(state, objs){
-      var url = '/'+ objs.tab +'/edit/'+objs.value+'/elements/'+objs.element+'/'+objs.typeCours
+    SET_ValeurTtesSem(state, objs) {
+      var url = '/' + objs.tab + '/edit/' + objs.value + '/elements/' + objs.element + '/' + objs.typeCours
       if (objs.tab === 'volumes-globaux' || objs.tab === 'groupes-intervenants') {
         url = url + '/intervenant/' + objs.intervenant
       }
@@ -132,8 +111,8 @@ export default new Vuex.Store({
       });
       if (objs.tab === 'volumes-hebdomadaires') {
         for (let i = 0; i < state.volumesHebdomadaires.length; i++) {
-          if(state.volumesHebdomadaires[i].element_id === objs.element){
-            switch(objs.typeCours) {
+          if (state.volumesHebdomadaires[i].element_id === objs.element) {
+            switch (objs.typeCours) {
               case 'cm':
                 state.volumesHebdomadaires[i].vol_hor_cm = objs.value
                 break;
@@ -153,8 +132,8 @@ export default new Vuex.Store({
       }
       if (objs.tab === 'groupes-intervenants') {
         for (let i = 0; i < state.groupesIntervenants.length; i++) {
-          if(state.groupesIntervenants[i].element_id === objs.element && state.groupesIntervenants[i].intervenant_id === objs.intervenant){
-            switch(objs.typeCours) {
+          if (state.groupesIntervenants[i].element_id === objs.element && state.groupesIntervenants[i].intervenant_id === objs.intervenant) {
+            switch (objs.typeCours) {
               case 'cm':
                 state.groupesIntervenants[i].nb_groupe_cm = objs.value
                 break;
@@ -174,8 +153,8 @@ export default new Vuex.Store({
       }
       if (objs.tab === 'volumes-globaux') {
         for (let i = 0; i < state.volumesGlobaux.length; i++) {
-          if(state.volumesGlobaux[i].element_id === objs.element && state.volumesGlobaux[i].intervenant_id === objs.intervenant){
-            switch(objs.typeCours) {
+          if (state.volumesGlobaux[i].element_id === objs.element && state.volumesGlobaux[i].intervenant_id === objs.intervenant) {
+            switch (objs.typeCours) {
               case 'cm':
                 state.volumesGlobaux[i].vol_hor_cm = objs.value
                 break;
@@ -194,13 +173,6 @@ export default new Vuex.Store({
         }
       }
 
-    },
-    DELETE_Enseignant(state, id_enseignant) {
-      let index = state.enseignants.findIndex(enseignant => enseignant.id === id_enseignant);
-      state.enseignants.splice(index, 1)
-      axios.delete('/enseignants/delete/' + id_enseignant).catch(error => {
-        console.log('Erreur : ', error)
-      })
     },
     DELETE_VolumesHebdomadaires(state, id_volumeHebdo) {
       axios.delete('/volumes-hebdomadaires/delete/' + id_volumeHebdo).catch(error => {
@@ -243,36 +215,6 @@ export default new Vuex.Store({
       axios.delete('/elements/hierarchie/delete/' + id_element).catch(error => {
         console.log('Erreur : ', error)
       })
-    },
-    ADD_Enseignant(state, enseignant) {
-      axios.post('/enseignants/create/', enseignant)
-        .then(response => response.data)
-        .then(response => {
-          enseignant.id = response.insertId
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      state.enseignants.push(enseignant)
-    },
-    ADD_Statut(state, statut) {
-      axios.post('/statuts/create/', statut)
-        .then(response => response.data)
-        .then(response => {
-          statut.id = response.insertId
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      state.statuts.push(statut)
-    },
-    ADD_Projet(state, nom) {
-      axios.put('/projets/create/' + nom)
-        .then(response => response.data)
-        .then(response => {
-          const dateNow = new Date().toISOString().substr(0, 10)
-          state.projets.push({id: response.insertId, nom: nom, date: dateNow, verrou: 0, archive: 0})
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
     },
     ADD_Intervenant(state, intervenant) {
       axios.post('/intervenants/create/', intervenant)
@@ -341,39 +283,6 @@ export default new Vuex.Store({
       });
       state.groupesIntervenants.push(groupesIntervenants)
     },
-    EDIT_Enseignant(state, enseignant) {
-      axios.put('/enseignants/edit/' + enseignant.id, enseignant)
-        .then(response => response.data)
-        .then(enseignants => {
-          console.log(enseignants);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.enseignants.findIndex(e => e.id === enseignant.id);
-      state.enseignants[index] = enseignant
-    },
-    EDIT_Statut(state, statut) {
-      axios.put('/statuts/edit/' + statut.id, statut)
-        .then(response => response.data)
-        .then(statuts => {
-          console.log(statuts);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.statuts.findIndex(e => e.id === statut.id);
-      state.statuts[index] = statut
-    },
-    EDIT_Projet(state, projet) {
-      axios.put('/projets/edit/' + projet.id, projet)
-        .then(response => response.data)
-        .then(projet => {
-          console.log(projet);
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-      let index = state.projets.findIndex(e => e.id === projet.id);
-      state.projets[index] = projet
-    },
     EDIT_Element(state, element) {
       axios.put('/elements/edit/' + element.id, element)
         .then(response => response.data)
@@ -433,27 +342,14 @@ export default new Vuex.Store({
       let index = state.groupesIntervenants.findIndex(g => g.id === groupesIntervenants.id);
       state.groupesIntervenants[index] = groupesIntervenants
     },
-    COPY_Enseignant(state, id_enseignant) {
-      axios.post('/enseignants/copy/' + id_enseignant)
-        .then(response => response.data)
-        .then(enseignant => {
-          let index = state.enseignants.findIndex(s => s.id === id_enseignant);
-          var copy =  Object.assign({}, state.enseignants[index])
-          copy.id = enseignant.insertId
-          copy.nom = copy.nom + " (copie)";
-          state.enseignants.push(copy)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-    },
     COPY_VolumeHebdomadaire(state, id_volumeHebdomadaire) {
       axios.post('/volumes-hebdomadaires/copy/' + id_volumeHebdomadaire)
         .then(response => response.data)
         .then(volumeHebdomadaire => {
           let index = state.volumesHebdomadaires.findIndex(v => v.id === id_volumeHebdomadaire);
-          var copy =  Object.assign({}, state.volumesHebdomadaires[index])
+          var copy = Object.assign({}, state.volumesHebdomadaires[index])
           copy.id = volumeHebdomadaire.insertId
-          copy.num_semaine = parseInt(copy.num_semaine)+1
+          copy.num_semaine = parseInt(copy.num_semaine) + 1
           state.volumesHebdomadaires.push(copy)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -464,9 +360,9 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(volumesGlobaux => {
           let index = state.volumesGlobaux.findIndex(v => v.id === id_volumesGlobaux);
-          var copy =  Object.assign({}, state.volumesGlobaux[index])
+          var copy = Object.assign({}, state.volumesGlobaux[index])
           copy.id = volumesGlobaux.insertId
-          copy.num_semaine = parseInt(copy.num_semaine)+1
+          copy.num_semaine = parseInt(copy.num_semaine) + 1
           state.volumesGlobaux.push(copy)
         }).catch(error => {
         console.log('Erreur : ', error)
@@ -477,23 +373,10 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(groupeIntervenant => {
           let index = state.groupesIntervenants.findIndex(v => v.id === i_groupeIntervenant);
-          var copy =  Object.assign({}, state.groupesIntervenants[index])
+          var copy = Object.assign({}, state.groupesIntervenants[index])
           copy.id = groupeIntervenant.insertId
-          copy.num_semaine = parseInt(copy.num_semaine)+1
+          copy.num_semaine = parseInt(copy.num_semaine) + 1
           state.groupesIntervenants.push(copy)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      });
-    },
-    COPY_Statut(state, id_statut) {
-      axios.post('/statuts/copy/' + id_statut)
-        .then(response => response.data)
-        .then(statut => {
-          let index = state.statuts.findIndex(s => s.id === id_statut);
-          var copy =  Object.assign({}, state.statuts[index])
-          copy.id = statut.insertId
-          copy.nom = copy.nom + " (copie)";
-          state.statuts.push(copy)
         }).catch(error => {
         console.log('Erreur : ', error)
       });
@@ -550,15 +433,6 @@ export default new Vuex.Store({
         .then(response => response.data)
         .then(response => {
           switch (table) {
-            case 'enseignants':
-              commit('SET_Enseignant', response);
-              break;
-            case 'statuts':
-              commit('SET_Statut', response);
-              break;
-            case 'projets':
-              commit('SET_Projet', response);
-              break;
             case 'elements':
               commit('SET_Element', response);
               break;
