@@ -13,7 +13,11 @@ exports.validator = [
 
 
 exports.getAllVolumeGlobales = (req, res) => {
-  db.query('SELECT * FROM volume_globale;',
+  db.query('SELECT v.*, e.prenom, e.nom FROM volume_globale AS v'
+        +' JOIN intervenant AS i'
+        +' ON i.id = v.intervenant_id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id;',
     function(err, volume_globales) {
       if (!err) {
         res.status(200).json(volume_globales);  
@@ -27,7 +31,12 @@ exports.getAllVolumeGlobales = (req, res) => {
 
 
 exports.getVolumeGlobale = (req, res) => {
-  db.query('SELECT * FROM volume_globale WHERE id = ? ;', [req.params.id],
+  db.query('SELECT v.*, e.prenom, e.nom FROM volume_globale AS v'
+        +' JOIN intervenant AS i'
+        +' ON i.id = v.intervenant_id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' WHERE id = ? ;', [req.params.id],
     function(err, volume_globale) {
       if (!err) {
         res.status(200).json(volume_globale);  

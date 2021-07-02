@@ -1,79 +1,114 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col
-          v-for="e in enseignants"
-          :key="e.id"
-          sm="4"
-          class="justify-center"
-      >
-        <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">{{ e.prenom }} {{ e.nom }}</v-card-title>
-          <v-card-subtitle class="text-subtitle-1">{{ e.surnom.toUpperCase() }}</v-card-subtitle>
-          <v-divider></v-divider>
-          <v-card-text>
-            <p>Adresse mail : <b>{{ e.email }}</b></p>
-            <p class="mb-0">Statut : <b>{{ e.statut.nom }} ({{ e.statut.surnom }})</b></p>
-            <div class="text-center">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="showDetails = !showDetails"
-                  >
-                    <v-icon>{{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>Détails des statuts</span>
-              </v-tooltip>
-            </div>
-
-            <v-expand-transition>
-              <div v-show="showDetails">
-                <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
-                <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
-                <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
-                <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
-                <small>* HeTD : Nombre d’heures équivalent TD</small>
-              </div>
-            </v-expand-transition>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="edit(e)"
-                >
-                  <v-icon>edit</v-icon>
-                </v-btn>
-              </template>
-              <span>Modifier</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="copy(e)"
-                >
-                  <v-icon>file_copy</v-icon>
-                </v-btn>
-              </template>
-              <span>Dupliquer</span>
-            </v-tooltip>
-            <v-spacer></v-spacer>
-            <Delete :item="e.id"></Delete>
-          </v-card-actions>
-        </v-card>
-      </v-col>
+    <v-row v-if="enseignants.length" class="pa-3 pb-0 animate-pop-in">
+      <v-checkbox
+          v-model="checkboxSelectAll"
+          label="Tout sélectionner"
+          color="primary"
+          class="ma-0 ml-5"
+          @click="checkAllInterv"
+      ></v-checkbox>
+      <v-tooltip top v-if="deleteSelected.length">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              class="ml-2"
+              @click="dialog = true"
+          >
+            <v-icon color="error darken-1">delete</v-icon>
+          </v-btn>
+        </template>
+        <span>Supprimer la sélection</span>
+      </v-tooltip>
     </v-row>
+      <v-item-group multiple v-model="deleteSelected">
+        <v-row>
+          <v-col
+            v-for="e in enseignants"
+            :key="e.id"
+            sm="4"
+            class="justify-center"
+        >
+          <v-item v-slot="{ active, toggle }" :value="e">
+            <v-card class="animate-pop-in">
+              <v-card-title>
+                <v-btn
+                    icon
+                    @click="toggle"
+                    :color="active ? 'primary' : 'gray'"
+                >
+                  <v-icon>
+                    {{ active ? 'check_box' : 'check_box_outline_blank' }}
+                  </v-icon>
+                </v-btn>
+                <span class="text-h5 ml-2">{{ e.prenom }} {{ e.nom }}</span>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <p>Adresse mail : <b>{{ e.email }}</b></p>
+                <p class="mb-0">Statut : <b>{{ e.statut.nom }} ({{ e.statut.surnom }})</b></p>
+                <div class="text-center">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="showDetails = !showDetails"
+                      >
+                        <v-icon>{{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Détails des statuts</span>
+                  </v-tooltip>
+                </div>
+
+                <v-expand-transition>
+                  <div v-show="showDetails">
+                    <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
+                    <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
+                    <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
+                    <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
+                    <small>* HeTD : Nombre d’heures équivalent TD</small>
+                  </div>
+                </v-expand-transition>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="edit(e)"
+                    >
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Modifier</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="copy(e)"
+                    >
+                      <v-icon>file_copy</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Dupliquer</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-card>
+          </v-item>
+        </v-col>
+      </v-row>
+      </v-item-group>
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -172,6 +207,45 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 error darken-2 white--text">
+            <span class="headline">Confirmation de suppression</span>
+            <v-spacer></v-spacer>
+            <v-btn icon  color="white" @click="dialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir supprimer la sélection d'enseignant ? <br><br>
+            Si vous continuez les heures saisies globales, les groupes ainsi que les interventions de ces enseignants seront supprimées sur la totalité des formations et des projets. Voulez-vous vraiment valider l'opération ?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                color="error darken-1"
+                text
+                @click="dialog = false"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="success darken-1"
+                class="mr-4"
+                text
+                @click="validDeleteAllEnseignants"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row>
       <v-col>
         <v-btn
@@ -189,14 +263,12 @@
 </template>
 
 <script>
-import Delete from "../components/DeleteConfirmation";
 import {mapState} from 'vuex';
 import {validationMixin} from "vuelidate";
 import {email, maxLength, required} from "vuelidate/lib/validators";
 
 export default {
   name: "ReadEnseignants",
-  components: {Delete},
   mixins: [validationMixin],
   props: ['enseignants'],
 
@@ -210,6 +282,7 @@ export default {
   data: () => ({
     showDetails: false,
     form: false,
+    dialog: false,
     sortNom: false,
     sortPrenom: false,
     sortStatut: false,
@@ -220,6 +293,8 @@ export default {
     surnom: '',
     email: '',
     statut_id: null,
+    deleteSelected: [],
+    checkboxSelectAll: false,
   }),
   mounted() {
     this.$store.dispatch('loadGenerique', 'statuts')
@@ -324,6 +399,20 @@ export default {
       let index = this.statuts.findIndex(statut => statut.id === id)
       return this.statuts[index]
     },
+    checkAllInterv() {
+      this.deleteSelected.splice(0, this.deleteSelected.length)
+      if (this.checkboxSelectAll){
+        for (let i = 0; i < this.enseignants.length; i++) {
+          this.deleteSelected.push(this.enseignants[i])
+        }
+      }
+    },
+    validDeleteAllEnseignants(){
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        this.$store.commit('DELETE_Enseignant', this.deleteSelected[i].id)
+      }
+      this.dialog = false
+    }
   },
 }
 </script>

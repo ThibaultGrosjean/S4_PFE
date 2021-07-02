@@ -215,6 +215,44 @@ exports.editEnseignant = (req, res) => {
 
 
 exports.deleteEnseignant = (req, res) => {
+  db.query('DELETE v'
+        +' FROM volume_globale AS v'
+        +' LEFT JOIN intervenant AS i'
+        +' ON i.id = v.intervenant_id'
+        +' WHERE i.enseignant_id = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+  db.query('DELETE g'
+        +' FROM groupe_intervenant AS g'
+        +' LEFT JOIN intervenant AS i'
+        +' ON i.id = g.intervenant_id'
+        +' WHERE i.enseignant_id = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+  db.query('DELETE FROM intervenant WHERE enseignant_id = ? ;',[req.params.id],
+    function(err) {
+      if (!err) {
+        res.status(200); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
   db.query('DELETE FROM enseignant WHERE id = ? ;',[req.params.id],
     function(err) {
       if (!err) {
@@ -224,5 +262,5 @@ exports.deleteEnseignant = (req, res) => {
         res.send(err);
       }
     }
-  );  
+  ); 
 };

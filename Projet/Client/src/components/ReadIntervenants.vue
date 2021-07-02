@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-row v-if="intervenants.length" class="pa-3 pb-0">
+    <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
       <v-checkbox
           v-model="checkboxSelectAll"
           label="Tout sélectionner"
           color="primary"
-          class="ma-0"
+          class="ma-0 ml-5"
           @click="checkAllInterv"
       ></v-checkbox>
       <v-tooltip top v-if="deleteSelected.length">

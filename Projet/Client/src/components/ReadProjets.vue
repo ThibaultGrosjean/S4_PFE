@@ -5,6 +5,7 @@
           v-model="switchArchive"
           :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
           color="success"
+          class="ml-4 animate-pop-in"
       ></v-switch>
     </v-row>
     <v-row>

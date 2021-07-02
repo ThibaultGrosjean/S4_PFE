@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-row v-if="formations.length" class="pa-3 pb-0">
+    <v-row v-if="formations.length" class="pa-3 pb-0 animate-pop-in">
       <v-checkbox
           v-model="checkboxSelectAll"
           label="Tout sélectionner"
           color="primary"
-          class="ma-0"
+          class="ma-0 ml-5"
           @click="checkAllInterv"
       ></v-checkbox>
       <v-tooltip top v-if="deleteSelected.length">
@@ -176,7 +176,7 @@
           <v-card-text class="text-justify pt-4">
             Êtes-vous sûr de vouloir supprimer la sélection de formation ? <br><br>
             Une ou plusieurs formations ont des heures saisies.
-            Si vous continuez les heures saisies (hebdomadaire et globale) ainsi que les groupes des intervenants seront supprimés de toutes les formations. Voulez-vous vraiment valider l'opération ?
+            Si vous continuez les heures saisies (hebdomadaire et globale) ainsi que les groupes des intervenants seront supprimés de toutes les formations sélectionnées. Voulez-vous vraiment valider l'opération ?
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -348,7 +348,6 @@ export default {
       }
     },
     deleteAllSelectedFormation() {
-      this.$store.dispatch('loadFormationProjet', Number(this.$route.params.id));
       var verif = 0;
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
@@ -356,7 +355,6 @@ export default {
           return verif;
         } else {
           verif += 1
-          console.log(verif)
         }
       }
       if (verif > 0){

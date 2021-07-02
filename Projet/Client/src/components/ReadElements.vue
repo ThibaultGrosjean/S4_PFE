@@ -351,7 +351,7 @@
                                                             <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolHebdo(module.id, semestre.id)">Ajouter les volumes hebdomadaires</v-btn>
                                                           </div>
                                                           <template v-for="v in volumesHebdomadairesModules">
-                                                            <div :key="v.id" v-if="v.element_id === module.id">
+                                                            <div :key="v.id" v-if="v.element_id === module.id && volumesHebdomadairesModules.length !== 0">
                                                               <v-container>
                                                                 <v-row>
                                                                   <v-col class="top-border pa-1"></v-col>
@@ -427,7 +427,7 @@
                                                                   </v-expansion-panel-header>
                                                                   <v-expansion-panel-content>
                                                                     <template v-for="i in intervenantsModules">
-                                                                      <v-container :key="i.id" v-if="i.element_id === module.id">
+                                                                      <v-container :key="i.id" v-if="i.element_id === module.id && intervenantsModules.length !== 0">
                                                                         <v-row>
                                                                           <v-col class="top-border pa-1"></v-col>
                                                                           <v-col class="top-border d-flex justify-center pa-1">

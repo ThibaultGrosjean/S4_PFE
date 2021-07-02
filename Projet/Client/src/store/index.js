@@ -12,7 +12,6 @@ export default new Vuex.Store({
     enseignants: [],
     statuts: [],
     projets: [],
-    projetsArchive: [],
     elementsLevel: [],
     elements: [],
     intervenants: [],
@@ -35,9 +34,6 @@ export default new Vuex.Store({
     },
     projets: state => {
       return state.projets;
-    },
-    projetsArchive: state => {
-      return state.projetsArchive;
     },
     elements: state => {
       return state.elements;
@@ -85,9 +81,6 @@ export default new Vuex.Store({
     },
     SET_Projet(state, projets) {
       state.projets = projets
-    },
-    SET_Projet_archive(state, projetsArchive) {
-      state.projetsArchive = projetsArchive
     },
     SET_Element(state, elements) {
       state.elements = elements
@@ -507,15 +500,6 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loadProjetsNonArchive({commit}) {
-      axios.get('projets/non-archive/get')
-        .then(response => response.data)
-        .then(projetsArchive => {
-          commit('SET_Projet_archive', projetsArchive)
-        }).catch(error => {
-        console.log('Erreur : ', error)
-      })
-    },
     loadFormationProjet({commit}, id) {
       axios.get('/formations/projets/get/'+id)
         .then(response => response.data)
