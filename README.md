@@ -93,3 +93,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Supprimer plusieurs formations d'un projet
 * Confirmation simple s’ils n’ont aucune heure saisie dans la formation et sinon double confirmation
 * Supprimer un enseignant + boîte de confirmation lors de la suppression
+* Ajout d'une alerte après modification, ajout ou suppression pour les modifications dans la base de données
+* Ajout des chargements lors des requêtes à la base de données

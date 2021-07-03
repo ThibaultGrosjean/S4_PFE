@@ -16,8 +16,7 @@ exports.getAllPeriodes = (req, res) => {
     function(err, periodes) {
       if (!err) {
         res.status(200).json(periodes);  
-      }
-      else {
+      } else {
         res.send(err);
       }
     }
@@ -30,8 +29,20 @@ exports.getPeriode = (req, res) => {
     function(err, periode) {
       if (!err) {
         res.status(200).json(periode);  
+      } else {
+        res.send(err);
       }
-      else {
+    }
+  );  
+};
+
+
+exports.getPeriodeByElementId = (req, res) => {
+  db.query('SELECT * FROM periode WHERE element_id = ? ;', [req.params.id],
+    function(err, periode) {
+      if (!err) {
+        res.status(200).json(periode);  
+      } else {
         res.send(err);
       }
     }
@@ -89,9 +100,9 @@ exports.editPeriode = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, periode) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(periode);  
       } else {
         res.send(err);
       }
@@ -102,11 +113,10 @@ exports.editPeriode = (req, res) => {
 
 exports.deletePeriode = (req, res) => {
   db.query('DELETE FROM periode WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, periode) {
       if (!err) {
-        res.status(200); 
-      }
-      else {
+        res.status(200).json(periode);  
+      } else {
         res.send(err);
       }
     }

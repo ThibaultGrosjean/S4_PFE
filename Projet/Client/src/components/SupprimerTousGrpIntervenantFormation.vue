@@ -39,6 +39,7 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
+              :loading="loading"
               color="success darken-1"
               class="mr-4"
               text
@@ -53,16 +54,22 @@
 </template>
 
 <script>
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
+
 export default {
   name: "SupprimerTousVGrpIntervenant",
   props: ['formation'],
 
   data: () => ({
     dialog: false,
+    loading: false,
   }),
   methods: {
-    valider() {
-      this.$store.dispatch('DELETE_AllGroupesIntervenantsByFormation', this.formation.id);
+    async valider() {
+      this.loading = true;
+      await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(this.formation.id);
+      this.$emit('relaod-all-groupes');
+      this.loading = false;
       this.dialog = false;
     }
   }

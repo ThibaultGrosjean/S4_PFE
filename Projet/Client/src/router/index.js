@@ -4,9 +4,8 @@ import Accueil from '../views/Accueil.vue'
 import Statuts from "../views/Statuts";
 import Enseignants from "../views/Enseignants";
 import Projets from "../views/Projets";
-import Intervenant from "../views/Intervenant";
-import Formation from "../views/Formation";
-import VolumeGlobale from "../views/VolumeGlobale";
+import Intervenant from "../views/Intervenants";
+import Formation from "../views/Formations";
 import Erreur404 from "../views/Erreur404";
 
 Vue.use(VueRouter)
@@ -45,11 +44,6 @@ const routes = [
     path: '/formations/projets/:id',
     name: 'Formations par Projet',
     component: Formation
-  },
-  {
-    path: '/volumes-globaux',
-    name: 'Volume Globale',
-    component: VolumeGlobale
   },
   {
     path: '*',

@@ -42,11 +42,12 @@
           label="Tout sélectionner"
           color="primary"
           class="ma-0 ml-5"
-          @click="checkAllInterv"
+          @click="checkAllFormation"
       ></v-checkbox>
       <v-tooltip top v-if="deleteSelected.length">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+              :loading="loading"
               icon
               v-bind="attrs"
               v-on="on"
@@ -96,24 +97,9 @@
                 </v-tooltip>
               </v-card-title>
               <v-divider></v-divider>
-              <v-card-text class="pa-0">
-                <ReadElements :racine="returnElement(f.element_id)" :disabled="Boolean(f.verrou)"></ReadElements>
+              <v-card-text class="pa-0 pb-5">
+                <ReadElements :formation="f" :disabled="Boolean(f.verrou)"></ReadElements>
               </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        icon
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                      <v-icon>file_copy</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Dupliquer la formation</span>
-                </v-tooltip>
-              </v-card-actions>
             </v-card>
           </v-item>
         </v-col>
@@ -182,6 +168,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    :loading="loading"
                     color="success darken-1"
                     class="mr-4"
                     text
@@ -224,6 +211,7 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
+                :loading="loading"
                 color="success darken-1"
                 class="mr-4"
                 text
@@ -257,11 +245,11 @@ import apiProjet from "../services/API/projets";
 import apiElement from "../services/API/elements";
 import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
-import {mapState} from "vuex";
 import ReadElements from "../components/ReadElements";
+import apiIntervenant from "../services/API/intervenants";
 
 export default {
-  name: "ReadFormation",
+  name: "Formations",
   components: {ReadElements},
   mixins: [validationMixin],
 
@@ -286,17 +274,22 @@ export default {
     checkboxSelectAll: false,
   }),
   methods: {
+    //TODO créer une formation en copiant une hiérarchie existante
     async getFormationByProjet() {
-      this.formations = await apiFormation.getFormationByProjet(this.$route.params.id)
+      this.formations = await apiFormation.getFormationByProjet(this.$route.params.id);
     },
     async getProjet() {
-      this.projet = await apiProjet.getProjet(this.$route.params.id)
+      this.projet = await apiProjet.getProjet(this.$route.params.id);
     },
     async getElement() {
-      this.elements = await apiElement.getElements()
+      this.elements = await apiElement.getElements();
+    },
+    async saveVerrou(formation) {
+      formation.verrou = Number(!formation.verrou)
+      await apiFormation.editFormation(formation);
     },
     async submit() {
-      this.$v.$touch()
+      this.$v.$touch();
       if (this.$v.$invalid) return;
 
       const element = {
@@ -324,113 +317,118 @@ export default {
         parent: null,
         nbfils: 0,
       }
-      this.loading = true
+      this.loading = true;
       this.typeOperation = 'ajouté';
-      //TODO changer
-      this.$store.dispatch('ADD_FormationsElement', {element: element,projet_id: Number(this.$route.params.id)});
+      await apiFormation.createFormation({element: element,projet_id: Number(this.$route.params.id)});
       await this.getFormationByProjet();
-      this.clear()
-      this.loading = false
+      this.clear();
+      this.loading = false;
       this.form = false;
       this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset()
-      this.titre = ''
-      this.surnom = ''
-      this.code = ''
+      this.$v.$reset();
+      this.titre = '';
+      this.surnom = '';
+      this.code = '';
     },
     close() {
-      this.form = !this.form
-      this.clear()
-    },
-    save(formation){
-      this.$store.commit('EDIT_Formations', formation);
-    },
-    returnElement(id){
-      let index = this.elements.findIndex(element => element.id === id);
-      return [this.elements[index]]
+      this.form = !this.form;
+      this.clear();
     },
     toTime(date, length) {
-      return new Date(date).toISOString().substr(0, length)
+      return new Date(date).toISOString().substr(0, length);
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
     },
-    async saveVerrou(formation) {
-      formation.verrou = Number(!formation.verrou)
-      await apiFormation.editFormation(formation);
-    },
-    checkAllInterv() {
-      this.deleteSelected.splice(0, this.deleteSelected.length)
+    checkAllFormation() {
+      this.deleteSelected.splice(0, this.deleteSelected.length);
       if (this.checkboxSelectAll){
         for (let i = 0; i < this.formations.length; i++) {
-          this.deleteSelected.push(this.formations[i])
+          this.deleteSelected.push(this.formations[i]);
         }
       }
     },
-    //TODO Delete
-    deleteAllSelectedFormation() {
+    async deleteAllSelectedFormation() {
       var verif = 0;
+      this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
-          this.$store.dispatch('DELETE_Formation', this.deleteSelected[i])
-          return verif;
+          await apiFormation.deleteFormation(this.deleteSelected[i]);
+          await this.getElement();
+          await this.getFormationByProjet();
+          this.typeOperation = 'supprimé';
+          this.responseSuccess = true;
+          this.loading = false;
         } else {
-          verif += 1
+          verif += 1;
         }
       }
-      if (verif > 0){
-        this.dialog = true
-      }
-      return verif
-    },
-    validDeleteAllFormation(){
       for (let i = 0; i < this.deleteSelected.length; i++) {
-        this.$store.dispatch('DELETE_Formation', this.deleteSelected[i])
+        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
+          await apiFormation.deleteFormation(this.deleteSelected[i]);
+          this.typeOperation = 'supprimé';
+          this.responseSuccess = true;
+        } else {
+          verif += 1;
+        }
       }
-      this.dialog = false
+      if (verif > 0) this.dialog = true;
+      this.loading = false;
+      await this.getFormationByProjet();
+    },
+    async validDeleteAllFormation(){
+      this.loading = true;
+      for (let i = 0; i < this.deleteSelected.length; i++) {
+        await apiFormation.deleteFormation(this.deleteSelected[i]);
+      }
+      this.loading = false;
+      this.dialog = false;
+      await this.getFormationByProjet();
+      this.typeOperation = 'supprimé';
+      this.responseSuccess = true;
     }
   },
   computed: {
     projetErrors() {
-      const errors = []
-      if (!this.$v.projet_id.$dirty) return errors
-      !this.$v.projet_id.required && errors.push('Veuillez sélectionner un projet')
-      return errors
+      const errors = [];
+      if (!this.$v.projet_id.$dirty) return errors;
+      !this.$v.projet_id.required && errors.push('Veuillez sélectionner un projet');
+      return errors;
     },
     elementErrors() {
-      const errors = []
-      if (!this.$v.element_id.$dirty) return errors
-      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément')
-      return errors
+      const errors = [];
+      if (!this.$v.element_id.$dirty) return errors;
+      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément');
+      return errors;
     },
     titreErrors() {
-      const errors = []
-      if (!this.$v.titre.$dirty) return errors
-      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères')
-      !this.$v.titre.required && errors.push('Le titre est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.titre.$dirty) return errors;
+      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères');
+      !this.$v.titre.required && errors.push('Le titre est obligatoire.');
+      return errors;
     },
     surnomErrors() {
-      const errors = []
-      if (!this.$v.surnom.$dirty) return errors
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.surnom.$dirty) return errors;
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères');
+      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.');
+      return errors;
     },
     codeErrors() {
-      const errors = []
-      if (!this.$v.code.$dirty) return errors
-      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères')
-      !this.$v.code.required && errors.push('Le code est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.code.$dirty) return errors;
+      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères');
+      !this.$v.code.required && errors.push('Le code est obligatoire');
+      return errors;
     },
   },
   mounted() {
-    this.getElement()
-    this.getProjet()
-    this.getFormationByProjet()
+    this.getProjet();
+    this.getFormationByProjet();
+    this.getElement();
   }
 }
 </script>

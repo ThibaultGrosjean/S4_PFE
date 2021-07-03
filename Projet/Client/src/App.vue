@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :style="{background: $vuetify.theme.themes[theme].background}">
+  <div id="app">
     <v-app>
       <NavBar></NavBar>
       <v-main>
@@ -18,12 +18,9 @@ export default {
   components: {
     NavBar
   },
-  data: () => ({
-    //
-  }),
   computed:{
     theme(){
-      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light';
     }
   }
 };

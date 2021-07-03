@@ -79,6 +79,7 @@
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
+                  :loading="loading"
                   color="success darken-1"
                   class="mr-4"
                   text
@@ -97,6 +98,7 @@
 <script>
 import {validationMixin} from "vuelidate";
 import {numeric} from "vuelidate/lib/validators";
+import apiElement from "../services/API/elements";
 
 export default {
   name: "EditNbGroupeModule",
@@ -110,66 +112,70 @@ export default {
   },
   data: () => ({
     form: false,
+    loading: false,
     nb_groupe_effectif_cm: null,
     nb_groupe_effectif_td: null,
     nb_groupe_effectif_tp: null,
     nb_groupe_effectif_partiel: null,
   }),
-  computed: {
-    nb_groupe_effectif_cmErrors() {
-      const errors = []
-      !this.$v.nb_groupe_effectif_cm.numeric && errors.push('Nombre de groupes effectifs pour les CM doit être un entier')
-      return errors
-    },
-    nb_groupe_effectif_tdErrors() {
-      const errors = []
-      !this.$v.nb_groupe_effectif_td.numeric && errors.push('Nombre de groupes effectifs pour les TD doit être un entier')
-      return errors
-    },
-    nb_groupe_effectif_tpErrors() {
-      const errors = []
-      !this.$v.nb_groupe_effectif_tp.numeric && errors.push('Nombre de groupes effectifs pour les TP doit être un entier')
-      return errors
-    },
-    nb_groupe_effectif_partielErrors() {
-      const errors = []
-      !this.$v.nb_groupe_effectif_partiel.numeric && errors.push('Nombre de groupes effectifs pour les partiel doit être un entier')
-      return errors
-    },
-  },
   methods: {
-    submit() {
+    async submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
-      this.form = false;
-      this.element.nb_groupe_effectif_cm = this.nb_groupe_effectif_cm
-      this.element.nb_groupe_effectif_td = this.nb_groupe_effectif_td
-      this.element.nb_groupe_effectif_tp = this.nb_groupe_effectif_tp
-      this.element.nb_groupe_effectif_partiel = this.nb_groupe_effectif_partiel
+      this.element.nb_groupe_effectif_cm = this.nb_groupe_effectif_cm;
+      this.element.nb_groupe_effectif_td = this.nb_groupe_effectif_td;
+      this.element.nb_groupe_effectif_tp = this.nb_groupe_effectif_tp;
+      this.element.nb_groupe_effectif_partiel = this.nb_groupe_effectif_partiel;
+      this.loading = true;
 
-      this.$store.commit('EDIT_Element', this.element);
-      this.clear()
+      await apiElement.editElement(this.element);
+      this.clear();
+      this.loading = false;
+      this.form = false;
+      this.responseSuccess = true;
     },
     clear() {
       this.$v.$reset()
-      this.nb_groupe_effectif_cm = ''
-      this.nb_groupe_effectif_td = ''
-      this.nb_groupe_effectif_tp = ''
-      this.nb_groupe_effectif_partiel = ''
+      this.nb_groupe_effectif_cm = '';
+      this.nb_groupe_effectif_td = '';
+      this.nb_groupe_effectif_tp = '';
+      this.nb_groupe_effectif_partiel = '';
     },
     close() {
-      this.form = !this.form
-      this.clear()
+      this.form = !this.form;
+      this.clear();
     },
     edit() {
-      this.nb_groupe_effectif_cm = this.element.nb_groupe_effectif_cm
-      this.nb_groupe_effectif_td =  this.element.nb_groupe_effectif_td
-      this.nb_groupe_effectif_tp =  this.element.nb_groupe_effectif_tp
-      this.nb_groupe_effectif_partiel =  this.element.nb_groupe_effectif_partiel
-      console.log(this.nb_groupe_effectif_cm)
+      this.nb_groupe_effectif_cm = this.element.nb_groupe_effectif_cm;
+      this.nb_groupe_effectif_td =  this.element.nb_groupe_effectif_td;
+      this.nb_groupe_effectif_tp =  this.element.nb_groupe_effectif_tp;
+      this.nb_groupe_effectif_partiel =  this.element.nb_groupe_effectif_partiel;
+
       this.form = true;
     },
-  }
+  },
+  computed: {
+    nb_groupe_effectif_cmErrors() {
+      const errors = [];
+      !this.$v.nb_groupe_effectif_cm.numeric && errors.push('Nombre de groupes effectifs pour les CM doit être un entier');
+      return errors;
+    },
+    nb_groupe_effectif_tdErrors() {
+      const errors = [];
+      !this.$v.nb_groupe_effectif_td.numeric && errors.push('Nombre de groupes effectifs pour les TD doit être un entier');
+      return errors;
+    },
+    nb_groupe_effectif_tpErrors() {
+      const errors = [];
+      !this.$v.nb_groupe_effectif_tp.numeric && errors.push('Nombre de groupes effectifs pour les TP doit être un entier');
+      return errors;
+    },
+    nb_groupe_effectif_partielErrors() {
+      const errors = [];
+      !this.$v.nb_groupe_effectif_partiel.numeric && errors.push('Nombre de groupes effectifs pour les partiel doit être un entier');
+      return errors;
+    },
+  },
 }
 </script>
 

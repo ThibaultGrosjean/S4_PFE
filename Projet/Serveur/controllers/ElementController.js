@@ -51,25 +51,6 @@ exports.getAllElements = (req, res) => {
 };
 
 
-exports.getAllLevelElements = (req, res) => {
-  db.query('SELECT e.*, COUNT(ee.id) as nbfils'
-        +' FROM element as e'
-        +' LEFT JOIN element as ee'
-        +' ON e.id = ee.parent'
-        +' WHERE e.niveau = ?'
-        +' GROUP BY e.id ORDER BY parent;', [req.params.id],
-    function(err, elements) {
-      if (!err) {
-        res.status(200).send(elements);
-      }
-      else {
-        res.send(err);
-      }
-    }
-  ); 
-};
-
-
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'
         +' FROM element as e'
@@ -182,9 +163,9 @@ exports.copyElement = (req, res) => {
         ;
 
         db.query(requete,
-          function(err) {
+          function(err, element) {
             if (!err) {
-              res.status(200); 
+              res.status(200).json(element); 
             } else  {
               res.send(err);
             }
@@ -250,9 +231,9 @@ exports.editElement = (req, res) => {
   +" WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, element) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(element); 
       } else {
         res.send(err);
       }
@@ -263,9 +244,9 @@ exports.editElement = (req, res) => {
 // Vérifier les relations avec les autres tables
 exports.deleteElement = (req, res) => {
   db.query('DELETE FROM element WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, element) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(element); 
       }
       else {
         res.send(err);
@@ -302,9 +283,9 @@ exports.deleteHierarchie = (req, res) => {
         +' LEFT JOIN element AS e4'
         +' ON e4.parent = e3.id'
         +' WHERE e.id = ? ;',[req.params.id],
-    function(err) {
+    function(err, element) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(element); 
       }
       else {
         res.send(err);

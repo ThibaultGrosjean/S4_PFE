@@ -134,11 +134,10 @@ exports.editStatut = (req, res) => {
 
 exports.deleteStatut = (req, res) => {
   db.query('DELETE FROM statut WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, statut) {
       if (!err) {
-        res.status(200); 
-      }
-      else {
+        res.status(200).json(statut); 
+      } else  {
         res.send(err);
       }
     }

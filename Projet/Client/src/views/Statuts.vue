@@ -37,17 +37,18 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="12">
+      <v-col sm="12" class="animate-pop-in">
         <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
           Le statut a été {{ typeOperation }} avec succès.
         </v-alert>
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="s in statuts"
-             :key="s.id"
-             sm="4"
-             class="justify-center"
+      <v-col
+         v-for="s in statuts"
+         :key="s.id"
+         sm="4"
+         class="justify-center"
       >
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
@@ -219,7 +220,7 @@ import {validationMixin} from "vuelidate";
 import {decimal, maxLength, required} from "vuelidate/lib/validators";
 
 export default {
-  name: "ReadStatuts",
+  name: "Statuts",
   mixins: [validationMixin],
 
   validations: {
@@ -262,7 +263,7 @@ export default {
         nb_he_td_min_sup: this.nb_he_td_min_sup,
         nb_he_td_max_sup: this.nb_he_td_max_sup,
       };
-      this.loading = true
+      this.loading = true;
       if (this.methods === 'POST') {
         await apiStatut.createStatut(statut);
         this.typeOperation = 'ajouté';
@@ -271,98 +272,98 @@ export default {
         this.typeOperation = 'modifié';
       }
       await this.getStatuts();
-      this.clear()
-      this.loading = false
+      this.clear();
+      this.loading = false;
       this.form = false;
       this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset()
-      this.id = ''
-      this.nom = ''
-      this.surnom = ''
-      this.nb_he_td_min_attendu = ''
-      this.nb_he_td_max_attendu = ''
-      this.nb_he_td_min_sup = ''
-      this.nb_he_td_max_sup = ''
+      this.$v.$reset();
+      this.id = '';
+      this.nom = '';
+      this.surnom = '';
+      this.nb_he_td_min_attendu = '';
+      this.nb_he_td_max_attendu = '';
+      this.nb_he_td_min_sup = '';
+      this.nb_he_td_max_sup = '';
     },
     close() {
-      this.form = !this.form
-      this.methods = 'POST'
+      this.form = !this.form;
+      this.methods = 'POST';
       this.clear()
     },
     edit(statut) {
-      this.methods = 'PUT'
+      this.methods = 'PUT';
 
-      this.id = statut.id
-      this.nom = statut.nom
-      this.surnom = statut.surnom
-      this.nb_he_td_min_attendu = statut.nb_he_td_min_attendu
-      this.nb_he_td_max_attendu = statut.nb_he_td_max_attendu
-      this.nb_he_td_min_sup = statut.nb_he_td_min_sup
-      this.nb_he_td_max_sup = statut.nb_he_td_max_sup
+      this.id = statut.id;
+      this.nom = statut.nom;
+      this.surnom = statut.surnom;
+      this.nb_he_td_min_attendu = statut.nb_he_td_min_attendu;
+      this.nb_he_td_max_attendu = statut.nb_he_td_max_attendu;
+      this.nb_he_td_min_sup = statut.nb_he_td_min_sup;
+      this.nb_he_td_max_sup = statut.nb_he_td_max_sup;
       this.form = true;
     },
     async copy(statutId) {
-      this.loading = true
+      this.loading = true;
       await apiStatut.copyStatut(statutId);
       await this.getStatuts();
-      this.loading = false
+      this.loading = false;
       this.typeOperation = 'copié';
       this.responseSuccess = true;
     },
     sortedByNom() {
       if (this.sortNom) {
-        this.sortNom = false
-        this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase())
+        this.sortNom = false;
+        this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       } else {
-        this.sortNom = true
-        this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
+        this.sortNom = true;
+        this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
       }
     },
   },
   computed: {
     nomErrors() {
-      const errors = []
-      if (!this.$v.nom.$dirty) return errors
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères')
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.nom.$dirty) return errors;
+      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
+      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
+      return errors;
     },
     surnomErrors() {
-      const errors = []
-      if (!this.$v.surnom.$dirty) return errors
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.surnom.$dirty) return errors;
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères');
+      !this.$v.surnom.required && errors.push('Le surnom est obligatoire');
+      return errors;
     },
     heTDMinAttenduErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_min_attendu.$dirty) return errors
-      !this.$v.nb_he_td_min_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues doit être un numérique')
-      !this.$v.nb_he_td_min_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_min_attendu.$dirty) return errors;
+      !this.$v.nb_he_td_min_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues doit être un numérique');
+      !this.$v.nb_he_td_min_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues est obligatoire');
+      return errors;
     },
     heTDMaxAttenduErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors
-      !this.$v.nb_he_td_max_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues doit être un numérique')
-      !this.$v.nb_he_td_max_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors;
+      !this.$v.nb_he_td_max_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues doit être un numérique');
+      !this.$v.nb_he_td_max_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues est obligatoire');
+      return errors;
     },
     heTDMinSupErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_min_sup.$dirty) return errors
-      !this.$v.nb_he_td_min_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique')
-      !this.$v.nb_he_td_min_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_min_sup.$dirty) return errors;
+      !this.$v.nb_he_td_min_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique');
+      !this.$v.nb_he_td_min_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire');
+      return errors;
     },
     heTDMaxSupErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors
-      !this.$v.nb_he_td_max_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique')
-      !this.$v.nb_he_td_max_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors;
+      !this.$v.nb_he_td_max_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique');
+      !this.$v.nb_he_td_max_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire');
+      return errors;
     },
   },
   mounted() {

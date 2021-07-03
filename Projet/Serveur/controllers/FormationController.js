@@ -132,9 +132,9 @@ exports.editFormation = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, formation) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(formation); 
       } else {
         res.send(err);
       }
@@ -145,9 +145,9 @@ exports.editFormation = (req, res) => {
 
 exports.deleteFormation = (req, res) => {
   db.query('DELETE FROM formation WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, formation) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(formation); 
       }
       else {
         res.send(err);

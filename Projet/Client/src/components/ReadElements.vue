@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <template v-for="formation in racine">
+      <template v-for="f in elements">
         <v-col
-            :key="formation.id"
-            v-if="formation.parent === null"
+            :key="f.id"
+            v-if="f.parent === null && f.id === formation.element_id"
             cols="12"
             class="pa-0 justify-center"
         >
@@ -12,7 +12,7 @@
             <v-card-title>
               <v-spacer></v-spacer>
               <v-divider></v-divider>
-              <span class="mr-2 ml-2 text-h5">{{ formation.titre }}</span>
+              <span class="mr-2 ml-2 text-h5">{{ f.titre }}</span>
               <v-divider></v-divider>
               <v-spacer></v-spacer>
               <div>
@@ -36,12 +36,12 @@
                               v-bind="attrs"
                               v-on="on"
                               class="ma-1"
-                              @click="edit(formation, null)"
+                              @click="edit(f)"
                           >
                             <v-icon>edit</v-icon>
                           </v-btn>
                         </template>
-                        <span>Modifier {{ formation.surnom }}</span>
+                        <span>Modifier {{ f.surnom }}</span>
                       </v-tooltip>
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
@@ -50,47 +50,21 @@
                               v-bind="attrs"
                               v-on="on"
                               class="ma-1"
-                              @click="addSemester(formation)"
+                              @click="addSemester(f)"
                           >
                             <v-icon>mdi-plus</v-icon>
                           </v-btn>
                         </template>
                         <span>Ajouter un semestre</span>
                       </v-tooltip>
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                              icon
-                              v-bind="attrs"
-                              v-on="on"
-                              class="ma-1"
-                          >
-                            <v-icon>file_copy</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Dupliquer</span>
-                      </v-tooltip>
-                      <SupprimerTousVolHorFormation :formation="formation"/>
-                      <SupprimerTousGrpIntervenantFormation :formation="formation"/>
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                              icon
-                              v-bind="attrs"
-                              v-on="on"
-                              class="ma-1"
-                          >
-                            <v-icon color="error darken-1">delete</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Supprimer la décomposition</span>
-                      </v-tooltip>
+                      <SupprimerTousGrpIntervenantFormation :formation="f" v-on:relaod-all-groupes="getGroupeIntervenantByModule"/>
+                      <SupprimerTousVolHorFormation :formation="f" v-on:relaod-all-volumes="getVolumeHebdomadaireByModule"/>
                     </v-list-item>
                   </v-list>
                 </v-menu>
               </div>
             </v-card-title>
-            <v-card-subtitle class="text-center text-subtitle-1">{{ formation.surnom }}</v-card-subtitle>
+            <v-card-subtitle class="text-center text-subtitle-1">{{ f.surnom }}</v-card-subtitle>
             <v-card-text class="pa-0">
               <v-container>
                 <v-row>
@@ -105,7 +79,7 @@
                         v-for="semestre in elements"
                         :key="semestre.id"
                     >
-                      <v-expansion-panel-header v-if="formation.id === semestre.parent">
+                      <v-expansion-panel-header v-if="f.id === semestre.parent">
                         <div class="ml-n3">
                           <v-menu :disabled="disabled" :close-on-content-click="false" offset-x right nudge-bottom="-14" rounded="pill" transition="slide-x-transition">
                             <template v-slot:activator="{ on, attrs }">
@@ -127,7 +101,7 @@
                                         v-bind="attrs"
                                         v-on="on"
                                         class="ma-1"
-                                        @click="edit(semestre, findPeriodeBySemestre(semestre.id))"
+                                        @click="edit(semestre)"
                                     >
                                       <v-icon>edit</v-icon>
                                     </v-btn>
@@ -157,19 +131,6 @@
                                         v-on="on"
                                         class="ma-1"
                                     >
-                                      <v-icon>file_copy</v-icon>
-                                    </v-btn>
-                                  </template>
-                                  <span>Dupliquer</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        icon
-                                        v-bind="attrs"
-                                        v-on="on"
-                                        class="ma-1"
-                                    >
                                       <v-icon color="error darken-1">delete</v-icon>
                                     </v-btn>
                                   </template>
@@ -181,7 +142,7 @@
                           <span class="overline">{{ semestre.titre }}</span>
                         </div>
                       </v-expansion-panel-header>
-                      <v-expansion-panel-content v-if="formation.id === semestre.parent">
+                      <v-expansion-panel-content v-if="f.id === semestre.parent">
                           <v-container>
                             <v-row>
                               <v-expansion-panels
@@ -215,7 +176,7 @@
                                                     v-bind="attrs"
                                                     v-on="on"
                                                     class="ma-1"
-                                                    @click="edit(ue, null)"
+                                                    @click="edit(ue)"
                                                 >
                                                   <v-icon>edit</v-icon>
                                                 </v-btn>
@@ -235,19 +196,6 @@
                                                 </v-btn>
                                               </template>
                                               <span>Ajouter un module à l'{{ ue.titre }}</span>
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                              <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    icon
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    class="ma-1"
-                                                >
-                                                  <v-icon>file_copy</v-icon>
-                                                </v-btn>
-                                              </template>
-                                              <span>Dupliquer</span>
                                             </v-tooltip>
                                             <v-tooltip top>
                                               <template v-slot:activator="{ on, attrs }">
@@ -302,7 +250,7 @@
                                                                   v-bind="attrs"
                                                                   v-on="on"
                                                                   class="ma-1"
-                                                                  @click="edit(module, null)"
+                                                                  @click="edit(module)"
                                                               >
                                                                 <v-icon>edit</v-icon>
                                                               </v-btn>
@@ -310,19 +258,6 @@
                                                             <span>Modifier {{ module.surnom }}</span>
                                                           </v-tooltip>
                                                           <EditNbGroupeModule :element="module"/>
-                                                          <v-tooltip top>
-                                                            <template v-slot:activator="{ on, attrs }">
-                                                              <v-btn
-                                                                  icon
-                                                                  v-bind="attrs"
-                                                                  v-on="on"
-                                                                  class="ma-1"
-                                                              >
-                                                                <v-icon>file_copy</v-icon>
-                                                              </v-btn>
-                                                            </template>
-                                                            <span>Dupliquer</span>
-                                                          </v-tooltip>
                                                           <v-tooltip top v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
                                                             <template v-slot:activator="{ on, attrs }">
                                                               <v-btn
@@ -348,7 +283,7 @@
                                                       <v-col class="pl-16 pr-6 pt-0 pb-0">
                                                         <div v-if="module.mode_saisie ==='hebdo'">
                                                           <div v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
-                                                            <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolHebdo(module.id, semestre.id)">Ajouter les volumes hebdomadaires</v-btn>
+                                                            <v-btn text tile block height="2.3em" :disabled="disabled" :loading="loading" @click="addVolHebdo(module.id, semestre.id)">Ajouter les volumes hebdomadaires</v-btn>
                                                           </div>
                                                           <template v-for="v in volumesHebdomadairesModules">
                                                             <div :key="v.id" v-if="v.element_id === module.id && volumesHebdomadairesModules.length !== 0">
@@ -359,7 +294,7 @@
                                                                     <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
                                                                   </v-col>
                                                                   <v-col class="top-border pa-1 d-flex justify-end">
-                                                                    <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled"/>
+                                                                    <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled" v-on:reload-volumes-hebdomadaires-module="getVolumeHebdomadaireByModule"/>
                                                                   </v-col>
                                                                 </v-row>
                                                               </v-container>
@@ -378,7 +313,7 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -386,7 +321,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -394,7 +329,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -402,7 +337,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -434,7 +369,7 @@
                                                                             <span class="text-subtitle-1">{{ i.prenom }} {{ i.nom }}</span>
                                                                           </v-col>
                                                                           <v-col class="top-border pa-1 d-flex justify-end">
-                                                                            <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled"/>
+                                                                            <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-groupes-intervenants-module="getGroupeIntervenantByModule"/>
                                                                           </v-col>
                                                                         </v-row>
                                                                       </v-container>
@@ -453,7 +388,7 @@
                                                                           </thead>
                                                                           <tbody>
                                                                           <tr v-if="module.cm_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -461,7 +396,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.td_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -469,7 +404,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.tp_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -477,7 +412,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.partiel_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -825,6 +760,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    :loading="loading"
                     color="success darken-1"
                     class="mr-4"
                     text
@@ -849,7 +785,7 @@
             <v-card-title>
               <span class="headline">Ajouter un intervenant</span>
               <v-spacer></v-spacer>
-              <v-btn icon @click="closeGrpIntev">
+              <v-btn icon @click="formIntervenant = false">
                 <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
@@ -894,6 +830,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    :loading="loading"
                     color="success darken-1"
                     class="mr-4"
                     text
@@ -911,8 +848,13 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
-import axios from "axios";
+import apiElement from "../services/API/elements";
+import apiPeriode from "../services/API/periodes";
+import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
+import apiIntervenant from "../services/API/intervenants";
+import apiVolumeGlobaux from "../services/API/volumes-globaux";
+
 import {validationMixin} from "vuelidate";
 import {decimal, maxLength, numeric, required} from "vuelidate/lib/validators";
 
@@ -931,7 +873,7 @@ export default {
     SupprimerTousVolHorFormation,
     SupprimerTableau, EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu},
   mixins: [validationMixin],
-  props: ['racine', 'disabled'],
+  props: ['formation' , 'disabled'],
 
   validations: {
     titre: {required, maxLength: maxLength(255)},
@@ -956,9 +898,18 @@ export default {
     nb_groupe_defaut_partiel: {numeric, required},
   },
   data: () => ({
+    elements: [],
+    volumesHebdomadaires: [],
+    volumesGlobaux: [],
+    groupesIntervenants: [],
+    volumesHebdomadairesModules: [],
+    intervenantsModules: [],
     form: false,
     formIntervenant: false,
     isFormation: false,
+    loading: false,
+    responseSuccess: false,
+    typeOperation: 'ajouté',
     methods: "POST",
     item_mode_saisie: [
       {nom: 'Aucun', val: 'aucun'},
@@ -1005,133 +956,34 @@ export default {
       selectIntervenant: [(v) =>  v.length > 0 || "Veuillez sélectionner un intervenant"],
     }
   }),
-  mounted() {
-    this.$store.dispatch('loadGenerique', 'elements');
-    this.$store.dispatch('loadGenerique', 'periodes');
-    this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
-    this.$store.dispatch('loadGenerique', 'volumes-globaux');
-    this.$store.dispatch('loadGenerique', 'intervenants');
-    this.$store.dispatch('loadGenerique', 'enseignants');
-    this.$store.dispatch('loadIntervenantsModules');
-    this.$store.dispatch('loadGenerique', 'groupes-intervenants');
-    this.$store.dispatch('loadVolumesHorairesByModule');
-  },
-  computed: {
-    ...mapState(['elements','periodes', 'volumesHebdomadaires', 'volumesGlobaux', 'intervenants', 'enseignants', 'intervenantsModules', 'groupesIntervenants', 'volumesHebdomadairesModules']),
-    mode_saisieErrors() {
-      const errors = []
-      if (!this.$v.mode_saisie.$dirty) return errors
-      !this.$v.mode_saisie.required && errors.push('Veuillez sélectionner un mode de saisie')
-      return errors
-    },
-    titreErrors() {
-      const errors = []
-      if (!this.$v.titre.$dirty) return errors
-      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères')
-      !this.$v.titre.required && errors.push('Le titre est obligatoire.')
-      return errors
-    },
-    surnomErrors() {
-      const errors = []
-      if (!this.$v.surnom.$dirty) return errors
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.')
-      return errors
-    },
-    codeErrors() {
-      const errors = []
-      if (!this.$v.code.$dirty) return errors
-      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères')
-      !this.$v.code.required && errors.push('Le code est obligatoire')
-      return errors
-    },
-    niveauErrors() {
-      const errors = []
-      if (!this.$v.niveau.$dirty) return errors
-      !this.$v.niveau.numeric && errors.push('Le niveau doit être un entier')
-      !this.$v.niveau.required && errors.push('Le niveau est obligatoire')
-      return errors
-    },
-    indiceErrors() {
-      const errors = []
-      if (!this.$v.indice.$dirty) return errors
-      !this.$v.indice.numeric && errors.push('Le niveau doit être un entier')
-      !this.$v.indice.required && errors.push('Le niveau est obligatoire')
-      return errors
-    },
-    vol_hor_total_prevues_etu_cmErrors() {
-      const errors = []
-      !this.$v.vol_hor_total_prevues_etu_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    vol_hor_total_prevues_etu_tdErrors() {
-      const errors = []
-      !this.$v.vol_hor_total_prevues_etu_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    vol_hor_total_prevues_etu_tpErrors() {
-      const errors = []
-      !this.$v.vol_hor_total_prevues_etu_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    forfait_globale_cmErrors() {
-      const errors = []
-      !this.$v.forfait_globale_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    forfait_globale_tdErrors() {
-      const errors = []
-      !this.$v.forfait_globale_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    forfait_globale_tpErrors() {
-      const errors = []
-      !this.$v.forfait_globale_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    forfait_globale_partielErrors() {
-      const errors = []
-      !this.$v.forfait_globale_partiel.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
-      return errors
-    },
-    nb_semaineErrors() {
-      const errors = []
-      if (!this.$v.nb_semaine.$dirty) return errors
-      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique')
-      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire')
-      return errors
-    },
-    nb_groupe_defaut_cmErrors() {
-      const errors = []
-      if (!this.$v.nb_groupe_defaut_cm.$dirty) return errors
-      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique')
-      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire')
-      return errors
-    },
-    nb_groupe_defaut_tdErrors() {
-      const errors = []
-      if (!this.$v.nb_groupe_defaut_td.$dirty) return errors
-      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique')
-      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire')
-      return errors
-    },
-    nb_groupe_defaut_tpErrors() {
-      const errors = []
-      if (!this.$v.nb_groupe_defaut_tp.$dirty) return errors
-      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique')
-      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire')
-      return errors
-    },
-    nb_groupe_defaut_partielErrors() {
-      const errors = []
-      if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors
-      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
-      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
-      return errors
-    },
-  },
   methods: {
-    submit() {
+    async getElements() {
+      this.elements = await apiElement.getElements();
+    },
+    async getPeriodeByElementId(id){
+      return await apiPeriode.getPeriodeByElementId(id);
+    },
+    async getVolumeHebdomadaireByModule() {
+      this.volumesHebdomadairesModules = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule();
+      await this.getElements();
+    },
+    async getVolumesHebdomadaires() {
+      this.volumesHebdomadaires = await apiVolumeHebdomadaire.getVolumesHebdomadaires();
+    },
+    async getvolumesGlobaux() {
+      this.volumesGlobaux = await apiVolumeGlobaux.getVolumesGlobaux();
+    },
+    async getIntervenantsByProjetNotInModule(idModule){
+      this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsByProjetNotInModule(this.$route.params.id, idModule)
+    },
+    async getGroupeIntervenantByModule() {
+      this.intervenantsModules = await apiGroupeIntervenant.getGroupeIntervenantByModule();
+      await this.getVolumeHebdomadaireByModule();
+    },
+    async getGroupesIntervenants() {
+      this.groupesIntervenants = await apiGroupeIntervenant.getGroupesIntervenants();
+    },
+    async submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
       const element = {
@@ -1161,7 +1013,7 @@ export default {
         nbfils: this.nbfils,
         periode: null,
       }
-      if (element.niveau === 1){
+      if (element.niveau === 1) {
         element.periode = {
           id: this.idPeriode,
           nb_semaine: this.nb_semaine,
@@ -1172,19 +1024,25 @@ export default {
           nb_groupe_defaut_partiel: this.nb_groupe_defaut_partiel,
         }
       }
-      if (element.niveau === 3){
+      if (element.niveau === 3) {
         let index = this.elements.findIndex(e => e.id === element.parent);
         var grand_pere_id = this.elements[index].parent
-        element.periode = this.findPeriodeBySemestre(grand_pere_id)
+        element.periode = await this.getPeriodeByElementId(grand_pere_id)
       }
 
+      this.loading = true;
       if (this.methods === 'POST') {
         this.$store.dispatch('ADD_Element', element);
+        this.typeOperation = 'ajouté';
       } else {
-        this.$store.commit('EDIT_Element', element);
+        await apiElement.editElement(element);
+        this.typeOperation = 'modifié';
       }
-      this.clear()
+      await this.getElements();
+      this.clear();
+      this.loading = false;
       this.form = false;
+      this.responseSuccess = true;
     },
     clear() {
       this.$v.$reset()
@@ -1226,7 +1084,7 @@ export default {
       this.methods = 'POST'
       this.clear()
     },
-    edit(element, periode) {
+    async edit(element) {
       this.methods = 'PUT'
 
       this.idElement = element.id
@@ -1254,28 +1112,20 @@ export default {
       this.parent = element.parent
       this.nbfils = element.nbfils
 
-      if (periode !== null){
-        this.idPeriode = periode.id
-        this.nb_semaine = periode.nb_semaine
-        this.old_nb_semaine = periode.nb_semaine
-        this.nb_groupe_defaut_cm = periode.nb_groupe_defaut_cm
-        this.nb_groupe_defaut_td = periode.nb_groupe_defaut_td
-        this.nb_groupe_defaut_tp = periode.nb_groupe_defaut_tp
-        this.nb_groupe_defaut_partiel = periode.nb_groupe_defaut_partiel
+      if (this.niveau === 0){
+        var periode = await this.getPeriodeByElementId(element.id)
+        this.idPeriode = periode[0].id
+        this.nb_semaine = periode[0].nb_semaine
+        this.old_nb_semaine = periode[0].nb_semaine
+        this.nb_groupe_defaut_cm = periode[0].nb_groupe_defaut_cm
+        this.nb_groupe_defaut_td = periode[0].nb_groupe_defaut_td
+        this.nb_groupe_defaut_tp = periode[0].nb_groupe_defaut_tp
+        this.nb_groupe_defaut_partiel = periode[0].nb_groupe_defaut_partiel
         this.element_id = element.id
       }
 
       this.isFormation = this.parent === null;
       this.form = true;
-    },
-    save(data, type){
-      if (type === 'groupe'){
-          this.$store.dispatch('EDIT_GroupeIntervenant', data);
-      } else if (type === 'volume'){
-        this.$store.dispatch('EDIT_VolumesHebdomadaires', data);
-      } else if (type === 'globale'){
-        this.$store.dispatch('EDIT_VolumesGlobaux', data);
-      }
     },
     addSemester(element) {
       var nbfils = element.nbfils
@@ -1289,7 +1139,7 @@ export default {
       this.isFormation = false;
       this.form = true;
     },
-    addUE(element) {
+    async addUE(element) {
       var indice = element.indice
       var nbfils = element.nbfils
       if (nbfils === null) nbfils = 0
@@ -1299,17 +1149,17 @@ export default {
       this.mode_saisie = 'aucun'
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeBySemestre(element.id);
+      var periode = await this.getPeriodeByElementId(element.id);
       if (periode !== -1 && periode !== undefined){
-        this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
-        this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
-        this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
-        this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
+        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm
+        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td
+        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp
+        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel
       }
       this.isFormation = false;
       this.form = true;
     },
-    addModule(element, semestre) {
+    async addModule(element, semestre) {
       var indice = element.indice
       var indiceM = semestre.indice
       var nbfils = element.nbfils
@@ -1324,19 +1174,15 @@ export default {
       this.niveau = 3
       this.indice = nbfils
       this.parent = element.id
-      var periode = this.findPeriodeBySemestre(semestre.id);
+      const periode = await this.getPeriodeByElementId(semestre.id);
       if (periode !== -1 && periode !== undefined){
-        this.nb_groupe_effectif_cm = periode.nb_groupe_defaut_cm
-        this.nb_groupe_effectif_td = periode.nb_groupe_defaut_td
-        this.nb_groupe_effectif_tp = periode.nb_groupe_defaut_tp
-        this.nb_groupe_effectif_partiel = periode.nb_groupe_defaut_partiel
+        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm
+        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td
+        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp
+        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel
       }
       this.isFormation = false;
       this.form = true;
-    },
-    findPeriodeBySemestre(id){
-      let index = this.periodes.findIndex(p => p.element_id === id);
-      return this.periodes[index];
     },
     totalVolume(module, type) {
       var volumeByModule = []
@@ -1362,33 +1208,30 @@ export default {
         return (total += +currentValue[type])
       }, 0)
     },
-    addGrpInterv(idModule, idSemestre){
-      this.getIntervenantProjetNotInModule(idModule)
-      this.formIntervenant = true
-      this.idElement = idModule
-      this.nb_semaine = this.findPeriodeBySemestre(idSemestre).nb_semaine
+    async addGrpInterv(idModule, idSemestre){
+      await this.getIntervenantsByProjetNotInModule(idModule)
+      this.formIntervenant = true;
+      this.idElement = idModule;
+      const periode = await this.getPeriodeByElementId(idSemestre);
+      this.nb_semaine = periode[0].nb_semaine;
+      await this.getElements();
     },
-    getIntervenantProjetNotInModule(idModule){
-      axios.get('/intervenants/projets/'+ this.$route.params.id +'/module/'+ idModule +'/get')
-          .then(response => (this.intervenantByProjetNotInModule = response.data))
-          .catch(error => {
-        console.log('Erreur : ', error)
-      });
-    },
-    submitGrpInterv() {
+    async submitGrpInterv() {
       this.$v.$touch()
       if (this.intervenant_id.length <= 0) {
         return;
       } else {
+        this.loading = true;
         for (let i = 0; i < this.intervenant_id.length; i++) {
-          this.$store.dispatch('ADD_AllGroupeIntervenantForModule', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
+          await apiGroupeIntervenant.createGroupeIntervenantBySemaine(this.idElement, this.intervenant_id[i], 1, this.nb_semaine);
         }
       }
-      this.closeGrpIntev()
-    },
-    closeGrpIntev() {
+      await this.getVolumeHebdomadaireByModule();
+      this.loading = false;
       this.formIntervenant = false
-      this.getIntervenantProjetNotInModule(this.idElement)
+      await this.getGroupeIntervenantByModule();
+      await this.getGroupesIntervenants();
+      await this.getIntervenantsByProjetNotInModule(this.idElement)
       this.clearGrpInterv()
     },
     clearGrpInterv() {
@@ -1397,11 +1240,139 @@ export default {
       this.intervenant_id = []
       this.nb_semaine = 1
     },
-    addVolHebdo(module_id, semestre_id){
-      var nb_semaine = this.findPeriodeBySemestre(semestre_id).nb_semaine
-      this.$store.dispatch('ADD_AllVolumesHebdomadairesForModule', {module: module_id, nb_semaine_deb: 1, nb_semaine_fin: nb_semaine})
+    async addVolHebdo(module_id, semestre_id){
+      const periode = await this.getPeriodeByElementId(semestre_id);
+      var nb_semaine = periode[0].nb_semaine;
+
+      this.loading = true;
+      await apiVolumeHebdomadaire.createVolumeHebdomadaireBySemaine(module_id, 1, nb_semaine);
+      await this.getVolumeHebdomadaireByModule();
+      await this.getVolumesHebdomadaires();
+      await this.getElements();
+      this.loading = false;
     }
-  }
+  },
+  computed: {
+    mode_saisieErrors() {
+      const errors = [];
+      if (!this.$v.mode_saisie.$dirty) return errors;
+      !this.$v.mode_saisie.required && errors.push('Veuillez sélectionner un mode de saisie')
+      return errors;
+    },
+    titreErrors() {
+      const errors = [];
+      if (!this.$v.titre.$dirty) return errors;
+      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères')
+      !this.$v.titre.required && errors.push('Le titre est obligatoire.')
+      return errors;
+    },
+    surnomErrors() {
+      const errors = [];
+      if (!this.$v.surnom.$dirty) return errors;
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
+      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.')
+      return errors;
+    },
+    codeErrors() {
+      const errors = [];
+      if (!this.$v.code.$dirty) return errors;
+      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères')
+      !this.$v.code.required && errors.push('Le code est obligatoire')
+      return errors;
+    },
+    niveauErrors() {
+      const errors = [];
+      if (!this.$v.niveau.$dirty) return errors;
+      !this.$v.niveau.numeric && errors.push('Le niveau doit être un entier')
+      !this.$v.niveau.required && errors.push('Le niveau est obligatoire')
+      return errors;
+    },
+    indiceErrors() {
+      const errors = [];
+      if (!this.$v.indice.$dirty) return errors;
+      !this.$v.indice.numeric && errors.push('Le niveau doit être un entier')
+      !this.$v.indice.required && errors.push('Le niveau est obligatoire')
+      return errors;
+    },
+    vol_hor_total_prevues_etu_cmErrors() {
+      const errors = [];
+      !this.$v.vol_hor_total_prevues_etu_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    vol_hor_total_prevues_etu_tdErrors() {
+      const errors = [];
+      !this.$v.vol_hor_total_prevues_etu_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    vol_hor_total_prevues_etu_tpErrors() {
+      const errors = [];
+      !this.$v.vol_hor_total_prevues_etu_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    forfait_globale_cmErrors() {
+      const errors = [];
+      !this.$v.forfait_globale_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    forfait_globale_tdErrors() {
+      const errors = [];
+      !this.$v.forfait_globale_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    forfait_globale_tpErrors() {
+      const errors = [];
+      !this.$v.forfait_globale_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    forfait_globale_partielErrors() {
+      const errors = [];
+      !this.$v.forfait_globale_partiel.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      return errors;
+    },
+    nb_semaineErrors() {
+      const errors = [];
+      if (!this.$v.nb_semaine.$dirty) return errors;
+      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique')
+      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire')
+      return errors;
+    },
+    nb_groupe_defaut_cmErrors() {
+      const errors = [];
+      if (!this.$v.nb_groupe_defaut_cm.$dirty) return errors;
+      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique')
+      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire')
+      return errors;
+    },
+    nb_groupe_defaut_tdErrors() {
+      const errors = [];
+      if (!this.$v.nb_groupe_defaut_td.$dirty) return errors;
+      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique')
+      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire')
+      return errors;
+    },
+    nb_groupe_defaut_tpErrors() {
+      const errors = [];
+      if (!this.$v.nb_groupe_defaut_tp.$dirty) return errors;
+      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique')
+      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire')
+      return errors;
+    },
+    nb_groupe_defaut_partielErrors() {
+      const errors = [];
+      if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors;
+      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
+      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
+      return errors;
+    },
+  },
+  mounted() {
+    this.getGroupeIntervenantByModule();
+    this.getGroupesIntervenants();
+    this.getVolumeHebdomadaireByModule();
+    this.getVolumesHebdomadaires();
+    this.getvolumesGlobaux();
+    this.getElements();
+  },
 }
 </script>
 

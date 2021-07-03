@@ -47,6 +47,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
+            :loading="loading"
             color="success darken-1"
             class="mr-4 mb-3"
             text
@@ -60,7 +61,8 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
 import {validationMixin} from "vuelidate";
 import {decimal,numeric, between, required} from "vuelidate/lib/validators";
 
@@ -75,67 +77,72 @@ export default {
   },
   data: () => ({
     showMenuVolHor: false,
+    loading: false,
     validForm: false,
     volHorSemaineDefaut: 0,
     nbGroupeSemaineDefaut: 0,
     x: 0,
     y: 0,
   }),
-  mounted() {
-    this.$store.dispatch('loadGenerique', 'volumes-hebdomadaires');
-    this.$store.dispatch('loadGenerique', 'elements');
-  },
-  computed: {
-    ...mapState(['volumesHebdomadaires', 'elements']),
-    volHorSemaineDefautErrors() {
-      const errors = []
-      if (!this.$v.volHorSemaineDefaut.$dirty) return errors
-      !this.$v.volHorSemaineDefaut.required && errors.push('Ce champs est requis')
-      !this.$v.volHorSemaineDefaut.decimal && errors.push('Le volume horaire doit être un nombre à virgule')
-      !this.$v.volHorSemaineDefaut.between && errors.push('Le volume horaire doit être compris entre 0 et 50.0')
-      return errors
-    },
-    nbGroupeSemaineDefautErrors() {
-      const errors = []
-      if (!this.$v.nbGroupeSemaineDefaut.$dirty) return errors
-      !this.$v.nbGroupeSemaineDefaut.required && errors.push('Ce champs est requis')
-      !this.$v.nbGroupeSemaineDefaut.numeric && errors.push('Le nombre de groupes doit être un entier')
-      !this.$v.nbGroupeSemaineDefaut.between && errors.push('Le nombre de groupes doit être compris entre 0 et ' + this.lim)
-      return errors
-    },
-  },
   methods: {
     show(e) {
-      e.preventDefault()
-      this.showMenuVolHor = false
-      this.x = e.clientX
-      this.y = e.clientY
+      e.preventDefault();
+      this.showMenuVolHor = false;
+      this.x = e.clientX;
+      this.y = e.clientY;
       this.$nextTick(() => {
-        this.showMenuVolHor = true
+        this.showMenuVolHor = true;
       })
     },
     clear() {
-      this.$v.$reset()
-      this.volHorSemaineDefaut = 0
-      this.nbGroupeSemaineDefaut = 0
+      this.$v.$reset();
+      this.volHorSemaineDefaut = 0;
+      this.nbGroupeSemaineDefaut = 0;
     },
     close() {
-      this.validForm = true
-      this.clear()
+      this.validForm = true;
+      this.clear();
     },
-    appliquerTtesSem() {
-      this.$v.$touch()
+    async appliquerTtesSem() {
+      this.$v.$touch();
       if (this.$v.$invalid) {
-        this.validForm = false
+        this.validForm = false;
         return;
       }
-      if (this.table === 'groupes-intervenants'){
-        this.volHorSemaineDefaut = this.nbGroupeSemaineDefaut
+      this.validForm = true;
+      this.loading = true;
+      if (this.table === 'groupes-intervenants') {
+        await apiGroupeIntervenant.editTypeValueElementGroupeIntervenant(this.nbGroupeSemaineDefaut, this.element, this.intervenant, this.typeCours);
+        this.$emit('reload-groupes-intervenants');
       }
-      this.validForm = true
-      this.$store.commit('SET_ValeurTtesSem', {element:this.element, value:this.volHorSemaineDefaut, typeCours:this.typeCours, tab:this.table, intervenant:this.intervenant})
+      if (this.table === 'volumes-hebdomadaires') {
+        await apiVolumeHebdomadaire.editTypeValueElementVolumeHebdomadaire(this.volHorSemaineDefaut, this.element, this.typeCours);
+        this.$emit('reload-volumes-hebdomadaires', await apiVolumeHebdomadaire.getVolumesHebdomadaires());
+      }
+      if (this.table === 'volumes-globaux') {
+        console.log()
+      }
+      this.loading = false;
     },
-  }
+  },
+  computed: {
+    volHorSemaineDefautErrors() {
+      const errors = [];
+      if (!this.$v.volHorSemaineDefaut.$dirty) return errors;
+      !this.$v.volHorSemaineDefaut.required && errors.push('Ce champs est requis');
+      !this.$v.volHorSemaineDefaut.decimal && errors.push('Le volume horaire doit être un nombre à virgule');
+      !this.$v.volHorSemaineDefaut.between && errors.push('Le volume horaire doit être compris entre 0 et 50.0');
+      return errors;
+    },
+    nbGroupeSemaineDefautErrors() {
+      const errors = [];
+      if (!this.$v.nbGroupeSemaineDefaut.$dirty) return errors;
+      !this.$v.nbGroupeSemaineDefaut.required && errors.push('Ce champs est requis');
+      !this.$v.nbGroupeSemaineDefaut.numeric && errors.push('Le nombre de groupes doit être un entier');
+      !this.$v.nbGroupeSemaineDefaut.between && errors.push('Le nombre de groupes doit être compris entre 0 et ' + this.lim);
+      return errors;
+    },
+  },
 }
 </script>
 

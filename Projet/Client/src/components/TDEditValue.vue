@@ -2,6 +2,7 @@
   <v-menu
       :disabled="disabled"
       offset-y
+      z-index="2000"
       bottom
       transition="slide-y-transition"
       :close-on-click="validForm"
@@ -59,6 +60,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
+            :loading="loading"
             color="success darken-1"
             class="mr-4 mb-3"
             text
@@ -74,6 +76,9 @@
 <script>
 import {validationMixin} from "vuelidate";
 import {between, decimal, numeric, required} from "vuelidate/lib/validators";
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
+import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
+import apiVolumeGlobaux from "../services/API/volumes-globaux";
 
 export default {
   name: "TDVEditDialog",
@@ -85,6 +90,7 @@ export default {
     nbGroupeSemaineDefaut: {required, numeric, between(value) {return between(0, this.lim)(value)}},
   },
   data: () => ({
+    loading: false,
     showMenuVolHor: false,
     validForm: false,
     volHorSemaineDefaut: 0,
@@ -94,67 +100,71 @@ export default {
   }),
   computed: {
     volHorSemaineDefautErrors() {
-      const errors = []
-      if (!this.$v.volHorSemaineDefaut.$dirty) return errors
-      !this.$v.volHorSemaineDefaut.required && errors.push('Ce champs est requis')
-      !this.$v.volHorSemaineDefaut.decimal && errors.push('Le volume horaire doit être un nombre à virgule')
-      !this.$v.volHorSemaineDefaut.between && errors.push('Le volume horaire doit être compris entre 0 et 50.0')
-      return errors
+      const errors = [];
+      if (!this.$v.volHorSemaineDefaut.$dirty) return errors;
+      !this.$v.volHorSemaineDefaut.required && errors.push('Ce champs est requis');
+      !this.$v.volHorSemaineDefaut.decimal && errors.push('Le volume horaire doit être un nombre à virgule');
+      !this.$v.volHorSemaineDefaut.between && errors.push('Le volume horaire doit être compris entre 0 et 50.0');
+      return errors;
     },
     nbGroupeSemaineDefautErrors() {
-      const errors = []
-      if (!this.$v.nbGroupeSemaineDefaut.$dirty) return errors
-      !this.$v.nbGroupeSemaineDefaut.required && errors.push('Ce champs est requis')
-      !this.$v.nbGroupeSemaineDefaut.numeric && errors.push('Le nombre de groupes doit être un entier')
-      !this.$v.nbGroupeSemaineDefaut.between && errors.push('Le nombre de groupes doit être compris entre 0 et ' + this.lim)
-      return errors
+      const errors = [];
+      if (!this.$v.nbGroupeSemaineDefaut.$dirty) return errors;
+      !this.$v.nbGroupeSemaineDefaut.required && errors.push('Ce champs est requis');
+      !this.$v.nbGroupeSemaineDefaut.numeric && errors.push('Le nombre de groupes doit être un entier');
+      !this.$v.nbGroupeSemaineDefaut.between && errors.push('Le nombre de groupes doit être compris entre 0 et ' + this.lim);
+      return errors;
     },
   },
   methods: {
     show(e) {
-      e.preventDefault()
-      this.showMenuVolHor = false
-      this.x = e.clientX
-      this.y = e.clientY
+      e.preventDefault();
+      this.showMenuVolHor = false;
+      this.x = e.clientX;
+      this.y = e.clientY;
       this.$nextTick(() => {
-        this.showMenuVolHor = true
+        this.showMenuVolHor = true;
       })
     },
     clear() {
-      this.$v.$reset()
-      this.volHorSemaineDefaut = 0
-      this.nbGroupeSemaineDefaut = 0
+      this.$v.$reset();
+      this.volHorSemaineDefaut = 0;
+      this.nbGroupeSemaineDefaut = 0;
     },
     close() {
-      this.validForm = true
-      this.clear()
+      this.validForm = true;
+      this.clear();
     },
-    save(){
+    async save() {
       this.$v.$touch()
       if (this.$v.$invalid) {
-        this.validForm = false
+        this.validForm = false;
         return;
       }
-      this.validForm = true
-      if (this.table === 'groupes-intervenants'){
-        if (this.typeCours ==='cm') this.data.nb_groupe_cm = this.nbGroupeSemaineDefaut
-        if (this.typeCours ==='td') this.data.nb_groupe_td = this.nbGroupeSemaineDefaut
-        if (this.typeCours ==='tp') this.data.nb_groupe_tp = this.nbGroupeSemaineDefaut
-        if (this.typeCours ==='partiel')this.data.nb_groupe_partiel = this.nbGroupeSemaineDefaut
-        this.$store.dispatch('EDIT_GroupeIntervenant', this.data);
-      } else if (this.table === 'volumes-hebdomadaires'){
-        if (this.typeCours ==='cm')this.data.vol_hor_cm = this.volHorSemaineDefaut
-        if (this.typeCours ==='td') this.data.vol_hor_td = this.volHorSemaineDefaut
-        if (this.typeCours ==='tp') this.data.vol_hor_tp = this.volHorSemaineDefaut
-        if (this.typeCours ==='partiel')this.data.vol_hor_partiel = this.volHorSemaineDefaut
-        this.$store.dispatch('EDIT_VolumesHebdomadaires', this.data);
-      } else if (this.table === 'volumes-globaux'){
-        if (this.typeCours ==='cm')this.data.vol_hor_cm = this.volHorSemaineDefaut
-        if (this.typeCours ==='td') this.data.vol_hor_td = this.volHorSemaineDefaut
-        if (this.typeCours ==='tp') this.data.vol_hor_tp = this.volHorSemaineDefaut
-        if (this.typeCours ==='partiel')this.data.vol_hor_partiel = this.volHorSemaineDefaut
-        this.$store.dispatch('EDIT_VolumesGlobaux', this.data);
+      this.validForm = true;
+      this.loading = true;
+      if (this.table === 'groupes-intervenants') {
+        if (this.typeCours === 'cm') this.data.nb_groupe_cm = this.nbGroupeSemaineDefaut;
+        if (this.typeCours === 'td') this.data.nb_groupe_td = this.nbGroupeSemaineDefaut;
+        if (this.typeCours === 'tp') this.data.nb_groupe_tp = this.nbGroupeSemaineDefaut;
+        if (this.typeCours === 'partiel') this.data.nb_groupe_partiel = this.nbGroupeSemaineDefaut;
+        await apiGroupeIntervenant.editGroupeIntervenant(this.data);
       }
+      if (this.table === 'volumes-hebdomadaires') {
+        if (this.typeCours === 'cm') this.data.vol_hor_cm = this.volHorSemaineDefaut;
+        if (this.typeCours === 'td') this.data.vol_hor_td = this.volHorSemaineDefaut;
+        if (this.typeCours === 'tp') this.data.vol_hor_tp = this.volHorSemaineDefaut;
+        if (this.typeCours === 'partiel') this.data.vol_hor_partiel = this.volHorSemaineDefaut;
+        await apiVolumeHebdomadaire.editVolumeHebdomadaire(this.data);
+      }
+      if (this.table === 'volumes-globaux') {
+        if (this.typeCours === 'cm') this.data.vol_hor_cm = this.volHorSemaineDefaut;
+        if (this.typeCours === 'td') this.data.vol_hor_td = this.volHorSemaineDefaut;
+        if (this.typeCours === 'tp') this.data.vol_hor_tp = this.volHorSemaineDefaut;
+        if (this.typeCours === 'partiel') this.data.vol_hor_partiel = this.volHorSemaineDefaut;
+        await apiVolumeGlobaux.editVolumeGlobaux(this.data);
+      }
+      this.loading = false;
     },
   }
 }

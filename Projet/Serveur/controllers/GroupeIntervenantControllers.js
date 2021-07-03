@@ -21,9 +21,9 @@ exports.getAllGroupeIntervenants = (req, res) => {
         +' ON ee.parent = eee.id'
         +' GROUP BY g.element_id, g.id'
         +' ORDER BY g.element_id, g.intervenant_id, g.num_semaine',
-    function(err, groupe_intervenants) {
+    function(err, groupes_intervenants) {
       if (!err) {
-        res.status(200).json(groupe_intervenants);  
+        res.status(200).json(groupes_intervenants);  
       }
       else {
         res.send(err);
@@ -63,9 +63,9 @@ exports.getIntervenantByModule = (req, res) => {
         +' JOIN enseignant AS e'
         +' ON e.id = i.enseignant_id'
         +' GROUP BY g.element_id, g.intervenant_id',
-    function(err, groupe_intervenant) {
+    function(err, groupes_intervenants) {
       if (!err) {
-        res.status(200).json(groupe_intervenant);  
+        res.status(200).json(groupes_intervenants);  
       }
       else {
         res.send(err);
@@ -125,29 +125,24 @@ exports.addVolumesHebdomadaires = (req, res) => {
     intervenant_id : intervenantId,
   };
 
+  var requete="INSERT INTO groupe_intervenant(num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel, element_id, intervenant_id) VALUES ";
+
   for (let i = nbSemaineDeb; i <= nbSemaineFin; i++) {
     data['num_semaine'] = i;
-
-    var requete="INSERT INTO groupe_intervenant(num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel, element_id, intervenant_id) VALUES ('" 
-      + data['num_semaine'] + "','"
-      + data['nb_groupe_cm'] + "','"
-      + data['nb_groupe_td'] + "','"
-      + data['nb_groupe_tp'] + "','"
-      + data['nb_groupe_partiel'] + "','"
-      + data['element_id'] + "','"
-      + data['intervenant_id'] + "');"
-    ;
-    ;
-    db.query(requete,
-      function(err) {
-        if (!err) {
-          res.status(200); 
-        } else  {
-          res.send(err);
-        }
-      }
-    );
+    var values ="('" + data['num_semaine'] + "','"+ data['nb_groupe_cm'] + "','"+ data['nb_groupe_td'] + "','"+ data['nb_groupe_tp'] + "','"+ data['nb_groupe_partiel'] + "','"+ data['element_id'] + "','"+ data['intervenant_id'] + "')";
+    if (i < nbSemaineFin) values += ",";
+    requete += values;
   }
+
+  db.query(requete,
+    function(err, groupe_intervenant) {
+      if (!err) {
+        res.status(200).json(groupe_intervenant); 
+      } else  {
+        res.send(err);
+      }
+    }
+  );
 };
 
 
@@ -204,9 +199,9 @@ exports.editGroupeIntervenant = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, groupe_intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(groupe_intervenant); 
       } else {
         res.send(err);
       }
@@ -237,9 +232,9 @@ exports.editTypeValueElementGroupeIntervenant = (req, res) => {
   +" WHERE element_id = " + req.params.id +" AND intervenant_id  = " + req.params.intervenant + ";";
 
   db.query(requete,
-    function(err) {
+    function(err, groupe_intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(groupe_intervenant); 
       } else {
         res.send(err);
       }
@@ -296,9 +291,9 @@ exports.deleteAllGroupesIntervenantsByFormation = (req, res) => {
 
 exports.deleteAllGroupesIntervenants = (req, res) => {
   db.query('DELETE FROM groupe_intervenant WHERE element_id = ' + req.params.element + ' AND intervenant_id = ' + req.params.intervenant,
-    function(err) {
+    function(err, groupe_intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(groupe_intervenant); 
       }
       else {
         res.send(err);
@@ -310,9 +305,9 @@ exports.deleteAllGroupesIntervenants = (req, res) => {
 
 exports.deleteGroupeIntervenant = (req, res) => {
   db.query('DELETE FROM groupe_intervenant WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, groupe_intervenant) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(groupe_intervenant); 
       }
       else {
         res.send(err);

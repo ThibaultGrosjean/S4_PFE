@@ -7,6 +7,29 @@
       ></v-progress-circular>
     </v-overlay>
     <v-row>
+      <v-col class="text-center">
+        <h1 class="text-h4 animate-pop-in">Liste des intervenants</h1>
+        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex justify-start animate-pop-in">
+        <v-btn outlined rounded color="primary" @click="redirect('/projets')">
+          <v-icon class="mr-2">folder</v-icon>Retourner aux projets
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex justify-end animate-pop-in">
+        <v-btn outlined rounded color="primary" @click="redirect('/formations/projets/'+ Number($route.params.id))">
+          <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-if="!intervenants.length">
+        <p class="text-center animate-pop-in">Aucun intervenant sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col sm="12" class="animate-pop-in">
         <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
           L'intervenant a été {{ typeOperation }} avec succès.
@@ -18,7 +41,7 @@
           v-model="checkboxSelectAll"
           label="Tout sélectionner"
           color="primary"
-          class="ma-0 ml-5"
+          class="ma-0 ml-3"
           @click="checkAllInterv"
       ></v-checkbox>
       <v-tooltip top v-if="deleteSelected.length">
@@ -39,51 +62,51 @@
     <v-item-group multiple v-model="deleteSelected">
       <v-row>
         <v-col
-          v-for="i in intervenants"
-          :key="i.id"
-          sm="4"
-          class="justify-center"
-      >
-        <v-item v-slot="{ active, toggle }" :value="i">
-          <v-card class="animate-pop-in">
-            <v-card-title class="pl-2">
-              <v-btn
-                  icon
-                  @click="toggle"
-                  :color="active ? 'primary' : 'gray'"
-              >
-                <v-icon>
-                  {{ active ? 'check_box' : 'check_box_outline_blank' }}
-                </v-icon>
-              </v-btn>
-              <span class="text-h5 ml-2">{{ i.prenom }} {{ i.nom }}</span>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-              <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
-              <p>Le Nombre d'heures maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b></p>
-              <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
-              <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="edit(i)"
-                  >
-                    <v-icon>edit</v-icon>
-                  </v-btn>
-                </template>
-                <span>Modifier</span>
-              </v-tooltip>
-            </v-card-actions>
-          </v-card>
-        </v-item>
-      </v-col>
+            v-for="i in intervenants"
+            :key="i.id"
+            sm="4"
+            class="justify-center"
+        >
+          <v-item v-slot="{ active, toggle }" :value="i">
+            <v-card class="animate-pop-in">
+              <v-card-title class="pl-2">
+                <v-btn
+                    icon
+                    @click="toggle"
+                    :color="active ? 'primary' : 'gray'"
+                >
+                  <v-icon>
+                    {{ active ? 'check_box' : 'check_box_outline_blank' }}
+                  </v-icon>
+                </v-btn>
+                <span class="text-h5 ml-2">{{ i.prenom }} {{ i.nom }}</span>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
+                <p>Le Nombre d'heures maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b></p>
+                <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
+                <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="edit(i)"
+                    >
+                      <v-icon>edit</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Modifier</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-card>
+          </v-item>
+        </v-col>
       </v-row>
     </v-item-group>
     <v-row justify="center">
@@ -230,6 +253,7 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
+                :loading="loading"
                 color="success darken-1"
                 class="mr-4"
                 text
@@ -260,12 +284,12 @@
 <script>
 import apiIntervenant from "../services/API/intervenants";
 import apiEnseignant from "../services/API/enseignants";
+import apiProjet from "../services/API/projets";
 import {validationMixin} from "vuelidate";
 import {decimal, required} from "vuelidate/lib/validators";
-import apiStatut from "../services/API/statuts";
 
 export default {
-  name: "ReadIntervenants",
+  name: "Intervenants",
   mixins: [validationMixin],
 
   validations: {
@@ -277,6 +301,7 @@ export default {
   data: () => ({
     enseignants: [],
     intervenants: [],
+    projet: [],
     form: false,
     dialog: false,
     loading: false,
@@ -301,15 +326,27 @@ export default {
     async getIntervenantsByProjet() {
       this.intervenants = await apiIntervenant.getIntervenantsByProjet(this.$route.params.id);
     },
+    async getProjet() {
+      this.projet = await apiProjet.getProjet(this.$route.params.id);
+    },
+    async getEnseignantProjetNotInIntervenant(){
+      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignantByProjetNotInIntervenant(Number(this.$route.params.id));
+    },
+    async getEnseignants() {
+      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignants();
+    },
+    async returnEnseignant(id){
+      return await apiEnseignant.getEnseignant(id);
+    },
     async submit() {
-      this.loading = true
+      this.loading = true;
       if (this.methods === 'POST'){
-        this.$v.$touch()
+        this.$v.$touch();
         if (this.enseignant_id.length <= 0) {
           return;
         } else {
           for (let i = 0; i < this.enseignant_id.length; i++) {
-            var enseignant = await this.returnEnseignant(this.enseignant_id[i])
+            var enseignant = await this.returnEnseignant(this.enseignant_id[i]);
             var intervenant = {
               enseignant_id: this.enseignant_id[i],
               projet_id: Number(this.$route.params.id),
@@ -323,7 +360,7 @@ export default {
           this.typeOperation = 'ajouté';
         }
       } else {
-        this.$v.$touch()
+        this.$v.$touch();
         if (this.$v.$invalid) return;
         const intervenant = {
           id: this.id,
@@ -338,136 +375,122 @@ export default {
         this.typeOperation = 'modifié';
       }
       await this.getIntervenantsByProjet();
-      this.clear()
-      this.loading = false
-      this.form = false
+      this.clear();
+      this.loading = false;
+      this.form = false;
       this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset()
-      this.id = ''
-      this.nb_he_td_min_attendu_projet = ''
-      this.nb_he_td_max_attendu_projet = ''
-      this.nb_he_td_min_sup_projet = ''
-      this.nb_he_td_max_sup_projet = ''
-      this.projet_id = null
-      this.enseignant_id = []
+      this.$v.$reset();
+      this.id = '';
+      this.nb_he_td_min_attendu_projet = '';
+      this.nb_he_td_max_attendu_projet = '';
+      this.nb_he_td_min_sup_projet = '';
+      this.nb_he_td_max_sup_projet = '';
+      this.projet_id = null;
+      this.enseignant_id = [];
     },
     close() {
-      this.form = false
-      this.getEnseignantProjetNotInIntervenant()
-      this.methods = 'POST'
-      this.clear()
+      this.getEnseignantProjetNotInIntervenant();
+      this.form = false;
+      this.methods = 'POST';
+      this.clear();
     },
     addIntervenant() {
-      this.getEnseignantProjetNotInIntervenant()
-      this.projet_id = Number(this.$route.params.id)
-      this.methods = 'POST'
-      this.form = true
-    },
-    edit(intervenant) {
-      this.methods = 'PUT'
-      this.getEnseignants()
-
-      this.id = intervenant.id
-      this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet
-      this.nb_he_td_max_attendu_projet = intervenant.nb_he_td_max_attendu_projet
-      this.nb_he_td_min_sup_projet = intervenant.nb_he_td_min_sup_projet
-      this.nb_he_td_max_sup_projet = intervenant.nb_he_td_max_sup_projet
-      this.projet_id = intervenant.projet_id
-      this.enseignant_id = intervenant.enseignant_id
+      this.getEnseignantProjetNotInIntervenant();
+      this.projet_id = Number(this.$route.params.id);
+      this.methods = 'POST';
       this.form = true;
     },
-    async returnEnseignant(id){
-      return await apiEnseignant.getEnseignant(id)
-    },
-    toTime(date) {
-      return new Date(date).toISOString().substr(0, 4)
-    },
-    async getEnseignantProjetNotInIntervenant(){
-      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignantByProjetNotInIntervenant(Number(this.$route.params.id));
-    },
-    async getEnseignants() {
-      this.enseignantByProjetNotInIntervenant = await apiEnseignant.getEnseignants();
-    },
-    submitGrpInterv() {
-      this.$v.$touch()
-      if (this.enseignant_id.length <= 0) {
-        return;
-      } else {
-        for (let i = 0; i < this.enseignant_id.length; i++) {
-          this.$store.commit('ADD_Intervenant', {module: this.idElement, intervenant: this.intervenant_id[i], nb_semaine_deb: 1, nb_semaine_fin: this.nb_semaine})
-        }
-      }
-      this.closeGrpIntev()
+    edit(intervenant) {
+      this.methods = 'PUT';
+      this.getEnseignants();
+
+      this.id = intervenant.id;
+      this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet;
+      this.nb_he_td_max_attendu_projet = intervenant.nb_he_td_max_attendu_projet;
+      this.nb_he_td_min_sup_projet = intervenant.nb_he_td_min_sup_projet;
+      this.nb_he_td_max_sup_projet = intervenant.nb_he_td_max_sup_projet;
+      this.projet_id = intervenant.projet_id;
+      this.enseignant_id = intervenant.enseignant_id;
+      this.form = true;
     },
     checkAllInterv() {
-      this.deleteSelected.splice(0, this.deleteSelected.length)
+      this.deleteSelected.splice(0, this.deleteSelected.length);
       if (this.checkboxSelectAll){
         for (let i = 0; i < this.intervenants.length; i++) {
-          this.deleteSelected.push(this.intervenants[i])
+          this.deleteSelected.push(this.intervenants[i]);
         }
       }
     },
     async deleteAllSelectedIntervenant() {
       var verif = 0;
+      this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbGrpInterv === 0){
-          this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
-          await this.getIntervenantsByProjet();
-          return verif;
+          await apiIntervenant.deleteIntervenant(this.deleteSelected[i].id);
+          this.typeOperation = 'supprimé';
+          this.responseSuccess = true;
         } else {
-          verif += 1
+          verif += 1;
         }
       }
-      if (verif > 0){
-        this.dialog = true
-      }
+      if (verif > 0) this.dialog = true;
+      this.loading = false;
       await this.getIntervenantsByProjet();
-      return verif
     },
-    //TODO Delete
     async validDeleteAllIntervenant(){
+      this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
-        this.$store.commit('DELETE_Intervenant', this.deleteSelected[i].id)
+        await apiIntervenant.deleteIntervenant(this.deleteSelected[i].id);
       }
+      this.dialog = false;
+      this.loading = false;
       await this.getIntervenantsByProjet();
-      this.dialog = false
-    }
+      this.typeOperation = 'supprimé';
+      this.responseSuccess = true;
+    },
+    toTime(date) {
+      return new Date(date).toISOString().substr(0, 4);
+    },
+    redirect(path) {
+      this.$router.push({path: path}).catch(() => {});
+    },
   },
   computed: {
     nb_he_td_min_attendu_projetErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors
-      !this.$v.nb_he_td_min_attendu_projet.decimal && errors.push('Le Nombre d\'heures minimales attendues pour le projet doit être un numérique')
-      !this.$v.nb_he_td_min_attendu_projet.required && errors.push('Le Nombre d\'heures minimales attendues pour le projet est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors;
+      !this.$v.nb_he_td_min_attendu_projet.decimal && errors.push('Le Nombre d\'heures minimales attendues pour le projet doit être un numérique');
+      !this.$v.nb_he_td_min_attendu_projet.required && errors.push('Le Nombre d\'heures minimales attendues pour le projet est obligatoire');
+      return errors;
     },
     nb_he_td_max_attendu_projetErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_max_attendu_projet.$dirty) return errors
-      !this.$v.nb_he_td_max_attendu_projet.decimal && errors.push('Le Nombre d\'heures maximales attendues pour le projet doit être un numérique')
-      !this.$v.nb_he_td_max_attendu_projet.required && errors.push('Le Nombre d\'heures maximales attendues pour le projet est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_max_attendu_projet.$dirty) return errors;
+      !this.$v.nb_he_td_max_attendu_projet.decimal && errors.push('Le Nombre d\'heures maximales attendues pour le projet doit être un numérique');
+      !this.$v.nb_he_td_max_attendu_projet.required && errors.push('Le Nombre d\'heures maximales attendues pour le projet est obligatoire');
+      return errors;
     },
     nb_he_td_min_sup_projetErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_min_sup_projet.$dirty) return errors
-      !this.$v.nb_he_td_min_sup_projet.decimal && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet doit être un numérique')
-      !this.$v.nb_he_td_min_sup_projet.required && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_min_sup_projet.$dirty) return errors;
+      !this.$v.nb_he_td_min_sup_projet.decimal && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet doit être un numérique');
+      !this.$v.nb_he_td_min_sup_projet.required && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet est obligatoire');
+      return errors;
     },
     nb_he_td_max_sup_projetErrors() {
-      const errors = []
-      if (!this.$v.nb_he_td_max_sup_projet.$dirty) return errors
-      !this.$v.nb_he_td_max_sup_projet.decimal && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet doit être un numérique')
-      !this.$v.nb_he_td_max_sup_projet.required && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.nb_he_td_max_sup_projet.$dirty) return errors;
+      !this.$v.nb_he_td_max_sup_projet.decimal && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet doit être un numérique');
+      !this.$v.nb_he_td_max_sup_projet.required && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet est obligatoire');
+      return errors;
     },
   },
   mounted() {
-    this.getIntervenantsByProjet()
-    this.getEnseignantProjetNotInIntervenant()
+    this.getIntervenantsByProjet();
+    this.getProjet();
+    this.getEnseignantProjetNotInIntervenant();
   },
 }
 </script>

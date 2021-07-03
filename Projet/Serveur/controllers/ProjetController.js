@@ -76,10 +76,11 @@ exports.copyProjet = (req, res) => {
         ;
 
         db.query(requete,
-          function(err) {
+          function(err, projets) {
             if (!err) {
-              res.status(200); 
-            } else  {
+              res.status(200).json(projets);  
+            }
+            else {
               res.send(err);
             }
           }
@@ -121,11 +122,10 @@ exports.editProjet = (req, res) => {
 // Vérifier les relations avec les autres tables
 exports.deleteProjet = (req, res) => {
   db.query('DELETE FROM projet WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, projet) {
       if (!err) {
-        res.status(200); 
-      }
-      else {
+        res.status(200).json(projet); 
+      } else {
         res.send(err);
       }
     }

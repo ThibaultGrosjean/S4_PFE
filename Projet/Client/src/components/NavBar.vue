@@ -66,7 +66,6 @@ export default {
       {text: "Enseignants",icon:"person", path: "/enseignants"},
       {text: "Projets",icon:"folder", path: "/projets"},
       {text: "Statuts",icon:"grade", path: "/statuts"},
-      {text: "Volumes globaux",icon: "pie_chart", path: "/volumes-globaux"},//
     ]
   }),
   methods: {

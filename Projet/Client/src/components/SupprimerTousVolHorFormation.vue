@@ -3,6 +3,7 @@
     <v-tooltip top>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
+            :loading="loading"
             icon
             v-bind="attrs"
             v-on="on"
@@ -54,17 +55,26 @@
 </template>
 
 <script>
+import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
+import apiVolumeGlobaux from "../services/API/volumes-globaux";
+
 export default {
   name: "SupprimerTousVolHorFormation",
   props: ['formation'],
 
   data: () => ({
     dialog: false,
+    loading: false,
   }),
   methods: {
-    valider() {
-      this.$store.dispatch('DELETE_AllVolumesHebdomadairesByFormation', this.formation.id);
-      this.$store.dispatch('DELETE_AllVolumesGlobauxByFormation', this.formation.id);
+    async valider() {
+      this.loading = true;
+      await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByFormation(this.formation.id);
+      await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(this.formation.id);
+      await apiVolumeGlobaux.deleteVolumeGlobauxByFormation(this.formation.id);
+      this.$emit('relaod-all-volumes');
+      this.loading = false;
       this.dialog = false;
     }
   }

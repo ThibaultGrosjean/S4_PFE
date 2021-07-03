@@ -24,6 +24,11 @@ const apiElement = {
   async deleteElement(elementId) {
     const response = await axios.delete('/elements/delete/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;
+  },
+
+  async deleteHierarchie(elementId) {
+    const response = await axios.delete('/elements/hierarchie/delete/' + elementId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
   }
 };
 

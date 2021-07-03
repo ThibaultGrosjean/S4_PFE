@@ -66,7 +66,7 @@ app.get('/projets/get', projetController.getAllProjets);
 
 app.get('/projets/get/:id', projetController.getProjet);
 
-app.put('/projets/create/:name',projetController.validator, projetController.addProjet);
+app.post('/projets/create/:name',projetController.validator, projetController.addProjet);
 
 app.post('/projets/copy/:id',projetController.validator, projetController.copyProjet);
 
@@ -79,13 +79,11 @@ app.get('/elements/get', elementController.getAllElements);
 
 app.get('/elements/get/:id', elementController.getElement);
 
-app.get('/elements/get/level/:id', elementController.getAllLevelElements);
-
 app.post('/elements/create/',elementController.validator, elementController.addElement);
 
 app.post('/elements/copy/:id',elementController.validator, elementController.copyElement);
 
-app.put('/elements/edit/:id',elementController.validator, elementController.editElement);
+app.patch('/elements/edit/:id',elementController.validator, elementController.editElement);
 
 app.delete('/elements/delete/:id', elementController.deleteElement);
 
@@ -124,9 +122,11 @@ app.get('/periodes/get', periodeController.getAllPeriodes);
 
 app.get('/periodes/get/:id', periodeController.getPeriode);
 
+app.get('/periodes/element/get/:id', periodeController.getPeriodeByElementId);
+
 app.post('/periodes/create/',periodeController.validator, periodeController.addPeriode);
 
-app.put('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
+app.patch('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
 
 app.delete('/periodes/delete/:id', periodeController.deletePeriode);
 
@@ -143,9 +143,9 @@ app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaineDeb/:semaineFi
 
 app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.copyVolumeHebdomadaire);
 
-app.put('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
+app.patch('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
 
-app.put('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadaireController.validator, volumeHebdomadaireController.editTypeValueElementVolumeHebdomadaire);
+app.patch('/volumes-hebdomadaires/edit/:value/elements/:id/:type',volumeHebdomadaireController.validator, volumeHebdomadaireController.editTypeValueElementVolumeHebdomadaire);
 
 app.delete('/volumes-hebdomadaires/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', volumeHebdomadaireController.deleteAllVolumesHebdomadairesBySemaine);
 
@@ -164,7 +164,7 @@ app.post('/volumes-globaux/create/',volumeGlobaleController.validator, volumeGlo
 
 app.post('/volumes-globaux/copy/:id',volumeGlobaleController.validator, volumeGlobaleController.copyVolumeGlobale);
 
-app.put('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
+app.patch('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
 
 app.delete('/volumes-globaux/formation/delete/:id', volumeGlobaleController.deleteAllVolumesGlobauxByFormation);
 
@@ -183,9 +183,9 @@ app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/n
 
 app.post('/groupes-intervenants/copy/:id',groupeIntervenantController.validator, groupeIntervenantController.copyGroupeIntervenant);
 
-app.put('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
+app.patch('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
 
-app.put('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant',groupeIntervenantController.validator, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
+app.patch('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant',groupeIntervenantController.validator, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
 
 app.delete('/groupes-intervenants/semestre/:id/nbsemaine/:semaineDeb/:semaineFin/delete', groupeIntervenantController.deleteAllGroupesIntervenantsBySemaine);
 

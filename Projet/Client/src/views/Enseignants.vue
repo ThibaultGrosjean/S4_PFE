@@ -344,7 +344,7 @@ export default {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
-      this.$v.$touch()
+      this.$v.$touch();
       if (this.$v.$invalid) return;
       const enseignant = {
         id: this.id,
@@ -355,7 +355,7 @@ export default {
         statut_id: this.statut_id,
         statut: this.returnStatut(this.statut_id)
       }
-      this.loading = true
+      this.loading = true;
       if (this.methods === 'POST'){
         await apiEnseignant.createEnseignant(enseignant);
         this.typeOperation = 'ajouté';
@@ -364,128 +364,128 @@ export default {
         this.typeOperation = 'modifié';
       }
       await this.getEnseignants();
-      this.clear()
-      this.loading = false
+      this.clear();
+      this.loading = false;
       this.form = false;
       this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset()
-      this.id = ''
-      this.nom = ''
-      this.prenom = ''
-      this.surnom = ''
-      this.email = ''
-      this.statut_id = null
+      this.$v.$reset();
+      this.id = '';
+      this.nom = '';
+      this.prenom = '';
+      this.surnom = '';
+      this.email = '';
+      this.statut_id = null;
     },
     close() {
-      this.form = !this.form
-      this.methods = 'POST'
-      this.clear()
+      this.form = !this.form;
+      this.methods = 'POST';
+      this.clear();
     },
     edit(enseignant) {
-      this.methods = 'PUT'
+      this.methods = 'PUT';
 
-      this.id = enseignant.id
-      this.nom = enseignant.nom
-      this.prenom = enseignant.prenom
-      this.surnom = enseignant.surnom.toUpperCase()
-      this.email = enseignant.email
-      this.statut_id = enseignant.statut.id
+      this.id = enseignant.id;
+      this.nom = enseignant.nom;
+      this.prenom = enseignant.prenom;
+      this.surnom = enseignant.surnom.toUpperCase();
+      this.email = enseignant.email;
+      this.statut_id = enseignant.statut.id;
       this.form = true;
     },
     async copy(enseignantId) {
-      this.loading = true
+      this.loading = true;
       await apiEnseignant.copyEnseignant(enseignantId);
       await this.getEnseignants();
-      this.loading = false
+      this.loading = false;
       this.typeOperation = 'copié';
       this.responseSuccess = true;
     },
     async delete() {
-      this.loading = true
+      this.loading = true;
       await apiEnseignant.deleteEnseignant(this.id);
       await this.getEnseignants();
-      this.typeOperation = 'supprimé'
-      this.responseSuccess = true
-      this.loading = false
-      this.dialog = false
+      this.typeOperation = 'supprimé';
+      this.responseSuccess = true;
+      this.loading = false;
+      this.dialog = false;
       this.clear()
     },
     returnStatut(id) {
-      let index = this.statuts.findIndex(statut => statut.id === id)
-      return this.statuts[index]
+      let index = this.statuts.findIndex(statut => statut.id === id);
+      return this.statuts[index];
     },
     openDialog(id) {
       this.id = id;
-      this.dialog = true
+      this.dialog = true;
     },
     sortedByPrenom() {
       if (this.sortPrenom) {
-        this.sortPrenom = false
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase())
+        this.sortPrenom = false;
+        this.enseignants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
       } else {
-        this.sortPrenom = true
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase())
+        this.sortPrenom = true;
+        this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
       }
     },
     sortedByNom() {
       if (this.sortNom) {
-        this.sortNom = false
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase())
+        this.sortNom = false;
+        this.enseignants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       } else {
-        this.sortNom = true
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase())
+        this.sortNom = true;
+        this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
       }
     },
     sortedByStatut() {
       if (this.sortStatut) {
-        this.sortStatut = false
-        this.enseignants.sort((a, b) => a.statut.id < b.statut.id)
+        this.sortStatut = false;
+        this.enseignants.sort((a, b) => a.statut.id < b.statut.id);
       } else {
-        this.sortStatut = true
-        this.enseignants.sort((a, b) => a.statut.id > b.statut.id)
+        this.sortStatut = true;
+        this.enseignants.sort((a, b) => a.statut.id > b.statut.id);
       }
     }
   },
   computed: {
     statutErrors() {
-      const errors = []
-      if (!this.$v.statut_id.$dirty) return errors
-      !this.$v.statut_id.required && errors.push('Veuillez sélectionner un statut')
-      return errors
+      const errors = [];
+      if (!this.$v.statut_id.$dirty) return errors;
+      !this.$v.statut_id.required && errors.push('Veuillez sélectionner un statut');
+      return errors;
     },
     nomErrors() {
-      const errors = []
-      if (!this.$v.nom.$dirty) return errors
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères')
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.nom.$dirty) return errors;
+      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
+      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
+      return errors;
     },
     prenomErrors() {
-      const errors = []
-      if (!this.$v.prenom.$dirty) return errors
-      !this.$v.prenom.maxLength && errors.push('Le prénom ne doit pas faire plus de 255 caractères')
-      !this.$v.prenom.required && errors.push('Le prenom est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.prenom.$dirty) return errors;
+      !this.$v.prenom.maxLength && errors.push('Le prénom ne doit pas faire plus de 255 caractères');
+      !this.$v.prenom.required && errors.push('Le prenom est obligatoire.');
+      return errors;
     },
     surnomErrors() {
-      const errors = []
-      if (!this.$v.surnom.$dirty) return errors
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 3 caractères')
-      return errors
+      const errors = [];
+      if (!this.$v.surnom.$dirty) return errors;
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 3 caractères');
+      return errors;
     },
     emailErrors() {
-      const errors = []
-      if (!this.$v.email.$dirty) return errors
-      !this.$v.email.email && errors.push('Veuillez saisir un mail valide')
-      !this.$v.email.required && errors.push('L\'e-mail est obligatoire')
-      return errors
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push('Veuillez saisir un mail valide');
+      !this.$v.email.required && errors.push('L\'e-mail est obligatoire');
+      return errors;
     },
   },
   mounted() {
-    this.getEnseignants()
-    this.getStatuts()
+    this.getEnseignants();
+    this.getStatuts();
   },
 }
 </script>

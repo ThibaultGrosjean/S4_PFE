@@ -48,7 +48,7 @@
           v-model="switchArchive"
           :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
           color="success"
-          class="ml-4 animate-pop-in"
+          class="ml-4 mt-0 animate-pop-in"
       ></v-switch>
     </v-row>
     <v-row>
@@ -313,13 +313,20 @@ export default {
     async getProjets() {
       this.projets = await apiProjet.getProjets();
     },
-    toTime(date) {
-      return new Date(date).toISOString().substr(0, 10)
+    async saveVerrou(projet) {
+      projet.date = this.toTime(projet.date);
+      projet.verrou = Number(!projet.verrou);
+      await apiProjet.editProjet(projet);
+    },
+    async saveArchive(projet) {
+      projet.date = this.toTime(projet.date);
+      projet.archive = Number(!projet.archive);
+      await apiProjet.editProjet(projet);
     },
     async submit() {
-      this.$v.$touch()
+      this.$v.$touch();
       if (this.$v.$invalid) return;
-      this.loading = true
+      this.loading = true;
       if (this.methods === 'POST') {
         await apiProjet.createProjet(this.nom);
       } else {
@@ -332,73 +339,66 @@ export default {
         });
       }
       await this.getProjets();
-      this.clear()
+      this.clear();
       this.loading = false
       this.form = false;
       this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset()
-      this.id = ''
-      this.nom = ''
-      this.verrou = false
-      this.archive = false
+      this.$v.$reset();
+      this.id = '';
+      this.nom = '';
+      this.verrou = false;
+      this.archive = false;
     },
     close() {
-      this.form = !this.form
-      this.clear()
-      this.methods = 'POST'
+      this.form = !this.form;
+      this.clear();
+      this.methods = 'POST';
     },
     edit(projet) {
-      this.methods = 'PUT'
+      this.methods = 'PUT';
 
-      this.id = projet.id
-      this.nom = projet.nom
-      this.date = this.toTime(projet.date)
-      this.verrou = Boolean(projet.verrou)
-      this.archive = Boolean(projet.archive)
+      this.id = projet.id;
+      this.nom = projet.nom;
+      this.date = this.toTime(projet.date);
+      this.verrou = Boolean(projet.verrou);
+      this.archive = Boolean(projet.archive);
       this.form = true;
     },
     async save(projet) {
-      this.loading = true
-      projet.date = this.toTime(projet.date)
+      this.loading = true;
+      projet.date = this.toTime(projet.date);
       await apiProjet.editProjet(projet);
-      this.loading = false
+      this.loading = false;
+    },
+    toTime(date) {
+      return new Date(date).toISOString().substr(0, 10);
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
     },
-    async saveVerrou(projet) {
-      projet.date = this.toTime(projet.date)
-      projet.verrou = Number(!projet.verrou)
-      await apiProjet.editProjet(projet);
-    },
-    async saveArchive(projet) {
-      projet.date = this.toTime(projet.date)
-      projet.archive = Number(!projet.archive)
-      await apiProjet.editProjet(projet);
-    },
     sortedByDate() {
       if (this.sortDate) {
-        this.sortDate = false
-        this.projets.sort((a, b) => new Date(b.date) - new Date(a.date))
+        this.sortDate = false;
+        this.projets.sort((a, b) => new Date(b.date) - new Date(a.date));
       } else {
-        this.sortDate = true
-        this.projets.sort((a, b) => new Date(a.date) - new Date(b.date))
+        this.sortDate = true;
+        this.projets.sort((a, b) => new Date(a.date) - new Date(b.date));
       }
     },
   },
   computed: {
     nomErrors() {
-      const errors = []
-      if (!this.$v.nom.$dirty) return errors
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères')
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.')
-      return errors
+      const errors = [];
+      if (!this.$v.nom.$dirty) return errors;
+      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
+      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
+      return errors;
     },
   },
   mounted() {
-    this.getProjets()
+    this.getProjets();
   }
 }
 </script>

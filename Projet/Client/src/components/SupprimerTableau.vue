@@ -48,6 +48,7 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
+              :loading="loading"
               color="success darken-1"
               class="mr-4"
               text
@@ -62,23 +63,32 @@
 </template>
 
 <script>
+import apiGroupeIntervenant from "../services/API/groupes-intervenants";
+import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
 export default {
   name: "SupprimerTableau",
   props: ['type', 'module', 'intervenant', 'disabled'],
 
   data: () => ({
     dialog: false,
+    loading: false,
   }),
   methods: {
-    deleteAll(){
+    async deleteAll(){
       if (this.type === 'groupes-intervenants'){
-        this.$store.dispatch('DELETE_AllGroupeIntervenant', {element_id: this.module.id, intervenant_id: this.intervenant.intervenant_id})
+        this.loading = true;
+        await apiGroupeIntervenant.deleteGroupeIntervenantByElement(this.module.id, this.intervenant.intervenant_id);
+        this.loading = false;
+        this.$emit('reload-groupes-intervenants-module');
       } else if (this.type === 'volumes-hebdomadaires') {
-        this.$store.dispatch('DELETE_AllVolumesHebdomadaires', this.module.id);
+        this.loading = true;
+        await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByElement(this.module.id);
+        this.loading = false;
+        this.$emit('reload-volumes-hebdomadaires-module');
       } else if (this.type === 'volumes-globaux') {
-        console.log()
+        console.log();
       }
-      this.dialog = false
+      this.dialog = false;
     }
   }
 }

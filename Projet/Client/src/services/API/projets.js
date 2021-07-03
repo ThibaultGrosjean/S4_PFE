@@ -12,7 +12,7 @@ const apiProjet = {
   },
 
   async createProjet(nom) {
-    const response = await axios.put('/projets/create/' + nom).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/projets/create/' + nom).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

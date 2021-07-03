@@ -182,9 +182,9 @@ exports.deleteIntervenant = (req, res) => {
   );
   // Supprime l'intervenant
   db.query('DELETE FROM intervenant WHERE id = ? ;',[req.params.id],
-    function(err) {
+    function(err, intervenants) {
       if (!err) {
-        res.status(200); 
+        res.status(200).json(intervenants);  
       }
       else {
         res.send(err);

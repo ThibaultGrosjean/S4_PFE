@@ -16,6 +16,11 @@ const apiIntervenant = {
     return response.data;
   },
 
+  async getIntervenantsByProjetNotInModule(projetId, moduleId) {
+    const response = await axios.get('/intervenants/projets/' + projetId + '/module/' + moduleId + '/get').catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async createIntervenant(intervenant) {
     const response = await axios.post('/intervenants/create', intervenant).catch(error => console.error('Erreur API: ', error));
     return response.data;
@@ -23,11 +28,6 @@ const apiIntervenant = {
 
   async editIntervenant(intervenant) {
     const response = await axios.patch('/intervenants/edit/' + intervenant.id, intervenant).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
-  async copyIntervenant(intervenantId) {
-    const response = await axios.post('/intervenants/copy/' + intervenantId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

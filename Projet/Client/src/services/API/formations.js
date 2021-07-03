@@ -1,4 +1,8 @@
 import axios from "axios";
+import apiElement from "./elements";
+import apiVolumeHebdomadaire from "./volumes-hebdomadaires";
+import apiVolumeGlobaux from "./volumes-globaux";
+import apiGroupeIntervenant from "./groupes-intervenants";
 
 const apiFormation = {
   async getFormations() {
@@ -16,8 +20,16 @@ const apiFormation = {
     return response.data;
   },
 
-  async createFormation(formation) {
+  async createFormation(data) {
+    const responseElement = await apiElement.createElement(data.element)
+    console.log(responseElement.insertId);
+    const formation = {
+      verrou: Number(false),
+      projet_id: data.projet_id,
+      element_id: responseElement.insertId,
+    }
     const response = await axios.post('/formations/create', formation).catch(error => console.error('Erreur API: ', error));
+    console.log(response.data.insertId)
     return response.data;
   },
 
@@ -26,8 +38,15 @@ const apiFormation = {
     return response.data;
   },
 
-  async deleteFormation(formationId) {
-    const response = await axios.delete('/formations/delete/' + formationId).catch(error => console.error('Erreur API: ', error));
+  async deleteFormation(formation) {
+    const response = await axios.delete('/formations/delete/' + formation.id).catch(error => console.error('Erreur API: ', error));
+
+    await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByFormation(formation.element_id)
+    await apiVolumeGlobaux.deleteVolumeGlobauxByFormation(formation.element_id)
+    await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(formation.element_id)
+    //TODO DELETE DELETE_AllBilanByFormation
+    await apiElement.deleteHierarchie(formation.element_id)
+
     return response.data;
   }
 };
