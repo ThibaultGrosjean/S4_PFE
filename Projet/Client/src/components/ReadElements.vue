@@ -58,7 +58,7 @@
                         <span>Ajouter un semestre</span>
                       </v-tooltip>
                       <SupprimerTousGrpIntervenantFormation :formation="f" v-on:relaod-all-groupes="getGroupeIntervenantByModule"/>
-                      <SupprimerTousVolHorFormation :formation="f" v-on:relaod-all-volumes="getVolumeHebdomadaireByModule"/>
+                      <SupprimerTousVolHorFormation :formation="f" v-on:relaod-all-volumes="reloadData"/>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -108,7 +108,7 @@
                                   </template>
                                   <span>Modifier {{ semestre.titre }}</span>
                                 </v-tooltip>
-                                <EditPeriode :element="semestre"></EditPeriode>
+                                <EditPeriode :element="semestre" v-on:reload-periode="reloadData"></EditPeriode>
                                 <v-tooltip top>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
@@ -291,7 +291,7 @@
                                                                 <v-row>
                                                                   <v-col class="top-border pa-1"></v-col>
                                                                   <v-col class="top-border d-flex justify-center pa-1">
-                                                                    <span class="text-subtitle-1">Volumes horaires prévus pour un étudiant</span>
+                                                                    <span class="text-subtitle-1 text-center">Volumes horaires prévus pour un étudiant</span>
                                                                   </v-col>
                                                                   <v-col class="top-border pa-1 d-flex justify-end">
                                                                     <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled" v-on:reload-volumes-hebdomadaires-module="getVolumeHebdomadaireByModule"/>
@@ -366,7 +366,7 @@
                                                                         <v-row>
                                                                           <v-col class="top-border pa-1"></v-col>
                                                                           <v-col class="top-border d-flex justify-center pa-1">
-                                                                            <span class="text-subtitle-1">{{ i.prenom }} {{ i.nom }}</span>
+                                                                            <span class="text-subtitle-1 text-center">{{ i.prenom }} {{ i.nom }}</span>
                                                                           </v-col>
                                                                           <v-col class="top-border pa-1 d-flex justify-end">
                                                                             <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-groupes-intervenants-module="getGroupeIntervenantByModule"/>
@@ -762,7 +762,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -832,7 +831,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submitGrpInterv"
                 >
@@ -983,6 +981,14 @@ export default {
     async getGroupesIntervenants() {
       this.groupesIntervenants = await apiGroupeIntervenant.getGroupesIntervenants();
     },
+    async reloadData() {
+      await this.getVolumeHebdomadaireByModule();
+      await this.getVolumesHebdomadaires();
+      await this.getGroupeIntervenantByModule();
+      await this.getGroupesIntervenants();
+      await this.getvolumesGlobaux();
+      await this.getElements();
+    },
     async submit() {
       this.$v.$touch()
       if (this.$v.$invalid) return;
@@ -1026,19 +1032,20 @@ export default {
       }
       if (element.niveau === 3) {
         let index = this.elements.findIndex(e => e.id === element.parent);
-        var grand_pere_id = this.elements[index].parent
-        element.periode = await this.getPeriodeByElementId(grand_pere_id)
+        var grand_pere_id = this.elements[index].parent;
+        element.periode = await this.getPeriodeByElementId(grand_pere_id);
       }
-
       this.loading = true;
       if (this.methods === 'POST') {
-        this.$store.dispatch('ADD_Element', element);
+        await apiElement.createElement(element)
         this.typeOperation = 'ajouté';
       } else {
         await apiElement.editElement(element);
         this.typeOperation = 'modifié';
       }
       await this.getElements();
+      await this.getVolumeHebdomadaireByModule();
+      await this.getVolumesHebdomadaires();
       this.clear();
       this.loading = false;
       this.form = false;
@@ -1046,149 +1053,152 @@ export default {
     },
     clear() {
       this.$v.$reset()
-      this.idElement = ''
-      this.titre = ''
-      this.surnom = ''
-      this.code = ''
-      this.niveau = ''
-      this.indice = ''
-      this.vol_hor_total_prevues_etu_cm = null
-      this.vol_hor_total_prevues_etu_td = null
-      this.vol_hor_total_prevues_etu_tp = null
-      this.mode_saisie = ''
-      this.cm_autorises = true
-      this.td_autorises = true
-      this.tp_autorises = true
-      this.partiel_autorises = true
-      this.forfait_globale_cm = null
-      this.forfait_globale_td = null
-      this.forfait_globale_tp = null
-      this.forfait_globale_partiel = null
-      this.nb_groupe_effectif_cm = ''
-      this.nb_groupe_effectif_td = ''
-      this.nb_groupe_effectif_tp = ''
-      this.nb_groupe_effectif_partiel = ''
-      this.parent = null
-      this.nbfils = null
+      this.idElement = '';
+      this.titre = '';
+      this.surnom = '';
+      this.code = '';
+      this.niveau = '';
+      this.indice = '';
+      this.vol_hor_total_prevues_etu_cm = null;
+      this.vol_hor_total_prevues_etu_td = null;
+      this.vol_hor_total_prevues_etu_tp = null;
+      this.mode_saisie = '';
+      this.cm_autorises = true;
+      this.td_autorises = true;
+      this.tp_autorises = true;
+      this.partiel_autorises = true;
+      this.forfait_globale_cm = null;
+      this.forfait_globale_td = null;
+      this.forfait_globale_tp = null;
+      this.forfait_globale_partiel = null;
+      this.nb_groupe_effectif_cm = '';
+      this.nb_groupe_effectif_td = '';
+      this.nb_groupe_effectif_tp = '';
+      this.nb_groupe_effectif_partiel = '';
+      this.parent = null;
+      this.nbfils = null;
 
-      this.idPeriode = ''
-      this.nb_semaine = 1
-      this.old_nb_semaine = ''
-      this.nb_groupe_defaut_cm = 1
-      this.nb_groupe_defaut_td = 1
-      this.nb_groupe_defaut_tp = 1
-      this.nb_groupe_defaut_partiel = 1
+      this.idPeriode = '';
+      this.nb_semaine = 1;
+      this.old_nb_semaine = '';
+      this.nb_groupe_defaut_cm = 1;
+      this.nb_groupe_defaut_td = 1;
+      this.nb_groupe_defaut_tp = 1;
+      this.nb_groupe_defaut_partiel = 1;
     },
     close() {
-      this.form = !this.form
-      this.methods = 'POST'
-      this.clear()
+      this.form = !this.form;
+      this.methods = 'POST';
+      this.clear();
     },
     async edit(element) {
-      this.methods = 'PUT'
+      this.methods = 'PUT';
 
-      this.idElement = element.id
-      this.titre = element.titre
-      this.surnom = element.surnom
-      this.code = element.code
-      this.niveau = element.niveau
-      this.indice = element.indice
-      this.vol_hor_total_prevues_etu_cm = element.vol_hor_total_prevues_etu_cm
-      this.vol_hor_total_prevues_etu_td = element.vol_hor_total_prevues_etu_td
-      this.vol_hor_total_prevues_etu_tp = element.vol_hor_total_prevues_etu_tp
-      this.mode_saisie = element.mode_saisie
-      this.cm_autorises = element.cm_autorises
-      this.td_autorises = element.td_autorises
-      this.tp_autorises = element.tp_autorises
-      this.partiel_autorises = element.partiel_autorises
-      this.forfait_globale_cm = element.forfait_globale_cm
-      this.forfait_globale_td = element.forfait_globale_td
-      this.forfait_globale_tp = element.forfait_globale_tp
-      this.forfait_globale_partiel = element.forfait_globale_partiel
-      this.nb_groupe_effectif_cm = element.nb_groupe_effectif_cm
-      this.nb_groupe_effectif_td = element.nb_groupe_effectif_td
-      this.nb_groupe_effectif_tp = element.nb_groupe_effectif_tp
-      this.nb_groupe_effectif_partiel = element.nb_groupe_effectif_partiel
-      this.parent = element.parent
-      this.nbfils = element.nbfils
+      this.idElement = element.id;
+      this.titre = element.titre;
+      this.surnom = element.surnom;
+      this.code = element.code;
+      this.niveau = element.niveau;
+      this.indice = element.indice;
+      this.vol_hor_total_prevues_etu_cm = element.vol_hor_total_prevues_etu_cm;
+      this.vol_hor_total_prevues_etu_td = element.vol_hor_total_prevues_etu_td;
+      this.vol_hor_total_prevues_etu_tp = element.vol_hor_total_prevues_etu_tp;
+      this.mode_saisie = element.mode_saisie;
+      this.cm_autorises = element.cm_autorises;
+      this.td_autorises = element.td_autorises;
+      this.tp_autorises = element.tp_autorises;
+      this.partiel_autorises = element.partiel_autorises;
+      this.forfait_globale_cm = element.forfait_globale_cm;
+      this.forfait_globale_td = element.forfait_globale_td;
+      this.forfait_globale_tp = element.forfait_globale_tp;
+      this.forfait_globale_partiel = element.forfait_globale_partiel;
+      this.nb_groupe_effectif_cm = element.nb_groupe_effectif_cm;
+      this.nb_groupe_effectif_td = element.nb_groupe_effectif_td;
+      this.nb_groupe_effectif_tp = element.nb_groupe_effectif_tp;
+      this.nb_groupe_effectif_partiel = element.nb_groupe_effectif_partiel;
+      this.parent = element.parent;
+      this.nbfils = element.nbfils;
 
-      if (this.niveau === 0){
-        var periode = await this.getPeriodeByElementId(element.id)
-        this.idPeriode = periode[0].id
-        this.nb_semaine = periode[0].nb_semaine
-        this.old_nb_semaine = periode[0].nb_semaine
-        this.nb_groupe_defaut_cm = periode[0].nb_groupe_defaut_cm
-        this.nb_groupe_defaut_td = periode[0].nb_groupe_defaut_td
-        this.nb_groupe_defaut_tp = periode[0].nb_groupe_defaut_tp
-        this.nb_groupe_defaut_partiel = periode[0].nb_groupe_defaut_partiel
-        this.element_id = element.id
+      if (this.niveau === 1){
+        var periode = await this.getPeriodeByElementId(element.id);
+        this.idPeriode = periode[0].id;
+        this.nb_semaine = periode[0].nb_semaine;
+        this.old_nb_semaine = periode[0].nb_semaine;
+        this.nb_groupe_defaut_cm = periode[0].nb_groupe_defaut_cm;
+        this.nb_groupe_defaut_td = periode[0].nb_groupe_defaut_td;
+        this.nb_groupe_defaut_tp = periode[0].nb_groupe_defaut_tp;
+        this.nb_groupe_defaut_partiel = periode[0].nb_groupe_defaut_partiel;
+        this.element_id = element.id;
       }
 
       this.isFormation = this.parent === null;
       this.form = true;
     },
     addSemester(element) {
-      var nbfils = element.nbfils
-      if (nbfils === null) nbfils = 0
-      this.titre = "Semestre " + (nbfils + 1)
-      this.surnom = "S" + (nbfils + 1)
-      this.niveau = 1
-      this.mode_saisie = 'aucun'
-      this.indice = nbfils
-      this.parent = element.id
+      this.methods = 'POST';
+      var nbfils = element.nbfils;
+      if (nbfils === null) nbfils = 0;
+      this.titre = "Semestre " + (nbfils + 1);
+      this.surnom = "S" + (nbfils + 1);
+      this.niveau = 1;
+      this.mode_saisie = 'aucun';
+      this.indice = nbfils;
+      this.parent = element.id;
       this.isFormation = false;
       this.form = true;
     },
     async addUE(element) {
-      var indice = element.indice
-      var nbfils = element.nbfils
-      if (nbfils === null) nbfils = 0
-      this.titre = "UE " + (indice + 1) + (nbfils+1) + " : "
-      this.surnom = "UE" + (indice + 1) + (nbfils+1)
-      this.niveau = 2
-      this.mode_saisie = 'aucun'
-      this.indice = nbfils
-      this.parent = element.id
+      this.methods = 'POST';
+      var indice = element.indice;
+      var nbfils = element.nbfils;
+      if (nbfils === null) nbfils = 0;
+      this.titre = "UE " + (indice + 1) + (nbfils+1) + " : ";
+      this.surnom = "UE" + (indice + 1) + (nbfils+1);
+      this.niveau = 2;
+      this.mode_saisie = 'aucun';
+      this.indice = nbfils;
+      this.parent = element.id;
       var periode = await this.getPeriodeByElementId(element.id);
       if (periode !== -1 && periode !== undefined){
-        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm
-        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td
-        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp
-        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel
+        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm;
+        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td;
+        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp;
+        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel;
       }
       this.isFormation = false;
       this.form = true;
     },
     async addModule(element, semestre) {
-      var indice = element.indice
-      var indiceM = semestre.indice
-      var nbfils = element.nbfils
-      if (nbfils === null) nbfils = 0
+      this.methods = 'POST';
+      var indice = element.indice;
+      var indiceM = semestre.indice;
+      var nbfils = element.nbfils;
+      if (nbfils === null) nbfils = 0;
       if (nbfils + 1 < 10) {
-        this.titre = "M " + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1) + " : "
-        this.surnom = "M" + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1)
+        this.titre = "M " + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1) + " : ";
+        this.surnom = "M" + (indiceM + 1) + (indice + 1) + 0 + (nbfils + 1);
       } else {
-        this.titre = "M " + (indiceM + 1) + (indice + 1) + (nbfils + 1) + " : "
-        this.surnom = "M" + (indiceM + 1) + (indice + 1) + (nbfils + 1)
+        this.titre = "M " + (indiceM + 1) + (indice + 1) + (nbfils + 1) + " : ";
+        this.surnom = "M" + (indiceM + 1) + (indice + 1) + (nbfils + 1);
       }
-      this.niveau = 3
-      this.indice = nbfils
-      this.parent = element.id
+      this.niveau = 3;
+      this.indice = nbfils;
+      this.parent = element.id;
       const periode = await this.getPeriodeByElementId(semestre.id);
       if (periode !== -1 && periode !== undefined){
-        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm
-        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td
-        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp
-        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel
+        this.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm;
+        this.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td;
+        this.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp;
+        this.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel;
       }
       this.isFormation = false;
       this.form = true;
     },
     totalVolume(module, type) {
-      var volumeByModule = []
+      var volumeByModule = [];
       for (let i = 0; i < this.volumesHebdomadaires.length; i++) {
         if(this.volumesHebdomadaires[i].element_id === module.id){
-          volumeByModule.push(this.volumesHebdomadaires[i])
+          volumeByModule.push(this.volumesHebdomadaires[i]);
         }
       }
       let total = 0
@@ -1197,10 +1207,10 @@ export default {
       }, 0)
     },
     totalNbGroupe(module, intervenant, type) {
-      var vnbGroupeByModule = []
+      var vnbGroupeByModule = [];
       for (let i = 0; i < this.groupesIntervenants.length; i++) {
         if(this.groupesIntervenants[i].element_id === module.id && this.groupesIntervenants[i].intervenant_id === intervenant){
-          vnbGroupeByModule.push(this.groupesIntervenants[i])
+          vnbGroupeByModule.push(this.groupesIntervenants[i]);
         }
       }
       let total = 0
@@ -1209,7 +1219,7 @@ export default {
       }, 0)
     },
     async addGrpInterv(idModule, idSemestre){
-      await this.getIntervenantsByProjetNotInModule(idModule)
+      await this.getIntervenantsByProjetNotInModule(idModule);
       this.formIntervenant = true;
       this.idElement = idModule;
       const periode = await this.getPeriodeByElementId(idSemestre);
@@ -1228,17 +1238,17 @@ export default {
       }
       await this.getVolumeHebdomadaireByModule();
       this.loading = false;
-      this.formIntervenant = false
+      this.formIntervenant = false;
       await this.getGroupeIntervenantByModule();
       await this.getGroupesIntervenants();
-      await this.getIntervenantsByProjetNotInModule(this.idElement)
-      this.clearGrpInterv()
+      await this.getIntervenantsByProjetNotInModule(this.idElement);
+      this.clearGrpInterv();
     },
     clearGrpInterv() {
-      this.$v.$reset()
-      this.idElement = ''
-      this.intervenant_id = []
-      this.nb_semaine = 1
+      this.$v.$reset();
+      this.idElement = '';
+      this.intervenant_id = [];
+      this.nb_semaine = 1;
     },
     async addVolHebdo(module_id, semestre_id){
       const periode = await this.getPeriodeByElementId(semestre_id);
@@ -1256,112 +1266,112 @@ export default {
     mode_saisieErrors() {
       const errors = [];
       if (!this.$v.mode_saisie.$dirty) return errors;
-      !this.$v.mode_saisie.required && errors.push('Veuillez sélectionner un mode de saisie')
+      !this.$v.mode_saisie.required && errors.push('Veuillez sélectionner un mode de saisie');
       return errors;
     },
     titreErrors() {
       const errors = [];
       if (!this.$v.titre.$dirty) return errors;
-      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères')
-      !this.$v.titre.required && errors.push('Le titre est obligatoire.')
+      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères');
+      !this.$v.titre.required && errors.push('Le titre est obligatoire.');
       return errors;
     },
     surnomErrors() {
       const errors = [];
       if (!this.$v.surnom.$dirty) return errors;
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères')
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.')
+      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères');
+      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.');
       return errors;
     },
     codeErrors() {
       const errors = [];
       if (!this.$v.code.$dirty) return errors;
-      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères')
-      !this.$v.code.required && errors.push('Le code est obligatoire')
+      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères');
+      !this.$v.code.required && errors.push('Le code est obligatoire');
       return errors;
     },
     niveauErrors() {
       const errors = [];
       if (!this.$v.niveau.$dirty) return errors;
-      !this.$v.niveau.numeric && errors.push('Le niveau doit être un entier')
-      !this.$v.niveau.required && errors.push('Le niveau est obligatoire')
+      !this.$v.niveau.numeric && errors.push('Le niveau doit être un entier');
+      !this.$v.niveau.required && errors.push('Le niveau est obligatoire');
       return errors;
     },
     indiceErrors() {
       const errors = [];
       if (!this.$v.indice.$dirty) return errors;
-      !this.$v.indice.numeric && errors.push('Le niveau doit être un entier')
-      !this.$v.indice.required && errors.push('Le niveau est obligatoire')
+      !this.$v.indice.numeric && errors.push('Le niveau doit être un entier');
+      !this.$v.indice.required && errors.push('Le niveau est obligatoire');
       return errors;
     },
     vol_hor_total_prevues_etu_cmErrors() {
       const errors = [];
-      !this.$v.vol_hor_total_prevues_etu_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.vol_hor_total_prevues_etu_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     vol_hor_total_prevues_etu_tdErrors() {
       const errors = [];
-      !this.$v.vol_hor_total_prevues_etu_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.vol_hor_total_prevues_etu_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     vol_hor_total_prevues_etu_tpErrors() {
       const errors = [];
-      !this.$v.vol_hor_total_prevues_etu_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.vol_hor_total_prevues_etu_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     forfait_globale_cmErrors() {
       const errors = [];
-      !this.$v.forfait_globale_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.forfait_globale_cm.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     forfait_globale_tdErrors() {
       const errors = [];
-      !this.$v.forfait_globale_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.forfait_globale_td.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     forfait_globale_tpErrors() {
       const errors = [];
-      !this.$v.forfait_globale_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.forfait_globale_tp.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     forfait_globale_partielErrors() {
       const errors = [];
-      !this.$v.forfait_globale_partiel.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule')
+      !this.$v.forfait_globale_partiel.decimal && errors.push('Veuillez saisir un entier ou un nombre à virgule');
       return errors;
     },
     nb_semaineErrors() {
       const errors = [];
       if (!this.$v.nb_semaine.$dirty) return errors;
-      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique')
-      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire')
+      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique');
+      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire');
       return errors;
     },
     nb_groupe_defaut_cmErrors() {
       const errors = [];
       if (!this.$v.nb_groupe_defaut_cm.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique')
-      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire')
+      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique');
+      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire');
       return errors;
     },
     nb_groupe_defaut_tdErrors() {
       const errors = [];
       if (!this.$v.nb_groupe_defaut_td.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique')
-      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire')
+      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique');
+      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire');
       return errors;
     },
     nb_groupe_defaut_tpErrors() {
       const errors = [];
       if (!this.$v.nb_groupe_defaut_tp.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique')
-      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire')
+      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique');
+      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire');
       return errors;
     },
     nb_groupe_defaut_partielErrors() {
       const errors = [];
       if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique')
-      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire')
+      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique');
+      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire');
       return errors;
     },
   },

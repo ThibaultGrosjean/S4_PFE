@@ -26,6 +26,11 @@ const apiIntervenant = {
     return response.data;
   },
 
+  async copyIntervenantByProjet(projetId, newProjetId) {
+    const response = await axios.post('/intervenants/copy/projets/' + projetId + '/new-projet/' + newProjetId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async editIntervenant(intervenant) {
     const response = await axios.patch('/intervenants/edit/' + intervenant.id, intervenant).catch(error => console.error('Erreur API: ', error));
     return response.data;

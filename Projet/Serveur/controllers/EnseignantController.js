@@ -11,7 +11,7 @@ exports.validator = [
 
 
 exports.getAllEnseignants = (req, res) => {
-  db.query('SELECT e.*, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id',
+  db.query('SELECT e.*, s.id AS id_statut, s.nom AS statut_nom, s.surnom AS statut_surnom, s.nb_he_td_min_attendu, s.nb_he_td_max_attendu, s.nb_he_td_min_sup, s.nb_he_td_max_sup FROM enseignant AS e JOIN statut AS s ON e.statut_id = s.id ORDER BY e.prenom, e.nom, s.nom',
     function(errE, rows) {
       if (!errE) {
         var obj = []
@@ -50,7 +50,7 @@ exports.getEnseignantByProjetNotInIntervenant = (req, res) => {
        +' ON s.id = e.statut_id'
        +' WHERE e.id NOT IN (SELECT i.enseignant_id'
                           +' FROM intervenant AS i'
-                          +' WHERE projet_id = '+ req.params.idProjet +');',
+                          +' WHERE projet_id = '+ req.params.idProjet +') ORDER BY e.prenom, e.nom, s.nom;',
     function(err, rows) {
       if (!err) {
         var obj = []
@@ -156,29 +156,14 @@ exports.addEnseignant = (req, res) => {
 
 
 exports.copyEnseignant = (req, res) => {
-  db.query('SELECT * FROM enseignant where id = ? ;', [req.params.id],
+  db.query("INSERT INTO enseignant(statut_id, prenom, nom, surnom, email)"
+        +" SELECT statut_id, prenom, CONCAT(nom, ' (copie)'), surnom, email"
+        +" FROM enseignant WHERE id = ?", [req.params.id],
     function(err, enseignant) {
       if (!err) {
-        var requete="INSERT INTO enseignant(nom, prenom, surnom, email, statut_id) VALUES ('" 
-          + enseignant[0]['nom'] + ' (copie)' + "','"
-          + enseignant[0]['prenom'] + "','"
-          + enseignant[0]['surnom'] + "','"
-          + enseignant[0]['email'] + "','"
-          + enseignant[0]['statut_id'] + "');"
-        ;
-
-        db.query(requete,
-          function(err, enseignant) {
-            if (!err) {
-              res.status(200).json(enseignant);
-              
-            } else  {
-              res.send(err);
-            }
-          }
-        ); 
-      }
-      else {
+        res.status(200).json(enseignant);
+        
+      } else  {
         res.send(err);
       }
     }

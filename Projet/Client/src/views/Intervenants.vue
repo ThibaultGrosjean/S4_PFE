@@ -8,7 +8,7 @@
     </v-overlay>
     <v-row>
       <v-col class="text-center">
-        <h1 class="text-h4 animate-pop-in">Liste des intervenants</h1>
+        <h1 class="text-h4 animate-pop-in mb-2">Liste des intervenants</h1>
         <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
       </v-col>
     </v-row>
@@ -38,6 +38,7 @@
     </v-row>
     <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
       <v-checkbox
+          :disabled="Boolean(projet[0].verrou)"
           v-model="checkboxSelectAll"
           label="Tout sélectionner"
           color="primary"
@@ -47,6 +48,7 @@
       <v-tooltip top v-if="deleteSelected.length">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+              :disabled="Boolean(projet[0].verrou)"
               icon
               v-bind="attrs"
               v-on="on"
@@ -71,6 +73,7 @@
             <v-card class="animate-pop-in">
               <v-card-title class="pl-2">
                 <v-btn
+                    :disabled="Boolean(projet[0].verrou)"
                     icon
                     @click="toggle"
                     :color="active ? 'primary' : 'gray'"
@@ -93,6 +96,7 @@
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                        :disabled="Boolean(projet[0].verrou)"
                         icon
                         v-bind="attrs"
                         v-on="on"
@@ -202,7 +206,6 @@
               <v-card-actions>
                 <v-btn
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clear"
                 >
@@ -212,7 +215,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -255,7 +257,6 @@
             <v-btn
                 :loading="loading"
                 color="success darken-1"
-                class="mr-4"
                 text
                 @click="validDeleteAllIntervenant"
             >
@@ -265,9 +266,10 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row>
+    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
         <v-btn
+            :disabled="Boolean(projet[0].verrou)"
             class="v-btn--addElement"
             color="success"
             fab
@@ -339,6 +341,11 @@ export default {
       return await apiEnseignant.getEnseignant(id);
     },
     async submit() {
+      if (this.projet[0].verrou === 1) {
+        this.clear();
+        this.form = false;
+        return;
+      }
       this.loading = true;
       if (this.methods === 'POST'){
         this.$v.$touch();
@@ -416,7 +423,7 @@ export default {
       this.form = true;
     },
     checkAllInterv() {
-      this.deleteSelected.splice(0, this.deleteSelected.length);
+      this.deleteSelected = [];
       if (this.checkboxSelectAll){
         for (let i = 0; i < this.intervenants.length; i++) {
           this.deleteSelected.push(this.intervenants[i]);
@@ -424,6 +431,7 @@ export default {
       }
     },
     async deleteAllSelectedIntervenant() {
+      if (this.projet[0].verrou === 1) return;
       var verif = 0;
       this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
@@ -440,6 +448,10 @@ export default {
       await this.getIntervenantsByProjet();
     },
     async validDeleteAllIntervenant(){
+      if (this.projet[0].verrou === 1) {
+        this.dialog = false;
+        return;
+      }
       this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
         await apiIntervenant.deleteIntervenant(this.deleteSelected[i].id);
@@ -488,8 +500,8 @@ export default {
     },
   },
   mounted() {
-    this.getIntervenantsByProjet();
     this.getProjet();
+    this.getIntervenantsByProjet();
     this.getEnseignantProjetNotInIntervenant();
   },
 }

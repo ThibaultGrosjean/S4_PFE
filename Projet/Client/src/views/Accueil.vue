@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-container>
       <v-row>
         <v-col>
@@ -15,6 +14,5 @@
 
 export default {
   name: 'Accueil',
-
 }
 </script>

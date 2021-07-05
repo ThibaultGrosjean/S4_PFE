@@ -70,6 +70,8 @@ app.post('/projets/create/:name',projetController.validator, projetController.ad
 
 app.post('/projets/copy/:id',projetController.validator, projetController.copyProjet);
 
+app.patch('/projets/edit/:projetId/verrou/:verrou', projetController.verrouFormationProjet);
+
 app.patch('/projets/edit/:id',projetController.validator, projetController.editProjet);
 
 app.delete('/projets/delete/:id', projetController.deleteProjet);
@@ -99,6 +101,8 @@ app.get('/intervenants/projets/get/:id', intervenantController.getIntervenantsBy
 app.get('/intervenants/projets/:idProjet/module/:idModule/get', intervenantController.getIntervenantsByProjetNotInModule);
 
 app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
+
+app.post('/intervenants/copy/projets/:projetId/new-projet/:newProjetId', intervenantController.copyIntervenantByProjet);
 
 app.patch('/intervenants/edit/:id',intervenantController.validator, intervenantController.editIntervenant);
 

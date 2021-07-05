@@ -1,9 +1,6 @@
 <template>
   <div>
-    <v-app-bar
-      color="secondary"
-      dark
-    >
+    <v-app-bar elevation="2">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
       <v-btn icon @click="redirect('/accueil')">
@@ -12,7 +9,18 @@
       <v-toolbar-title>Gestion des horaires annuels</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <ThemeChangerMenu/>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on" @click="$vuetify.theme.dark = !$vuetify.theme.dark"
+          >
+            <v-icon>{{ $vuetify.theme.dark ? "wb_sunny" : "nightlight_round" }}</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $vuetify.theme.dark ? "Thème clair" : "Thème sombre" }}</span>
+      </v-tooltip>
       <v-btn icon @click="redirect('/mon-compte')">
         <v-icon>settings</v-icon>
       </v-btn>
@@ -39,7 +47,7 @@
 
         <v-list-item-group
           v-model="group"
-          active-class="primary--text text--accent-4"
+          active-class="primary--text"
         >
           <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)">
             <v-list-item-icon>
@@ -55,12 +63,11 @@
 </template>
 
 <script>
-import ThemeChangerMenu from "./ThemeChangerMenu";
 export default {
   name: "NavBar",
-  components: {ThemeChangerMenu},
   data: () => ({
     drawer: false,
+    theme: false,
     group: null,
     subMenu: [
       {text: "Enseignants",icon:"person", path: "/enseignants"},

@@ -1,4 +1,5 @@
 import axios from "axios";
+import apiIntervenant from "./intervenants";
 
 const apiProjet = {
   async getProjets() {
@@ -21,8 +22,17 @@ const apiProjet = {
     return response.data;
   },
 
-  async copyProjet(projetId) {
+  async verrouFormationProjet(projetId, verrou) {
+    const response = await axios.patch('/projets/edit/' + projetId + '/verrou/' + verrou).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async copyProjet(projetId, grpInterv) {
     const response = await axios.post('/projets/copy/' + projetId).catch(error => console.error('Erreur API: ', error));
+    await apiIntervenant.copyIntervenantByProjet(projetId, response.data.insertId)
+    if (grpInterv){
+      //Copy Grp Interv
+    }
     return response.data;
   },
 

@@ -8,7 +8,7 @@
     </v-overlay>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4 animate-pop-in">Liste des projets</h1>
+        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des projets</h1>
       </v-col>
     </v-row>
     <v-row
@@ -119,6 +119,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      :disabled="Boolean(p.verrou)"
                       icon
                       v-bind="attrs"
                       v-on="on"
@@ -132,6 +133,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      :disabled="Boolean(p.verrou)"
                       icon
                       v-bind="attrs"
                       v-on="on"
@@ -145,6 +147,7 @@
               <v-tooltip top v-if="!Boolean(p.archive)">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                      :disabled="Boolean(p.verrou)"
                       icon
                       v-bind="attrs"
                       v-on="on"
@@ -166,7 +169,6 @@
           persistent
           max-width="600px"
       >
-
         <v-card>
           <v-form lazy-validation>
             <v-card-title>
@@ -253,7 +255,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -314,14 +315,25 @@ export default {
       this.projets = await apiProjet.getProjets();
     },
     async saveVerrou(projet) {
+      this.loading = true;
       projet.date = this.toTime(projet.date);
       projet.verrou = Number(!projet.verrou);
       await apiProjet.editProjet(projet);
+      await apiProjet.verrouFormationProjet(projet.id, projet.verrou);
+      if (projet.verrou) this.typeOperation = 'verrouillé';
+      else this.typeOperation = 'déverrouillé';
+      this.loading = false;
+      this.responseSuccess = true;
     },
     async saveArchive(projet) {
+      this.loading = true;
       projet.date = this.toTime(projet.date);
       projet.archive = Number(!projet.archive);
       await apiProjet.editProjet(projet);
+      if (projet.archive) this.typeOperation = 'archivé';
+      else this.typeOperation = 'désarchivé';
+      this.loading = false;
+      this.responseSuccess = true;
     },
     async submit() {
       this.$v.$touch();
@@ -329,6 +341,7 @@ export default {
       this.loading = true;
       if (this.methods === 'POST') {
         await apiProjet.createProjet(this.nom);
+        this.typeOperation = 'ajouté';
       } else {
         await apiProjet.editProjet({
           id: this.id,
@@ -337,6 +350,8 @@ export default {
           verrou: Number(this.verrou),
           archive: Number(this.archive),
         });
+        this.typeOperation = 'modifié';
+
       }
       await this.getProjets();
       this.clear();

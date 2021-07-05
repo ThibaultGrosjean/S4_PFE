@@ -71,7 +71,6 @@
             <v-card-actions>
               <v-btn
                   color="error darken-1"
-                  class="mr-4"
                   text
                   @click="clear"
               >

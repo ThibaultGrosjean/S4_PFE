@@ -285,7 +285,7 @@ CREATE TABLE `statut` (
 --
 
 INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_max_attendu`, `nb_he_td_min_sup`, `nb_he_td_max_sup`) VALUES
-(1, ' Professeur des Universités', 'PU', 192, 192, 0, 100),
+(1, 'Professeur des Universités', 'PU', 192, 192, 0, 100),
 (2, 'Maître de Conférence', 'MCF', 192, 192, 0, 100),
 (3, 'Professeur agrégé', 'PRAG', 384, 384, 0, 200),
 (4, 'Professeur certifié', 'PRCE', 384, 384, 0, 200),

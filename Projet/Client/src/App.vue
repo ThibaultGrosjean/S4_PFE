@@ -53,22 +53,32 @@ export default {
     transform: translateY(0);
   }
 }
+.theme--light.v-application {
+  background: #fafafa !important;
+}
+.v-card {
+  border-radius:20px !important;
+}
+.v-dialog{
+  border-radius:20px !important;
+}
+.v-menu__content{
+  border-radius:20px !important;
+}
 .theme--dark.v-application {
-  background: #292929 !important;
+  background: #202020 !important;
 }
 .theme--dark.v-card {
-  background: #333637 !important;
+  background: #272727 !important;
 }
-.theme--dark.v-navigation-drawer {
-  background-color: #333637 !important;
-}
+
 .theme--dark.v-expansion-panels .v-expansion-panel {
-  background: #333637 !important;
+  background: #272727 !important;
 }
 .theme--dark.v-data-table {
-  background: #333637 !important;
+  background: #272727 !important;
 }
 .theme--dark.v-data-table.v-data-table--fixed-header thead th {
-  background: #2d2f30 !important;
+  background: #202020 !important;
 }
 </style>

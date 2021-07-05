@@ -8,7 +8,7 @@
     </v-overlay>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4 animate-pop-in">Liste des statuts</h1>
+        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des statuts</h1>
       </v-col>
     </v-row>
     <v-row
@@ -55,11 +55,30 @@
           <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
           <v-divider></v-divider>
           <v-card-text>
-            <p>HeTD* minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b></p>
-            <p>HeTD* maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b></p>
-            <p>HeTD* minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b></p>
-            <p>HeTD* maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b></p>
-            <small>* HeTD : Nombre d’heures équivalent TD</small>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-bind="attrs" v-on="on">HeTD*</span>
+              </template>
+              <span>Nombre d’heures équivalent TD</span>
+            </v-tooltip> minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b><br>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-bind="attrs" v-on="on">HeTD*</span>
+              </template>
+              <span>Nombre d’heures équivalent TD</span>
+            </v-tooltip> maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b><br>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-bind="attrs" v-on="on">HeTD*</span>
+              </template>
+              <span>Nombre d’heures équivalent TD</span>
+            </v-tooltip> minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b><br>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-bind="attrs" v-on="on">HeTD*</span>
+              </template>
+              <span>Nombre d’heures équivalent TD</span>
+            </v-tooltip> maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b><br>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -186,7 +205,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -315,10 +333,10 @@ export default {
     sortedByNom() {
       if (this.sortNom) {
         this.sortNom = false;
-        this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
+        this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
       } else {
         this.sortNom = true;
-        this.statuts.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
+        this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       }
     },
   },

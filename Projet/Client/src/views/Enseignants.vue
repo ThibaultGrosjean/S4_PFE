@@ -8,7 +8,7 @@
     </v-overlay>
     <v-row>
       <v-col>
-        <h1 class="text-center text-h4 animate-pop-in">Liste des enseignants</h1>
+        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des enseignants</h1>
       </v-col>
     </v-row>
     <v-row
@@ -68,34 +68,43 @@
           </v-card-title>
           <v-card-subtitle class="text-subtitle-1">{{ e.surnom }}</v-card-subtitle>
           <v-divider></v-divider>
-          <v-card-text>
-            <p>Adresse mail : <b>{{ e.email }}</b></p>
-            <p class="mb-0">Statut : <b>{{ e.statut.nom }} ({{ e.statut.surnom }})</b></p>
-            <div class="text-center">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="showDetails = !showDetails"
-                  >
-                    <v-icon>{{ showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>Détails des statuts</span>
-              </v-tooltip>
+          <v-card-text class="pa-0">
+            <div class="pa-4 pb-0">
+              Adresse mail<b>{{ ': ' + e.email }}</b>
             </div>
-
-            <v-expand-transition>
-              <div v-show="showDetails">
-                <p>HeTD* minimales attendues :<b>{{ e.statut.nb_he_td_min_attendu }}</b></p>
-                <p>HeTD* maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b></p>
-                <p>HeTD* minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b></p>
-                <p>HeTD* maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b></p>
-                <small>* HeTD : Nombre d’heures équivalent TD</small>
-              </div>
-            </v-expand-transition>
+            <v-expansion-panels accordion>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="pa-4 text--secondary">
+                  Statut<b>{{ ': ' + e.statut.nom }} ({{ e.statut.surnom }})</b>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pa-4 pt-0 text--secondary">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">HeTD*</span>
+                    </template>
+                    <span>Nombre d’heures équivalent TD</span>
+                  </v-tooltip> minimales attendues : <b>{{ e.statut.nb_he_td_min_attendu }}</b><br>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">HeTD*</span>
+                    </template>
+                    <span>Nombre d’heures équivalent TD</span>
+                  </v-tooltip> maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b><br>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">HeTD*</span>
+                    </template>
+                    <span>Nombre d’heures équivalent TD</span>
+                  </v-tooltip> minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b><br>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">HeTD*</span>
+                    </template>
+                    <span>Nombre d’heures équivalent TD</span>
+                  </v-tooltip> maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b><br>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -230,7 +239,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -272,7 +280,6 @@
             <v-btn
                 :loading="loading"
                 color="success darken-1"
-                class="mr-4"
                 text
                 @click="this.delete"
             >
@@ -324,6 +331,7 @@ export default {
     loading: false,
     responseSuccess: false,
     showDetails: false,
+    showStatut: [],
     sortNom: false,
     sortPrenom: false,
     sortStatut: false,
@@ -423,28 +431,28 @@ export default {
     sortedByPrenom() {
       if (this.sortPrenom) {
         this.sortPrenom = false;
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
+        this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
       } else {
         this.sortPrenom = true;
-        this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
+        this.enseignants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
       }
     },
     sortedByNom() {
       if (this.sortNom) {
         this.sortNom = false;
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
+        this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
       } else {
         this.sortNom = true;
-        this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
+        this.enseignants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       }
     },
     sortedByStatut() {
       if (this.sortStatut) {
         this.sortStatut = false;
-        this.enseignants.sort((a, b) => a.statut.id < b.statut.id);
+        this.enseignants.sort((a, b) => a.statut.id > b.statut.id);
       } else {
         this.sortStatut = true;
-        this.enseignants.sort((a, b) => a.statut.id > b.statut.id);
+        this.enseignants.sort((a, b) => a.statut.id < b.statut.id);
       }
     }
   },

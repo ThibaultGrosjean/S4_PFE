@@ -127,7 +127,6 @@
             <v-btn
                 :loading="loading"
                 color="success darken-1"
-                class="mr-4"
                 text
                 @click="submit"
             >
@@ -143,7 +142,6 @@
 import apiPeriode from "../services/API/periodes";
 import {validationMixin} from "vuelidate";
 import {numeric, required} from "vuelidate/lib/validators";
-import {mapState} from "vuex";
 
 export default {
   name: "EditPeriode",
@@ -190,6 +188,7 @@ export default {
       }
       this.loading = true;
       await apiPeriode.editPeriode(periode);
+      this.$emit('reload-periode');
       this.loading = false;
       this.form = false;
       this.confirmEditPeriode = false;
@@ -281,5 +280,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

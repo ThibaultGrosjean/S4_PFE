@@ -119,6 +119,22 @@ exports.addIntervenant = (req, res) => {
 };
 
 
+exports.copyIntervenantByProjet = (req, res) => {
+  db.query('INSERT INTO intervenant(projet_id, enseignant_id, nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet)'
+        +' SELECT ' + req.params.newProjetId + ', enseignant_id, nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet'
+        +' FROM intervenant WHERE projet_id = ' + req.params.projetId,
+    function(err, projet) {
+      if (!err) {
+        res.status(200).json(projet);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
 exports.editIntervenant = (req, res) => {
   var donnees = {
     id : req.body.id,

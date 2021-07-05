@@ -10,7 +10,7 @@ exports.validator = [
 
 
 exports.getAllProjets = (req, res) => {
-  db.query('SELECT * FROM projet;',
+  db.query('SELECT * FROM projet ORDER BY date DESC;',
     function(err, projets) {
       if (!err) {
         res.status(200).json(projets);  
@@ -65,26 +65,12 @@ exports.addProjet = (req, res) => {
 
 
 exports.copyProjet = (req, res) => {
-  db.query('SELECT * FROM projet where id = ? ;', [req.params.id],
+  db.query("INSERT INTO projet(nom, date, verrou, archive)"
+        +" SELECT CONCAT(nom, ' (copie)'), date, verrou, archive"
+        +" FROM projet WHERE id = ?;", [req.params.id],
     function(err, projet) {
       if (!err) {
-        var requete="INSERT INTO projet(nom, date, verrou, archive) VALUES ('" 
-          + projet[0]['nom'] + ' (copie)' + "','"
-          + projet[0]['date'] + "','"
-          + projet[0]['verrou'] + "','"
-          + projet[0]['archive'] + "');"
-        ;
-
-        db.query(requete,
-          function(err, projets) {
-            if (!err) {
-              res.status(200).json(projets);  
-            }
-            else {
-              res.send(err);
-            }
-          }
-        ); 
+        res.status(200).json(projet);  
       }
       else {
         res.send(err);
@@ -119,7 +105,22 @@ exports.editProjet = (req, res) => {
   );
 };
 
-// Vérifier les relations avec les autres tables
+
+exports.verrouFormationProjet = (req, res) => {
+  var requete="UPDATE formation SET verrou = " + req.params.verrou +" WHERE projet_id = " + req.params.projetId + ";";
+
+  db.query(requete,
+    function(err, projet) {
+      if (!err) {
+        res.status(200).json(projet); 
+      } else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.deleteProjet = (req, res) => {
   db.query('DELETE FROM projet WHERE id = ? ;',[req.params.id],
     function(err, projet) {

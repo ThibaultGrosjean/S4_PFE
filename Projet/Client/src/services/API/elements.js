@@ -1,4 +1,6 @@
 import axios from "axios";
+import apiPeriode from "./periodes";
+import apiVolumeHebdomadaire from "./volumes-hebdomadaires";
 
 const apiElement = {
   async getElements() {
@@ -13,6 +15,13 @@ const apiElement = {
   
   async createElement(element) {
     const response = await axios.post('/elements/create', element).catch(error => console.error('Erreur API: ', error));
+    if (element.niveau === 1) {
+      element.periode.element_id = response.data.insertId;
+      await apiPeriode.createPeriode(element.periode);
+    }
+    if (element.niveau === 3 && element.mode_saisie === 'hebdo'){
+      await apiVolumeHebdomadaire.createVolumeHebdomadaireBySemaine(response.data.insertId, 1, element.periode[0].nb_semaine);
+    }
     return response.data;
   },
 

@@ -13,7 +13,7 @@ exports.validator = [
 
 
 exports.getAllStatuts = (req, res) => {
-  db.query('SELECT * FROM statut;',
+  db.query('SELECT * FROM statut ORDER BY nom;',
     function(err, statuts) {
       if (!err) {
         res.status(200).json(statuts);  
@@ -72,29 +72,13 @@ exports.addStatut = (req, res) => {
 
 
 exports.copyStatut = (req, res) => {
-  db.query('SELECT * FROM statut where id = ? ;', [req.params.id],
+  db.query("INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup)"
+        +" SELECT CONCAT(nom, ' (copie)'), surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup"
+        +" FROM statut WHERE id = ?;", [req.params.id],
     function(err, statut) {
       if (!err) {
-        var requete="INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES ('" 
-          + statut[0]['nom'] + ' (copie)' + "','"
-          + statut[0]['surnom'] + "','"
-          + statut[0]['nb_he_td_min_attendu'] + "','" 
-          + statut[0]['nb_he_td_max_attendu'] + "','" 
-          + statut[0]['nb_he_td_min_sup'] + "','" 
-          + statut[0]['nb_he_td_max_sup'] + "');"
-        ;
-
-        db.query(requete,
-          function(err, statut) {
-            if (!err) {
-              res.status(200).json(statut); 
-            } else  {
-              res.send(err);
-            }
-          }
-        );
-      }
-      else {
+        res.status(200).json(statut); 
+      } else  {
         res.send(err);
       }
     }

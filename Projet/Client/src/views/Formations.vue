@@ -8,7 +8,7 @@
     </v-overlay>
     <v-row>
       <v-col class="text-center">
-        <h1 class="text-h4 animate-pop-in">Liste des formations</h1>
+        <h1 class="text-h4 animate-pop-in mb-2">Liste des formations</h1>
         <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
       </v-col>
     </v-row>
@@ -38,6 +38,7 @@
     </v-row>
     <v-row v-if="formations.length" class="pa-3 pb-0 animate-pop-in">
       <v-checkbox
+          :disabled="Boolean(projet[0].verrou)"
           v-model="checkboxSelectAll"
           label="Tout sélectionner"
           color="primary"
@@ -47,6 +48,7 @@
       <v-tooltip top v-if="deleteSelected.length">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+              :disabled="Boolean(projet[0].verrou)"
               :loading="loading"
               icon
               v-bind="attrs"
@@ -72,6 +74,7 @@
             <v-card class="animate-pop-in">
               <v-card-title class="text-h5">
                 <v-btn
+                    :disabled="Boolean(projet[0].verrou)"
                     icon
                     @click="toggle"
                     :color="active ? 'primary' : 'gray'"
@@ -84,6 +87,7 @@
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                        :disabled="Boolean(projet[0].verrou)"
                         icon
                         v-bind="attrs"
                         v-on="on"
@@ -170,7 +174,6 @@
                 <v-btn
                     :loading="loading"
                     color="success darken-1"
-                    class="mr-4"
                     text
                     @click="submit"
                 >
@@ -213,7 +216,6 @@
             <v-btn
                 :loading="loading"
                 color="success darken-1"
-                class="mr-4"
                 text
                 @click="validDeleteAllFormation"
             >
@@ -223,9 +225,10 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row>
+    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
         <v-btn
+            :disabled="Boolean(projet[0].verrou)"
             class="v-btn--addElement"
             color="success"
             fab
@@ -289,6 +292,11 @@ export default {
       await apiFormation.editFormation(formation);
     },
     async submit() {
+      if (this.projet[0].verrou === 1) {
+        this.clear();
+        this.form = false;
+        return;
+      }
       this.$v.$touch();
       if (this.$v.$invalid) return;
 
@@ -343,7 +351,7 @@ export default {
       this.$router.push({path:path}).catch(()=>{});
     },
     checkAllFormation() {
-      this.deleteSelected.splice(0, this.deleteSelected.length);
+      this.deleteSelected = [];
       if (this.checkboxSelectAll){
         for (let i = 0; i < this.formations.length; i++) {
           this.deleteSelected.push(this.formations[i]);
@@ -351,6 +359,7 @@ export default {
       }
     },
     async deleteAllSelectedFormation() {
+      if (this.projet[0].verrou === 1) return;
       var verif = 0;
       this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
@@ -379,6 +388,10 @@ export default {
       await this.getFormationByProjet();
     },
     async validDeleteAllFormation(){
+      if (this.projet[0].verrou === 1) {
+        this.dialog = false;
+        return;
+      }
       this.loading = true;
       for (let i = 0; i < this.deleteSelected.length; i++) {
         await apiFormation.deleteFormation(this.deleteSelected[i]);
