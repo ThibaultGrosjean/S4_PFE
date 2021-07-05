@@ -30,36 +30,45 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="12" class="animate-pop-in">
-        <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
-          L'intervenant a été {{ typeOperation }} avec succès.
-        </v-alert>
-      </v-col>
-    </v-row>
-    <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
-      <v-checkbox
-          :disabled="Boolean(projet[0].verrou)"
-          v-model="checkboxSelectAll"
-          label="Tout sélectionner"
-          color="primary"
-          class="ma-0 ml-3"
-          @click="checkAllInterv"
-      ></v-checkbox>
-      <v-tooltip top v-if="deleteSelected.length">
-        <template v-slot:activator="{ on, attrs }">
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
+        <span>L'intervenant a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              :disabled="Boolean(projet[0].verrou)"
               icon
               v-bind="attrs"
-              v-on="on"
-              class="ml-2"
-              @click="deleteAllSelectedIntervenant"
+              @click="responseSuccess = false"
           >
-            <v-icon color="error darken-1">delete</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
         </template>
-        <span>Supprimer la sélection</span>
-      </v-tooltip>
+      </v-snackbar>
+    </v-row>
+    <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
+      <v-col class="d-flex justify-start">
+        <v-checkbox
+            :disabled="Boolean(projet[0].verrou)"
+            v-model="checkboxSelectAll"
+            label="Tout sélectionner"
+            color="primary"
+            class="ma-0"
+            @click="checkAllInterv"
+        ></v-checkbox>
+        <v-tooltip top v-if="deleteSelected.length">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                :disabled="Boolean(projet[0].verrou)"
+                icon
+                v-bind="attrs"
+                v-on="on"
+                class="ml-2"
+                @click="deleteAllSelectedIntervenant"
+            >
+              <v-icon color="error darken-1">delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Supprimer la sélection</span>
+        </v-tooltip>
+      </v-col>
     </v-row>
     <v-item-group multiple v-model="deleteSelected">
       <v-row>

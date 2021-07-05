@@ -30,37 +30,45 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="12" class="animate-pop-in">
-        <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
-          La formation a été {{ typeOperation }} avec succès.
-        </v-alert>
-      </v-col>
-    </v-row>
-    <v-row v-if="formations.length" class="pa-3 pb-0 animate-pop-in">
-      <v-checkbox
-          :disabled="Boolean(projet[0].verrou)"
-          v-model="checkboxSelectAll"
-          label="Tout sélectionner"
-          color="primary"
-          class="ma-0 ml-5"
-          @click="checkAllFormation"
-      ></v-checkbox>
-      <v-tooltip top v-if="deleteSelected.length">
-        <template v-slot:activator="{ on, attrs }">
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
+        <span>{{ table }} a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              :disabled="Boolean(projet[0].verrou)"
-              :loading="loading"
               icon
               v-bind="attrs"
-              v-on="on"
-              class="ml-2"
-              @click="deleteAllSelectedFormation"
+              @click="responseSuccess = false"
           >
-            <v-icon color="error darken-1">delete</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
         </template>
-        <span>Supprimer la sélection</span>
-      </v-tooltip>
+      </v-snackbar>
+    </v-row>
+    <v-row v-if="formations.length" class="pa-3 pb-0 animate-pop-in">
+      <v-col class="d-flex justify-start">
+        <v-checkbox
+            :disabled="Boolean(projet[0].verrou)"
+            v-model="checkboxSelectAll"
+            label="Tout sélectionner"
+            color="primary"
+            class="ma-0 ml-2"
+            @click="checkAllFormation"
+        ></v-checkbox>
+        <v-tooltip top v-if="deleteSelected.length">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                :disabled="Boolean(projet[0].verrou)"
+                :loading="loading"
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteAllSelectedFormation"
+            >
+              <v-icon color="error darken-1">delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Supprimer la sélection</span>
+        </v-tooltip>
+      </v-col>
     </v-row>
     <v-item-group multiple v-model="deleteSelected">
       <v-row>
@@ -102,7 +110,7 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text class="pa-0 pb-5">
-                <ReadElements :formation="f" :disabled="Boolean(f.verrou)"></ReadElements>
+                <ReadElements :formation="f" :disabled="Boolean(f.verrou)" v-on:edit-element="snackbarElement($event)"></ReadElements>
               </v-card-text>
             </v-card>
           </v-item>
@@ -249,7 +257,6 @@ import apiElement from "../services/API/elements";
 import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
 import ReadElements from "../components/ReadElements";
-import apiIntervenant from "../services/API/intervenants";
 
 export default {
   name: "Formations",
@@ -270,6 +277,7 @@ export default {
     loading: false,
     responseSuccess: false,
     typeOperation: 'ajouté',
+    table: 'La formation',
     titre: '',
     surnom: '',
     code: '',
@@ -290,6 +298,10 @@ export default {
     async saveVerrou(formation) {
       formation.verrou = Number(!formation.verrou)
       await apiFormation.editFormation(formation);
+      this.table = 'La formation';
+      if (formation.verrou) this.typeOperation = 'verrouillé';
+      else this.typeOperation = 'déverrouillé';
+      this.responseSuccess = true;
     },
     async submit() {
       if (this.projet[0].verrou === 1) {
@@ -326,6 +338,7 @@ export default {
         nbfils: 0,
       }
       this.loading = true;
+      this.table = 'La formation';
       this.typeOperation = 'ajouté';
       await apiFormation.createFormation({element: element,projet_id: Number(this.$route.params.id)});
       await this.getFormationByProjet();
@@ -344,12 +357,6 @@ export default {
       this.form = !this.form;
       this.clear();
     },
-    toTime(date, length) {
-      return new Date(date).toISOString().substr(0, length);
-    },
-    redirect(path){
-      this.$router.push({path:path}).catch(()=>{});
-    },
     checkAllFormation() {
       this.deleteSelected = [];
       if (this.checkboxSelectAll){
@@ -365,20 +372,10 @@ export default {
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
           await apiFormation.deleteFormation(this.deleteSelected[i]);
-          await this.getElement();
-          await this.getFormationByProjet();
+          this.table = 'La formation';
           this.typeOperation = 'supprimé';
           this.responseSuccess = true;
           this.loading = false;
-        } else {
-          verif += 1;
-        }
-      }
-      for (let i = 0; i < this.deleteSelected.length; i++) {
-        if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
-          await apiFormation.deleteFormation(this.deleteSelected[i]);
-          this.typeOperation = 'supprimé';
-          this.responseSuccess = true;
         } else {
           verif += 1;
         }
@@ -399,8 +396,22 @@ export default {
       this.loading = false;
       this.dialog = false;
       await this.getFormationByProjet();
+      this.table = 'La formation';
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
+      this.deleteSelected = [];
+      this.checkboxSelectAll = false;
+    },
+    snackbarElement(data) {
+      this.table = data.element;
+      this.typeOperation = data.typeOperaion;
+      this.responseSuccess = true;
+    },
+    toTime(date, length) {
+      return new Date(date).toISOString().substr(0, length);
+    },
+    redirect(path){
+      this.$router.push({path:path}).catch(()=>{});
     }
   },
   computed: {

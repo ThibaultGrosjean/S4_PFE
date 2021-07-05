@@ -37,11 +37,18 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="12" class="animate-pop-in">
-        <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
-          Le statut a été {{ typeOperation }} avec succès.
-        </v-alert>
-      </v-col>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
+        <span>Le statut a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-row>
     <v-row>
       <v-col

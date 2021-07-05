@@ -62,6 +62,9 @@ export default {
 .v-dialog{
   border-radius:20px !important;
 }
+.v-sheet.v-snack__wrapper{
+  border-radius:50px !important;
+}
 .v-menu__content{
   border-radius:20px !important;
 }

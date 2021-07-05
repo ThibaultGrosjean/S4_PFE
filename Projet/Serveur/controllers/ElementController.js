@@ -241,7 +241,6 @@ exports.editElement = (req, res) => {
   );
 };
 
-// Vérifier les relations avec les autres tables
 exports.deleteElement = (req, res) => {
   db.query('DELETE FROM element WHERE id = ? ;',[req.params.id],
     function(err, element) {

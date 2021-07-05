@@ -46,6 +46,11 @@ const apiPeriode = {
     return response.data;
   },
 
+  async deletePeriodeByElement(elementId) {
+    const response = await axios.delete('/periodes/element/delete/' + elementId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async deletePeriode(periodeId) {
     const response = await axios.delete('/periodes/delete/' + periodeId).catch(error => console.error('Erreur API: ', error));
     return response.data;

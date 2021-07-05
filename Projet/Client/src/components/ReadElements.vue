@@ -123,13 +123,14 @@
                                   </template>
                                   <span>Ajouter une UE au {{ semestre.titre }}</span>
                                 </v-tooltip>
-                                <v-tooltip top>
+                                <v-tooltip top v-if="semestre.nbfils === 0">
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                         icon
                                         v-bind="attrs"
                                         v-on="on"
                                         class="ma-1"
+                                        @click="remove(semestre)"
                                     >
                                       <v-icon color="error darken-1">delete</v-icon>
                                     </v-btn>
@@ -197,13 +198,14 @@
                                               </template>
                                               <span>Ajouter un module à l'{{ ue.titre }}</span>
                                             </v-tooltip>
-                                            <v-tooltip top>
+                                            <v-tooltip top v-if="ue.nbfils === 0">
                                               <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
                                                     icon
                                                     v-bind="attrs"
                                                     v-on="on"
                                                     class="ma-1"
+                                                    @click="remove(ue)"
                                                 >
                                                   <v-icon color="error darken-1">delete</v-icon>
                                                 </v-btn>
@@ -265,6 +267,7 @@
                                                                   v-bind="attrs"
                                                                   v-on="on"
                                                                   class="ma-1"
+                                                                  @click="remove(module)"
                                                               >
                                                                 <v-icon color="error darken-1">delete</v-icon>
                                                               </v-btn>
@@ -906,8 +909,6 @@ export default {
     formIntervenant: false,
     isFormation: false,
     loading: false,
-    responseSuccess: false,
-    typeOperation: 'ajouté',
     methods: "POST",
     item_mode_saisie: [
       {nom: 'Aucun', val: 'aucun'},
@@ -1037,11 +1038,11 @@ export default {
       }
       this.loading = true;
       if (this.methods === 'POST') {
-        await apiElement.createElement(element)
-        this.typeOperation = 'ajouté';
+        await apiElement.createElement(element);
+        this.$emit('edit-element',{typeOperaion: 'ajouté', element: element.titre});
       } else {
         await apiElement.editElement(element);
-        this.typeOperation = 'modifié';
+        this.$emit('edit-element',{typeOperaion: 'modifié', element: element.titre});
       }
       await this.getElements();
       await this.getVolumeHebdomadaireByModule();
@@ -1049,7 +1050,6 @@ export default {
       this.clear();
       this.loading = false;
       this.form = false;
-      this.responseSuccess = true;
     },
     clear() {
       this.$v.$reset()
@@ -1193,6 +1193,13 @@ export default {
       }
       this.isFormation = false;
       this.form = true;
+    },
+    async remove(element){
+      this.loading = true;
+      await apiElement.deleteElement(element);
+      await this.getElements();
+      this.loading = false;
+      this.$emit('edit-element',{typeOperaion: 'supprimé', element: element.titre});
     },
     totalVolume(module, type) {
       var volumeByModule = [];

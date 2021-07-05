@@ -12,11 +12,11 @@
       </v-col>
     </v-row>
     <v-row
+        v-if="projets.length"
         align="center"
         justify="center"
     >
       <v-btn-toggle
-          v-if="projets.length"
           borderless
           rounded
           dense
@@ -37,13 +37,20 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="12" class="animate-pop-in">
-        <v-alert v-model="responseSuccess" dismissible border="left" text type="success" class="mb-0">
-          Le projet a été {{ typeOperation }} avec succès.
-        </v-alert>
-      </v-col>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
+        <span>Le projet a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-row>
-    <v-row>
+    <v-row  v-if="projets.length">
       <v-switch
           v-model="switchArchive"
           :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
@@ -137,6 +144,7 @@
                       icon
                       v-bind="attrs"
                       v-on="on"
+                      @click="openCopyDialog(p.id)"
                   >
                     <v-icon>file_copy</v-icon>
                   </v-btn>
@@ -266,6 +274,49 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            <span class="headline">Confirmation de copie</span>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="dialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text class="text-justify pt-4 pb-0">
+            Le projet ainsi que ses formations et intervenants vont être dupliquer voulez-vous également dupliquer les nombres de groupes associés aux intervenants ?<br>
+            <v-checkbox
+                v-model="checkboxCopierGrpInterv"
+                label="Copier les groupes des intervenants"
+            ></v-checkbox>
+          </v-card-text>
+          <v-card-actions class="pb-5">
+            <v-btn
+                color="error darken-1"
+                text
+                @click="dialog = false"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                :loading="loading"
+                color="success darken-1"
+                text
+                @click="copy"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row>
       <v-col>
         <v-btn
@@ -297,7 +348,9 @@ export default {
   data: () => ({
     projets: [],
     form: false,
+    dialog: false,
     menu: false,
+    checkboxCopierGrpInterv: false,
     loading: false,
     responseSuccess: false,
     switchArchive: false,
@@ -386,6 +439,19 @@ export default {
       projet.date = this.toTime(projet.date);
       await apiProjet.editProjet(projet);
       this.loading = false;
+    },
+    openCopyDialog(projetId) {
+      this.dialog = true;
+      this.id = projetId;
+    },
+    async copy() {
+      this.loading = true;
+      await apiProjet.copyProjet(this.id, this.checkboxCopierGrpInterv);
+      await this.getProjets();
+      this.loading = false;
+      this.dialog = false;
+      this.id = '';
+      this.checkboxCopierGrpInterv = false;
     },
     toTime(date) {
       return new Date(date).toISOString().substr(0, 10);

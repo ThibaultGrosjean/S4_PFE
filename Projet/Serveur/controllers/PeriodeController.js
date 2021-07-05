@@ -111,6 +111,19 @@ exports.editPeriode = (req, res) => {
 };
 
 
+exports.deletePeriodeByElement = (req, res) => {
+  db.query('DELETE FROM periode WHERE element_id = ? ;',[req.params.id],
+    function(err, periode) {
+      if (!err) {
+        res.status(200).json(periode);  
+      } else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.deletePeriode = (req, res) => {
   db.query('DELETE FROM periode WHERE id = ? ;',[req.params.id],
     function(err, periode) {

@@ -132,6 +132,8 @@ app.post('/periodes/create/',periodeController.validator, periodeController.addP
 
 app.patch('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
 
+app.delete('/periodes/element/delete/:id', periodeController.deletePeriodeByElement);
+
 app.delete('/periodes/delete/:id', periodeController.deletePeriode);
 
 
