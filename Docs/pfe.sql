@@ -67,7 +67,7 @@ INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol
 (7, 'UE 12: Connaissances et compétences générales', 'UE12', 'UE12', 2, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 19, 16, 16, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
 (9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 2, 1, 2, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'globale', 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 6, 2, 5),
+(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5),
 (11, 'M 4101 : Stage', 'M4101', 'M4101', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 10);
 
 -- --------------------------------------------------------

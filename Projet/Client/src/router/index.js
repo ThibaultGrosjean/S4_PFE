@@ -6,6 +6,7 @@ import Enseignants from "../views/Enseignants";
 import Projets from "../views/Projets";
 import Intervenant from "../views/Intervenants";
 import Formation from "../views/Formations";
+import Bilan from "../views/Bilan";
 import Erreur404 from "../views/Erreur404";
 
 Vue.use(VueRouter)
@@ -44,6 +45,11 @@ const routes = [
     path: '/formations/projets/:id',
     name: 'Formations par Projet',
     component: Formation
+  },
+  {
+    path: '/bilan/projets/:id',
+    name: 'Bilan par Projet',
+    component: Bilan
   },
   {
     path: '*',

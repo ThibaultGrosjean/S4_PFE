@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <v-overlay :value="loading">
+    <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
           size="64"
+          color="primary"
       ></v-progress-circular>
     </v-overlay>
     <v-row>
@@ -20,7 +21,7 @@
       </v-col>
       <v-col class="d-flex justify-end animate-pop-in">
         <v-btn outlined rounded color="primary" @click="redirect('/intervenants/projets/' + Number($route.params.id))">
-          <v-icon class="mr-2">groups</v-icon>Aller au Intervenant
+          <v-icon class="mr-2">groups</v-icon>Aller aux intervenants
         </v-btn>
       </v-col>
     </v-row>
@@ -445,9 +446,11 @@ export default {
       return errors;
     },
   },
-  mounted() {
-    this.getProjet();
-    this.getFormationByProjet();
+  async mounted() {
+    this.loading = true;
+    await this.getProjet();
+    await this.getFormationByProjet();
+    this.loading = false;
   }
 }
 </script>

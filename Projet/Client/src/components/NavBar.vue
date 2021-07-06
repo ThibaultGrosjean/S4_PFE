@@ -27,13 +27,13 @@
     </v-app-bar>
 
     <v-navigation-drawer
-      v-model="drawer"
-      absolute
-      temporary
+        v-model="drawer"
+        absolute
+        temporary
     >
       <v-list
-        nav
-        dense
+          nav
+          dense
       >
         <v-list-item>
           <v-list-item-content>
@@ -46,8 +46,8 @@
         <v-divider></v-divider>
 
         <v-list-item-group
-          v-model="group"
-          active-class="primary--text"
+            v-model="group"
+            active-class="primary--text"
         >
           <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)">
             <v-list-item-icon>
@@ -84,9 +84,9 @@ export default {
 </script>
 
 <style scoped>
-  .menu-title {
-    line-height: 2rem !important;
-    font-size: 1.25rem !important;
-    letter-spacing: 0.0125em !important;
-  }
+.menu-title {
+  line-height: 2rem !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 0.0125em !important;
+}
 </style>

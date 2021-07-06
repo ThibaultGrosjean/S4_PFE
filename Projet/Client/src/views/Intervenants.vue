@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <v-overlay :value="loading">
+    <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
           size="64"
+          color="primary"
       ></v-progress-circular>
     </v-overlay>
     <v-row>
@@ -508,10 +509,12 @@ export default {
       return errors;
     },
   },
-  mounted() {
-    this.getProjet();
-    this.getIntervenantsByProjet();
-    this.getEnseignantProjetNotInIntervenant();
+  async mounted() {
+    this.loading = true;
+    await this.getProjet();
+    await this.getIntervenantsByProjet();
+    await this.getEnseignantProjetNotInIntervenant();
+    this.loading = false;
   },
 }
 </script>

@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <v-overlay :value="loading">
+    <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
           size="64"
+          color="primary"
       ></v-progress-circular>
     </v-overlay>
     <v-row>
@@ -115,7 +116,7 @@
                   </v-btn>
                 </v-row>
                 <v-row>
-                  <v-btn block outlined rounded color="primary" class="mb-4">
+                  <v-btn block outlined rounded color="primary" @click="redirect('/bilan/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
                   </v-btn>
                 </v-row>
@@ -478,8 +479,10 @@ export default {
       return errors;
     },
   },
-  mounted() {
-    this.getProjets();
+  async mounted() {
+    this.loading = true;
+    await this.getProjets();
+    this.loading = false;
   }
 }
 </script>
