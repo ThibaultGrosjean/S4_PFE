@@ -16,13 +16,18 @@ const apiVolumeGlobaux = {
     return response.data;
   },
 
-  async createVolumeGlobaux(element) {
-    const response = await axios.post('/volumes-globaux/create', element).catch(error => console.error('Erreur API: ', error));
+  async createVolumeGlobaux(volumeGlobale) {
+    const response = await axios.post('/volumes-globaux/create', volumeGlobale).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
   async createVolumeGlobauxBySemaine(moduleId, semaineDeb, semaineFin) {
     const response = await axios.post('/volumes-globaux/create/' + moduleId + '/nbsemaine/' + semaineDeb + '/' + semaineFin).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async createVolumeGlobauxByModule(moduleId, intervenantId) {
+    const response = await axios.post('/volumes-globaux/module/' + moduleId + '/intervenant/' + intervenantId + '/create').catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -32,7 +37,7 @@ const apiVolumeGlobaux = {
   },
 
   async editTypeValueElementVolumeGlobaux(value, elementId, type) {
-    const response = await axios.patch('/volumes-globaux/edit/' + value + '/elements/' + elementId + '/' + type ).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/volumes-globaux/edit/' + value + '/elements/' + elementId + '/' + type).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -46,8 +51,8 @@ const apiVolumeGlobaux = {
     return response.data;
   },
 
-  async deleteVolumeGlobauxByElement(elementId) {
-    const response = await axios.delete('/volumes-globaux/delete/element/' + elementId).catch(error => console.error('Erreur API: ', error));
+  async deleteVolumeGlobauxByElement(elementId, intervenantId) {
+    const response = await axios.delete('/volumes-globaux/delete/element/' + elementId + '/intervenant/' + intervenantId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

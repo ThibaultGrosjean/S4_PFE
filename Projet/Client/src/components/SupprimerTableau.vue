@@ -15,6 +15,7 @@
       </v-btn>
       </template>
       <span v-if="type === 'groupes-intervenants'">Supprimer l'intervenant</span>
+      <span v-if="type === 'volumes-globaux'">Supprimer les volumes globaux</span>
       <span v-else>Supprimer les volumes hebdomadaires</span>
     </v-tooltip>
     <v-dialog
@@ -65,6 +66,8 @@
 <script>
 import apiGroupeIntervenant from "../services/API/groupes-intervenants";
 import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
+import apiVolumeGlobaux from "../services/API/volumes-globaux";
+
 export default {
   name: "SupprimerTableau",
   props: ['type', 'module', 'intervenant', 'disabled'],
@@ -86,7 +89,10 @@ export default {
         this.loading = false;
         this.$emit('reload-volumes-hebdomadaires-module');
       } else if (this.type === 'volumes-globaux') {
-        console.log();
+        this.loading = true;
+        await apiVolumeGlobaux.deleteVolumeGlobauxByElement(this.module.id, this.intervenant.intervenant_id);
+        this.loading = false;
+        this.$emit('reload-volumes-globaux-module');
       }
       this.dialog = false;
     }

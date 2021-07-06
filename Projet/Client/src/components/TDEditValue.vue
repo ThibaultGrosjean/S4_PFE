@@ -164,6 +164,7 @@ export default {
         if (this.typeCours === 'partiel') this.data.vol_hor_partiel = this.volHorSemaineDefaut;
         await apiVolumeGlobaux.editVolumeGlobaux(this.data);
       }
+      this.$emit('reload-data');
       this.loading = false;
     },
   }

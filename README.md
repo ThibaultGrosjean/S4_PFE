@@ -96,3 +96,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ajout d'une alerte après modification, ajout ou suppression pour les modifications dans la base de données
 * Ajout des chargements lors des requêtes à la base de données
 * Verrouiller un projet : verrouiller les formations et les intervenants reliés au projet
+* Ajouter un intervenant dans un module à saisie globale, modifier les forfaits, supprimer l'intervenant

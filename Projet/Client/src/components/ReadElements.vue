@@ -316,7 +316,7 @@
                                                                   </thead>
                                                                   <tbody>
                                                                   <tr v-if="module.cm_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module.id" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -324,7 +324,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.td_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -332,7 +332,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.tp_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -340,7 +340,7 @@
                                                                   </tr>
 
                                                                   <tr v-if="module.partiel_autorises">
-                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module.id"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module"  :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
                                                                     <template v-for="v in volumesHebdomadaires">
                                                                       <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
                                                                     </template>
@@ -391,7 +391,7 @@
                                                                           </thead>
                                                                           <tbody>
                                                                           <tr v-if="module.cm_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -399,7 +399,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.td_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -407,7 +407,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.tp_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -415,7 +415,7 @@
                                                                           </tr>
 
                                                                           <tr v-if="module.partiel_autorises">
-                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module.id" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                                            <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="i.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
                                                                             <template v-for="g in groupesIntervenants">
                                                                               <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled"/>
                                                                             </template>
@@ -436,53 +436,62 @@
                                                           </template>
                                                         </div>
                                                         <div v-if="module.mode_saisie ==='globale'">
-                                                            <template v-for="i in volumesGlobaux">
-                                                              <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
-                                                                <template v-slot:default>
-                                                                  <thead>
-                                                                  <tr>
-                                                                    <th :colspan="2" class="text-center top-border">
-                                                                      <span class="text-subtitle-1">{{ i.prenom }} {{ i.nom }}</span>
-                                                                    </th>
-                                                                  </tr>
-                                                                  <tr>
-                                                                    <th class="text-right right-border"></th>
-                                                                    <th>{{ module.surnom }}</th>
-                                                                  </tr>
-                                                                  </thead>
-                                                                  <tbody>
-                                                                  <tr v-if="module.cm_autorises">
-                                                                    <td>CM</td>
-                                                                    <template v-for="g in volumesGlobaux">
-                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                    </template>
-                                                                  </tr>
+                                                          <template v-for="i in volumesGlobaux">
+                                                            <v-container :key="i.id" v-if="i.element_id === module.id">
+                                                              <v-row>
+                                                                <v-col class="top-border pa-1"></v-col>
+                                                                <v-col class="top-border d-flex justify-center pa-1">
+                                                                  <span class="text-subtitle-1 text-center">{{ i.prenom }} {{ i.nom }}</span>
+                                                                </v-col>
+                                                                <v-col class="top-border pa-1 d-flex justify-end">
+                                                                  <SupprimerTableau :type="'volumes-globaux'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-volumes-globaux-module="getVolumesGlobaux"/>
+                                                                </v-col>
+                                                              </v-row>
+                                                              <v-row>
+                                                                <v-simple-table dense fixed-header class="width">
+                                                                  <template v-slot:default>
+                                                                    <thead>
+                                                                    <tr>
+                                                                      <th class="text-right right-border"></th>
+                                                                      <th class="text-center">{{ module.titre.substr(module.titre.indexOf(":")+1) }}</th>
+                                                                      <th class="text-center left-border">Total HeTD</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.cm_autorises}">
+                                                                      <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.cm_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
+                                                                      <TDEditValue :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.cm_autorises" v-on:reload-data="reloadData"/>
+                                                                      <td class="text-center left-border">{{ i.total_HeTD_cm  }}</td>
+                                                                    </tr>
 
-                                                                  <tr v-if="module.td_autorises">
-                                                                    <td>TD</td>
-                                                                    <template v-for="g in volumesGlobaux">
-                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                    </template>
-                                                                  </tr>
+                                                                    <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.td_autorises}">
+                                                                      <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.td_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
+                                                                      <TDEditValue :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.td_autorises" v-on:reload-data="reloadData"/>
+                                                                      <td class="text-center left-border">{{ i.total_HeTD_td  }}</td>
+                                                                    </tr>
 
-                                                                  <tr v-if="module.tp_autorises">
-                                                                    <td>TP</td>
-                                                                    <template v-for="g in volumesGlobaux">
-                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                    </template>
-                                                                  </tr>
+                                                                    <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.tp_autorises}">
+                                                                      <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.tp_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
+                                                                      <TDEditValue :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.tp_autorises" v-on:reload-data="reloadData"/>
+                                                                      <td class="text-center left-border">{{ i.total_HeTD_tp  }}</td>
+                                                                    </tr>
 
-                                                                  <tr v-if="module.partiel_autorises">
-                                                                    <td>PARTIEL</td>
-                                                                    <template v-for="g in volumesGlobaux">
-                                                                      <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'volumes-globaux'" :disabled="disabled"/>
-                                                                    </template>
-                                                                  </tr>
-                                                                  </tbody>
-                                                                </template>
-                                                              </v-simple-table>
-                                                            </template>
-                                                          </div>
+                                                                    <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.partiel_autorises}">
+                                                                      <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.partiel_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
+                                                                      <TDEditValue :lim="module.nb_groupe_effectif_td" :type-cours="'partiel'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.partiel_autorises" v-on:reload-data="reloadData"/>
+                                                                      <td class="text-center left-border">{{ i.total_HeTD_partiel  }}</td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                  </template>
+                                                                </v-simple-table>
+                                                              </v-row>
+                                                            </v-container>
+                                                          </template>
+                                                          <v-divider></v-divider>
+                                                          <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolGlob(module.id)">
+                                                            Ajouter des intervenants
+                                                          </v-btn>
+                                                        </div>
                                                       </v-col>
                                                     </v-row>
                                                   </v-container>
@@ -710,11 +719,12 @@
 
                 <v-container v-if="this.mode_saisie ==='globale'">
                   <v-row>
-                    <span class="subtitle-1">Forfait horaire global</span>
+                    <span class="subtitle-1">Forfaits horaires globaux</span>
                   </v-row>
                   <v-row>
-                    <v-col class="d-flex justify-center" v-if="Boolean(this.cm_autorises)">
+                    <v-col class="d-flex justify-center">
                       <v-text-field
+                        :disabled="!Boolean(this.cm_autorises)"
                         v-model="forfait_globale_cm"
                         :error-messages="forfait_globale_cmErrors"
                         label="CM"
@@ -722,8 +732,9 @@
                         @blur="$v.forfait_globale_cm.$touch()"
                       ></v-text-field>
                     </v-col>
-                    <v-col class="d-flex justify-center" v-if="Boolean(this.td_autorises)">
+                    <v-col class="d-flex justify-center">
                       <v-text-field
+                          :disabled="!Boolean(this.td_autorises)"
                           v-model="forfait_globale_td"
                           :error-messages="forfait_globale_tdErrors"
                           label="TD"
@@ -731,8 +742,9 @@
                           @blur="$v.forfait_globale_td.$touch()"
                       ></v-text-field>
                     </v-col>
-                    <v-col class="d-flex justify-center" v-if="Boolean(this.tp_autorises)">
+                    <v-col class="d-flex justify-center">
                       <v-text-field
+                          :disabled="!Boolean(this.tp_autorises)"
                           v-model="forfait_globale_tp"
                           :error-messages="forfait_globale_tpErrors"
                           label="TP"
@@ -740,8 +752,9 @@
                           @blur="$v.forfait_globale_tp.$touch()"
                       ></v-text-field>
                     </v-col>
-                    <v-col class="d-flex justify-center" v-if="Boolean(this.partiel_autorises)">
+                    <v-col class="d-flex justify-center">
                       <v-text-field
+                          :disabled="!Boolean(this.partiel_autorises)"
                           v-model="forfait_globale_partiel"
                           :error-messages="forfait_globale_partielErrors"
                           label="Partiel"
@@ -835,7 +848,7 @@
                     :loading="loading"
                     color="success darken-1"
                     text
-                    @click="submitGrpInterv"
+                    @click="submitIntervenant"
                 >
                   Valider
                 </v-btn>
@@ -910,6 +923,7 @@ export default {
     isFormation: false,
     loading: false,
     methods: "POST",
+    type: '',
     item_mode_saisie: [
       {nom: 'Aucun', val: 'aucun'},
       {nom: 'Hebdomadaire', val: 'hebdo'},
@@ -969,11 +983,15 @@ export default {
     async getVolumesHebdomadaires() {
       this.volumesHebdomadaires = await apiVolumeHebdomadaire.getVolumesHebdomadaires();
     },
-    async getvolumesGlobaux() {
+    async getVolumesGlobaux() {
       this.volumesGlobaux = await apiVolumeGlobaux.getVolumesGlobaux();
+      await this.getElements();
     },
-    async getIntervenantsByProjetNotInModule(idModule){
-      this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsByProjetNotInModule(this.$route.params.id, idModule)
+    async getIntervenantsForGrpIntervByProjetNotInModule(idModule){
+      this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsForGrpIntervByProjetNotInModule(this.$route.params.id, idModule)
+    },
+    async getIntervenantsForVolGlobByProjetNotInModule(idModule){
+      this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsForVolGlobByProjetNotInModule(this.$route.params.id, idModule)
     },
     async getGroupeIntervenantByModule() {
       this.intervenantsModules = await apiGroupeIntervenant.getGroupeIntervenantByModule();
@@ -987,7 +1005,7 @@ export default {
       await this.getVolumesHebdomadaires();
       await this.getGroupeIntervenantByModule();
       await this.getGroupesIntervenants();
-      await this.getvolumesGlobaux();
+      await this.getVolumesGlobaux();
       await this.getElements();
     },
     async submit() {
@@ -1044,12 +1062,10 @@ export default {
         await apiElement.editElement(element);
         this.$emit('edit-element',{typeOperaion: 'modifié', element: element.titre});
       }
-      await this.getElements();
-      await this.getVolumeHebdomadaireByModule();
-      await this.getVolumesHebdomadaires();
-      this.clear();
       this.loading = false;
       this.form = false;
+      await this.reloadData();
+      this.clear();
     },
     clear() {
       this.$v.$reset()
@@ -1226,29 +1242,41 @@ export default {
       }, 0)
     },
     async addGrpInterv(idModule, idSemestre){
-      await this.getIntervenantsByProjetNotInModule(idModule);
+      this.type = 'grpInterv';
+      await this.getIntervenantsForGrpIntervByProjetNotInModule(idModule);
       this.formIntervenant = true;
       this.idElement = idModule;
       const periode = await this.getPeriodeByElementId(idSemestre);
       this.nb_semaine = periode[0].nb_semaine;
       await this.getElements();
     },
-    async submitGrpInterv() {
+    async addVolGlob(idModule){
+      this.type = 'volGlob';
+      await this.getIntervenantsForVolGlobByProjetNotInModule(idModule);
+      this.formIntervenant = true;
+      this.idElement = idModule;
+      await this.getElements();
+    },
+    async submitIntervenant() {
       this.$v.$touch()
       if (this.intervenant_id.length <= 0) {
         return;
       } else {
         this.loading = true;
         for (let i = 0; i < this.intervenant_id.length; i++) {
-          await apiGroupeIntervenant.createGroupeIntervenantBySemaine(this.idElement, this.intervenant_id[i], 1, this.nb_semaine);
+          if (this.type === 'grpInterv') {
+            await apiGroupeIntervenant.createGroupeIntervenantBySemaine(this.idElement, this.intervenant_id[i], 1, this.nb_semaine);
+          }
+          if (this.type === 'volGlob') {
+            await apiVolumeGlobaux.createVolumeGlobauxByModule(this.idElement, this.intervenant_id[i]);
+          }
         }
       }
-      await this.getVolumeHebdomadaireByModule();
       this.loading = false;
       this.formIntervenant = false;
-      await this.getGroupeIntervenantByModule();
-      await this.getGroupesIntervenants();
-      await this.getIntervenantsByProjetNotInModule(this.idElement);
+      await this.reloadData();
+      if (this.type === 'grpInterv') await this.getIntervenantsForGrpIntervByProjetNotInModule(this.idElement);
+      if (this.type === 'volGlob') await this.getIntervenantsForVolGlobByProjetNotInModule(this.idElement);
       this.clearGrpInterv();
     },
     clearGrpInterv() {
@@ -1256,6 +1284,7 @@ export default {
       this.idElement = '';
       this.intervenant_id = [];
       this.nb_semaine = 1;
+      this.type = '';
     },
     async addVolHebdo(module_id, semestre_id){
       const periode = await this.getPeriodeByElementId(semestre_id);
@@ -1387,7 +1416,7 @@ export default {
     this.getGroupesIntervenants();
     this.getVolumeHebdomadaireByModule();
     this.getVolumesHebdomadaires();
-    this.getvolumesGlobaux();
+    this.getVolumesGlobaux();
     this.getElements();
   },
 }
@@ -1408,21 +1437,22 @@ export default {
 }
 .top-border{
   border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: #e4e4e4 !important;
+}
+.disabled-row{
   background-color: rgba(0, 0, 0, 0.03) !important;
 }
 .height-row{
   max-height: 2em !important;
   min-height: 2em !important;
 }
-td, th, tr {
-  width: 5em;
-  min-width: 5em;
-  max-width: 5em;
-}
 .icon-intervenant {
   order: 0;
 }
 .header-intervenant {
   order: 1;
+}
+.width{
+  width: 100% !important;
 }
 </style>

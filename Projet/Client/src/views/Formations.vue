@@ -253,7 +253,6 @@
 <script>
 import apiFormation from "../services/API/formations";
 import apiProjet from "../services/API/projets";
-import apiElement from "../services/API/elements";
 import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
 import ReadElements from "../components/ReadElements";
@@ -291,9 +290,6 @@ export default {
     },
     async getProjet() {
       this.projet = await apiProjet.getProjet(this.$route.params.id);
-    },
-    async getElement() {
-      this.elements = await apiElement.getElements();
     },
     async saveVerrou(formation) {
       formation.verrou = Number(!formation.verrou)
@@ -452,7 +448,6 @@ export default {
   mounted() {
     this.getProjet();
     this.getFormationByProjet();
-    this.getElement();
   }
 }
 </script>

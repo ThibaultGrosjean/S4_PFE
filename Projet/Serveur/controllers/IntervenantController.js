@@ -50,7 +50,7 @@ exports.getIntervenantsByProjet = (req, res) => {
 };
 
 
-exports.getIntervenantsByProjetNotInModule = (req, res) => {
+exports.getIntervenantsForGrpIntervByProjetNotInModule = (req, res) => {
   db.query('SELECT i.id, i.projet_id, e.prenom, e.nom, s.nom AS statut'
         +' FROM intervenant AS i'
         +' JOIN enseignant AS e'
@@ -62,6 +62,30 @@ exports.getIntervenantsByProjetNotInModule = (req, res) => {
                          +' FROM groupe_intervenant AS g2'
                          +' WHERE g2.element_id = ' + req.params.idModule
                          +' GROUP BY g2.element_id, g2.intervenant_id);',
+    function(err, intervenant) {
+      if (!err) {
+        res.status(200).json(intervenant);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.getIntervenantsForVolGlobByProjetNotInModule = (req, res) => {
+  db.query('SELECT i.id, i.projet_id, e.prenom, e.nom, s.nom AS statut'
+        +' FROM intervenant AS i'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' JOIN statut AS s'
+        +' ON s.id = e.statut_id'
+        +' WHERE i.projet_id = ' + req.params.idProjet
+        +' AND i.id NOT IN (SELECT v.intervenant_id'
+                         +' FROM volume_globale AS v'
+                         +' WHERE v.element_id = ' + req.params.idModule
+                         +' GROUP BY v.element_id, v.intervenant_id);',
     function(err, intervenant) {
       if (!err) {
         res.status(200).json(intervenant);  

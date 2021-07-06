@@ -51,6 +51,7 @@ exports.getAllElements = (req, res) => {
 };
 
 
+
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'
         +' FROM element as e'

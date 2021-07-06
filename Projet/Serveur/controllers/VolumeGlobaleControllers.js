@@ -13,11 +13,19 @@ exports.validator = [
 
 
 exports.getAllVolumeGlobales = (req, res) => {
-  db.query('SELECT v.*, e.prenom, e.nom FROM volume_globale AS v'
-        +' JOIN intervenant AS i'
-        +' ON i.id = v.intervenant_id'
-        +' JOIN enseignant AS e'
-        +' ON e.id = i.enseignant_id;',
+  db.query('SELECT v.*, e.prenom, e.nom'
+      +' , SUM(el.forfait_globale_cm * v.vol_hor_cm) AS total_HeTD_cm'
+      +' , SUM(el.forfait_globale_td * v.vol_hor_td) AS total_HeTD_td'
+      +' , SUM(el.forfait_globale_tp * v.vol_hor_tp) AS total_HeTD_tp'
+      +' , SUM(el.forfait_globale_partiel * v.vol_hor_partiel) AS total_HeTD_partiel'
+      +' FROM volume_globale AS v'
+      +' JOIN element AS el'
+      +' ON el.id = v.element_id'
+      +' JOIN intervenant AS i'
+      +' ON i.id = v.intervenant_id'
+      +' JOIN enseignant AS e'
+      +' ON e.id = i.enseignant_id'
+      +' GROUP BY v.id;',
     function(err, volume_globales) {
       if (!err) {
         res.status(200).json(volume_globales);  
@@ -31,12 +39,20 @@ exports.getAllVolumeGlobales = (req, res) => {
 
 
 exports.getVolumeGlobale = (req, res) => {
-  db.query('SELECT v.*, e.prenom, e.nom FROM volume_globale AS v'
-        +' JOIN intervenant AS i'
-        +' ON i.id = v.intervenant_id'
-        +' JOIN enseignant AS e'
-        +' ON e.id = i.enseignant_id'
-        +' WHERE id = ? ;', [req.params.id],
+  db.query('SELECT v.*, e.prenom, e.nom'
+      +' , SUM(el.forfait_globale_cm * v.vol_hor_cm) AS total_HeTD_cm'
+      +' , SUM(el.forfait_globale_td * v.vol_hor_td) AS total_HeTD_td'
+      +' , SUM(el.forfait_globale_tp * v.vol_hor_tp) AS total_HeTD_tp'
+      +' , SUM(el.forfait_globale_partiel * v.vol_hor_partiel) AS total_HeTD_partiel'
+      +' FROM volume_globale AS v'
+      +' JOIN element AS el'
+      +' ON el.id = v.element_id'
+      +' JOIN intervenant AS i'
+      +' ON i.id = v.intervenant_id'
+      +' JOIN enseignant AS e'
+      +' ON e.id = i.enseignant_id'
+      +' GROUP BY v.id'
+      +' WHERE id = ? ;', [req.params.id],
     function(err, volume_globale) {
       if (!err) {
         res.status(200).json(volume_globale);  
@@ -58,6 +74,39 @@ exports.addVolumeGlobale = (req, res) => {
     vol_hor_partiel : req.body.vol_hor_partiel,
     element_id : req.body.element_id,  
     intervenant_id : req.body.intervenant_id,  
+  };
+
+  var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
+    + data['num_semaine'] + "','"
+    + data['vol_hor_cm'] + "','"
+    + data['vol_hor_td'] + "','"
+    + data['vol_hor_tp'] + "','"
+    + data['vol_hor_partiel'] + "','"
+    + data['element_id'] + "','"
+    + data['intervenant_id'] + "');"
+  ;
+
+  db.query(requete,
+    function(err, volume_globale) {
+      if (!err) {
+        res.status(200).json(volume_globale); 
+      } else  {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
+exports.addVolumeGlobaleByModule = (req, res) => {
+  var data = {
+    num_semaine : 1,
+    vol_hor_cm : 0,
+    vol_hor_td : 0,
+    vol_hor_tp : 0,
+    vol_hor_partiel : 0,
+    element_id : req.params.module,  
+    intervenant_id : req.params.intervenant,
   };
 
   var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
@@ -147,6 +196,39 @@ exports.editVolumeGlobale = (req, res) => {
 };
 
 
+exports.editTypeValueElementVolumesGlobaux = (req, res) => {
+  var typeUpdate = ''
+  switch(req.params.type) {
+    case 'cm':
+      typeUpdate = "forfait_globale_cm =" + req.params.value
+      break;
+    case 'td':
+      typeUpdate = "forfait_globale_td =" + req.params.value
+      break;
+    case 'tp':
+      typeUpdate = "forfait_globale_tp =" + req.params.value
+      break;
+    case 'partiel':
+      typeUpdate = "forfait_globale_partiel =" + req.params.value
+      break;
+    default:
+  } 
+
+  var requete="UPDATE element SET " + typeUpdate
+  +" WHERE id = " + req.params.id +";";
+
+  db.query(requete,
+    function(err, volume_globale) {
+      if (!err) {
+        res.status(200).json(volume_globale); 
+      } else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.deleteAllVolumesGlobauxByFormation = (req, res) => {
   db.query('DELETE v'
         +' FROM volume_globale AS v'
@@ -168,6 +250,19 @@ exports.deleteAllVolumesGlobauxByFormation = (req, res) => {
   );  
 };
 
+
+exports.deleteAllVolumesGlobaux = (req, res) => {
+  db.query('DELETE FROM volume_globale WHERE element_id = ' + req.params.element + ' AND intervenant_id = ' + req.params.intervenant,
+    function(err, volume_globale) {
+      if (!err) {
+        res.status(200).json(volume_globale); 
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
 
 
 exports.deleteVolumeGlobale = (req, res) => {

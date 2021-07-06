@@ -98,7 +98,9 @@ app.get('/intervenants/get/:id', intervenantController.getIntervenant);
 
 app.get('/intervenants/projets/get/:id', intervenantController.getIntervenantsByProjet);
 
-app.get('/intervenants/projets/:idProjet/module/:idModule/get', intervenantController.getIntervenantsByProjetNotInModule);
+app.get('/intervenants/groupes-intervenants/projets/:idProjet/module/:idModule/get', intervenantController.getIntervenantsForGrpIntervByProjetNotInModule);
+
+app.get('/intervenants/volumes-globaux/projets/:idProjet/module/:idModule/get', intervenantController.getIntervenantsForVolGlobByProjetNotInModule);
 
 app.post('/intervenants/create/',intervenantController.validator, intervenantController.addIntervenant);
 
@@ -168,11 +170,17 @@ app.get('/volumes-globaux/get/:id', volumeGlobaleController.getVolumeGlobale);
 
 app.post('/volumes-globaux/create/',volumeGlobaleController.validator, volumeGlobaleController.addVolumeGlobale);
 
+app.post('/volumes-globaux/module/:module/intervenant/:intervenant/create',volumeGlobaleController.validator, volumeGlobaleController.addVolumeGlobaleByModule);
+
 app.post('/volumes-globaux/copy/:id',volumeGlobaleController.validator, volumeGlobaleController.copyVolumeGlobale);
 
 app.patch('/volumes-globaux/edit/:id',volumeGlobaleController.validator, volumeGlobaleController.editVolumeGlobale);
 
+app.patch('/volumes-globaux/edit/:value/elements/:id/:type',volumeGlobaleController.validator, volumeGlobaleController.editTypeValueElementVolumesGlobaux);
+
 app.delete('/volumes-globaux/formation/delete/:id', volumeGlobaleController.deleteAllVolumesGlobauxByFormation);
+
+app.delete('/volumes-globaux/delete/element/:element/intervenant/:intervenant', volumeGlobaleController.deleteAllVolumesGlobaux);
 
 app.delete('/volumes-globaux/delete/:id', volumeGlobaleController.deleteVolumeGlobale);
 

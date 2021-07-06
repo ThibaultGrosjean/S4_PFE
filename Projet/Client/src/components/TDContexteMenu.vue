@@ -13,8 +13,9 @@
       </td>
     </template>
     <v-card>
-      <v-card-title class="text-h6 text-center">
+      <v-card-title class="text-h6 text-center d-flex justify-center">
         <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
+        <span v-if="table === 'volumes-globaux'">Forfait horaire du {{ element.titre.substr(element.titre.indexOf(":")+1) }}</span>
         <span v-else>Volume horaire pour toutes les semaines</span>
       </v-card-title>
       <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
@@ -65,6 +66,7 @@ import apiVolumeHebdomadaire from "../services/API/volumes-hebdomadaires";
 import apiGroupeIntervenant from "../services/API/groupes-intervenants";
 import {validationMixin} from "vuelidate";
 import {decimal,numeric, between, required} from "vuelidate/lib/validators";
+import apiVolumeGlobaux from "../services/API/volumes-globaux";
 
 export default {
   name: "TDContexteMenu",
@@ -96,8 +98,10 @@ export default {
     },
     clear() {
       this.$v.$reset();
-      this.volHorSemaineDefaut = 0;
-      this.nbGroupeSemaineDefaut = 0;
+      if (this.table !== 'volumes-globaux') {
+        this.volHorSemaineDefaut = 0;
+        this.nbGroupeSemaineDefaut = 0;
+      }
     },
     close() {
       this.validForm = true;
@@ -112,15 +116,16 @@ export default {
       this.validForm = true;
       this.loading = true;
       if (this.table === 'groupes-intervenants') {
-        await apiGroupeIntervenant.editTypeValueElementGroupeIntervenant(this.nbGroupeSemaineDefaut, this.element, this.intervenant, this.typeCours);
+        await apiGroupeIntervenant.editTypeValueElementGroupeIntervenant(this.nbGroupeSemaineDefaut, this.element.id, this.intervenant, this.typeCours);
         this.$emit('reload-groupes-intervenants');
       }
       if (this.table === 'volumes-hebdomadaires') {
-        await apiVolumeHebdomadaire.editTypeValueElementVolumeHebdomadaire(this.volHorSemaineDefaut, this.element, this.typeCours);
-        this.$emit('reload-volumes-hebdomadaires', await apiVolumeHebdomadaire.getVolumesHebdomadaires());
+        await apiVolumeHebdomadaire.editTypeValueElementVolumeHebdomadaire(this.volHorSemaineDefaut, this.element.id, this.typeCours);
+        this.$emit('reload-volumes-hebdomadaires');
       }
       if (this.table === 'volumes-globaux') {
-        console.log()
+        await apiVolumeGlobaux.editTypeValueElementVolumeGlobaux(this.volHorSemaineDefaut, this.element.id, this.typeCours);
+        this.$emit('reload-volumes-globaux');
       }
       this.loading = false;
     },
@@ -143,6 +148,25 @@ export default {
       return errors;
     },
   },
+  mounted() {
+    if (this.table === 'volumes-globaux') {
+      switch(this.typeCours) {
+        case 'cm':
+          this.volHorSemaineDefaut = this.element.forfait_globale_cm
+          break;
+        case 'td':
+          this.volHorSemaineDefaut = this.element.forfait_globale_td
+          break;
+        case 'tp':
+          this.volHorSemaineDefaut = this.element.forfait_globale_tp
+          break;
+        case 'partiel':
+          this.volHorSemaineDefaut = this.element.forfait_globale_partiel
+          break;
+        default:
+      }
+    }
+  }
 }
 </script>
 
@@ -151,8 +175,8 @@ export default {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 td.first-col {
-  width: 7em;
-  min-width: 7em;
-  max-width: 7em;
+  width: 7em !important;
+  min-width: 7em !important;
+  max-width: 7em !important;
 }
 </style>

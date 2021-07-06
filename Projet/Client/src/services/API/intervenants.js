@@ -16,8 +16,13 @@ const apiIntervenant = {
     return response.data;
   },
 
-  async getIntervenantsByProjetNotInModule(projetId, moduleId) {
-    const response = await axios.get('/intervenants/projets/' + projetId + '/module/' + moduleId + '/get').catch(error => console.error('Erreur API: ', error));
+  async getIntervenantsForGrpIntervByProjetNotInModule(projetId, moduleId) {
+    const response = await axios.get('/intervenants/groupes-intervenants/projets/' + projetId + '/module/' + moduleId + '/get').catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getIntervenantsForVolGlobByProjetNotInModule(projetId, moduleId) {
+    const response = await axios.get('/intervenants/volumes-globaux/projets/' + projetId + '/module/' + moduleId + '/get').catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
