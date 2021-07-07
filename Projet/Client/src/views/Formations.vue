@@ -19,9 +19,14 @@
           <v-icon class="mr-2">folder</v-icon>Retourner aux projets
         </v-btn>
       </v-col>
-      <v-col class="d-flex justify-end animate-pop-in">
+      <v-col class="d-flex justify-center animate-pop-in">
         <v-btn outlined rounded color="primary" @click="redirect('/intervenants/projets/' + Number($route.params.id))">
           <v-icon class="mr-2">groups</v-icon>Aller aux intervenants
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex justify-end animate-pop-in">
+        <v-btn outlined rounded color="primary" @click="redirect('/bilan/projets/'+ Number($route.params.id))">
+          <v-icon class="mr-2">account_balance_wallet</v-icon>Aller au bilan
         </v-btn>
       </v-col>
     </v-row>

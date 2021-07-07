@@ -19,9 +19,14 @@
           <v-icon class="mr-2">folder</v-icon>Retourner aux projets
         </v-btn>
       </v-col>
-      <v-col class="d-flex justify-end animate-pop-in">
+      <v-col class="d-flex justify-center animate-pop-in">
         <v-btn outlined rounded color="primary" @click="redirect('/formations/projets/'+ Number($route.params.id))">
           <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex justify-end animate-pop-in">
+        <v-btn outlined rounded color="primary" @click="redirect('/bilan/projets/'+ Number($route.params.id))">
+          <v-icon class="mr-2">account_balance_wallet</v-icon>Aller au bilan
         </v-btn>
       </v-col>
     </v-row>
@@ -76,7 +81,8 @@
         <v-col
             v-for="i in intervenants"
             :key="i.id"
-            sm="4"
+            sm="6"
+            md="4"
             class="justify-center"
         >
           <v-item v-slot="{ active, toggle }" :value="i">

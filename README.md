@@ -97,3 +97,7 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ajout des chargements lors des requêtes à la base de données
 * Verrouiller un projet : verrouiller les formations et les intervenants reliés au projet
 * Ajouter un intervenant dans un module à saisie globale, modifier les forfaits, supprimer l'intervenant
+
+## Semaine 8 : 7-13 juillet
+
+* Affichage du bilan général d'un projet pour chaque enseignant

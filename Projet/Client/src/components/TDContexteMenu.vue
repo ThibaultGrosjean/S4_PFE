@@ -15,7 +15,7 @@
     <v-card>
       <v-card-title class="text-h6 text-center d-flex justify-center">
         <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
-        <span v-if="table === 'volumes-globaux'">Forfait horaire du {{ element.titre.substr(element.titre.indexOf(":")+1) }}</span>
+        <span v-else-if="table === 'volumes-globaux'">Forfait horaire du {{ element.titre.substr(element.titre.indexOf(":")+1) }}</span>
         <span v-else>Volume horaire pour toutes les semaines</span>
       </v-card-title>
       <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
@@ -174,7 +174,7 @@ export default {
 .right-border {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
-td.first-col {
+.first-col {
   width: 7em !important;
   min-width: 7em !important;
   max-width: 7em !important;

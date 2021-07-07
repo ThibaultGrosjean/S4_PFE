@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 21 juin 2021 à 13:20
+-- Généré le : mar. 06 juil. 2021 à 17:23
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -216,6 +216,13 @@ CREATE TABLE `limite_sous_total` (
   `limite_eqTD` float NOT NULL,
   `id_projet` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `limite_sous_total`
+--
+
+INSERT INTO `limite_sous_total` (`id`, `nom`, `limite_eqTD`, `id_projet`) VALUES
+(1, 'référentiel', 50, 1);
 
 -- --------------------------------------------------------
 
@@ -512,6 +519,12 @@ ALTER TABLE `volume_globale`
 --
 ALTER TABLE `volume_hebdomadaire`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT pour la table `limite_sous_total`
+--
+ALTER TABLE `limite_sous_total`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Contraintes pour les tables déchargées

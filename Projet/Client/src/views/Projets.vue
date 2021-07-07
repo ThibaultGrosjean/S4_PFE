@@ -64,7 +64,8 @@
         <v-col
             v-if="switchArchive === Boolean(p.archive)"
             :key="p.id"
-            sm="4"
+            sm="6"
+            md="4"
             class="justify-center"
         >
           <v-card class="animate-pop-in">

@@ -1434,6 +1434,9 @@ export default {
 }
 .left-border {
   border-left: 1px solid rgba(0, 0, 0, 0.12);
+  width: 5em !important;
+  min-width: 5em !important;
+  max-width: 5em !important;
 }
 .top-border{
   border-top: 1px solid rgba(0, 0, 0, 0.12);
@@ -1454,5 +1457,10 @@ export default {
 }
 .width{
   width: 100% !important;
+}
+td, th {
+  width: 4em !important;
+  min-width: 4em !important;
+  max-width: 4em !important;
 }
 </style>

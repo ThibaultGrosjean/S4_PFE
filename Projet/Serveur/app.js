@@ -25,6 +25,7 @@ const periodeController = require('./controllers/PeriodeController');
 const volumeHebdomadaireController = require('./controllers/VolumeHebdomadaireControllers');
 const volumeGlobaleController = require('./controllers/VolumeGlobaleControllers');
 const groupeIntervenantController = require('./controllers/GroupeIntervenantControllers');
+const bilanController = require('./controllers/BilanController');
 
 const port = 8888;
 
@@ -209,6 +210,16 @@ app.delete('/groupes-intervenants/delete/element/:element/intervenant/:intervena
 
 app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
 
+
+app.get('/bilan/projets/get/:id', bilanController.getAllBilanByProjetIntervenant);
+
+app.get('/bilan/limite-sous-total/get', bilanController.getAllLimiteSousTotal);
+
+app.get('/bilan/groupe-sous-total/get', bilanController.getAllGroupeSousTotal);
+
+app.get('/bilan/limite-sous-total/projet/get/:id', bilanController.getAllLimiteSousTotalByProjet);
+
+app.get('/bilan/groupe-sous-total/projet/get/:id', bilanController.getAllGroupeSousByLimiteSousTotal);
 
 app.listen(port, () => {
     console.log(`Écoute sur le port : ${port}`);

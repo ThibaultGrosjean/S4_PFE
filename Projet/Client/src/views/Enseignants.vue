@@ -67,7 +67,8 @@
       <v-col
           v-for="e in enseignants"
           :key="e.id"
-          sm="4"
+          sm="6"
+          md="4"
           class="justify-center"
       >
         <v-card class="animate-pop-in">
@@ -83,7 +84,7 @@
             <v-expansion-panels accordion>
               <v-expansion-panel>
                 <v-expansion-panel-header class="pa-4 text--secondary">
-                  Statut<b>{{ ': ' + e.statut.nom }} ({{ e.statut.surnom }})</b>
+                  Statut<b>{{ ': ' + e.statut.nom }} <small>({{ e.statut.surnom }})</small></b>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content class="pa-4 pt-0 text--secondary">
                   <v-tooltip top>
