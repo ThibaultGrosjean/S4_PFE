@@ -8,6 +8,11 @@ const apiElement = {
     return response.data;
   },
 
+  async getElementsModules(projetId) {
+    const response = await axios.get('/elements/modules/projets/get/' + projetId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async getElement(elementId) {
     const response = await axios.get('/elements/get/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;

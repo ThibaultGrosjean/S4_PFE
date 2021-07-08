@@ -92,25 +92,25 @@
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales attendues : <b>{{ e.statut.nb_he_td_min_attendu }}</b><br>
+                  </v-tooltip> minimales attendues : <b>{{ e.statut.nb_he_td_min_attendu }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b><br>
+                  </v-tooltip> maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b><br>
+                  </v-tooltip> minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b><br>
+                  </v-tooltip> maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b> h<br>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -301,11 +301,12 @@
     <v-row>
       <v-col>
         <v-btn
+            v-show="!form"
             class="v-btn--addElement"
             color="success"
             fab
             dark
-            @click="close"
+            @click="form = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -361,6 +362,7 @@ export default {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
+      this.$refs.formulaire.validate();
       this.$v.$touch();
       if (this.$v.$invalid) return;
       const enseignant = {

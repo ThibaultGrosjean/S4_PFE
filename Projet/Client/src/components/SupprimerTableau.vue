@@ -15,7 +15,7 @@
       </v-btn>
       </template>
       <span v-if="type === 'groupes-intervenants'">Supprimer l'intervenant</span>
-      <span v-if="type === 'volumes-globaux'">Supprimer les volumes globaux</span>
+      <span v-else-if="type === 'volumes-globaux'">Supprimer les volumes globaux</span>
       <span v-else>Supprimer les volumes hebdomadaires</span>
     </v-tooltip>
     <v-dialog

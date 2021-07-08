@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mar. 06 juil. 2021 à 17:23
+-- Généré le : jeu. 08 juil. 2021 à 16:02
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `pfe`
 --
-DROP TABLE `element`, `enseignant`, `formation`, `groupe_intervenant`, `groupe_sous_total`, `intervenant`, `limite_sous_total`, `periode`, `projet`, `statut`, `volume_globale`, `volume_hebdomadaire`;
+
 -- --------------------------------------------------------
 
 --
@@ -68,7 +68,9 @@ INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol
 (8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 19, 16, 16, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
 (9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 2, 1, 2, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
 (10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5),
-(11, 'M 4101 : Stage', 'M4101', 'M4101', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 10);
+(11, 'M 4101 : Stage', 'M4101', 'M4101', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 10),
+(12, 'UE 42 : Projet tuteuré', 'UE42 Ptut', 'UE42', 2, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 3, 6, 2, 5),
+(13, 'M 4201 : Projet tuteuré', 'M4201', 'M4201', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 2, 0, 0, 1, 3, 6, 2, 12);
 
 -- --------------------------------------------------------
 
@@ -135,27 +137,16 @@ CREATE TABLE `groupe_intervenant` (
 --
 
 INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
-(1, 8, 1, 1, 1, 1, 1, 0),
-(2, 8, 1, 2, 1, 1, 1, 0),
-(3, 8, 1, 3, 1, 1, 1, 0),
-(4, 8, 1, 4, 1, 1, 1, 0),
-(5, 8, 1, 5, 1, 1, 1, 0),
-(6, 8, 1, 6, 1, 1, 1, 0),
-(7, 8, 1, 7, 1, 1, 1, 0),
-(8, 8, 1, 8, 1, 1, 1, 0),
-(9, 8, 1, 9, 1, 1, 1, 0),
-(10, 8, 1, 10, 1, 1, 1, 0),
-(11, 8, 1, 11, 0, 0, 0, 1),
-(12, 9, 1, 1, 1, 1, 1, 1),
-(13, 9, 1, 2, 1, 1, 1, 1),
-(14, 9, 1, 3, 1, 1, 1, 1),
-(15, 9, 1, 4, 1, 1, 1, 1),
-(16, 9, 1, 5, 1, 1, 1, 1),
-(17, 9, 1, 6, 1, 1, 1, 1),
-(18, 9, 1, 7, 1, 1, 1, 1),
-(19, 9, 1, 8, 1, 1, 1, 1),
-(20, 9, 1, 9, 1, 1, 1, 1),
-(21, 9, 1, 10, 1, 1, 1, 1),
+(12, 9, 1, 1, 1, 1, 3, 1),
+(13, 9, 1, 2, 1, 1, 3, 1),
+(14, 9, 1, 3, 1, 1, 3, 1),
+(15, 9, 1, 4, 1, 1, 3, 1),
+(16, 9, 1, 5, 1, 1, 3, 1),
+(17, 9, 1, 6, 1, 1, 3, 1),
+(18, 9, 1, 7, 1, 1, 3, 1),
+(19, 9, 1, 8, 1, 1, 3, 1),
+(20, 9, 1, 9, 1, 1, 3, 1),
+(21, 9, 1, 10, 1, 1, 3, 1),
 (22, 9, 1, 11, 0, 0, 0, 1),
 (23, 9, 2, 1, 3, 1, 1, 1),
 (24, 9, 2, 2, 1, 1, 1, 1),
@@ -167,7 +158,29 @@ INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_sem
 (30, 9, 2, 8, 1, 1, 1, 1),
 (31, 9, 2, 9, 1, 1, 1, 1),
 (32, 9, 2, 10, 1, 1, 1, 1),
-(33, 9, 2, 11, 0, 0, 0, 1);
+(33, 9, 2, 11, 0, 0, 0, 1),
+(45, 8, 1, 1, 1, 2, 6, 0),
+(46, 8, 1, 2, 1, 2, 6, 0),
+(47, 8, 1, 3, 1, 2, 6, 0),
+(48, 8, 1, 4, 1, 2, 6, 0),
+(49, 8, 1, 5, 1, 2, 6, 0),
+(50, 8, 1, 6, 1, 2, 6, 0),
+(51, 8, 1, 7, 1, 2, 6, 0),
+(52, 8, 1, 8, 1, 2, 6, 0),
+(53, 8, 1, 9, 1, 2, 6, 0),
+(54, 8, 1, 10, 1, 2, 6, 0),
+(55, 8, 1, 11, 0, 0, 0, 1),
+(56, 8, 2, 1, 0, 0, 0, 0),
+(57, 8, 2, 2, 0, 0, 0, 0),
+(58, 8, 2, 3, 0, 0, 0, 0),
+(59, 8, 2, 4, 0, 0, 0, 0),
+(60, 8, 2, 5, 0, 0, 0, 0),
+(61, 8, 2, 6, 0, 0, 0, 0),
+(62, 8, 2, 7, 0, 0, 0, 0),
+(63, 8, 2, 8, 0, 0, 0, 0),
+(64, 8, 2, 9, 0, 0, 0, 0),
+(65, 8, 2, 10, 0, 0, 0, 0),
+(66, 8, 2, 11, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -179,6 +192,13 @@ CREATE TABLE `groupe_sous_total` (
   `id_limite_sous_total` int NOT NULL,
   `id_element` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `groupe_sous_total`
+--
+
+INSERT INTO `groupe_sous_total` (`id_limite_sous_total`, `id_element`) VALUES
+(1, 11);
 
 -- --------------------------------------------------------
 
@@ -201,7 +221,7 @@ CREATE TABLE `intervenant` (
 --
 
 INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu_projet`, `nb_he_td_max_attendu_projet`, `nb_he_td_min_sup_projet`, `nb_he_td_max_sup_projet`) VALUES
-(1, 1, 1, 10, 15, 0, 0),
+(1, 1, 1, 192, 192, 0, 100),
 (2, 1, 2, 384, 384, 0, 200);
 
 -- --------------------------------------------------------
@@ -320,7 +340,9 @@ CREATE TABLE `volume_globale` (
 --
 
 INSERT INTO `volume_globale` (`id`, `intervenant_id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
-(1, 2, 11, 1, 0, 5, 0, 0);
+(1, 2, 11, 1, 0, 5, 0, 0),
+(2, 1, 13, 1, 0, 3, 0, 0),
+(3, 2, 13, 1, 0, 2, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -464,7 +486,7 @@ ALTER TABLE `volume_hebdomadaire`
 -- AUTO_INCREMENT pour la table `element`
 --
 ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
@@ -482,13 +504,19 @@ ALTER TABLE `formation`
 -- AUTO_INCREMENT pour la table `groupe_intervenant`
 --
 ALTER TABLE `groupe_intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT pour la table `intervenant`
 --
 ALTER TABLE `intervenant`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `limite_sous_total`
+--
+ALTER TABLE `limite_sous_total`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `periode`
@@ -512,19 +540,13 @@ ALTER TABLE `statut`
 -- AUTO_INCREMENT pour la table `volume_globale`
 --
 ALTER TABLE `volume_globale`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `volume_hebdomadaire`
 --
 ALTER TABLE `volume_hebdomadaire`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT pour la table `limite_sous_total`
---
-ALTER TABLE `limite_sous_total`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Contraintes pour les tables déchargées

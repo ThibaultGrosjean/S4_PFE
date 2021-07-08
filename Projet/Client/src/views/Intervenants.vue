@@ -102,10 +102,30 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text>
-                <p>Le Nombre d'heures minimales attendues pour le projet :<b>{{ i.nb_he_td_min_attendu_projet }}</b></p>
-                <p>Le Nombre d'heures maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b></p>
-                <p>Le Nombre d'heures minimales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b></p>
-                <p>Le Nombre d'heures maximales supplémentaires attendues pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b></p>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">HeTD*</span>
+                  </template>
+                  <span>Nombre d’heures équivalent TD</span>
+                </v-tooltip> minimales attendues pour le projet : <b>{{ i.nb_he_td_min_attendu_projet }}</b> h<br>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">HeTD*</span>
+                  </template>
+                  <span>Nombre d’heures équivalent TD</span>
+                </v-tooltip> maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b> h<br>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">HeTD*</span>
+                  </template>
+                  <span>Nombre d’heures équivalent TD</span>
+                </v-tooltip> minimales sup. pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b> h<br>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">HeTD*</span>
+                  </template>
+                  <span>Nombre d’heures équivalent TD</span>
+                </v-tooltip> maximales sup. pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b> h<br>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -136,7 +156,7 @@
           max-width="600px"
       >
         <v-card>
-          <v-form lazy-validation>
+          <v-form ref="formulaire" lazy-validation>
             <v-card-title>
               <span class="headline" v-if="methods === 'POST'">Ajouter un intervenant</span>
               <span class="headline" v-else>Modifier l'intervenant</span>
@@ -285,12 +305,13 @@
     <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
         <v-btn
+            v-show="!form"
             :disabled="Boolean(projet[0].verrou)"
             class="v-btn--addElement"
             color="success"
             fab
             dark
-            @click="addIntervenant"
+            @click="form = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -337,7 +358,7 @@ export default {
     deleteSelected: [],
     checkboxSelectAll: false,
     rules: {
-      selectEnseignant: [(v) =>  v.length > 0 || "Veuillez sélectionner un enseignant"],
+      selectEnseignant: [(v) => v.length > 0 || "Veuillez sélectionner un enseignant"],
     }
   }),
   methods: {
@@ -357,6 +378,7 @@ export default {
       return await apiEnseignant.getEnseignant(id);
     },
     async submit() {
+      this.$refs.formulaire.validate();
       if (this.projet[0].verrou === 1) {
         this.clear();
         this.form = false;
@@ -405,6 +427,7 @@ export default {
     },
     clear() {
       this.$v.$reset();
+      this.$refs.formulaire.resetValidation();
       this.id = '';
       this.nb_he_td_min_attendu_projet = '';
       this.nb_he_td_max_attendu_projet = '';
@@ -423,7 +446,7 @@ export default {
       this.getEnseignantProjetNotInIntervenant();
       this.projet_id = Number(this.$route.params.id);
       this.methods = 'POST';
-      this.form = true;
+      this.form = !this.form;
     },
     edit(intervenant) {
       this.methods = 'PUT';

@@ -292,11 +292,11 @@
                                                             <div :key="v.id" v-if="v.element_id === module.id && volumesHebdomadairesModules.length !== 0">
                                                               <v-container>
                                                                 <v-row>
-                                                                  <v-col class="top-border pa-1"></v-col>
-                                                                  <v-col class="top-border d-flex justify-center pa-1">
-                                                                    <span class="text-subtitle-1 text-center">Volumes horaires prévus pour un étudiant</span>
+                                                                  <v-col class="top-border pa-1 background-gray"></v-col>
+                                                                  <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                                                                    <span class="text-subtitle-1 text-center font-weight-medium text--secondary">Volumes horaires prévus pour un étudiant</span>
                                                                   </v-col>
-                                                                  <v-col class="top-border pa-1 d-flex justify-end">
+                                                                  <v-col class="top-border pa-1 d-flex justify-end background-gray">
                                                                     <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled" v-on:reload-volumes-hebdomadaires-module="getVolumeHebdomadaireByModule"/>
                                                                   </v-col>
                                                                 </v-row>
@@ -367,11 +367,11 @@
                                                                     <template v-for="i in intervenantsModules">
                                                                       <v-container :key="i.id" v-if="i.element_id === module.id && intervenantsModules.length !== 0">
                                                                         <v-row>
-                                                                          <v-col class="top-border pa-1"></v-col>
-                                                                          <v-col class="top-border d-flex justify-center pa-1">
-                                                                            <span class="text-subtitle-1 text-center">{{ i.prenom }} {{ i.nom }}</span>
+                                                                          <v-col class="top-border pa-1 background-gray"></v-col>
+                                                                          <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                                                                            <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{ i.prenom }} {{ i.nom }}</span>
                                                                           </v-col>
-                                                                          <v-col class="top-border pa-1 d-flex justify-end">
+                                                                          <v-col class="top-border pa-1 d-flex justify-end background-gray">
                                                                             <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-groupes-intervenants-module="getGroupeIntervenantByModule"/>
                                                                           </v-col>
                                                                         </v-row>
@@ -439,11 +439,11 @@
                                                           <template v-for="i in volumesGlobaux">
                                                             <v-container :key="i.id" v-if="i.element_id === module.id">
                                                               <v-row>
-                                                                <v-col class="top-border pa-1"></v-col>
-                                                                <v-col class="top-border d-flex justify-center pa-1">
-                                                                  <span class="text-subtitle-1 text-center">{{ i.prenom }} {{ i.nom }}</span>
+                                                                <v-col class="top-border pa-1 background-gray"></v-col>
+                                                                <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                                                                  <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{ i.prenom }} {{ i.nom }}</span>
                                                                 </v-col>
-                                                                <v-col class="top-border pa-1 d-flex justify-end">
+                                                                <v-col class="top-border pa-1 d-flex justify-end background-gray">
                                                                   <SupprimerTableau :type="'volumes-globaux'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-volumes-globaux-module="getVolumesGlobaux"/>
                                                                 </v-col>
                                                               </v-row>
@@ -796,11 +796,11 @@
           max-width="600px"
       >
         <v-card>
-          <v-form lazy-validation>
+          <v-form ref="formulaire" lazy-validation>
             <v-card-title>
               <span class="headline">Ajouter un intervenant</span>
               <v-spacer></v-spacer>
-              <v-btn icon @click="formIntervenant = false">
+              <v-btn icon @click="closeGrpInterv">
                 <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
@@ -1068,7 +1068,7 @@ export default {
       this.clear();
     },
     clear() {
-      this.$v.$reset()
+      this.$v.$reset();
       this.idElement = '';
       this.titre = '';
       this.surnom = '';
@@ -1258,6 +1258,7 @@ export default {
       await this.getElements();
     },
     async submitIntervenant() {
+      this.$refs.formulaire.validate();
       this.$v.$touch()
       if (this.intervenant_id.length <= 0) {
         return;
@@ -1273,18 +1274,22 @@ export default {
         }
       }
       this.loading = false;
-      this.formIntervenant = false;
+      this.closeGrpInterv();
       await this.reloadData();
       if (this.type === 'grpInterv') await this.getIntervenantsForGrpIntervByProjetNotInModule(this.idElement);
       if (this.type === 'volGlob') await this.getIntervenantsForVolGlobByProjetNotInModule(this.idElement);
-      this.clearGrpInterv();
     },
     clearGrpInterv() {
       this.$v.$reset();
+      this.$refs.formulaire.resetValidation();
       this.idElement = '';
       this.intervenant_id = [];
       this.nb_semaine = 1;
       this.type = '';
+    },
+    closeGrpInterv(){
+      this.formIntervenant = false;
+      this.clearGrpInterv();
     },
     async addVolHebdo(module_id, semestre_id){
       const periode = await this.getPeriodeByElementId(semestre_id);
@@ -1429,6 +1434,12 @@ export default {
 .v-expansion-panel-content__wrap {
   padding: 0 0 0 0 !important;
 }
+thead th {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+.background-gray{
+  background-color: rgba(0, 0, 0, 0.10) !important;
+}
 .right-border {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
@@ -1440,7 +1451,7 @@ export default {
 }
 .top-border{
   border-top: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #e4e4e4 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 .disabled-row{
   background-color: rgba(0, 0, 0, 0.03) !important;

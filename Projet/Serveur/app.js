@@ -80,6 +80,8 @@ app.delete('/projets/delete/:id', projetController.deleteProjet);
 
 app.get('/elements/get', elementController.getAllElements);
 
+app.get('/elements/modules/projets/get/:id', elementController.getAllElementsModules);
+
 app.get('/elements/get/:id', elementController.getElement);
 
 app.post('/elements/create/',elementController.validator, elementController.addElement);

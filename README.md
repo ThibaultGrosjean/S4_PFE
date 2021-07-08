@@ -101,3 +101,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 8 : 7-13 juillet
 
 * Affichage du bilan général d'un projet pour chaque enseignant
+* Afficher les sous-totaux
+* Formulaire de modification et d'ajout d'un sous-total

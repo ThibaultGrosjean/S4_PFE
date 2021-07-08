@@ -175,8 +175,6 @@ export default {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 .first-col {
-  width: 7em !important;
-  min-width: 7em !important;
-  max-width: 7em !important;
+  min-width: 70px !important;
 }
 </style>

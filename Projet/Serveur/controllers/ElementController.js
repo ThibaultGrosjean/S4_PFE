@@ -51,6 +51,28 @@ exports.getAllElements = (req, res) => {
 };
 
 
+exports.getAllElementsModules = (req, res) => {
+  db.query('SELECT e4.surnom AS parent_titre, e.*'
+        +' FROM `element` AS e'
+        +' JOIN element AS e2'
+        +' ON e2.id = e.parent'
+        +' JOIN element AS e3'
+        +' ON e3.id = e2.parent'
+        +' JOIN element AS e4'
+        +' ON e4.id = e3.parent'
+        +' WHERE e4.id IN (SELECT f.element_id FROM formation AS f WHERE f.projet_id = ' + req.params.id + ')'
+        +' ORDER BY e.mode_saisie DESC, e.titre ASC;',
+    function(err, elements) {
+      if (!err) {
+        res.status(200).send(elements);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
 
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'

@@ -19,25 +19,25 @@
             <span v-bind="attrs" v-on="on">HeTD*</span>
           </template>
           <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> min. attendues : <b>{{ bilan.nb_he_td_min_attendu_projet }}</b><br>
+        </v-tooltip> minimales attendues : <b>{{ bilan.nb_he_td_min_attendu_projet }}</b> h<br>
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">HeTD*</span>
           </template>
           <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> max. attendues : <b>{{ bilan.nb_he_td_max_attendu_projet }}</b><br>
+        </v-tooltip> maximales attendues : <b>{{ bilan.nb_he_td_max_attendu_projet }}</b> h<br>
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">HeTD*</span>
           </template>
           <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> min sup. : <b>{{ bilan.nb_he_td_min_sup_projet }}</b><br>
+        </v-tooltip> minimales sup. : <b>{{ bilan.nb_he_td_min_sup_projet }}</b> h<br>
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">HeTD*</span>
           </template>
           <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> max sup. : <b>{{ bilan.nb_he_td_max_sup_projet }}</b><br>
+        </v-tooltip> maximales sup. : <b>{{ bilan.nb_he_td_max_sup_projet }}</b> h<br>
       </v-card-text>
     </v-card>
   </v-menu>

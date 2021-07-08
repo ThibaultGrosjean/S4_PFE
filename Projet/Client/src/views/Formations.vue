@@ -243,11 +243,12 @@
       <v-col>
         <v-btn
             :disabled="Boolean(projet[0].verrou)"
+            v-show="!form"
             class="v-btn--addElement"
             color="success"
             fab
             dark
-            @click="form = !form"
+            @click="form = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>

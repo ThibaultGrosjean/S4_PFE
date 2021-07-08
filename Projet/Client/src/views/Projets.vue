@@ -322,11 +322,12 @@
     <v-row>
       <v-col>
         <v-btn
+            v-show="!form"
             class="v-btn--addElement"
             color="success"
             fab
             dark
-            @click="close"
+            @click="form = true"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
