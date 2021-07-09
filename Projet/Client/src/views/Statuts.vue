@@ -226,16 +226,18 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn
-            v-show="!form"
-            class="v-btn--addElement"
-            color="success"
-            fab
-            dark
-            @click="form = true"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <v-fab-transition>
+          <v-btn
+              v-show="!form"
+              class="v-btn--addElement"
+              color="success"
+              fab
+              dark
+              @click="form = true"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-col>
     </v-row>
   </v-container>

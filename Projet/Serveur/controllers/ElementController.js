@@ -61,6 +61,7 @@ exports.getAllElementsModules = (req, res) => {
         +' JOIN element AS e4'
         +' ON e4.id = e3.parent'
         +' WHERE e4.id IN (SELECT f.element_id FROM formation AS f WHERE f.projet_id = ' + req.params.id + ')'
+        +' AND e.mode_saisie = "globale"'
         +' ORDER BY e.mode_saisie DESC, e.titre ASC;',
     function(err, elements) {
       if (!err) {

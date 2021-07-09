@@ -28,7 +28,6 @@ const apiStatut = {
 
   async deleteStatut(statutId) {
     const response = await axios.delete('/statuts/delete/' + statutId).catch(error => console.error('Erreur API: ', error));
-    var t = this.getStatut()
     return response.data;
   }
 };

@@ -304,17 +304,19 @@
     </v-row>
     <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
-        <v-btn
-            v-show="!form"
-            :disabled="Boolean(projet[0].verrou)"
-            class="v-btn--addElement"
-            color="success"
-            fab
-            dark
-            @click="form = true"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <v-fab-transition>
+          <v-btn
+              :disabled="Boolean(projet[0].verrou)"
+              v-show="!form"
+              class="v-btn--addElement"
+              color="success"
+              fab
+              dark
+              @click="form = true"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-col>
     </v-row>
   </v-container>

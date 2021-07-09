@@ -13,7 +13,7 @@
     </template>
     <v-card class="border-custom">
       <v-card-title class="justify-center">{{ bilan.prenom }} {{ bilan.nom }}</v-card-title>
-      <v-card-text>
+      <v-card-text class="px-7 pb-7">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">HeTD*</span>

@@ -31,7 +31,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-if="!limiteSousTotal.length">
+      <v-col v-if="!bilans.length && !sousTotaux.length">
         <p class="text-center animate-pop-in">Aucun bilan sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
       </v-col>
     </v-row>
@@ -49,7 +49,7 @@
         </template>
       </v-snackbar>
     </v-row>
-    <v-row v-if="limiteSousTotal.length" class="pa-3 pb-0 animate-pop-in">
+    <v-row v-if="bilans.length" class="pa-3 pb-0 animate-pop-in">
       <v-col class="d-flex justify-start">
         <v-checkbox
             v-model="checkboxBilan"
@@ -65,28 +65,28 @@
         ></v-checkbox>
       </v-col>
     </v-row>
-    <v-row v-if="bilans.length">
+    <v-row v-if="bilans.length && checkboxBilan">
       <v-col
           sm="12"
           class="justify-center"
       >
         <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">Bilan - <span v-if="projet.length">{{ projet[0].nom }}</span></v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ toTime(projet[0].date, 4) }}</span></v-card-subtitle>
+          <v-card-title class="text-h5">Bilan</v-card-title>
+          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ toTime(projet[0].date, 4) }}</span></v-card-subtitle>
           <v-card-text class="pa-0">
-            <v-simple-table fixed-header v-if="checkboxBilan">
+            <v-simple-table fixed-header v-if="bilans.length">
               <template v-slot:default>
                 <thead>
                 <tr>
                   <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="7">Bilan des intervenants du projet</th>
                 </tr>
                 <tr>
-                  <th class="text-center first-col">Intervenant</th>
+                  <th class="text-center right-border">Intervenant</th>
                   <th class="text-center">Total CM</th>
                   <th class="text-center">Total TD</th>
                   <th class="text-center">Total TP</th>
                   <th class="text-center">Total Partiel</th>
-                  <th class="text-center">Total HeTD</th>
+                  <th class="text-center left-border">Total HeTD</th>
                   <th class="text-center">Total H. sup</th>
                 </tr>
                 </thead>
@@ -97,7 +97,7 @@
                   <td class="text-center">{{ b.total_td }} h</td>
                   <td class="text-center">{{ b.total_tp }} h</td>
                   <td class="text-center">{{ b.total_partiel }} h</td>
-                  <td class="text-center">
+                  <td class="text-center left-border">
                     <span :class="getClassColorForTotal(b)"><b>{{ b.total_general }} h</b></span>
                   </td>
                   <td class="text-center">{{ b.total_heures_sup }} h</td>
@@ -105,30 +105,59 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <v-simple-table fixed-header v-if="checkboxSousTotaux">
+            <div v-else class="pa-5">Aucune donnée trouvée</div>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <div class="mr-6">
+              <v-icon x-small color="error darken-1">circle</v-icon><span class="mx-1 text-caption">Sous-service</span>
+            </div>
+            <div class="mr-6">
+              <v-icon x-small color="success">circle</v-icon><span class="mx-1 text-caption">Respect les limites</span>
+            </div>
+            <div class="mr-6">
+              <v-icon x-small color="deep-purple darken-2">circle</v-icon><span class="mx-1 text-caption">Dépassement des limites d’heures supp</span>
+            </div>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row v-if="checkboxSousTotaux">
+      <v-col
+          sm="12"
+          class="justify-center"
+      >
+        <v-card class="animate-pop-in">
+          <v-card-title class="text-h5">Sous-Totaux</v-card-title>
+          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ toTime(projet[0].date, 4) }}</span></v-card-subtitle>
+          <v-card-text class="pa-0">
+            <v-simple-table fixed-header v-if="sousTotaux.length">
               <template v-slot:default>
                 <thead>
                 <tr>
                   <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="8">Sous-Totaux</th>
                 </tr>
                 <tr>
-                  <th class="text-center first-col">Nom</th>
+                  <th class="text-center first-col">Intervenant</th>
+                  <th class="text-center first-col">Nom limite</th>
                   <th class="text-center">Sous-total CM</th>
                   <th class="text-center">Sous-total TD</th>
                   <th class="text-center">Sous-total TP</th>
                   <th class="text-center">Sous-total Partiel</th>
-                  <th class="text-center">Sous-total HeTD</th>
+                  <th class="text-center left-border">Sous-total HeTD</th>
                   <th class="text-center">Opération</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="l in limiteSousTotal" :key="l.id">
-                  <td class="text-center first-col">{{ l.nom }}</td>
-                  <td class="text-center">0</td>
-                  <td class="text-center">0</td>
-                  <td class="text-center">0</td>
-                  <td class="text-center">0</td>
-                  <td class="text-center">{{ l.limite_eqTD }}</td>
+                <tr v-for="st in sousTotaux" :key="st.intervenant_id">
+                  <td class="text-center first-col-split">{{ st.prenom }} {{ st.nom }}</td>
+                  <td class="text-center first-col-split">{{ st.nom_limite }}</td>
+                  <td class="text-center">{{ st.total_cm }} h</td>
+                  <td class="text-center">{{ st.total_td }} h</td>
+                  <td class="text-center">{{ st.total_tp }} h</td>
+                  <td class="text-center">{{ st.total_partiel }} h</td>
+                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b></span></td>
                   <td class="text-center">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -136,12 +165,12 @@
                             icon
                             v-bind="attrs"
                             v-on="on"
-                            @click="edit(l)"
+                            @click="edit(st)"
                         >
                           <v-icon>edit</v-icon>
                         </v-btn>
                       </template>
-                      <span>Modifier {{ l.nom }}</span>
+                      <span>Modifier {{ st.nom }}</span>
                     </v-tooltip>
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -153,37 +182,23 @@
                           <v-icon color="error darken-1">delete</v-icon>
                         </v-btn>
                       </template>
-                      <span>Supprimer {{ l.nom }}</span>
+                      <span>Supprimer {{ st.nom }}</span>
                     </v-tooltip>
                   </td>
                 </tr>
                 </tbody>
               </template>
             </v-simple-table>
+            <div v-else  class="pa-5">Aucune donnée trouvée</div>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    icon
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  <v-icon>edit</v-icon>
-                </v-btn>
-              </template>
-              <span>Modifier</span>
-            </v-tooltip>
             <v-spacer></v-spacer>
             <div class="mr-6">
-              <v-icon x-small color="error">circle</v-icon><span class="mx-1 text-caption">Sous-service</span>
+              <v-icon x-small color="success">circle</v-icon><span class="mx-1 text-caption">Respect les limites</span>
             </div>
             <div class="mr-6">
-              <v-icon x-small color="success">circle</v-icon><span class="mx-1 text-caption">Respect des limites</span>
-            </div>
-            <div class="mr-6">
-              <v-icon x-small color="deep-purple darken-2">circle</v-icon><span class="mx-1 text-caption">Dépassement des limites d’heures supp</span>
+              <v-icon x-small color="error darken-1">circle</v-icon><span class="mx-1 text-caption">Dépassement des limites</span>
             </div>
           </v-card-actions>
         </v-card>
@@ -199,7 +214,7 @@
           <v-form ref="formulaire" lazy-validation>
             <v-card-title>
               <span class="headline" v-if="methods === 'POST'">Ajouter un sous-total</span>
-              <span class="headline" v-else>Modifier un sous-total</span>
+              <span class="headline" v-else>Modifier le sous-total</span>
               <v-spacer></v-spacer>
               <v-btn
                   icon
@@ -223,13 +238,13 @@
                   @blur="$v.nom.$touch()"
               ></v-text-field>
               <v-text-field
-                  v-model="limite_eqTD"
+                  v-model="limite_he_td"
                   :error-messages="limiteHeTDErrors"
-                  label="Limite (équivalent TD)"
+                  label="Limite HeTD (équivalent TD)"
                   required
                   clearable
-                  @input="$v.limite_eqTD.$touch()"
-                  @blur="$v.limite_eqTD.$touch()"
+                  @input="$v.limite_he_td.$touch()"
+                  @blur="$v.limite_he_td.$touch()"
               ></v-text-field>
               <v-select
                   v-model="element_id"
@@ -283,18 +298,21 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row>
+    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
-        <v-btn
-            v-show="!form"
-            class="v-btn--addElement"
-            color="success"
-            fab
-            dark
-            @click="form = true"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <v-fab-transition>
+          <v-btn
+              :disabled="Boolean(projet[0].verrou)"
+              v-show="!form"
+              class="v-btn--addElement"
+              color="success"
+              fab
+              dark
+              @click="form = true"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-col>
     </v-row>
   </v-container>
@@ -316,24 +334,24 @@ export default {
 
   validations: {
     nom: {required, maxLength: maxLength(255)},
-    limite_eqTD: {required, decimal},
+    limite_he_td: {required, decimal},
   },
   data: () => ({
     bilans: [],
+    sousTotaux: [],
     limiteSousTotal: [],
-    groupeSousTotal: [],
     projet: [],
     form: false,
     showMenuStatutDetail: false,
     checkboxBilan: true,
-    checkboxSousTotaux: false,
+    checkboxSousTotaux: true,
     loading: false,
     responseSuccess: false,
     typeOperation: 'ajouté',
     methods: "POST",
     id: '',
     nom: '',
-    limite_eqTD: '',
+    limite_he_td: '',
     elementsModules: [],
     element_id: [],
 
@@ -351,11 +369,8 @@ export default {
     async getBilanByProjetIntervenant() {
       this.bilans = await apiBilan.getBilanByProjetIntervenant(this.$route.params.id);
     },
-    async getAllLimiteSousTotalByProjet() {
-      this.limiteSousTotal = await apiBilan.getAllLimiteSousTotalByProjet(this.$route.params.id);
-    },
-    async getAllGroupeSousByLimiteSousTotal() {
-      this.groupeSousTotal = await apiBilan.getAllGroupeSousTotal();
+    async getSousTotaux() {
+      this.sousTotaux = await apiBilan.getBilanSousTotal(this.$route.params.id);
     },
     async submit() {
       this.$refs.formulaire.validate();
@@ -364,23 +379,23 @@ export default {
       if (this.element_id.length <= 0) {
         return;
       } else {
-        const sousTotal = {
+        const limiteSousTotal = {
           id: this.id,
           nom: this.nom,
-          limite_eqTD: this.limite_eqTD,
+          limite_he_td: this.limite_he_td,
           projet_id: Number(this.$route.params.id),
-          element_id: this.element_id,
         }
         this.loading = true;
         if (this.methods === 'POST'){
-          //TODO create limite_sous_total, groupe_sous_total
+          await apiBilan.createLimiteSousTotal(limiteSousTotal, this.element_id);
           this.typeOperation = 'ajouté';
         } else {
-          //TODO edit limite_sous_total,groupe_sous_total
+          await apiBilan.editLimiteSousTotal(limiteSousTotal, this.element_id);
           this.typeOperation = 'modifié';
         }
       }
-      //TODO refrech limite_sous_total,groupe_sous_total
+      await this.getSousTotaux();
+      this.checkboxSousTotaux = true;
       this.clear();
       this.loading = false;
       this.form = false;
@@ -391,7 +406,7 @@ export default {
       this.$refs.formulaire.resetValidation();
       this.id = '';
       this.nom = '';
-      this.limite_eqTD = '';
+      this.limite_he_td = '';
       this.element_id = [];
     },
     async close() {
@@ -400,13 +415,12 @@ export default {
       this.methods = 'POST';
       this.clear();
     },
-    edit(sousTotal) {
+    async edit(sousTotal) {
       this.methods = 'PUT';
       this.id = sousTotal.id;
-      this.nom = sousTotal.nom;
-      this.limite_eqTD = sousTotal.limite_eqTD;
-      //TODO Récupere les limites dans groupe_sous_total
-      this.element_id = sousTotal.element_id;
+      this.nom = sousTotal.nom_limite;
+      this.limite_he_td = sousTotal.limite_he_td;
+      this.element_id = await apiBilan.getAllGroupeSousTotalByLimite(sousTotal.id);
       this.form = true;
     },
     toTime(date, length) {
@@ -419,6 +433,11 @@ export default {
       if (bilan.total_general < bilan.nb_he_td_min_attendu_projet) return 'sous-service';
       if (bilan.total_general >= bilan.nb_he_td_min_attendu_projet && bilan.total_general <= bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'valide';
       if (bilan.total_general > bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'heures-sup';
+    },
+    getClassColorForSousTotal(sousTotal){
+      //TODO faire en fonction des status
+      if (sousTotal.total_he_td <= sousTotal.limite_he_td) return 'valide';
+      if (sousTotal.total_he_td > sousTotal.sousTotal.limite_he_td) return 'heures-sup';
     }
   },
   computed: {
@@ -431,9 +450,10 @@ export default {
     },
     limiteHeTDErrors() {
       const errors = [];
-      if (!this.$v.limite_eqTD.$dirty) return errors;
-      !this.$v.limite_eqTD.decimal && errors.push('Le Nombre d\'heures (équivalent TD) doit être un numérique');
-      !this.$v.limite_eqTD.required && errors.push('Le Nombre d\'heures (équivalent TD) est obligatoire');
+      if (!this.$v.limite_he_td.$dirty) return errors;
+      !this.$v.limite_he_td.decimal && errors.push('La limite HeTD (équivalent TD) doit être un numérique');
+      !this.$v.limite_he_td.required && errors.push('La limite HeTD (équivalent TD) est obligatoire');
+      !this.$v.limite_he_td.required && errors.push('La limite HeTD (équivalent TD) est obligatoire');
       return errors;
     },
   },
@@ -441,8 +461,7 @@ export default {
     this.loading = true;
     await this.getProjet();
     await this.getBilanByProjetIntervenant();
-    await this.getAllLimiteSousTotalByProjet();
-    await this.getAllGroupeSousByLimiteSousTotal();
+    await this.getSousTotaux();
     await this.getElementsModules();
     this.loading = false;
   }
@@ -454,10 +473,22 @@ export default {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+.left-border {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+.right-border {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
 .first-col {
   width: 10em !important;
   min-width: 10em !important;
   max-width: 10em !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+.first-col-split {
+  width: 5em !important;
+  min-width: 5em !important;
+  max-width: 5em !important;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 thead th {
@@ -467,7 +498,7 @@ thead th {
   background-color: rgba(0, 0, 0, 0.10) !important;
 }
 .sous-service{
-  color: #df323b !important;
+  color: #D32F2F !important;
 }
 .valide {
   color: #4caf50 !important;

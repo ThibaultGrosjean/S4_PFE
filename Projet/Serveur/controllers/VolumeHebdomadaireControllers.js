@@ -39,7 +39,7 @@ exports.getAllVolumeHebdomadaires = (req, res) => {
 
 
 exports.getVolumesHebdoByModule = (req, res) => {
-  db.query('SELECT v.element_id, COUNT(g.id) AS nbGrpInterv'
+  db.query('SELECT v.element_id, COUNT(DISTINCT g.id) AS nbGrpInterv'
         +' FROM volume_hebdomadaire AS v'
         +' LEFT JOIN groupe_intervenant AS g'
         +' ON g.element_id = v.element_id'

@@ -213,15 +213,20 @@ app.delete('/groupes-intervenants/delete/element/:element/intervenant/:intervena
 app.delete('/groupes-intervenants/delete/:id', groupeIntervenantController.deleteGroupeIntervenant);
 
 
-app.get('/bilan/projets/get/:id', bilanController.getAllBilanByProjetIntervenant);
+app.get('/bilan/general/projets/get/:id', bilanController.getAllBilanByProjetIntervenant);
 
-app.get('/bilan/limite-sous-total/get', bilanController.getAllLimiteSousTotal);
+app.get('/bilan/sous-total/projets/get/:id', bilanController.getAllBilanSousTotal);
 
-app.get('/bilan/groupe-sous-total/get', bilanController.getAllGroupeSousTotal);
+app.get('/bilan/groupe-sous-total/limite/get/:id', bilanController.getAllGroupeSousTotalByIdLimite);
 
-app.get('/bilan/limite-sous-total/projet/get/:id', bilanController.getAllLimiteSousTotalByProjet);
+app.post('/bilan/limite-sous-total/create/',bilanController.validatorLimite, bilanController.addLimiteSousTotal);
 
-app.get('/bilan/groupe-sous-total/projet/get/:id', bilanController.getAllGroupeSousByLimiteSousTotal);
+app.post('/bilan/groupe-sous-total/create/',bilanController.validatorGroupe, bilanController.addGroupeSousTotal);
+
+app.patch('/bilan/limite-sous-total/edit/:id',bilanController.validatorLimite, bilanController.editLimiteSousTotal);
+
+app.delete('/bilan/groupe-sous-total/delete/:id', bilanController.deleteGroupeSousTotal);
+
 
 app.listen(port, () => {
     console.log(`Écoute sur le port : ${port}`);

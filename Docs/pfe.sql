@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 08 juil. 2021 à 16:02
+-- Généré le : ven. 09 juil. 2021 à 15:19
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `pfe`
 --
-
+DROP TABLE element, enseignant, formation, groupe_intervenant, groupe_sous_total, intervenant, limite_sous_total, periode, projet, statut, volume_globale, volume_hebdomadaire;
 -- --------------------------------------------------------
 
 --
@@ -189,16 +189,17 @@ INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_sem
 --
 
 CREATE TABLE `groupe_sous_total` (
-  `id_limite_sous_total` int NOT NULL,
-  `id_element` int NOT NULL
+  `limite_sous_total_id` int NOT NULL,
+  `element_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `groupe_sous_total`
 --
 
-INSERT INTO `groupe_sous_total` (`id_limite_sous_total`, `id_element`) VALUES
-(1, 11);
+INSERT INTO `groupe_sous_total` (`limite_sous_total_id`, `element_id`) VALUES
+(1, 11),
+(1, 13);
 
 -- --------------------------------------------------------
 
@@ -233,16 +234,16 @@ INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_att
 CREATE TABLE `limite_sous_total` (
   `id` int NOT NULL,
   `nom` varchar(255) NOT NULL,
-  `limite_eqTD` float NOT NULL,
-  `id_projet` int NOT NULL
+  `limite_he_td` int NOT NULL DEFAULT '0',
+  `projet_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `limite_sous_total`
 --
 
-INSERT INTO `limite_sous_total` (`id`, `nom`, `limite_eqTD`, `id_projet`) VALUES
-(1, 'référentiel', 50, 1);
+INSERT INTO `limite_sous_total` (`id`, `nom`, `limite_he_td`, `projet_id`) VALUES
+(1, 'Référentiel', 50, 1);
 
 -- --------------------------------------------------------
 
@@ -426,8 +427,8 @@ ALTER TABLE `groupe_intervenant`
 -- Index pour la table `groupe_sous_total`
 --
 ALTER TABLE `groupe_sous_total`
-  ADD KEY `id_limite_sous_total` (`id_limite_sous_total`),
-  ADD KEY `id_element` (`id_element`);
+  ADD KEY `id_limite_sous_total` (`limite_sous_total_id`),
+  ADD KEY `id_element` (`element_id`);
 
 --
 -- Index pour la table `intervenant`
@@ -442,7 +443,7 @@ ALTER TABLE `intervenant`
 --
 ALTER TABLE `limite_sous_total`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_projet` (`id_projet`);
+  ADD KEY `id_projet` (`projet_id`);
 
 --
 -- Index pour la table `periode`
@@ -582,8 +583,8 @@ ALTER TABLE `groupe_intervenant`
 -- Contraintes pour la table `groupe_sous_total`
 --
 ALTER TABLE `groupe_sous_total`
-  ADD CONSTRAINT `groupe_sous_total_ibfk_1` FOREIGN KEY (`id_element`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `groupe_sous_total_ibfk_2` FOREIGN KEY (`id_limite_sous_total`) REFERENCES `limite_sous_total` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `groupe_sous_total_ibfk_1` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `groupe_sous_total_ibfk_2` FOREIGN KEY (`limite_sous_total_id`) REFERENCES `limite_sous_total` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `intervenant`
@@ -596,7 +597,7 @@ ALTER TABLE `intervenant`
 -- Contraintes pour la table `limite_sous_total`
 --
 ALTER TABLE `limite_sous_total`
-  ADD CONSTRAINT `limite_sous_total_ibfk_1` FOREIGN KEY (`id_projet`) REFERENCES `projet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `limite_sous_total_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `periode`
