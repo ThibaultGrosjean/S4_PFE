@@ -1,7 +1,7 @@
 var db = require('../models/bdd');
 
 exports.getAllLimiteSousTotal = (req, res) => {
-  db.query('SELECT * FROM limite_sous_total ORDER BY id_projet, nom;',
+  db.query('SELECT * FROM limite_sous_total ORDER BY projet_id, nom;',
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -15,7 +15,7 @@ exports.getAllLimiteSousTotal = (req, res) => {
 
 
 exports.getAllLimiteSousTotalByProjet = (req, res) => {
-  db.query('SELECT * FROM limite_sous_total WHERE id_projet = ? ORDER BY id_projet, nom;',[req.params.id],
+  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ? ORDER BY projet_id, nom;',[req.params.id],
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -42,8 +42,26 @@ exports.getAllGroupeSousTotal = (req, res) => {
 };
 
 
+exports.getAllGroupeSousTotalByIdLimite = (req, res) => {
+  db.query('SELECT element_id FROM groupe_sous_total WHERE limite_sous_total_id = ?;',[req.params.id],
+    function(err, groupe_sous_total) {
+      if (!err) {
+        var obj = []
+        for (var i = 0; i < groupe_sous_total.length; i++) {
+          obj.push(groupe_sous_total[i].element_id);
+        }
+        res.status(200).json(obj);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getAllGroupeSousByLimiteSousTotal = (req, res) => {
-  db.query('SELECT * FROM limite_sous_total WHERE id_limite_sous_total = ? ;',[req.params.id],
+  db.query('SELECT * FROM limite_sous_total WHERE limite_sous_total_id = ? ;',[req.params.id],
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -140,3 +158,48 @@ exports.getAllBilanByProjetIntervenantWithVolGlobale = (req, res) => {
     }
   );  
 };
+
+
+exports.getAllBilanSousTotale = (req, res) => {
+  db.query('SELECT l.id, l.nom'
+      +' , vgt.total_cm'
+      +' , vgt.total_td'
+      +' , vgt.total_tp'
+      +' , vgt.total_partiel'
+      +' , vgt.total_he_td'
+      +' FROM limite_sous_total AS l'
+      +' JOIN groupe_sous_total AS g'
+      +' ON g.limite_sous_total_id = l.id'
+      +' JOIN element AS e'
+      +' ON e.id = g.element_id'
+      +' LEFT JOIN('
+      +'    SELECT ll.id AS id'
+      +'   , SUM(e.forfait_globale_cm * v.vol_hor_cm) AS total_cm'
+      +'   , SUM(e.forfait_globale_td * v.vol_hor_td) AS total_td'
+      +'   , SUM(e.forfait_globale_tp * v.vol_hor_tp) AS total_tp'
+      +'   , SUM(e.forfait_globale_partiel * v.vol_hor_partiel) AS total_partiel'
+      +'   , 1.5 * SUM(e.forfait_globale_cm * v.vol_hor_cm) + SUM(e.forfait_globale_td * v.vol_hor_td) + SUM(e.forfait_globale_tp * v.vol_hor_tp) + SUM(e.forfait_globale_partiel * v.vol_hor_partiel) AS total_he_td'
+      +'   FROM volume_globale AS v'
+      +'   JOIN element AS e'
+      +'   ON e.id = v.element_id'
+      +'     JOIN groupe_sous_total AS gg'
+      +'     ON gg.element_id = v.element_id'
+      +'     JOIN limite_sous_total AS ll '
+      +'     ON ll.id = gg.limite_sous_total_id'
+      +'   WHERE v.element_id IN (SELECT g2.element_id FROM groupe_sous_total AS g2 WHERE g2.limite_sous_total_id = 1)'
+      +'     GROUP BY ll.id'
+      +' ) AS vgt'
+      +' ON vgt.id = l.id'
+      +' GROUP BY l.id',
+    function(err, bilan) {
+      if (!err) {
+        res.status(200).json(bilan);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+// TODO vérif si c'est dans projet 
