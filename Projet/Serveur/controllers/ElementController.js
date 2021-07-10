@@ -75,6 +75,26 @@ exports.getAllElementsModules = (req, res) => {
 };
 
 
+exports.getHierarchieByRoot = (req, res) => {
+  db.query(' SELECT e.* FROM element AS e'
+          +' LEFT JOIN element AS e2 ON e.parent = e2.id' 
+          +' LEFT JOIN element as e3 ON e2.parent = e3.id' 
+          +' LEFT JOIN element as e4 ON e3.parent = e4.id' 
+          +' WHERE e.id = ' + req.params.id + ' OR e2.id = ' + req.params.id + ' OR e3.id = ' + req.params.id + ' OR e4.id = ' + req.params.id
+          + ' ORDER BY e.niveau;',
+    function(err, hierarchie) {
+      if (!err) {
+        res.status(200).send(hierarchie);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
+
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'
         +' FROM element as e'
@@ -161,10 +181,16 @@ exports.copyElement = (req, res) => {
   db.query('SELECT * FROM element where id = ? ;', [req.params.id],
     function(err, element) {
       if (!err) {
+        if (req.params.parent === '0'){
+          element[0]['parent'] = 'NULL';
+        } else{
+          element[0]['parent'] = req.params.parent;
+        }
+
         var requete="INSERT INTO element(titre, surnom, code, niveau, indice, vol_hor_total_prevues_etu_cm, vol_hor_total_prevues_etu_td, vol_hor_total_prevues_etu_tp, mode_saisie, cm_autorises, td_autorises, tp_autorises, partiel_autorises, forfait_globale_cm, forfait_globale_td, forfait_globale_tp, forfait_globale_partiel, nb_groupe_effectif_cm, nb_groupe_effectif_td, nb_groupe_effectif_tp, nb_groupe_effectif_partiel, parent) VALUES ('" 
-          + element[0]['titre'] + ' (copie)' + "','"
-          + element[0]['surnom'] + ' (copie)' + "','"
-          + element[0]['code'] + ' (copie)' + "','"
+          + element[0]['titre'] + "','"
+          + element[0]['surnom'] + "','"
+          + element[0]['code'] + "','"
           + element[0]['niveau'] + "','"
           + element[0]['indice'] + "',"
           + element[0]['vol_hor_total_prevues_etu_cm'] + ","
@@ -185,7 +211,6 @@ exports.copyElement = (req, res) => {
           + element[0]['nb_groupe_effectif_partiel'] + ","
           + element[0]['parent'] + ");"
         ;
-
         db.query(requete,
           function(err, element) {
             if (!err) {

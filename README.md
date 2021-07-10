@@ -104,3 +104,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Afficher les sous-totaux
 * Formulaire de modification et d'ajout d'un sous-total
 * Ajouter et Modifier un sous-total
+* Copier une hiérarchie 

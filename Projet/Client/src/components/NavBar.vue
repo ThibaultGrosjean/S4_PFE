@@ -31,25 +31,22 @@
         absolute
         temporary
     >
+      <v-btn icon @click="drawer = false" class="ma-2" height="48px" width="48px">
+        <v-icon>menu</v-icon>
+      </v-btn>
+      <span class="menu-title">Menu Principale</span>
+
+      <v-divider></v-divider>
       <v-list
           nav
           dense
+          class="pa-0"
       >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="menu-title" disabled>
-              Menu Principale
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-divider></v-divider>
-
         <v-list-item-group
             v-model="group"
             active-class="primary--text"
         >
-          <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)">
+          <v-list-item v-for="(t,index) in subMenu" :key="index" @click="redirect(t.path)" class="ma-0 pl-5">
             <v-list-item-icon>
               <v-icon>{{ t.icon }}</v-icon>
             </v-list-item-icon>
@@ -78,6 +75,7 @@ export default {
   methods: {
     redirect(path) {
       this.$router.push({path:path}).catch(()=>{});
+      this.drawer = false;
     },
   }
 }
@@ -86,7 +84,6 @@ export default {
 <style scoped>
 .menu-title {
   line-height: 2rem !important;
-  font-size: 1.25rem !important;
   letter-spacing: 0.0125em !important;
 }
 </style>

@@ -84,9 +84,11 @@ app.get('/elements/modules/projets/get/:id', elementController.getAllElementsMod
 
 app.get('/elements/get/:id', elementController.getElement);
 
+app.get('/elements/hierarchie/get/:id', elementController.getHierarchieByRoot);
+
 app.post('/elements/create/',elementController.validator, elementController.addElement);
 
-app.post('/elements/copy/:id',elementController.validator, elementController.copyElement);
+app.post('/elements/copy/:id/parent/:parent',elementController.validator, elementController.copyElement);
 
 app.patch('/elements/edit/:id',elementController.validator, elementController.editElement);
 

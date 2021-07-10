@@ -29,7 +29,6 @@ const apiFormation = {
       element_id: responseElement.insertId,
     }
     const response = await axios.post('/formations/create', formation).catch(error => console.error('Erreur API: ', error));
-    console.log(response.data.insertId)
     return response.data;
   },
 

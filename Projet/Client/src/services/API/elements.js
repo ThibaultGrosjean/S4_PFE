@@ -13,6 +13,11 @@ const apiElement = {
     return response.data;
   },
 
+  async getHierarchie(racineId) {
+    const response = await axios.get('/elements/hierarchie/get/' + racineId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async getElement(elementId) {
     const response = await axios.get('/elements/get/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;
@@ -33,6 +38,32 @@ const apiElement = {
   async editElement(element) {
     const response = await axios.patch('/elements/edit/' + element.id, element).catch(error => console.error('Erreur API: ', error));
     return response.data;
+  },
+
+  async copyElement(element, parent) {
+    const response = await axios.post('/elements/copy/' + element.id +'/parent/' +  parent, element).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async copyHierarchie(racineId) {
+    const hierarchie = await this.getHierarchie(racineId);
+    const racine = await this.copyElement(hierarchie[0], 0);
+    for (let i = 0; i < hierarchie.length; i++) {
+      if(hierarchie[i].niveau === 1){
+        const semestre = await this.copyElement(hierarchie[i], racine.insertId);
+        for (let j = 0; j < hierarchie.length; j++) {
+          if(hierarchie[j].niveau === 2 && hierarchie[j].parent === hierarchie[i].id){
+            const ue = await this.copyElement(hierarchie[j], semestre.insertId);
+            for (let k = 0; k < hierarchie.length; k++) {
+              if(hierarchie[k].niveau === 3 && hierarchie[k].parent === hierarchie[j].id){
+                await this.copyElement(hierarchie[k], ue.insertId);
+                //Copy vol hebdo, vol globale, grp interv, bilan
+              }
+            }
+          }
+        }
+      }
+    }
   },
 
   async deleteElement(element) {
