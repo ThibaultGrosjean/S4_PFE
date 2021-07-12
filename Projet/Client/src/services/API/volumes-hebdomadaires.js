@@ -11,8 +11,13 @@ const apiVolumeHebdomadaire = {
     return response.data;
   },
 
-  async getVolumeHebdomadaireByModule() {
+  async getAllVolumeHebdomadaireByModule() {
     const response = await axios.get('/volumes-hebdomadaires/module/get' ).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getVolumeHebdomadaireByModule(moduleId) {
+    const response = await axios.get('/volumes-hebdomadaires/module/get/' + moduleId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -23,6 +28,11 @@ const apiVolumeHebdomadaire = {
 
   async createVolumeHebdomadaireBySemaine(moduleId, semaineDeb, semaineFin) {
     const response = await axios.post('/volumes-hebdomadaires/create/' + moduleId + '/nbsemaine/' + semaineDeb + '/' + semaineFin).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async copyVolumeHebdomadaireByModule(volumeId, parentId) {
+    const response = await axios.post('/volumes-hebdomadaires/copy/' + volumeId + '/parent/' + parentId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

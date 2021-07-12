@@ -86,6 +86,8 @@ app.get('/elements/get/:id', elementController.getElement);
 
 app.get('/elements/hierarchie/get/:id', elementController.getHierarchieByRoot);
 
+app.get('/elements/children/get/:id', elementController.getChildrenElement);
+
 app.post('/elements/create/',elementController.validator, elementController.addElement);
 
 app.post('/elements/copy/:id/parent/:parent',elementController.validator, elementController.copyElement);
@@ -124,6 +126,8 @@ app.get('/formations/projets/get/:id', formationController.getFormationByProjet)
 
 app.post('/formations/create/',formationController.validator, formationController.addFormation);
 
+app.post('/formations/copy/:id/projet/:projet/element/:element',formationController.validator, formationController.copyFormation);
+
 app.patch('/formations/edit/:id',formationController.validator, formationController.editFormation);
 
 app.delete('/formations/delete/:id', formationController.deleteFormation);
@@ -135,7 +139,9 @@ app.get('/periodes/get/:id', periodeController.getPeriode);
 
 app.get('/periodes/element/get/:id', periodeController.getPeriodeByElementId);
 
-app.post('/periodes/create/',periodeController.validator, periodeController.addPeriode);
+app.post('/periodes/create/',periodeController.validator, periodeController.addPeriode)
+
+app.post('/periodes/copy/:id/parent/:parent',periodeController.validator, periodeController.copyPeriode);
 
 app.patch('/periodes/edit/:id',periodeController.validator, periodeController.editPeriode);
 
@@ -148,13 +154,15 @@ app.get('/volumes-hebdomadaires/get', volumeHebdomadaireController.getAllVolumeH
 
 app.get('/volumes-hebdomadaires/get/:id', volumeHebdomadaireController.getVolumeHebdomadaire);
 
-app.get('/volumes-hebdomadaires/module/get', volumeHebdomadaireController.getVolumesHebdoByModule);
+app.get('/volumes-hebdomadaires/module/get', volumeHebdomadaireController.getAllVolumesHebdoByModule);
+
+app.get('/volumes-hebdomadaires/module/get/:id', volumeHebdomadaireController.getVolumeHebdoByModule);
 
 app.post('/volumes-hebdomadaires/create/',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumeHebdomadaire);
 
 app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaineDeb/:semaineFin',volumeHebdomadaireController.validator, volumeHebdomadaireController.addVolumesHebdomadaires);
 
-app.post('/volumes-hebdomadaires/copy/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.copyVolumeHebdomadaire);
+app.post('/volumes-hebdomadaires/copy/:id/parent/:parent',volumeHebdomadaireController.validator, volumeHebdomadaireController.copyVolumeHebdomadaire);
 
 app.patch('/volumes-hebdomadaires/edit/:id',volumeHebdomadaireController.validator, volumeHebdomadaireController.editVolumeHebdomadaire);
 

@@ -94,6 +94,21 @@ exports.getHierarchieByRoot = (req, res) => {
 };
 
 
+exports.getChildrenElement = (req, res) => {
+  db.query('SELECT e.* FROM element AS e'
+        +' WHERE e.parent = ?'
+        +' ORDER BY e.indice;', [req.params.id],
+    function(err, element) {
+      if (!err) {
+        res.status(200).json(element);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
 
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'

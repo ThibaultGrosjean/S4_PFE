@@ -977,7 +977,7 @@ export default {
       return await apiPeriode.getPeriodeByElementId(id);
     },
     async getVolumeHebdomadaireByModule() {
-      this.volumesHebdomadairesModules = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule();
+      this.volumesHebdomadairesModules = await apiVolumeHebdomadaire.getAllVolumeHebdomadaireByModule();
       await this.getElements();
     },
     async getVolumesHebdomadaires() {

@@ -119,6 +119,33 @@ exports.addFormation = (req, res) => {
 };
 
 
+exports.copyFormation = (req, res) => {
+  db.query('SELECT * FROM formation WHERE id = ? ;', [req.params.id],
+    function(err, formation) {
+      if (!err) {
+         var requete="INSERT INTO formation(verrou, projet_id, element_id) VALUES ('" 
+          + formation[0]['verrou'] + "','"
+          + req.params.projet + "','"
+          + req.params.element + "');"
+        ;
+        db.query(requete,
+          function(err, formation) {
+            if (!err) {
+              res.status(200).json(formation); 
+            } else  {
+              res.send(err);
+            }
+          }
+        );
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.editFormation = (req, res) => {
   var donnees = {
     id : req.body.id,

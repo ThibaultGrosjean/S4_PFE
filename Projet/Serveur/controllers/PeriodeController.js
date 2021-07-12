@@ -81,6 +81,38 @@ exports.addPeriode = (req, res) => {
 };
 
 
+exports.copyPeriode = (req, res) => {
+  db.query('SELECT * FROM periode WHERE element_id = ? ;', [req.params.id],
+    function(err, periode) {
+      if (!err) {
+         periode[0]['element_id'] = req.params.parent
+         var requete="INSERT INTO periode(nb_semaine, nb_groupe_defaut_cm, nb_groupe_defaut_td, nb_groupe_defaut_tp, nb_groupe_defaut_partiel, element_id) VALUES ('" 
+          + periode[0]['nb_semaine'] + "','"
+          + periode[0]['nb_groupe_defaut_cm'] + "','"
+          + periode[0]['nb_groupe_defaut_td'] + "','"
+          + periode[0]['nb_groupe_defaut_tp'] + "','"
+          + periode[0]['nb_groupe_defaut_partiel'] + "','"
+          + periode[0]['element_id'] + "');"
+        ;
+
+        db.query(requete,
+          function(err, periode) {
+            if (!err) {
+              res.status(200).json(periode); 
+            } else  {
+              res.send(err);
+            }
+          }
+        );
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.editPeriode = (req, res) => {
   var donnees = {
     id : req.body.id,

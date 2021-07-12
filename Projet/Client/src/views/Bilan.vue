@@ -123,7 +123,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="checkboxSousTotaux">
+    <v-row v-if="sousTotaux.length && checkboxSousTotaux">
       <v-col
           sm="12"
           class="justify-center"
@@ -189,7 +189,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <div v-else  class="pa-5">Aucune donnée trouvée</div>
+            <div v-else class="pa-5">Aucune donnée trouvée</div>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>

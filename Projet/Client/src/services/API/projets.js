@@ -1,5 +1,6 @@
 import axios from "axios";
 import apiIntervenant from "./intervenants";
+import apiFormation from "./formations";
 
 const apiProjet = {
   async getProjets() {
@@ -29,9 +30,10 @@ const apiProjet = {
 
   async copyProjet(projetId, grpInterv) {
     const response = await axios.post('/projets/copy/' + projetId).catch(error => console.error('Erreur API: ', error));
-    await apiIntervenant.copyIntervenantByProjet(projetId, response.data.insertId)
-    if (grpInterv){
-      //Copy Grp Interv
+    await apiIntervenant.copyIntervenantByProjet(projetId, response.data.insertId);
+    const formations = await apiFormation.getFormationByProjet(projetId);
+    for (let i = 0; i < formations.length; i++) {
+      await apiFormation.copyFormation(formations[i],response.data.insertId , grpInterv);
     }
     return response.data;
   },

@@ -46,6 +46,11 @@ const apiPeriode = {
     return response.data;
   },
 
+  async copyPeriode(elementId, parent) {
+    const response = await axios.post('/periodes/copy/' + elementId + '/parent/' + parent).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async deletePeriodeByElement(elementId) {
     const response = await axios.delete('/periodes/element/delete/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;

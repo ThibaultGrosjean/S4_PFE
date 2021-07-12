@@ -292,7 +292,7 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="text-justify pt-4 pb-0">
-            Le projet ainsi que ses formations et intervenants vont être dupliquer voulez-vous également dupliquer les nombres de groupes associés aux intervenants ?<br>
+            Le projet ainsi que ses formations et intervenants vont être dupliqués voulez-vous également dupliquer les nombres de groupes associés aux intervenants ?<br>
             <v-checkbox
                 v-model="checkboxCopierGrpInterv"
                 label="Copier les groupes des intervenants"

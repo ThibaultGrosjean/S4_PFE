@@ -38,12 +38,28 @@ exports.getAllVolumeHebdomadaires = (req, res) => {
 };
 
 
-exports.getVolumesHebdoByModule = (req, res) => {
+exports.getAllVolumesHebdoByModule = (req, res) => {
   db.query('SELECT v.element_id, COUNT(DISTINCT g.id) AS nbGrpInterv'
         +' FROM volume_hebdomadaire AS v'
         +' LEFT JOIN groupe_intervenant AS g'
         +' ON g.element_id = v.element_id'
         +' GROUP BY v.element_id;',
+    function(err, volume_hebdomadaire) {
+      if (!err) {
+        res.status(200).json(volume_hebdomadaire);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.getVolumeHebdoByModule = (req, res) => {
+  db.query('SELECT v.*' 
+        +' FROM volume_hebdomadaire AS v'
+        +' WHERE v.element_id = ?', [req.params.id],
     function(err, volume_hebdomadaire) {
       if (!err) {
         res.status(200).json(volume_hebdomadaire);  
@@ -141,8 +157,9 @@ exports.copyVolumeHebdomadaire = (req, res) => {
   db.query('SELECT * FROM volume_hebdomadaire where id = ? ;', [req.params.id],
     function(err, volume_hebdomadaire) {
       if (!err) {
+          volume_hebdomadaire[0]['element_id'] = req.params.parent
          var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
-          + parseInt(volume_hebdomadaire[0]['num_semaine']+1) + "','"
+          + volume_hebdomadaire[0]['num_semaine'] + "','"
           + volume_hebdomadaire[0]['vol_hor_cm'] + "','"
           + volume_hebdomadaire[0]['vol_hor_td'] + "','"
           + volume_hebdomadaire[0]['vol_hor_tp'] + "','"

@@ -18,6 +18,11 @@ const apiElement = {
     return response.data;
   },
 
+  async getChildren(racineId) {
+    const response = await axios.get('/elements/children/get/' + racineId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async getElement(elementId) {
     const response = await axios.get('/elements/get/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;
@@ -45,25 +50,33 @@ const apiElement = {
     return response.data;
   },
 
-  async copyHierarchie(racineId) {
-    const hierarchie = await this.getHierarchie(racineId);
-    const racine = await this.copyElement(hierarchie[0], 0);
-    for (let i = 0; i < hierarchie.length; i++) {
-      if(hierarchie[i].niveau === 1){
-        const semestre = await this.copyElement(hierarchie[i], racine.insertId);
-        for (let j = 0; j < hierarchie.length; j++) {
-          if(hierarchie[j].niveau === 2 && hierarchie[j].parent === hierarchie[i].id){
-            const ue = await this.copyElement(hierarchie[j], semestre.insertId);
-            for (let k = 0; k < hierarchie.length; k++) {
-              if(hierarchie[k].niveau === 3 && hierarchie[k].parent === hierarchie[j].id){
-                await this.copyElement(hierarchie[k], ue.insertId);
-                //Copy vol hebdo, vol globale, grp interv, bilan
-              }
-            }
+  async copyHierarchie(racineId, grpInterv) {
+    const racine = await this.getElement(racineId);
+    const copyRacine = await this.copyElement(racine[0], 0);
+
+    const childrenRacine = await this.getChildren(racineId);
+    for (let i = 0; i < childrenRacine.length; i++) {
+      const semestre = await this.copyElement(childrenRacine[i], copyRacine.insertId);
+      const childrenSemestre = await this.getChildren(childrenRacine[i].id);
+      await apiPeriode.copyPeriode(childrenRacine[i].id, semestre.insertId);
+      for (let j = 0; j < childrenSemestre.length; j++) {
+        const ue = await this.copyElement(childrenSemestre[j], semestre.insertId);
+        const childrenUe = await this.getChildren(childrenSemestre[j].id);
+        for (let k = 0; k < childrenUe.length; k++) {
+          const module = await this.copyElement(childrenUe[k], ue.insertId);
+          const volumesHebdo = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule(childrenUe[k].id);
+          for (let l = 0; l < volumesHebdo.length; l++) {
+            await apiVolumeHebdomadaire.copyVolumeHebdomadaireByModule(volumesHebdo[l].id, module.insertId);
           }
+          if (grpInterv){
+            //TODO grp interv
+            console.log(true)
+          }
+          //TODO copy bilan
         }
       }
     }
+    return copyRacine;
   },
 
   async deleteElement(element) {
