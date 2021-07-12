@@ -157,14 +157,13 @@ exports.copyVolumeHebdomadaire = (req, res) => {
   db.query('SELECT * FROM volume_hebdomadaire where id = ? ;', [req.params.id],
     function(err, volume_hebdomadaire) {
       if (!err) {
-          volume_hebdomadaire[0]['element_id'] = req.params.parent
          var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
           + volume_hebdomadaire[0]['num_semaine'] + "','"
           + volume_hebdomadaire[0]['vol_hor_cm'] + "','"
           + volume_hebdomadaire[0]['vol_hor_td'] + "','"
           + volume_hebdomadaire[0]['vol_hor_tp'] + "','"
           + volume_hebdomadaire[0]['vol_hor_partiel'] + "','"
-          + volume_hebdomadaire[0]['element_id'] + "');"
+          + req.params.parent + "');"
         ;
 
         db.query(requete,

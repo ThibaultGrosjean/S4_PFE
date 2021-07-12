@@ -31,6 +31,7 @@
           Êtes-vous sûr de vouloir supprimer tous les groupes d'intervenants de « {{ formation.titre }} » ?</v-card-text>
         <v-card-actions>
           <v-btn
+              :disabled="loading"
               color="error darken-1"
               text
               @click="dialog = false"

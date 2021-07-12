@@ -51,6 +51,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
+            :disabled="loading"
             color="error darken-1"
             class="ml-4 mb-3"
             text

@@ -164,6 +164,20 @@ exports.getAllBilanSousTotal = (req, res) => {
 };
 
 
+exports.getAllLimiteSousTotalByProjet = (req, res) => {
+  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ? ORDER BY projet_id, nom;',[req.params.id],
+    function(err, limite_sous_total) {
+      if (!err) {
+        res.status(200).json(limite_sous_total);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.addLimiteSousTotal = (req, res) => {
   var data = {
     nom : req.body.nom,
@@ -251,33 +265,20 @@ exports.deleteGroupeSousTotal = (req, res) => {
 };
 
 
-exports.copySousTotalByLimite = (req, res) => {
-  var requete = "INSERT INTO limite_sous_total(nom, limite_he_td, projet_id) VALUES";
-
-  for (let i = nbSemaineDeb; i <= nbSemaineFin; i++) {
-    data['num_semaine'] = i;
-    var values = " ('" + data['num_semaine'] + "','"+ data['vol_hor_cm'] + "','" + data['vol_hor_td'] + "','" + data['vol_hor_tp'] + "','" + data['vol_hor_partiel'] + "','" + data['element_id'] + "')";
-    if (i < nbSemaineFin) values += ",";
-    requete += values;
-  }
-
-  db.query('SELECT * FROM periode WHERE element_id = ? ;', [req.params.id],
-    function(err, periode) {
+exports.copyLimiteSousTotal = (req, res) => {
+  db.query('SELECT * FROM limite_sous_total WHERE id = ? ;', [req.params.id],
+    function(err, limite_sous_total) {
       if (!err) {
-         periode[0]['element_id'] = req.params.parent
-         var requete="INSERT INTO periode(nb_semaine, nb_groupe_defaut_cm, nb_groupe_defaut_td, nb_groupe_defaut_tp, nb_groupe_defaut_partiel, element_id) VALUES ('" 
-          + periode[0]['nb_semaine'] + "','"
-          + periode[0]['nb_groupe_defaut_cm'] + "','"
-          + periode[0]['nb_groupe_defaut_td'] + "','"
-          + periode[0]['nb_groupe_defaut_tp'] + "','"
-          + periode[0]['nb_groupe_defaut_partiel'] + "','"
-          + periode[0]['element_id'] + "');"
+         var requete="INSERT INTO limite_sous_total(nom, limite_he_td, projet_id) VALUES ('" 
+          + limite_sous_total[0]['nom'] + "','"
+          + limite_sous_total[0]['limite_he_td'] + "','"
+          + req.params.projet + "');"
         ;
 
         db.query(requete,
-          function(err, periode) {
+          function(err, limite_sous_total) {
             if (!err) {
-              res.status(200).json(periode); 
+              res.status(200).json(limite_sous_total); 
             } else  {
               res.send(err);
             }
@@ -285,6 +286,21 @@ exports.copySousTotalByLimite = (req, res) => {
         );
       }
       else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
+exports.copyGroupeSousTotalByLimite = (req, res) => {
+  var requete = "INSERT INTO groupe_sous_total(limite_sous_total_id, element_id) SELECT " + req.params.limite + ", element_id FROM groupe_sous_total WHERE limite_sous_total_id = " + req.params.id + ";";
+  console.log(requete)
+  db.query(requete,
+    function(err, groupe_sous_total) {
+      if (!err) {
+        res.status(200).json(groupe_sous_total); 
+      } else  {
         res.send(err);
       }
     }

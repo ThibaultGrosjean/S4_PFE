@@ -41,6 +41,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
+              :disabled="loading"
               color="error darken-1"
               text
               @click="dialog = false"

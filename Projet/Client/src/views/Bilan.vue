@@ -249,7 +249,7 @@
               <v-select
                   v-model="element_id"
                   :items="elementsModules"
-                  :item-text="item => item.titre + ' (' + item.parent_titre + ' )'"
+                  :item-text="item => item.titre + ' (' + item.parent_titre + ')'"
                   item-value="id"
                   label="Modules"
                   clearable
@@ -276,6 +276,7 @@
               </v-select>
               <v-card-actions>
                 <v-btn
+                    :disabled="loading"
                     color="error darken-1"
                     class="mr-4"
                     text

@@ -81,6 +81,7 @@
 
             <v-card-actions>
               <v-btn
+                  :disabled="loading"
                   color="error darken-1"
                   class="mr-4"
                   text
@@ -90,6 +91,7 @@
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
+                  :loading="loading"
                   color="success darken-1"
                   class="mr-4"
                   text
@@ -117,6 +119,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
+                :disabled="loading"
                 color="error darken-1"
                 text
                 @click="cancel"

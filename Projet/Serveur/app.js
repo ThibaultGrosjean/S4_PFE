@@ -202,13 +202,15 @@ app.get('/groupes-intervenants/get', groupeIntervenantController.getAllGroupeInt
 
 app.get('/groupes-intervenants/get/:id', groupeIntervenantController.getGroupeIntervenant);
 
-app.get('/groupes-intervenants/module/get', groupeIntervenantController.getIntervenantByModule);
+app.get('/groupes-intervenants/module/get', groupeIntervenantController.getAllGroupeIntervenantByModule);
+
+app.get('/groupes-intervenants/module/get/:id', groupeIntervenantController.getGroupeIntervenantByModule);
 
 app.post('/groupes-intervenants/create/',groupeIntervenantController.validator, groupeIntervenantController.addGroupeIntervenant);
 
 app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/nbsemaine/:semaineDeb/:semaineFin',groupeIntervenantController.validator, groupeIntervenantController.addVolumesHebdomadaires);
 
-app.post('/groupes-intervenants/copy/:id',groupeIntervenantController.validator, groupeIntervenantController.copyGroupeIntervenant);
+app.post('/groupes-intervenants/copy/:id/parent/:parent/enseignant/:enseignant/projet/:projet',groupeIntervenantController.validator, groupeIntervenantController.copyGroupeIntervenant);
 
 app.patch('/groupes-intervenants/edit/:id',groupeIntervenantController.validator, groupeIntervenantController.editGroupeIntervenant);
 
@@ -229,9 +231,15 @@ app.get('/bilan/sous-total/projets/get/:id', bilanController.getAllBilanSousTota
 
 app.get('/bilan/groupe-sous-total/limite/get/:id', bilanController.getAllGroupeSousTotalByIdLimite);
 
+app.get('/bilan/limite-sous-total/projet/get/:id', bilanController.getAllLimiteSousTotalByProjet);
+
 app.post('/bilan/limite-sous-total/create/',bilanController.validatorLimite, bilanController.addLimiteSousTotal);
 
 app.post('/bilan/groupe-sous-total/create/',bilanController.validatorGroupe, bilanController.addGroupeSousTotal);
+
+app.post('/bilan/limite-sous-total/copy/:id/projet/:projet',bilanController.validatorGroupe, bilanController.copyLimiteSousTotal);
+
+app.post('/bilan/groupe-sous-total/copy/:id/limite/:limite',bilanController.validatorGroupe, bilanController.copyGroupeSousTotalByLimite);
 
 app.patch('/bilan/limite-sous-total/edit/:id',bilanController.validatorLimite, bilanController.editLimiteSousTotal);
 

@@ -55,7 +55,7 @@ exports.getGroupeIntervenant = (req, res) => {
 };
 
 
-exports.getIntervenantByModule = (req, res) => {
+exports.getAllGroupeIntervenantByModule = (req, res) => {
   db.query('SELECT g.element_id, g.intervenant_id, e.prenom, e.nom'
         +' FROM groupe_intervenant AS g'
         +' JOIN intervenant AS i' 
@@ -74,6 +74,25 @@ exports.getIntervenantByModule = (req, res) => {
   );  
 };
 
+
+exports.getGroupeIntervenantByModule = (req, res) => {
+  db.query('SELECT g.*, e.id AS enseignant_id' 
+        +' FROM groupe_intervenant AS g'
+        +' JOIN intervenant AS i' 
+        +' ON i.id = g.intervenant_id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' WHERE g.element_id = ?', [req.params.id],
+    function(err, volume_hebdomadaire) {
+      if (!err) {
+        res.status(200).json(volume_hebdomadaire);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
 
 
 exports.addGroupeIntervenant = (req, res) => {
@@ -151,15 +170,15 @@ exports.copyGroupeIntervenant = (req, res) => {
     function(err, groupe_intervenant) {
       if (!err) {
          var requete="INSERT INTO groupe_intervenant(num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel, element_id, intervenant_id) VALUES ('" 
-          + parseInt(groupe_intervenant[0]['num_semaine']+1) + "','"
+          + groupe_intervenant[0]['num_semaine'] + "','"
           + groupe_intervenant[0]['nb_groupe_cm'] + "','"
           + groupe_intervenant[0]['nb_groupe_td'] + "','"
           + groupe_intervenant[0]['nb_groupe_tp'] + "','"
           + groupe_intervenant[0]['nb_groupe_partiel'] + "','"
-          + groupe_intervenant[0]['element_id'] + "','"
-          + groupe_intervenant[0]['intervenant_id'] + "');"
+          + req.params.parent + "',"
+          + "(SELECT i.id FROM intervenant AS i WHERE i.enseignant_id = "+ req.params.enseignant +" AND i.projet_id = "+ req.params.projet +"));"
         ;
-
+        
         db.query(requete,
           function(err, groupe_intervenant) {
             if (!err) {

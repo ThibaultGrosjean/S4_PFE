@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiIntervenant from "./intervenants";
 import apiFormation from "./formations";
+import apiBilan from "./bilans";
 
 const apiProjet = {
   async getProjets() {
@@ -29,13 +30,17 @@ const apiProjet = {
   },
 
   async copyProjet(projetId, grpInterv) {
-    const response = await axios.post('/projets/copy/' + projetId).catch(error => console.error('Erreur API: ', error));
-    await apiIntervenant.copyIntervenantByProjet(projetId, response.data.insertId);
+    const projetResponse = await axios.post('/projets/copy/' + projetId).catch(error => console.error('Erreur API: ', error));
+    await apiIntervenant.copyIntervenantByProjet(projetId, projetResponse.data.insertId);
     const formations = await apiFormation.getFormationByProjet(projetId);
     for (let i = 0; i < formations.length; i++) {
-      await apiFormation.copyFormation(formations[i],response.data.insertId , grpInterv);
+      await apiFormation.copyFormation(formations[i],projetResponse.data.insertId , grpInterv);
     }
-    return response.data;
+    const bilan = await apiBilan.getAllLimiteSousTotalByProjet(projetId);
+    for (let i = 0; i < bilan.length; i++) {
+      await apiBilan.copyLimiteSousTotalByProjet(bilan[i].id, projetResponse.data.insertId);
+    }
+    return projetResponse.data;
   },
 
   async deleteProjet(projetId) {

@@ -767,6 +767,7 @@
               </div>
               <v-card-actions>
                 <v-btn
+                    :disabled="loading"
                     color="error darken-1"
                     class="mr-4"
                     text
@@ -836,6 +837,7 @@
               </v-select>
               <v-card-actions>
                 <v-btn
+                    :disabled="loading"
                     color="error darken-1"
                     class="mr-4"
                     text
@@ -994,7 +996,7 @@ export default {
       this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsForVolGlobByProjetNotInModule(this.$route.params.id, idModule)
     },
     async getGroupeIntervenantByModule() {
-      this.intervenantsModules = await apiGroupeIntervenant.getGroupeIntervenantByModule();
+      this.intervenantsModules = await apiGroupeIntervenant.getAllGroupeIntervenantByModule();
       await this.getVolumeHebdomadaireByModule();
     },
     async getGroupesIntervenants() {

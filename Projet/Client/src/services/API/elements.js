@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiPeriode from "./periodes";
 import apiVolumeHebdomadaire from "./volumes-hebdomadaires";
+import apiGroupeIntervenant from "./groupes-intervenants";
 
 const apiElement = {
   async getElements() {
@@ -50,7 +51,7 @@ const apiElement = {
     return response.data;
   },
 
-  async copyHierarchie(racineId, grpInterv) {
+  async copyHierarchie(racineId, grpInterv, projetId) {
     const racine = await this.getElement(racineId);
     const copyRacine = await this.copyElement(racine[0], 0);
 
@@ -64,15 +65,20 @@ const apiElement = {
         const childrenUe = await this.getChildren(childrenSemestre[j].id);
         for (let k = 0; k < childrenUe.length; k++) {
           const module = await this.copyElement(childrenUe[k], ue.insertId);
+
+          //Copier les volumes hebdo.
           const volumesHebdo = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule(childrenUe[k].id);
           for (let l = 0; l < volumesHebdo.length; l++) {
             await apiVolumeHebdomadaire.copyVolumeHebdomadaireByModule(volumesHebdo[l].id, module.insertId);
           }
+
+          //Copier les groupes d'intervenants
           if (grpInterv){
-            //TODO grp interv
-            console.log(true)
+            const groupesIntervenants = await apiGroupeIntervenant.getGroupeIntervenantByModule(childrenUe[k].id);
+            for (let l = 0; l < groupesIntervenants.length; l++) {
+              await apiGroupeIntervenant.copyGroupeIntervenantByModule(groupesIntervenants[l].id, module.insertId, groupesIntervenants[l].enseignant_id, projetId);
+            }
           }
-          //TODO copy bilan
         }
       }
     }

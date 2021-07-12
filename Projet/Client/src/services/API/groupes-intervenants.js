@@ -11,8 +11,13 @@ const apiGroupeIntervenant = {
     return response.data;
   },
 
-  async getGroupeIntervenantByModule() {
+  async getAllGroupeIntervenantByModule() {
     const response = await axios.get('/groupes-intervenants/module/get' ).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getGroupeIntervenantByModule(moduleId) {
+    const response = await axios.get('/groupes-intervenants/module/get/' + moduleId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -23,6 +28,11 @@ const apiGroupeIntervenant = {
 
   async createGroupeIntervenantBySemaine(moduleId, intervenantId, semaineDeb, semaineFin) {
     const response = await axios.post('/groupes-intervenants/create/module/' + moduleId + '/intervenant/' + intervenantId + '/nbsemaine/' + semaineDeb + '/' + semaineFin).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async copyGroupeIntervenantByModule(volumeId, parentId, enseignantId, projetId) {
+    const response = await axios.post('/groupes-intervenants/copy/' + volumeId + '/parent/' + parentId + '/enseignant/' + enseignantId + '/projet/' + projetId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

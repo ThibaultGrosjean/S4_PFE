@@ -15,6 +15,11 @@ const apiBilan = {
     return response.data;
   },
 
+  async getAllLimiteSousTotalByProjet(projetId) {
+    const response = await axios.get('/bilan/limite-sous-total/projet/get/' + projetId).catch(error => console.log('Erreur API: ', error));
+    return response.data;
+  },
+
   async createLimiteSousTotal(limiteSousTotal, elements) {
     const response = await axios.post('/bilan/limite-sous-total/create', limiteSousTotal).catch(error => console.error('Erreur API: ', error));
     console.log(elements);
@@ -27,10 +32,14 @@ const apiBilan = {
     return response.data;
   },
 
+  async copyLimiteSousTotalByProjet(limiteId, newProjetId) {
+    const limite = await axios.post('/bilan/limite-sous-total/copy/' + limiteId + '/projet/' + newProjetId).catch(error => console.error('Erreur API: ', error));
+    await axios.post('/bilan/groupe-sous-total/copy/' + limiteId + '/limite/' + limite.data.insertId).catch(error => console.error('Erreur API: ', error));
+  },
+
   async editLimiteSousTotal(limiteSousTotal, elements) {
     const response = await axios.patch('/bilan/limite-sous-total/edit/' + limiteSousTotal.id, limiteSousTotal).catch(error => console.error('Erreur API: ', error));
     await this.deleteGroupeSousTotal(limiteSousTotal.id);
-    console.log(limiteSousTotal.id)
     await this.createGroupeSousTotal({limite_sous_total_id: limiteSousTotal.id, element_id: elements});
     return response.data;
   },
