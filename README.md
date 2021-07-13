@@ -106,3 +106,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Ajouter et Modifier un sous-total
 * Copier un projet : Copier les formations, les intervenants, les hiérarchies, les périodes, les volumes hebdomadaires, copier les groupes d'intervenants, copier les bilans
 * Trier les sous-bilans par intervenant ou limite
+* Supprimer un sous-total

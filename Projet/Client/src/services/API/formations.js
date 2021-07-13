@@ -22,7 +22,6 @@ const apiFormation = {
 
   async createFormation(data) {
     const responseElement = await apiElement.createElement(data.element)
-    console.log(responseElement.insertId);
     const formation = {
       verrou: Number(false),
       projet_id: data.projet_id,

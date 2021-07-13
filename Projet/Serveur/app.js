@@ -249,6 +249,8 @@ app.patch('/bilan/limite-sous-total/edit/:id',bilanController.validatorLimite, b
 
 app.delete('/bilan/groupe-sous-total/delete/:id', bilanController.deleteGroupeSousTotal);
 
+app.delete('/bilan/limite-sous-total/delete/:id', bilanController.deleteLimiteSousTotal);
+
 
 app.listen(port, () => {
     console.log(`Écoute sur le port : ${port}`);

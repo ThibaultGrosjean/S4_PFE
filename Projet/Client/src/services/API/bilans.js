@@ -18,7 +18,6 @@ const apiBilan = {
 
   async getGroupeSousTotalByProjetAndElement(projetId, elementId) {
     const response = await axios.get('/bilan/groupe-sous-total/element/' + elementId + '/projet/get/' + projetId).catch(error => console.log('Erreur API: ', error));
-    console.log(elementId, projetId)
     return response.data;
   },
 
@@ -57,6 +56,11 @@ const apiBilan = {
 
   async deleteGroupeSousTotal(limiteSousTotalId) {
     const response = await axios.delete('/bilan/groupe-sous-total/delete/' + limiteSousTotalId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async deleteLimiteSousTotal(limiteSousTotalId) {
+    const response = await axios.delete('/bilan/limite-sous-total/delete/' + limiteSousTotalId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   }
 };

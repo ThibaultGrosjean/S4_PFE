@@ -286,19 +286,6 @@ exports.editLimiteSousTotal = (req, res) => {
 };
 
 
-exports.deleteGroupeSousTotal = (req, res) => {
-  db.query('DELETE FROM groupe_sous_total WHERE limite_sous_total_id = ? ;',[req.params.id],
-    function(err, groupe_sous_total) {
-      if (!err) {
-        res.status(200).json(groupe_sous_total); 
-      } else  {
-        res.send(err);
-      }
-    }
-  );  
-};
-
-
 exports.copyLimiteSousTotal = (req, res) => {
   db.query('SELECT * FROM limite_sous_total WHERE id = ? ;', [req.params.id],
     function(err, limite_sous_total) {
@@ -338,4 +325,34 @@ exports.copyGroupeSousTotalByLimite = (req, res) => {
       }
     }
   );
+};
+
+
+exports.deleteGroupeSousTotal = (req, res) => {
+  db.query('DELETE FROM groupe_sous_total WHERE limite_sous_total_id = ? ;',[req.params.id],
+    function(err, groupe_sous_total) {
+      if (!err) {
+        res.status(200).json(groupe_sous_total); 
+      } else  {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+exports.deleteLimiteSousTotal = (req, res) => {
+  db.query('DELETE l, g'
+        +' FROM limite_sous_total AS l'
+        +' JOIN groupe_sous_total AS g'
+        +' ON g.limite_sous_total_id = l.id'
+        +' WHERE l.id = ?',[req.params.id],
+    function(err, groupes_intervenants) {
+      if (!err) {
+        res.status(200).json(groupes_intervenants);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
 };

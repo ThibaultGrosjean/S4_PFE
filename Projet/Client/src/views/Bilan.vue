@@ -31,13 +31,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-if="!bilans.length && !sousTotaux.length">
-        <p class="text-center animate-pop-in">Aucun bilan sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
-      </v-col>
-    </v-row>
-    <v-row>
       <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>Le statut a été {{ typeOperation }} avec succès.</span>
+        <span>Le sous-total a été {{ typeOperation }} avec succès.</span>
         <template v-slot:action="{ attrs }">
           <v-btn
               icon
@@ -49,7 +44,7 @@
         </template>
       </v-snackbar>
     </v-row>
-    <v-row v-if="bilans.length" class="pa-3 pb-0 animate-pop-in">
+    <v-row class="pa-3 pb-0 animate-pop-in">
       <v-col class="d-flex justify-start">
         <v-checkbox
             v-model="checkboxBilan"
@@ -65,7 +60,7 @@
         ></v-checkbox>
       </v-col>
     </v-row>
-    <v-row v-if="bilans.length && checkboxBilan">
+    <v-row v-if="checkboxBilan">
       <v-col
           sm="12"
           class="justify-center"
@@ -112,8 +107,8 @@
             </v-simple-table>
             <div v-else class="pa-5">Aucune donnée trouvée</div>
           </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
+          <v-divider v-if="bilans.length"></v-divider>
+          <v-card-actions v-if="bilans.length">
             <v-spacer></v-spacer>
             <div class="mr-6">
               <v-icon x-small color="error darken-1">circle</v-icon><span class="mx-1 text-caption">Sous-service</span>
@@ -128,7 +123,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="sousTotaux.length && checkboxSousTotaux">
+    <v-row v-if="checkboxSousTotaux">
       <v-col
           sm="12"
           class="justify-center"
@@ -185,7 +180,7 @@
                           <v-icon>edit</v-icon>
                         </v-btn>
                       </template>
-                      <span>Modifier {{ st.nom }}</span>
+                      <span>Modifier {{ st.nom_limite }}</span>
                     </v-tooltip>
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -193,21 +188,22 @@
                             icon
                             v-bind="attrs"
                             v-on="on"
+                            @click="openDialog(st)"
                         >
                           <v-icon color="error darken-1">delete</v-icon>
                         </v-btn>
                       </template>
-                      <span>Supprimer {{ st.nom }}</span>
+                      <span>Supprimer {{ st.nom_limite }}</span>
                     </v-tooltip>
                   </td>
                 </tr>
                 </tbody>
               </template>
             </v-simple-table>
-            <div v-else class="pa-5">Aucune donnée trouvée</div>
+            <div v-else class="pa-5">Aucun sous-total dans le projet</div>
           </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
+          <v-divider v-if="sousTotaux.length"></v-divider>
+          <v-card-actions v-if="sousTotaux.length">
             <v-spacer></v-spacer>
             <div class="mr-6">
               <v-icon x-small color="success">circle</v-icon><span class="mx-1 text-caption">Respect les limites</span>
@@ -314,6 +310,46 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 error darken-2 white--text">
+            <span class="headline">Confirmation de suppression</span>
+            <v-spacer></v-spacer>
+            <v-btn icon  color="white" @click="closeDialog">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir supprimer la limite « {{ this.nom }} » ?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                :disabled="loading"
+                color="error darken-1"
+                text
+                @click="closeDialog"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                :loading="loading"
+                color="success darken-1"
+                class="mr-4"
+                text
+                @click="deleteLimite"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
       <v-col>
         <v-fab-transition>
@@ -358,6 +394,7 @@ export default {
     limiteSousTotal: [],
     projet: [],
     form: false,
+    dialog: false,
     showMenuStatutDetail: false,
     checkboxBilan: true,
     checkboxSousTotaux: true,
@@ -441,6 +478,26 @@ export default {
       this.limite_he_td = sousTotal.limite_he_td;
       this.element_id = await apiBilan.getAllGroupeSousTotalByLimite(sousTotal.id);
       this.form = true;
+    },
+    closeDialog(){
+      this.dialog = false;
+      this.id = '';
+      this.nom = '';
+    },
+    openDialog(limite) {
+      this.dialog = true;
+      this.id = limite.id;
+      this.nom = limite.nom_limite;
+    },
+    async deleteLimite() {
+      this.loading = true;
+      await apiBilan.deleteLimiteSousTotal(this.id);
+      this.id = '';
+      await this.getSousTotaux();
+      this.loading = false;
+      this.dialog = false;
+      this.typeOperation = 'supprimé';
+      this.responseSuccess = true;
     },
     toTime(date, length) {
       return new Date(date).toISOString().substr(0, length);
