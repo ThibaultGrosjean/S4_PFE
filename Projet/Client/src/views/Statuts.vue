@@ -20,7 +20,6 @@
           v-if="statuts.length"
           rounded
           dense
-          mandatory
           class="animate-pop-in"
       >
         <v-btn
@@ -100,7 +99,7 @@
                   <v-icon>edit</v-icon>
                 </v-btn>
               </template>
-              <span>Modifier</span>
+              <span>Modifier {{ s.nom }}</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
@@ -113,9 +112,22 @@
                   <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
-              <span>Dupliquer</span>
+              <span>Dupliquer {{ s.nom }}</span>
             </v-tooltip>
             <v-spacer></v-spacer>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="openDialog(s)"
+                >
+                  <v-icon color="error darken-1">delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Supprimer {{ s.nom }}</span>
+            </v-tooltip>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -201,9 +213,9 @@
               ></v-text-field>
               <v-card-actions>
                 <v-btn
+                    rounded
                     :disabled="loading"
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clear"
                 >
@@ -211,6 +223,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -221,6 +234,48 @@
               </v-card-actions>
             </v-card-text>
           </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+          v-model="dialog"
+          persistent
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 error darken-2 white--text">
+            <span class="headline">Confirmation de suppression</span>
+            <v-spacer></v-spacer>
+            <v-btn icon  color="white" @click="closeDialog">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="text-justify pt-4">
+            Êtes-vous sûr de vouloir supprimer le statut « {{ this.nom }} » ?<br><br>
+            Cela entraînera la suppression des enseignants reliés à ce statut, ainsi que toutes ses interventions dans les formations.
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+                rounded
+                :disabled="loading"
+                color="error darken-1"
+                text
+                @click="closeDialog"
+            >
+              Annuler
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                rounded
+                :loading="loading"
+                color="success darken-1"
+                text
+                @click="deleteStatut"
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
@@ -263,6 +318,7 @@ export default {
   data: () => ({
     statuts: [],
     form: false,
+    dialog: false,
     loading: false,
     responseSuccess: false,
     sortByNom: false,
@@ -339,6 +395,26 @@ export default {
       await this.getStatuts();
       this.loading = false;
       this.typeOperation = 'copié';
+      this.responseSuccess = true;
+    },
+    closeDialog(){
+      this.dialog = false;
+      this.id = '';
+      this.nom = '';
+    },
+    openDialog(statut) {
+      this.dialog = true;
+      this.id = statut.id;
+      this.nom = statut.nom;
+    },
+    async deleteStatut(){
+      this.loading = true;
+      await apiStatut.deleteStatut(this.id);
+      await this.getStatuts();
+      this.clear();
+      this.loading = false;
+      this.dialog = false;
+      this.typeOperation = 'supprime';
       this.responseSuccess = true;
     },
     sortedByNom() {

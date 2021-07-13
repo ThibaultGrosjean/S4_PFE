@@ -51,6 +51,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
+            rounded
             :disabled="loading"
             color="error darken-1"
             class="ml-4 mb-3"
@@ -61,6 +62,7 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
+            rounded
             :loading="loading"
             color="success darken-1"
             class="mr-4 mb-3"

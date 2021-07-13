@@ -117,7 +117,17 @@ exports.editStatut = (req, res) => {
 
 
 exports.deleteStatut = (req, res) => {
-  db.query('DELETE FROM statut WHERE id = ? ;',[req.params.id],
+  db.query('DELETE g, v, i, e, s'
+        +' FROM statut AS s'
+        +' LEFT JOIN enseignant AS e'
+        +' ON e.statut_id = s.id'
+        +' LEFT JOIN intervenant AS i'
+        +' ON i.enseignant_id = e.id'
+        +' LEFT JOIN volume_globale AS v'
+        +' ON v.intervenant_id = i.id'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.intervenant_id = i.id'
+        +' WHERE s.id = ?;',[req.params.id],
     function(err, statut) {
       if (!err) {
         res.status(200).json(statut); 

@@ -127,7 +127,7 @@
                   <v-icon>edit</v-icon>
                 </v-btn>
               </template>
-              <span>Modifier</span>
+              <span>Modifier {{ e.prenom + ' ' + e.nom }}</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
@@ -140,7 +140,7 @@
                   <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
-              <span>Dupliquer</span>
+              <span>Dupliquer {{ e.prenom + ' ' + e.nom }}</span>
             </v-tooltip>
             <v-spacer>
             </v-spacer><v-tooltip top>
@@ -154,7 +154,7 @@
                   <v-icon color="error darken-1">delete</v-icon>
                 </v-btn>
               </template>
-              <span>Supprimer</span>
+              <span>Supprimer {{ e.prenom + ' ' + e.nom }}</span>
             </v-tooltip>
           </v-card-actions>
         </v-card>
@@ -236,9 +236,9 @@
               ></v-select>
               <v-card-actions>
                 <v-btn
+                    rounded
                     :disabled="loading"
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clear"
                 >
@@ -246,6 +246,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -279,6 +280,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
+                rounded
                 :disabled="loading"
                 color="error darken-1"
                 text
@@ -288,6 +290,7 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
+                rounded
                 :loading="loading"
                 color="success darken-1"
                 text
@@ -365,7 +368,6 @@ export default {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
-      this.$refs.formulaire.validate();
       this.$v.$touch();
       if (this.$v.$invalid) return;
       const enseignant = {

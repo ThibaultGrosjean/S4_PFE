@@ -200,45 +200,15 @@ exports.editEnseignant = (req, res) => {
 
 
 exports.deleteEnseignant = (req, res) => {
-  db.query('DELETE v'
-        +' FROM volume_globale AS v'
+  db.query('DELETE g, v, i, e'
+        +' FROM enseignant AS e'
         +' LEFT JOIN intervenant AS i'
-        +' ON i.id = v.intervenant_id'
-        +' WHERE i.enseignant_id = ? ;',[req.params.id],
-    function(err) {
-      if (!err) {
-        res.status(200); 
-      }
-      else {
-        res.send(err);
-      }
-    }
-  );
-  db.query('DELETE g'
-        +' FROM groupe_intervenant AS g'
-        +' LEFT JOIN intervenant AS i'
-        +' ON i.id = g.intervenant_id'
-        +' WHERE i.enseignant_id = ? ;',[req.params.id],
-    function(err) {
-      if (!err) {
-        res.status(200); 
-      }
-      else {
-        res.send(err);
-      }
-    }
-  );
-  db.query('DELETE FROM intervenant WHERE enseignant_id = ? ;',[req.params.id],
-    function(err) {
-      if (!err) {
-        res.status(200);
-      }
-      else {
-        res.send(err);
-      }
-    }
-  );
-  db.query('DELETE FROM enseignant WHERE id = ? ;',[req.params.id],
+        +' ON i.enseignant_id = e.id'
+        +' LEFT JOIN volume_globale AS v'
+        +' ON v.intervenant_id = i.id'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.intervenant_id = i.id'
+        +' WHERE e.id = ?;',[req.params.id],
     function(err, enseignant) {
       if (!err) {
         res.status(200).json(enseignant); 
@@ -247,5 +217,5 @@ exports.deleteEnseignant = (req, res) => {
         res.send(err);
       }
     }
-  ); 
+  );
 };

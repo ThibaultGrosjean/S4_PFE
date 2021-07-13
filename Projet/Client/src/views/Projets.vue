@@ -20,7 +20,6 @@
       <v-btn-toggle
           rounded
           dense
-          mandatory
           class="animate-pop-in"
       >
         <v-btn
@@ -84,7 +83,7 @@
                     <v-icon>{{ p.verrou ? "lock" : "lock_open" }}</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
+                <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}  {{ p.nom }}</span>
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
@@ -98,7 +97,7 @@
                     <v-icon>{{ p.archive ? "archive" : "unarchive" }}</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ p.archive ? "Désarchiver" : "Archiver " }}</span>
+                <span>{{ p.archive ? "Désarchiver" : "Archiver " }}  {{ p.nom }}</span>
               </v-tooltip>
             </v-card-title>
             <v-card-subtitle>{{ toTime(p.date) }}</v-card-subtitle>
@@ -136,7 +135,7 @@
                     <v-icon>edit</v-icon>
                   </v-btn>
                 </template>
-                <span>Modifier</span>
+                <span>Modifier {{ p.nom }}</span>
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
@@ -150,7 +149,7 @@
                     <v-icon>file_copy</v-icon>
                   </v-btn>
                 </template>
-                <span>Dupliquer</span>
+                <span>Dupliquer {{ p.nom }}</span>
               </v-tooltip>
               <v-spacer></v-spacer>
               <v-tooltip top v-if="!Boolean(p.archive)">
@@ -165,7 +164,7 @@
                     <v-icon color="error darken-1">delete</v-icon>
                   </v-btn>
                 </template>
-                <span>Supprimer</span>
+                <span>Supprimer {{ p.nom }}</span>
               </v-tooltip>
             </v-card-actions>
           </v-card>
@@ -234,18 +233,22 @@
                     scrollable
                 >
                   <v-btn
+                      rounded
                       :disabled="loading"
                       text
                       color="error darken-1"
+                      class="ml-4 mb-3"
                       @click="menu = false"
                   >
                     Annuler
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
+                      rounded
                       :loading="loading"
                       text
                       color="success darken-1"
+                      class="mr-4 mb-3"
                       @click="$refs.menu.save(date)"
                   >
                     Valider
@@ -254,9 +257,9 @@
               </v-menu>
               <v-card-actions>
                 <v-btn
+                    rounded
                     :disabled="loading"
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clear"
                 >
@@ -264,6 +267,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text

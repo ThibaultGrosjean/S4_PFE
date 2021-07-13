@@ -767,9 +767,9 @@
               </div>
               <v-card-actions>
                 <v-btn
+                    rounded
                     :disabled="loading"
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clear"
                 >
@@ -777,6 +777,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -837,9 +838,9 @@
               </v-select>
               <v-card-actions>
                 <v-btn
+                    rounded
                     :disabled="loading"
                     color="error darken-1"
-                    class="mr-4"
                     text
                     @click="clearGrpInterv"
                 >
@@ -847,6 +848,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
+                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text

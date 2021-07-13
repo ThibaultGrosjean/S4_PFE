@@ -190,41 +190,16 @@ exports.editIntervenant = (req, res) => {
 
 
 exports.deleteIntervenant = (req, res) => {
-  // Supprime les groupes_intervenants 
-  db.query('DELETE g'
-        +' FROM groupe_intervenant AS g'
-        +' JOIN intervenant AS i'
-        +' ON i.id = g.intervenant_id'
-        +' WHERE i.id = ?;',[req.params.id],
-    function(err) {
-      if (!err) {
-        res.status(200); 
-      }
-      else {
-        res.send(err);
-      }
-    }
-  );
-  // Supprime les volumes Globaux
-  db.query('DELETE v'
-        +' FROM volume_globale AS v'
-        +' JOIN intervenant AS i'
-        +' ON i.id = v.intervenant_id'
-        +' WHERE i.id = ?;',[req.params.id],
-    function(err) {
-      if (!err) {
-        res.status(200); 
-      }
-      else {
-        res.send(err);
-      }
-    }
-  );
-  // Supprime l'intervenant
-  db.query('DELETE FROM intervenant WHERE id = ? ;',[req.params.id],
+  db.query('DELETE g, v, i'
+        +' FROM intervenant AS i'
+        +' LEFT JOIN volume_globale AS v'
+        +' ON v.intervenant_id = i.id'
+        +' LEFT JOIN groupe_intervenant AS g'
+        +' ON g.intervenant_id = i.id'
+        +' WHERE i.id = ?',[req.params.id],
     function(err, intervenants) {
       if (!err) {
-        res.status(200).json(intervenants);  
+        res.status(200).json(intervenants); 
       }
       else {
         res.send(err);
