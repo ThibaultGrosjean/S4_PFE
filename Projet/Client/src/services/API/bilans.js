@@ -5,8 +5,20 @@ const apiBilan = {
     const response = await axios.get('/bilan/general/projets/get/' + projetId).catch(error => console.log('Erreur API: ', error));
     return response.data;
   },
+
   async getBilanSousTotal(projetId) {
     const response = await axios.get('/bilan/sous-total/projets/get/' + projetId).catch(error => console.log('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getLimiteSousTotalByProjetAndName(name, projetId) {
+    const response = await axios.get('/bilan/limite-sous-total/nom/' + name + '/projet/get/' + projetId).catch(error => console.log('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getGroupeSousTotalByProjetAndElement(projetId, elementId) {
+    const response = await axios.get('/bilan/groupe-sous-total/element/' + elementId + '/projet/get/' + projetId).catch(error => console.log('Erreur API: ', error));
+    console.log(elementId, projetId)
     return response.data;
   },
 
@@ -22,7 +34,6 @@ const apiBilan = {
 
   async createLimiteSousTotal(limiteSousTotal, elements) {
     const response = await axios.post('/bilan/limite-sous-total/create', limiteSousTotal).catch(error => console.error('Erreur API: ', error));
-    console.log(elements);
     await this.createGroupeSousTotal({limite_sous_total_id: response.data.insertId, element_id: elements});
     return response.data;
   },
@@ -33,8 +44,8 @@ const apiBilan = {
   },
 
   async copyLimiteSousTotalByProjet(limiteId, newProjetId) {
-    const limite = await axios.post('/bilan/limite-sous-total/copy/' + limiteId + '/projet/' + newProjetId).catch(error => console.error('Erreur API: ', error));
-    await axios.post('/bilan/groupe-sous-total/copy/' + limiteId + '/limite/' + limite.data.insertId).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/bilan/limite-sous-total/copy/' + limiteId + '/projet/' + newProjetId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
   },
 
   async editLimiteSousTotal(limiteSousTotal, elements) {

@@ -37,9 +37,9 @@ const apiFormation = {
     return response.data;
   },
 
-  async copyFormation(formation, projetId, grpInterv) {
-    const hierarchie = await apiElement.copyHierarchie(formation.element_id, grpInterv, projetId);
-    const response = await axios.post('/formations/copy/' + formation.id + '/projet/' + projetId + '/element/' + hierarchie.insertId).catch(error => console.error('Erreur API: ', error));
+  async copyFormation(formation, projetId, newProjetId, grpInterv) {
+    const hierarchie = await apiElement.copyHierarchie(formation.element_id, grpInterv, projetId, newProjetId);
+    const response = await axios.post('/formations/copy/' + formation.id + '/projet/' + newProjetId + '/element/' + hierarchie.insertId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

@@ -150,7 +150,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="st in sousTotaux" :key="st.intervenant_id">
+                <tr v-for="(st, idx) in sousTotaux" :key="idx">
                   <td class="text-center first-col-split">{{ st.prenom }} {{ st.nom }}</td>
                   <td class="text-center first-col-split">{{ st.nom_limite }}</td>
                   <td class="text-center">{{ st.total_cm }} h</td>
@@ -198,7 +198,7 @@
               <v-icon x-small color="success">circle</v-icon><span class="mx-1 text-caption">Respect les limites</span>
             </div>
             <div class="mr-6">
-              <v-icon x-small color="error darken-1">circle</v-icon><span class="mx-1 text-caption">Dépassement des limites</span>
+              <v-icon x-small color="deep-purple darken-2">circle</v-icon><span class="mx-1 text-caption">Dépassement des limites</span>
             </div>
           </v-card-actions>
         </v-card>
@@ -438,7 +438,7 @@ export default {
     getClassColorForSousTotal(sousTotal){
       //TODO faire en fonction des status
       if (sousTotal.total_he_td <= sousTotal.limite_he_td) return 'valide';
-      if (sousTotal.total_he_td > sousTotal.sousTotal.limite_he_td) return 'heures-sup';
+      if (sousTotal.total_he_td > sousTotal.limite_he_td) return 'heures-sup';
     }
   },
   computed: {

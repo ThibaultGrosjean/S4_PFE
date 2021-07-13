@@ -2,6 +2,7 @@ import axios from "axios";
 import apiPeriode from "./periodes";
 import apiVolumeHebdomadaire from "./volumes-hebdomadaires";
 import apiGroupeIntervenant from "./groupes-intervenants";
+import apiBilan from "./bilans";
 
 const apiElement = {
   async getElements() {
@@ -28,14 +29,14 @@ const apiElement = {
     const response = await axios.get('/elements/get/' + elementId).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
-  
+
   async createElement(element) {
     const response = await axios.post('/elements/create', element).catch(error => console.error('Erreur API: ', error));
     if (element.niveau === 1) {
       element.periode.element_id = response.data.insertId;
       await apiPeriode.createPeriode(element.periode);
     }
-    if (element.niveau === 3 && element.mode_saisie === 'hebdo'){
+    if (element.niveau === 3 && element.mode_saisie === 'hebdo') {
       await apiVolumeHebdomadaire.createVolumeHebdomadaireBySemaine(response.data.insertId, 1, element.periode[0].nb_semaine);
     }
     return response.data;
@@ -47,11 +48,11 @@ const apiElement = {
   },
 
   async copyElement(element, parent) {
-    const response = await axios.post('/elements/copy/' + element.id +'/parent/' +  parent, element).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/elements/copy/' + element.id + '/parent/' + parent, element).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
-  async copyHierarchie(racineId, grpInterv, projetId) {
+  async copyHierarchie(racineId, grpInterv, projetId, newProjetId) {
     const racine = await this.getElement(racineId);
     const copyRacine = await this.copyElement(racine[0], 0);
 
@@ -73,11 +74,18 @@ const apiElement = {
           }
 
           //Copier les groupes d'intervenants
-          if (grpInterv){
+          if (grpInterv) {
             const groupesIntervenants = await apiGroupeIntervenant.getGroupeIntervenantByModule(childrenUe[k].id);
             for (let l = 0; l < groupesIntervenants.length; l++) {
-              await apiGroupeIntervenant.copyGroupeIntervenantByModule(groupesIntervenants[l].id, module.insertId, groupesIntervenants[l].enseignant_id, projetId);
+              await apiGroupeIntervenant.copyGroupeIntervenantByModule(groupesIntervenants[l].id, module.insertId, groupesIntervenants[l].enseignant_id, newProjetId);
             }
+          }
+
+          //Copier les sous-totaux
+          const groupeSousTotalElement = await apiBilan.getGroupeSousTotalByProjetAndElement(projetId, childrenUe[k].id);
+          for (let l = 0; l < groupeSousTotalElement.length; l++) {
+            const sousTotal = await apiBilan.getLimiteSousTotalByProjetAndName(groupeSousTotalElement[l].nom, newProjetId);
+            await apiBilan.createGroupeSousTotal({limite_sous_total_id: sousTotal[0].id, element_id: [module.insertId]})
           }
         }
       }

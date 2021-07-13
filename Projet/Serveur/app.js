@@ -233,6 +233,10 @@ app.get('/bilan/groupe-sous-total/limite/get/:id', bilanController.getAllGroupeS
 
 app.get('/bilan/limite-sous-total/projet/get/:id', bilanController.getAllLimiteSousTotalByProjet);
 
+app.get('/bilan/limite-sous-total/nom/:nom/projet/get/:id', bilanController.getAllLimiteSousTotalByProjetAndName);
+
+app.get('/bilan/groupe-sous-total/element/:element/projet/get/:id', bilanController.getAllGroupeSousTotalByProjetAndElement);
+
 app.post('/bilan/limite-sous-total/create/',bilanController.validatorLimite, bilanController.addLimiteSousTotal);
 
 app.post('/bilan/groupe-sous-total/create/',bilanController.validatorGroupe, bilanController.addGroupeSousTotal);

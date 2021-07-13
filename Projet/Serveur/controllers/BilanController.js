@@ -55,7 +55,8 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
         +' LEFT JOIN volume_hebdomadaire AS v'
         +' ON g.element_id = v.element_id AND g.num_semaine = v.num_semaine'
         +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id = ' + req.params.id + ')'
-        +' GROUP BY g.intervenant_id',
+        +' GROUP BY g.intervenant_id'
+        +' ORDER BY e.prenom, e.nom',
     function(err, bilan) {
       if (!err) {
         res.status(200).json(bilan);  
@@ -151,7 +152,8 @@ exports.getAllBilanSousTotal = (req, res) => {
        +' AS vgt'
        +' ON vgt.id = i.id'
        +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id =  ' + req.params.id + ')'
-       +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel, l.id',
+       +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel, l.id'
+       +' ORDER BY l.nom, e.prenom, e.nom',
     function(err, bilan) {
       if (!err) {
         res.status(200).json(bilan);  
@@ -166,6 +168,38 @@ exports.getAllBilanSousTotal = (req, res) => {
 
 exports.getAllLimiteSousTotalByProjet = (req, res) => {
   db.query('SELECT * FROM limite_sous_total WHERE projet_id = ? ORDER BY projet_id, nom;',[req.params.id],
+    function(err, limite_sous_total) {
+      if (!err) {
+        res.status(200).json(limite_sous_total);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
+exports.getAllGroupeSousTotalByProjetAndElement = (req, res) => {
+  db.query('SELECT g.*, l.nom' 
+        +' FROM groupe_sous_total AS g'
+        +' JOIN limite_sous_total AS l'
+        +' ON l.id = g.limite_sous_total_id'
+        +' WHERE l.projet_id = ' + req.params.id + ' AND g.element_id = ' + req.params.element + ';',
+    function(err, groupe_sous_total) {
+      if (!err) {
+        res.status(200).json(groupe_sous_total);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  )
+};
+
+
+exports.getAllLimiteSousTotalByProjetAndName = (req, res) => {
+  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ' + req.params.id + ' AND nom = "' + req.params.nom + '" ORDER BY projet_id, nom;',
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -295,7 +329,6 @@ exports.copyLimiteSousTotal = (req, res) => {
 
 exports.copyGroupeSousTotalByLimite = (req, res) => {
   var requete = "INSERT INTO groupe_sous_total(limite_sous_total_id, element_id) SELECT " + req.params.limite + ", element_id FROM groupe_sous_total WHERE limite_sous_total_id = " + req.params.id + ";";
-  console.log(requete)
   db.query(requete,
     function(err, groupe_sous_total) {
       if (!err) {
