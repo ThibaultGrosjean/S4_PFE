@@ -18,7 +18,6 @@
         justify="center"
     >
       <v-btn-toggle
-          borderless
           rounded
           dense
           mandatory
@@ -27,7 +26,7 @@
         <v-btn
             @click="sortedByDate"
         >
-          <span class="hidden-sm-and-down">Date</span>
+          <span>Date</span>
           <v-icon right>sort_by_alpha</v-icon>
         </v-btn>
       </v-btn-toggle>

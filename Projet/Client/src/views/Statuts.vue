@@ -18,7 +18,6 @@
     >
       <v-btn-toggle
           v-if="statuts.length"
-          borderless
           rounded
           dense
           mandatory
@@ -27,7 +26,7 @@
         <v-btn
             @click="sortedByNom"
         >
-          <span class="hidden-sm-and-down">Nom</span>
+          <span>Nom</span>
           <v-icon right>sort_by_alpha</v-icon>
         </v-btn>
       </v-btn-toggle>

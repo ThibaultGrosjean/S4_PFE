@@ -61,7 +61,7 @@
             v-model="checkboxSousTotaux"
             label="Afficher les sous totaux"
             color="primary"
-            class="ma-0 ml-2"
+            class="ma-0 ml-4"
         ></v-checkbox>
       </v-col>
     </v-row>
@@ -81,7 +81,12 @@
                   <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="7">Bilan des intervenants du projet</th>
                 </tr>
                 <tr>
-                  <th class="text-center right-border">Intervenant</th>
+                  <th class="text-center right-border">
+                    <span class="mr-1">Intervenant</span>
+                    <v-btn x-small icon @click="sortedByIntervenantBilan">
+                      <v-icon small>{{ sortIntervenantBilan ? "arrow_upward" : "arrow_downward" }}</v-icon>
+                    </v-btn>
+                  </th>
                   <th class="text-center">Total CM</th>
                   <th class="text-center">Total TD</th>
                   <th class="text-center">Total TP</th>
@@ -139,8 +144,18 @@
                   <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="8">Sous-Totaux</th>
                 </tr>
                 <tr>
-                  <th class="text-center first-col">Intervenant</th>
-                  <th class="text-center first-col">Nom limite</th>
+                  <th class="text-center first-col">
+                    <span class="mr-1">Intervenant</span>
+                    <v-btn x-small icon @click="sortedByIntervenantSousTotal">
+                      <v-icon small>{{ sortIntervenantSousTotal ? "arrow_upward" : "arrow_downward" }}</v-icon>
+                    </v-btn>
+                  </th>
+                  <th class="text-center first-col">
+                    <span class="mr-1">Nom limite</span>
+                    <v-btn x-small icon @click="sortedByLimite">
+                      <v-icon small>{{ sortByLimite ? "arrow_upward" : "arrow_downward" }}</v-icon>
+                    </v-btn>
+                  </th>
                   <th class="text-center">Sous-total CM</th>
                   <th class="text-center">Sous-total TD</th>
                   <th class="text-center">Sous-total TP</th>
@@ -348,6 +363,9 @@ export default {
     checkboxSousTotaux: true,
     loading: false,
     responseSuccess: false,
+    sortIntervenantBilan: false,
+    sortIntervenantSousTotal: false,
+    sortByLimite: false,
     typeOperation: 'ajouté',
     methods: "POST",
     id: '',
@@ -430,13 +448,42 @@ export default {
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
     },
+    sortedByIntervenantBilan() {
+      if (this.sortIntervenantBilan) {
+        this.sortIntervenantBilan = false;
+        this.bilans.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
+      } else {
+        this.sortIntervenantBilan = true;
+        this.bilans.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
+      }
+    },
+    sortedByIntervenantSousTotal() {
+      this.sortByLimite = false;
+      if (this.sortIntervenantSousTotal) {
+        this.sortIntervenantSousTotal = false;
+        this.sousTotaux.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
+      } else {
+        this.sortIntervenantSousTotal = true;
+        this.sousTotaux.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
+      }
+    },
+    sortedByLimite() {
+      this.sortIntervenantSousTotal = false;
+      if (this.sortByLimite) {
+        this.sortByLimite = false;
+        this.sousTotaux.sort((a, b) => a.nom_limite.toUpperCase() > b.nom_limite.toUpperCase());
+      } else {
+        this.sortByLimite = true;
+        this.sousTotaux.sort((a, b) => a.nom_limite.toUpperCase() < b.nom_limite.toUpperCase());
+      }
+    },
     getClassColorForTotal(bilan){
       if (bilan.total_general < bilan.nb_he_td_min_attendu_projet) return 'sous-service';
       if (bilan.total_general >= bilan.nb_he_td_min_attendu_projet && bilan.total_general <= bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'valide';
       if (bilan.total_general > bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'heures-sup';
     },
     getClassColorForSousTotal(sousTotal){
-      //TODO faire en fonction des status
+      //TODO faire en fonction des statuts
       if (sousTotal.total_he_td <= sousTotal.limite_he_td) return 'valide';
       if (sousTotal.total_he_td > sousTotal.limite_he_td) return 'heures-sup';
     }

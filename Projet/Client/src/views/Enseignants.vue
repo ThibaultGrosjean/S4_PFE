@@ -18,7 +18,6 @@
     >
       <v-btn-toggle
           v-if="enseignants.length"
-          borderless
           rounded
           dense
           mandatory
@@ -27,19 +26,19 @@
         <v-btn
             @click="sortedByPrenom"
         >
-          <span class="hidden-sm-and-down">Prénom</span>
+          <span>Prénom</span>
           <v-icon right>sort_by_alpha</v-icon>
         </v-btn>
         <v-btn
             @click="sortedByNom"
         >
-          <span class="hidden-sm-and-down">Nom</span>
+          <span>Nom</span>
           <v-icon right>sort_by_alpha</v-icon>
         </v-btn>
         <v-btn
             @click="sortedByStatut"
         >
-          <span class="hidden-sm-and-down">Statut</span>
+          <span>Statut</span>
           <v-icon right>sort_by_alpha</v-icon>
         </v-btn>
       </v-btn-toggle>

@@ -56,7 +56,7 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
         +' ON g.element_id = v.element_id AND g.num_semaine = v.num_semaine'
         +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id = ' + req.params.id + ')'
         +' GROUP BY g.intervenant_id'
-        +' ORDER BY e.prenom, e.nom',
+        +' ORDER BY e.prenom',
     function(err, bilan) {
       if (!err) {
         res.status(200).json(bilan);  
