@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-10">
     <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
@@ -280,6 +280,8 @@ export default {
     code: {required, maxLength: maxLength(255)},
   },
   data: () => ({
+    value: 1,
+    active: true,
     formations: [],
     projet: [],
     elements: [],

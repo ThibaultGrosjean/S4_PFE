@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <NavBar></NavBar>
+      <NavBar/>
       <v-main>
         <router-view/>
       </v-main>
@@ -10,14 +10,11 @@
 </template>
 
 <script>
-
 import NavBar from "./components/NavBar";
 
 export default {
   name: 'App',
-  components: {
-    NavBar
-  },
+  components: {NavBar},
   computed:{
     theme(){
       return (this.$vuetify.theme.dark) ? 'dark' : 'light';
@@ -35,8 +32,8 @@ export default {
 .v-btn--addElement {
   bottom: 0;
   right: 0;
-  position: fixed;
-  margin: 16px;
+  position: fixed !important;
+  margin: 26px;
   z-index: 1000;
 }
 .animate-pop-in {
@@ -57,16 +54,16 @@ export default {
   background: #fafafa !important;
 }
 .v-card {
-  border-radius:20px !important;
+  border-radius: 20px !important;
 }
-.v-dialog{
-  border-radius:20px !important;
+.v-dialog {
+  border-radius: 20px !important;
 }
-.v-sheet.v-snack__wrapper{
-  border-radius:50px !important;
+.v-sheet.v-snack__wrapper {
+  border-radius: 50px !important;
 }
-.v-menu__content{
-  border-radius:20px !important;
+.v-menu__content {
+  border-radius: 20px !important;
 }
 .theme--dark.v-application {
   background: #202020 !important;
@@ -74,7 +71,6 @@ export default {
 .theme--dark.v-card {
   background: #272727 !important;
 }
-
 .theme--dark.v-expansion-panels .v-expansion-panel {
   background: #272727 !important;
 }

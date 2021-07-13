@@ -11,6 +11,11 @@ const apiEnseignant = {
     return response.data;
   },
 
+  async getEnseignantByStatut(statutId) {
+    const response = await axios.get('/enseignants/statuts/get/' + statutId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async getEnseignantByProjetNotInIntervenant(projetId) {
     const response = await axios.get('/enseignants/projets/' + projetId + '/get').catch(error => console.error('Erreur API: ', error));
     return response.data;

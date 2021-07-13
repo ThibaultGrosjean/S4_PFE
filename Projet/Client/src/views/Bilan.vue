@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-10">
     <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate

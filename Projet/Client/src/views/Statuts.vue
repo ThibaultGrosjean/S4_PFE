@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-10">
     <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
@@ -49,7 +49,7 @@
         </template>
       </v-snackbar>
     </v-row>
-    <v-row>
+    <v-row class="mt-15">
       <v-col
          v-for="s in statuts"
          :key="s.id"
@@ -300,6 +300,7 @@
 
 <script>
 import apiStatut from "../services/API/statuts";
+import apiEnseignant from "../services/API/enseignants";
 import {validationMixin} from "vuelidate";
 import {decimal, maxLength, required} from "vuelidate/lib/validators";
 
@@ -402,10 +403,16 @@ export default {
       this.id = '';
       this.nom = '';
     },
-    openDialog(statut) {
-      this.dialog = true;
-      this.id = statut.id;
-      this.nom = statut.nom;
+    async openDialog(statut) {
+      const enseignantByStatuts = await apiEnseignant.getEnseignantByStatut(statut.id)
+      if (!enseignantByStatuts.length) {
+        await apiStatut.deleteStatut(statut.id);
+        await this.getStatuts();
+      } else {
+        this.dialog = true;
+        this.id = statut.id;
+        this.nom = statut.nom;
+      }
     },
     async deleteStatut(){
       this.loading = true;

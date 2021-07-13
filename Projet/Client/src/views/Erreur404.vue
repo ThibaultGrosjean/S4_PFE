@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height fluid class="pa-0">
+  <v-container fill-height fluid class="pa-10">
     <v-row align="center" justify="center" class="text-center">
       <v-col class="pa-0 animate-pop-in">
         <div class="title404">404</div>

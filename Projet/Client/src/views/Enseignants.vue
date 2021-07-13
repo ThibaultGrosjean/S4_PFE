@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-10">
     <v-overlay :value="loading" :opacity="0">
       <v-progress-circular
           indeterminate
@@ -62,7 +62,7 @@
         </template>
       </v-snackbar>
     </v-row>
-    <v-row>
+    <v-row class="mt-15">
       <v-col
           v-for="e in enseignants"
           :key="e.id"

@@ -39,6 +39,8 @@ app.get('/enseignants/get', enseignantController.getAllEnseignants);
 
 app.get('/enseignants/get/:id', enseignantController.getEnseignant);
 
+app.get('/enseignants/statuts/get/:id', enseignantController.getEnseignantByStatut);
+
 app.get('/enseignants/projets/:idProjet/get', enseignantController.getEnseignantByProjetNotInIntervenant);
 
 app.post('/enseignants/create', enseignantController.addEnseignant);

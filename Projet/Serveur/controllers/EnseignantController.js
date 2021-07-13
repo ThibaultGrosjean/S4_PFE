@@ -113,6 +113,20 @@ exports.getEnseignant = (req, res) => {
 };
 
 
+exports.getEnseignantByStatut = (req, res) => {
+  db.query('SELECT e.* FROM enseignant AS e WHERE statut_id = ? ;', [req.params.id],
+    function(err, enseignant) {
+      if (!err) {
+        res.status(200).json(enseignant);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.addEnseignant = (req, res) => {
   var data = {
     nom : req.body.nom,
