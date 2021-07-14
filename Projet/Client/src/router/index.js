@@ -38,17 +38,17 @@ const routes = [
   },
   {
     path: '/intervenants/projets/:id',
-    name: 'Intervenants par Projet',
+    name: 'Intervenants',
     component: Intervenant
   },
   {
     path: '/formations/projets/:id',
-    name: 'Formations par Projet',
+    name: 'Formations',
     component: Formation
   },
   {
     path: '/bilan/projets/:id',
-    name: 'Bilan par Projet',
+    name: 'Bilan',
     component: Bilan
   },
   {

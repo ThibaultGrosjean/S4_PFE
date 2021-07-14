@@ -14,23 +14,6 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex justify-start animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/projets')">
-          <v-icon class="mr-2">folder</v-icon>Retourner aux projets
-        </v-btn>
-      </v-col>
-      <v-col class="d-flex justify-center animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/formations/projets/'+ Number($route.params.id))">
-          <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
-        </v-btn>
-      </v-col>
-      <v-col class="d-flex justify-end animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/intervenants/projets/' + Number($route.params.id))">
-          <v-icon class="mr-2">groups</v-icon>Aller aux intervenants
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
       <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
         <span>Le sous-total a été {{ typeOperation }} avec succès.</span>
         <template v-slot:action="{ attrs }">

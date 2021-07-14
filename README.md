@@ -109,3 +109,5 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Supprimer un sous-total
 * Supprimer un statut, si un ou plusieurs enseignants à ce statut affichage d'une boîte de confirmation sinon suppression
 * Amélioration de la barre de navigation
+
+## Semaine 9 : 14-20 juillet

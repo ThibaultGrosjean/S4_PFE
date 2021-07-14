@@ -21,12 +21,10 @@ export default new Vuetify({
     themes: {
       light: {
         primary: colors.blue,
-        secondary: colors.blue,
         accent: colors.blue.lighten2,
       },
       dark: {
         primary: colors.blue,
-        secondary: '#333637',
         accent: colors.blue.lighten2,
 
       },

@@ -14,23 +14,6 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex justify-start animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/projets')">
-          <v-icon class="mr-2">folder</v-icon>Retourner aux projets
-        </v-btn>
-      </v-col>
-      <v-col class="d-flex justify-center animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/formations/projets/'+ Number($route.params.id))">
-          <v-icon class="mr-2">auto_stories</v-icon>Aller aux formation
-        </v-btn>
-      </v-col>
-      <v-col class="d-flex justify-end animate-pop-in">
-        <v-btn outlined rounded color="primary" @click="redirect('/bilan/projets/'+ Number($route.params.id))">
-          <v-icon class="mr-2">account_balance_wallet</v-icon>Aller au bilan
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
       <v-col v-if="!intervenants.length">
         <p class="text-center animate-pop-in">Aucun intervenant sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
       </v-col>

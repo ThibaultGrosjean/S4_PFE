@@ -49,7 +49,7 @@
         </template>
       </v-snackbar>
     </v-row>
-    <v-row  v-if="projets.length">
+    <v-row v-if="projets.length">
       <v-switch
           v-model="switchArchive"
           :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
@@ -105,17 +105,17 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-btn block outlined rounded color="primary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
-                    <v-icon class="mr-2">groups</v-icon>Intervenants
-                  </v-btn>
-                </v-row>
-                <v-row>
-                  <v-btn block outlined rounded color="primary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
+                  <v-btn block outlined rounded color="secondary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">auto_stories</v-icon>Formations
                   </v-btn>
                 </v-row>
                 <v-row>
-                  <v-btn block outlined rounded color="primary" @click="redirect('/bilan/projets/'+ p.id)" class="mb-4">
+                  <v-btn block outlined rounded color="secondary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
+                    <v-icon class="mr-2">groups</v-icon>Intervenants
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-btn block outlined rounded color="secondary" @click="redirect('/bilan/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
                   </v-btn>
                 </v-row>
@@ -297,7 +297,8 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="text-justify pt-4 pb-0">
-            Le projet ainsi que ses formations et intervenants vont être dupliqués voulez-vous également dupliquer les nombres de groupes associés aux intervenants ?<br>
+            Le projet ainsi que ses formations et intervenants vont être dupliqués voulez-vous également dupliquer les
+            nombres de groupes associés aux intervenants ?<br>
             <v-checkbox
                 v-model="checkboxCopierGrpInterv"
                 label="Copier les groupes des intervenants"
@@ -467,8 +468,9 @@ export default {
     toTime(date) {
       return new Date(date).toISOString().substr(0, 10);
     },
-    redirect(path){
-      this.$router.push({path:path}).catch(()=>{});
+    redirect(path) {
+      this.$router.push({path: path}).catch(() => {
+      });
     },
     sortedByDate() {
       if (this.sortDate) {
