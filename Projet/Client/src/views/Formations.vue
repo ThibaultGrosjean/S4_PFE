@@ -117,47 +117,84 @@
             <v-card-title>
               <span class="headline">Ajouter une formation</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-text-field
-                  v-model="titre"
-                  :error-messages="titreErrors"
-                  :counter="255"
-                  label="Titre"
-                  required
-                  clearable
-                  @input="$v.titre.$touch()"
-                  @blur="$v.titre.$touch()"
-              ></v-text-field>
-              <v-text-field
-                  v-model="surnom"
-                  :error-messages="surnomErrors"
-                  :counter="255"
-                  label="Surnom"
-                  required
-                  clearable
-                  @input="$v.surnom.$touch()"
-                  @blur="$v.surnom.$touch()"
-              ></v-text-field>
-              <v-text-field
-                  v-model="code"
-                  :error-messages="codeErrors"
-                  :counter="255"
-                  label="Code"
-                  required
-                  clearable
-                  @input="$v.code.$touch()"
-                  @blur="$v.code.$touch()"
-              ></v-text-field>
+              <v-container>
+                <v-row>
+                  <v-col class="d-flex justify-start pa-0">
+                    <v-checkbox
+                        v-model="checkboxNewElement"
+                        label="Créer un nouvel élément"
+                        color="primary"
+                        class="ma-0"
+                        @click="checkboxCopyElement = false"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col class="d-flex justify-end pa-0">
+                    <v-checkbox
+                        v-model="checkboxCopyElement"
+                        label="Copier une hiérachie existante"
+                        color="primary"
+                        class="ma-0"
+                        @click="checkboxNewElement = false"
+                    ></v-checkbox>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <div v-if="checkboxNewElement">
+                <v-text-field
+                    v-model="titre"
+                    :error-messages="titreErrors"
+                    :counter="255"
+                    label="Titre"
+                    required
+                    clearable
+                    @input="$v.titre.$touch()"
+                    @blur="$v.titre.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="surnom"
+                    :error-messages="surnomErrors"
+                    :counter="255"
+                    label="Surnom"
+                    required
+                    clearable
+                    @input="$v.surnom.$touch()"
+                    @blur="$v.surnom.$touch()"
+                ></v-text-field>
+                <v-text-field
+                    v-model="code"
+                    :error-messages="codeErrors"
+                    :counter="255"
+                    label="Code"
+                    required
+                    clearable
+                    @input="$v.code.$touch()"
+                    @blur="$v.code.$touch()"
+                ></v-text-field>
+              </div>
+              <v-form v-if="checkboxCopyElement" ref="formulaire" lazy-validation>
+                {{ element }}
+                <v-select
+                    v-model="element"
+                    :items="hierarchies"
+                    :item-text="item => item.titre + ' (' + item.nom + ' - ' +toTime(item.date, 4) + ')'"
+                    item-value="id"
+                    label="Hiérarchie"
+                    clearable
+                    :rules="rules.selectElement"
+                    required
+                ></v-select>
+                <v-checkbox
+                    v-if="element"
+                    v-model="checkboxCopierGrpInterv"
+                    label="Copier les groupes des intervenants"
+                ></v-checkbox>
+              </v-form>
               <v-card-actions>
                 <v-btn
                     rounded
@@ -247,6 +284,7 @@
 
 <script>
 import apiFormation from "../services/API/formations";
+import apiElement from "../services/API/elements";
 import apiProjet from "../services/API/projets";
 import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
@@ -263,11 +301,10 @@ export default {
     code: {required, maxLength: maxLength(255)},
   },
   data: () => ({
-    value: 1,
-    active: true,
     formations: [],
     projet: [],
     elements: [],
+    hierarchies: [],
     form: false,
     dialog: false,
     loading: false,
@@ -277,16 +314,25 @@ export default {
     titre: '',
     surnom: '',
     code: '',
+    element: null,
     deleteSelected: [],
     checkboxSelectAll: false,
+    checkboxNewElement: false,
+    checkboxCopyElement: false,
+    checkboxCopierGrpInterv: false,
+    rules: {
+      selectElement: [(v) =>  v !== null || "Veuillez sélectionner une hiérarchie"],
+    }
   }),
   methods: {
-    //TODO créer une formation en copiant une hiérarchie existante
     async getFormationByProjet() {
       this.formations = await apiFormation.getFormationByProjet(this.$route.params.id);
     },
     async getProjet() {
       this.projet = await apiProjet.getProjet(this.$route.params.id);
+    },
+    async getRacineHierarchie() {
+      this.hierarchies = await apiElement.getAllRacineHierarchie();
     },
     async saveVerrou(formation) {
       formation.verrou = Number(!formation.verrou)
@@ -302,49 +348,65 @@ export default {
         this.form = false;
         return;
       }
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-
-      const element = {
-        titre: this.titre,
-        surnom: this.surnom,
-        code: this.code,
-        niveau: 0,
-        indice: 0,
-        vol_hor_total_prevues_etu_cm: null,
-        vol_hor_total_prevues_etu_td: null,
-        vol_hor_total_prevues_etu_tp: null,
-        mode_saisie: 'aucun',
-        cm_autorises: Number(false),
-        td_autorises: Number(false),
-        tp_autorises: Number(false),
-        partiel_autorises: Number(false),
-        forfait_globale_cm: null,
-        forfait_globale_td: null,
-        forfait_globale_tp: null,
-        forfait_globale_partiel: null,
-        nb_groupe_effectif_cm: null,
-        nb_groupe_effectif_td: null,
-        nb_groupe_effectif_tp: null,
-        nb_groupe_effectif_partiel: null,
-        parent: null,
-        nbfils: 0,
+      if (this.checkboxNewElement){
+        this.$v.$touch();
+        if (this.$v.$invalid) return;
+        this.loading = true;
+        const element = {
+          titre: this.titre,
+          surnom: this.surnom,
+          code: this.code,
+          niveau: 0,
+          indice: 0,
+          vol_hor_total_prevues_etu_cm: null,
+          vol_hor_total_prevues_etu_td: null,
+          vol_hor_total_prevues_etu_tp: null,
+          mode_saisie: 'aucun',
+          cm_autorises: Number(false),
+          td_autorises: Number(false),
+          tp_autorises: Number(false),
+          partiel_autorises: Number(false),
+          forfait_globale_cm: null,
+          forfait_globale_td: null,
+          forfait_globale_tp: null,
+          forfait_globale_partiel: null,
+          nb_groupe_effectif_cm: null,
+          nb_groupe_effectif_td: null,
+          nb_groupe_effectif_tp: null,
+          nb_groupe_effectif_partiel: null,
+          parent: null,
+          nbfils: 0,
+        }
+        await apiFormation.createFormation({element: element,projet_id: Number(this.$route.params.id)});
+      } else {
+        if (this.element === null){
+          return;
+        } else {
+          this.$refs.formulaire.validate();
+          this.loading = true;
+          let index = await this.hierarchies.findIndex(e => e.id === this.element);
+          await apiFormation.copyFormation(this.hierarchies[index], this.hierarchies[index].projet_id, this.$route.params.id, this.checkboxCopierGrpInterv);
+        }
       }
-      this.loading = true;
       this.table = 'La formation';
       this.typeOperation = 'ajouté';
-      await apiFormation.createFormation({element: element,projet_id: Number(this.$route.params.id)});
       await this.getFormationByProjet();
+      await this.getRacineHierarchie();
       this.clear();
       this.loading = false;
       this.form = false;
       this.responseSuccess = true;
+      this.checkboxCopierGrpInterv = false;
+      this.checkboxCopyElement = false;
+      this.checkboxNewElement = false;
     },
     clear() {
       this.$v.$reset();
+      this.$refs.formulaire.resetValidation();
       this.titre = '';
       this.surnom = '';
       this.code = '';
+      this.element = null;
     },
     close() {
       this.form = !this.form;
@@ -365,17 +427,17 @@ export default {
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
           await apiFormation.deleteFormation(this.deleteSelected[i]);
-          this.table = 'La formation';
-          this.typeOperation = 'supprimé';
-          this.responseSuccess = true;
-          this.loading = false;
         } else {
           verif += 1;
         }
       }
       if (verif > 0) this.dialog = true;
-      this.loading = false;
       await this.getFormationByProjet();
+      await this.getRacineHierarchie();
+      this.table = 'La formation';
+      this.typeOperation = 'supprimé';
+      this.responseSuccess = true;
+      this.loading = false;
     },
     async validDeleteAllFormation(){
       if (this.projet[0].verrou === 1) {
@@ -389,6 +451,7 @@ export default {
       this.loading = false;
       this.dialog = false;
       await this.getFormationByProjet();
+      await this.getRacineHierarchie();
       this.table = 'La formation';
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
@@ -446,6 +509,7 @@ export default {
     this.loading = true;
     await this.getProjet();
     await this.getFormationByProjet();
+    await this.getRacineHierarchie();
     this.loading = false;
   }
 }

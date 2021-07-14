@@ -88,6 +88,8 @@ app.get('/elements/get/:id', elementController.getElement);
 
 app.get('/elements/hierarchie/get/:id', elementController.getHierarchieByRoot);
 
+app.get('/elements/hierarchie/racine/get/', elementController.getAllRacineHierarchie);
+
 app.get('/elements/children/get/:id', elementController.getChildrenElement);
 
 app.post('/elements/create/',elementController.validator, elementController.addElement);

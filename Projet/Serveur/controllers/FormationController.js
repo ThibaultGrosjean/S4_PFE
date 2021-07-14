@@ -23,7 +23,7 @@ exports.getAllFormations = (req, res) => {
         +' ON vg.element_id = e3.id'
         +' LEFT JOIN volume_hebdomadaire AS vh'
         +' ON vh.element_id = e3.id'
-        +' GROUP BY f.id',
+        +' GROUP BY f.id, e.titre',
     function(err, formations) {
       if (!err) {
         res.status(200).json(formations);  

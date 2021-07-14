@@ -20,6 +20,11 @@ const apiElement = {
     return response.data;
   },
 
+  async getAllRacineHierarchie() {
+    const response = await axios.get('/elements/hierarchie/racine/get/').catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async getChildren(racineId) {
     const response = await axios.get('/elements/children/get/' + racineId).catch(error => console.error('Erreur API: ', error));
     return response.data;
@@ -85,7 +90,7 @@ const apiElement = {
           const groupeSousTotalElement = await apiBilan.getGroupeSousTotalByProjetAndElement(projetId, childrenUe[k].id);
           for (let l = 0; l < groupeSousTotalElement.length; l++) {
             const sousTotal = await apiBilan.getLimiteSousTotalByProjetAndName(groupeSousTotalElement[l].nom, newProjetId);
-            await apiBilan.createGroupeSousTotal({limite_sous_total_id: sousTotal[0].id, element_id: [module.insertId]})
+            if (sousTotal.length) await apiBilan.createGroupeSousTotal({limite_sous_total_id: sousTotal[0].id, element_id: [module.insertId]})
           }
         }
       }

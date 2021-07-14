@@ -110,6 +110,26 @@ exports.getChildrenElement = (req, res) => {
 };
 
 
+exports.getAllRacineHierarchie = (req, res) => {
+  db.query('SELECT e.titre,f.id, f.element_id, f.verrou, p.id AS projet_id, p.nom, p.date FROM element AS e'
+        +' JOIN formation AS f'
+        +' ON f.element_id = e.id'
+        +' JOIN projet AS p'
+        +' ON f.projet_id = p.id'
+        +' WHERE e.niveau = 0'
+        +' ORDER BY e.titre;', [req.params.id],
+    function(err, element) {
+      if (!err) {
+        res.status(200).json(element);  
+      }
+      else {
+        res.send(err);
+      }
+    }
+  );  
+};
+
+
 exports.getElement = (req, res) => {
   db.query('SELECT e.*, COUNT(ee.id) as nbfils'
         +' FROM element as e'

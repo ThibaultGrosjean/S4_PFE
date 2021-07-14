@@ -31,6 +31,16 @@ const apiFormation = {
     return response.data;
   },
 
+  async createFormationByCopie(projetId, elementId) {
+    const newFormation = {
+      verrou: Number(false),
+      projet_id: projetId,
+      element_id: elementId,
+    }
+    const response = await axios.post('/formations/create', newFormation).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
   async editFormation(formation) {
     const response = await axios.patch('/formations/edit/' + formation.id, formation).catch(error => console.error('Erreur API: ', error));
     return response.data;
