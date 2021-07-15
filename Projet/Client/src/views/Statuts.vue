@@ -144,72 +144,50 @@
               <span class="headline" v-if="methods === 'POST'">Ajouter un statut</span>
               <span class="headline" v-else>Modifier un statut</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-text-field
                   v-model="nom"
-                  :error-messages="nomErrors"
                   :counter="255"
+                  :error-messages="this.errors.nom"
                   label="Nom"
-                  required
                   clearable
-                  @input="$v.nom.$touch()"
-                  @blur="$v.nom.$touch()"
-              ></v-text-field>
+              >
+              </v-text-field>
               <v-text-field
                   v-model="surnom"
-                  :error-messages="surnomErrors"
                   :counter="255"
+                  :error-messages="this.errors.surnom"
                   label="Surnom"
-                  required
                   clearable
-                  @input="$v.surnom.$touch()"
-                  @blur="$v.surnom.$touch()"
               ></v-text-field>
               <v-text-field
                   v-model="nb_he_td_min_attendu"
-                  :error-messages="heTDMinAttenduErrors"
+                  :error-messages="this.errors.nb_he_td_min_attendu"
                   label="Nombre d'heures (équivalent TD) minimales attendues"
-                  required
                   clearable
-                  @input="$v.nb_he_td_min_attendu.$touch()"
-                  @blur="$v.nb_he_td_min_attendu.$touch()"
               ></v-text-field>
               <v-text-field
                   v-model="nb_he_td_max_attendu"
-                  :error-messages="heTDMaxAttenduErrors"
+                  :error-messages="this.errors.nb_he_td_max_attendu"
                   label="Nombre d'heures (équivalent TD) maximales attendues"
-                  required
                   clearable
-                  @input="$v.nb_he_td_max_attendu.$touch()"
-                  @blur="$v.nb_he_td_max_attendu.$touch()"
               ></v-text-field>
               <v-text-field
                   v-model="nb_he_td_min_sup"
-                  :error-messages="heTDMinSupErrors"
+                  :error-messages="this.errors.nb_he_td_min_sup"
                   label="Nombre d'heures (équivalent TD) minimales supplémentaires attendues"
-                  required
                   clearable
-                  @input="$v.nb_he_td_min_sup.$touch()"
-                  @blur="$v.nb_he_td_min_sup.$touch()"
               ></v-text-field>
               <v-text-field
                   v-model="nb_he_td_max_sup"
-                  :error-messages="heTDMaxSupErrors"
+                  :error-messages="this.errors.nb_he_td_max_sup"
                   label="Nombre d'heures (équivalent TD) maximales supplémentaires attendues"
-                  required
                   clearable
-                  @input="$v.nb_he_td_max_sup.$touch()"
-                  @blur="$v.nb_he_td_max_sup.$touch()"
               ></v-text-field>
               <v-card-actions>
                 <v-btn
@@ -301,23 +279,13 @@
 <script>
 import apiStatut from "../services/API/statuts";
 import apiEnseignant from "../services/API/enseignants";
-import {validationMixin} from "vuelidate";
-import {decimal, maxLength, required} from "vuelidate/lib/validators";
 
 export default {
   name: "Statuts",
-  mixins: [validationMixin],
 
-  validations: {
-    nom: {required, maxLength: maxLength(255)},
-    surnom: {required, maxLength: maxLength(255)},
-    nb_he_td_min_attendu: {required, decimal},
-    nb_he_td_max_attendu: {required, decimal},
-    nb_he_td_min_sup: {required, decimal},
-    nb_he_td_max_sup: {required, decimal},
-  },
   data: () => ({
     statuts: [],
+    errors: [],
     form: false,
     dialog: false,
     loading: false,
@@ -338,8 +306,6 @@ export default {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
-      this.$v.$touch()
-      if (this.$v.$invalid) return;
       const statut = {
         id: this.id,
         nom: this.nom,
@@ -351,20 +317,29 @@ export default {
       };
       this.loading = true;
       if (this.methods === 'POST') {
-        await apiStatut.createStatut(statut);
-        this.typeOperation = 'ajouté';
+        const res = await apiStatut.createStatut(statut);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'ajouté';
+          await this.getStatuts();
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+        }
       } else {
         await apiStatut.editStatut(statut);
         this.typeOperation = 'modifié';
+        await this.getStatuts();
+        this.clear();
+        this.loading = false;
+        this.form = false;
+        this.responseSuccess = true;
       }
-      await this.getStatuts();
-      this.clear();
-      this.loading = false;
-      this.form = false;
-      this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset();
       this.id = '';
       this.nom = '';
       this.surnom = '';
@@ -421,7 +396,7 @@ export default {
       this.clear();
       this.loading = false;
       this.dialog = false;
-      this.typeOperation = 'supprime';
+      this.typeOperation = 'supprimé';
       this.responseSuccess = true;
     },
     sortedByNom() {
@@ -432,50 +407,6 @@ export default {
         this.sortNom = true;
         this.statuts.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       }
-    },
-  },
-  computed: {
-    nomErrors() {
-      const errors = [];
-      if (!this.$v.nom.$dirty) return errors;
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
-      return errors;
-    },
-    surnomErrors() {
-      const errors = [];
-      if (!this.$v.surnom.$dirty) return errors;
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères');
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire');
-      return errors;
-    },
-    heTDMinAttenduErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_min_attendu.$dirty) return errors;
-      !this.$v.nb_he_td_min_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues doit être un numérique');
-      !this.$v.nb_he_td_min_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) minimales attendues est obligatoire');
-      return errors;
-    },
-    heTDMaxAttenduErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors;
-      !this.$v.nb_he_td_max_attendu.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues doit être un numérique');
-      !this.$v.nb_he_td_max_attendu.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales attendues est obligatoire');
-      return errors;
-    },
-    heTDMinSupErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_min_sup.$dirty) return errors;
-      !this.$v.nb_he_td_min_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique');
-      !this.$v.nb_he_td_min_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire');
-      return errors;
-    },
-    heTDMaxSupErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_max_attendu.$dirty) return errors;
-      !this.$v.nb_he_td_max_sup.decimal && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires doit être un numérique');
-      !this.$v.nb_he_td_max_sup.required && errors.push('Le Nombre d\'heures (équivalent TD) maximales supplémentaires est obligatoire');
-      return errors;
     },
   },
   async mounted() {

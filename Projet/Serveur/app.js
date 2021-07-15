@@ -56,11 +56,11 @@ app.get('/statuts/get', statutController.getAllStatuts);
 
 app.get('/statuts/get/:id', statutController.getStatut);
 
-app.post('/statuts/create/',statutController.validator, statutController.addStatut);
+app.post('/statuts/create/',statutController.validationResult, statutController.addStatut);
 
-app.post('/statuts/copy/:id',statutController.validator, statutController.copyStatut);
+app.post('/statuts/copy/:id',statutController.validationResult, statutController.copyStatut);
 
-app.patch('/statuts/edit/:id',statutController.validator, statutController.editStatut);
+app.patch('/statuts/edit/:id',statutController.validationResult, statutController.editStatut);
 
 app.delete('/statuts/delete/:id', statutController.deleteStatut);
 

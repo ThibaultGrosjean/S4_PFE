@@ -1,14 +1,14 @@
 var db = require('../models/bdd');
 
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
+exports.validationResult = [
   check('nom',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
   check('surnom',"Veuillez saisir un surnom avec au minimum 2 caractères").isLength({ min: 2 }),
-  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un numérique non nul").isDecimal(),
-  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un numérique non nul").isDecimal(),
-  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un numérique non nul").isDecimal(),
-  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un numérique non nul").isDecimal(),
+  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un numérique non nul").isFloat(),
+  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un numérique non nul").isFloat(),
+  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un numérique non nul").isFloat(),
+  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un numérique non nul").isFloat(),
 ];
 
 
@@ -59,15 +59,22 @@ exports.addStatut = (req, res) => {
     + data['nb_he_td_max_sup'] + "');"
   ;
 
-  db.query(requete,
-    function(err, statut) {
-      if (!err) {
-        res.status(200).json(statut); 
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {}
+    errors.array().map(err => extractedErrors[err.param] = err.msg )
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, statut) {
+        if (!err) {
+          res.status(200).json(statut); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 

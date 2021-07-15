@@ -12,7 +12,7 @@ const apiStatut = {
   },
 
   async createStatut(statut) {
-    const response = await axios.post('/statuts/create', statut).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/statuts/create', statut);
     return response.data;
   },
 
