@@ -398,11 +398,11 @@ export default {
         enseignant_id: this.intervenant.enseignant_id,
       };
       this.errors = [];
+      this.methods = 'POST';
     },
     close() {
       this.getEnseignantProjetNotInIntervenant();
       this.form = false;
-      this.methods = 'POST';
       this.clear();
     },
     addIntervenant() {

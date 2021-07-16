@@ -339,10 +339,10 @@ export default {
         nb_he_td_max_sup : '',
       };
       this.errors = [];
+      this.methods = 'POST';
     },
     close() {
       this.form = !this.form;
-      this.methods = 'POST';
       this.clear()
     },
     edit(statut) {

@@ -418,11 +418,11 @@ export default {
         archive: false,
       };
       this.errors = [];
+      this.methods = 'POST';
     },
     close() {
       this.form = !this.form;
       this.clear();
-      this.methods = 'POST';
     },
     edit(projet) {
       this.methods = 'PUT';

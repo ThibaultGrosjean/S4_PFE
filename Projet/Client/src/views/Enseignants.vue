@@ -74,7 +74,7 @@
           <v-card-title>
             <span class="text-h5">{{ e.prenom }} {{ e.nom }}</span>
           </v-card-title>
-          <v-card-subtitle class="text-subtitle-1">{{ e.surnom }}</v-card-subtitle>
+          <v-card-subtitle class="text-subtitle-1"><span v-if="e.surnom">{{ e.surnom.toUpperCase() }}</span></v-card-subtitle>
           <v-divider></v-divider>
           <v-card-text class="pa-0">
             <div class="pa-4 pb-0">
@@ -83,7 +83,7 @@
             <v-expansion-panels accordion>
               <v-expansion-panel>
                 <v-expansion-panel-header class="pa-4 text--secondary">
-                  Statut<b>{{ ': ' + e.statut.nom }} <small>({{ e.statut.surnom }})</small></b>
+                  Statut<b>{{ ': ' + e.statut_nom }} <small>({{ e.statut_surnom }})</small></b>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content class="pa-4 pt-0 text--secondary">
                   <v-tooltip top>
@@ -91,25 +91,25 @@
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales attendues : <b>{{ e.statut.nb_he_td_min_attendu }}</b> h<br>
+                  </v-tooltip> minimales attendues : <b>{{ e.nb_he_td_min_attendu }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales attendues : <b>{{ e.statut.nb_he_td_max_attendu }}</b> h<br>
+                  </v-tooltip> maximales attendues : <b>{{ e.nb_he_td_max_attendu }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales sup. : <b>{{ e.statut.nb_he_td_min_sup }}</b> h<br>
+                  </v-tooltip> minimales sup. : <b>{{ e.nb_he_td_min_sup }}</b> h<br>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">HeTD*</span>
                     </template>
                     <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales sup. : <b>{{ e.statut.nb_he_td_max_sup }}</b> h<br>
+                  </v-tooltip> maximales sup. : <b>{{ e.nb_he_td_max_sup }}</b> h<br>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -172,78 +172,53 @@
               <span class="headline" v-if="methods === 'POST'">Ajouter un enseignant</span>
               <span class="headline" v-else>Modifier un enseignant</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-text-field
-                  v-model="prenom"
-                  :error-messages="prenomErrors"
+                  v-model="enseignant.prenom"
                   :counter="255"
+                  :error-messages="errors.prenom"
                   label="Prénom"
-                  required
                   clearable
-                  @input="$v.prenom.$touch()"
-                  @blur="$v.prenom.$touch()"
               ></v-text-field>
               <v-text-field
-                  v-model="nom"
-                  :error-messages="nomErrors"
+                  v-model="enseignant.nom"
                   :counter="255"
+                  :error-messages="errors.nom"
                   label="Nom"
-                  required
                   clearable
-                  @input="$v.nom.$touch()"
-                  @blur="$v.nom.$touch()"
               ></v-text-field>
-              <v-text-field v-if="this.methods === 'PUT'"
-                  v-model="surnom"
-                  :error-messages="surnomErrors"
+              <v-text-field
+                  v-if="this.methods === 'PUT'"
+                  v-model="enseignant.surnom"
                   :counter="3"
+                  hint="Laisser vide pour générer automatiquement"
+                  persistent-hint
+                  :error-messages="errors.surnom"
                   label="Surnom"
                   clearable
-                  @input="$v.surnom.$touch()"
-                  @blur="$v.surnom.$touch()"
-              ></v-text-field>
+              ></v-text-field><br v-if="this.methods === 'PUT'">
               <v-text-field
-                  v-model="email"
-                  :error-messages="emailErrors"
-                  label="E-mail"
+                  v-model="enseignant.email"
                   :counter="255"
-                  required
+                  :error-messages="errors.email"
+                  label="E-mail"
                   clearable
-                  @input="$v.email.$touch()"
-                  @blur="$v.email.$touch()"
               ></v-text-field>
               <v-select
-                  v-model="statut_id"
+                  v-model="enseignant.statut_id"
                   :items="statuts"
                   :item-text="item => item.nom +' ('+ item.surnom + ')'"
                   item-value="id"
+                  :error-messages="errors.statut_id"
                   label="Statut"
                   clearable
-                  :error-messages="statutErrors"
-                  @change="$v.statut_id.$touch()"
-                  @blur="$v.statut_id.$touch()"
-                  required
               ></v-select>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -324,24 +299,14 @@
 <script>
 import apiEnseignant from "../services/API/enseignants";
 import apiStatut from "../services/API/statuts";
-import {validationMixin} from "vuelidate";
-import {email, maxLength, required} from "vuelidate/lib/validators";
-
 
 export default {
   name: "ReadEnseignants",
-  mixins: [validationMixin],
 
-  validations: {
-    nom: {required, maxLength: maxLength(255)},
-    prenom: {required, maxLength: maxLength(255)},
-    surnom: {maxLength: maxLength(3)},
-    email: {required, email},
-    statut_id: {required},
-  },
   data: () => ({
     enseignants: [],
     statuts: [],
+    errors: [],
     form: false,
     dialog: false,
     loading: false,
@@ -353,12 +318,14 @@ export default {
     sortStatut: false,
     methods: "POST",
     typeOperation: 'ajouté',
-    id: '',
-    nom: '',
-    prenom: '',
-    surnom: '',
-    email: '',
-    statut_id: null,
+    enseignant: {
+      id: '',
+      nom: '',
+      prenom: '',
+      surnom: null,
+      email: '',
+      statut_id: '',
+    }
   }),
   methods: {
     async getEnseignants() {
@@ -368,54 +335,55 @@ export default {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-      const enseignant = {
-        id: this.id,
-        nom: this.nom,
-        prenom: this.prenom,
-        surnom: this.surnom,
-        email: this.email,
-        statut_id: this.statut_id,
-        statut: this.returnStatut(this.statut_id)
-      }
       this.loading = true;
       if (this.methods === 'POST'){
-        await apiEnseignant.createEnseignant(enseignant);
-        this.typeOperation = 'ajouté';
+        const res = await apiEnseignant.createEnseignant(this.enseignant);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'ajouté';
+          await this.getEnseignants();
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+        }
       } else {
-        await apiEnseignant.editEnseignant(enseignant);
-        this.typeOperation = 'modifié';
+        const res = await apiEnseignant.editEnseignant(this.enseignant);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'modifié';
+          this.enseignant.id = '';
+          await this.getEnseignants();
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+        }
       }
-      await this.getEnseignants();
-      this.clear();
-      this.loading = false;
-      this.form = false;
-      this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset();
-      this.id = '';
-      this.nom = '';
-      this.prenom = '';
-      this.surnom = '';
-      this.email = '';
-      this.statut_id = null;
+      this.enseignant = {
+        id: this.enseignant.id,
+        nom: '',
+        prenom: '',
+        surnom: null,
+        email: '',
+        statut_id: '',
+      };
+      this.errors = [];
+      this.methods = 'POST';
     },
     close() {
       this.form = !this.form;
-      this.methods = 'POST';
       this.clear();
     },
     edit(enseignant) {
       this.methods = 'PUT';
-
-      this.id = enseignant.id;
-      this.nom = enseignant.nom;
-      this.prenom = enseignant.prenom;
-      this.surnom = enseignant.surnom.toUpperCase();
-      this.email = enseignant.email;
-      this.statut_id = enseignant.statut.id;
+      this.enseignant = enseignant;
       this.form = true;
     },
     async copy(enseignantId) {
@@ -435,10 +403,6 @@ export default {
       this.loading = false;
       this.dialog = false;
       this.clear()
-    },
-    returnStatut(id) {
-      let index = this.statuts.findIndex(statut => statut.id === id);
-      return this.statuts[index];
     },
     openDialog(id) {
       this.id = id;
@@ -471,41 +435,6 @@ export default {
         this.enseignants.sort((a, b) => a.statut.id < b.statut.id);
       }
     }
-  },
-  computed: {
-    statutErrors() {
-      const errors = [];
-      if (!this.$v.statut_id.$dirty) return errors;
-      !this.$v.statut_id.required && errors.push('Veuillez sélectionner un statut');
-      return errors;
-    },
-    nomErrors() {
-      const errors = [];
-      if (!this.$v.nom.$dirty) return errors;
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
-      return errors;
-    },
-    prenomErrors() {
-      const errors = [];
-      if (!this.$v.prenom.$dirty) return errors;
-      !this.$v.prenom.maxLength && errors.push('Le prénom ne doit pas faire plus de 255 caractères');
-      !this.$v.prenom.required && errors.push('Le prenom est obligatoire.');
-      return errors;
-    },
-    surnomErrors() {
-      const errors = [];
-      if (!this.$v.surnom.$dirty) return errors;
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 3 caractères');
-      return errors;
-    },
-    emailErrors() {
-      const errors = [];
-      if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push('Veuillez saisir un mail valide');
-      !this.$v.email.required && errors.push('L\'e-mail est obligatoire');
-      return errors;
-    },
   },
   async mounted() {
     this.loading = true;

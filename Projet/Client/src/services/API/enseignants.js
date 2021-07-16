@@ -22,12 +22,12 @@ const apiEnseignant = {
   },
 
   async createEnseignant(enseignant) {
-    const response = await axios.post('/enseignants/create', enseignant).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/enseignants/create', enseignant);
     return response.data;
   },
 
   async editEnseignant(enseignant) {
-    const response = await axios.patch('/enseignants/edit/' + enseignant.id, enseignant).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/enseignants/edit/' + enseignant.id, enseignant);
     return response.data;
   },
 
