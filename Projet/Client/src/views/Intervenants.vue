@@ -1,12 +1,6 @@
 <template>
   <v-container class="pa-10">
-    <v-overlay :value="loading" :opacity="0">
-      <v-progress-circular
-          indeterminate
-          size="64"
-          color="primary"
-      ></v-progress-circular>
-    </v-overlay>
+  <ProgressOverlay :loading="loading"/>
     <v-row>
       <v-col class="text-center">
         <h1 class="text-h4 animate-pop-in mb-2">Liste des intervenants</h1>
@@ -291,9 +285,11 @@
 import apiIntervenant from "../services/API/intervenants";
 import apiEnseignant from "../services/API/enseignants";
 import apiProjet from "../services/API/projets";
+import ProgressOverlay from "../components/ProgressOverlay";
 
 export default {
   name: "Intervenants",
+  components: {ProgressOverlay},
 
   data: () => ({
     intervenants: [],

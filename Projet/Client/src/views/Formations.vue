@@ -1,16 +1,10 @@
 <template>
   <v-container class="pa-10">
-    <v-overlay :value="loading" :opacity="0">
-      <v-progress-circular
-          indeterminate
-          size="64"
-          color="primary"
-      ></v-progress-circular>
-    </v-overlay>
+  <ProgressOverlay :loading="loading"/>
     <v-row>
       <v-col class="text-center">
         <h1 class="text-h4 animate-pop-in mb-2">Liste des formations</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
+        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4)}}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -182,7 +176,7 @@
                 <v-select
                     v-model="element"
                     :items="hierarchies"
-                    :item-text="item => item.titre + ' (' + item.nom + ' - ' +toTime(item.date, 4) + ')'"
+                    :item-text="item => item.titre + ' (' + item.nom + ' - ' + item.date.substr(0, 4) + ')'"
                     item-value="id"
                     label="Hiérarchie"
                     clearable
@@ -196,15 +190,6 @@
                 ></v-checkbox>
               </v-form>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -289,10 +274,11 @@ import apiProjet from "../services/API/projets";
 import {validationMixin} from "vuelidate";
 import {maxLength, required} from "vuelidate/lib/validators";
 import ReadElements from "../components/ReadElements";
+import ProgressOverlay from "../components/ProgressOverlay";
 
 export default {
   name: "Formations",
-  components: {ReadElements},
+  components: {ProgressOverlay, ReadElements},
   mixins: [validationMixin],
 
   validations: {
@@ -407,6 +393,7 @@ export default {
       this.surnom = '';
       this.code = '';
       this.element = null;
+      this.methods = 'POST';
     },
     close() {
       this.form = !this.form;
@@ -414,11 +401,7 @@ export default {
     },
     checkAllFormation() {
       this.deleteSelected = [];
-      if (this.checkboxSelectAll){
-        for (let i = 0; i < this.formations.length; i++) {
-          this.deleteSelected.push(this.formations[i]);
-        }
-      }
+      if (this.checkboxSelectAll) this.deleteSelected = this.formations;
     },
     async deleteAllSelectedFormation() {
       if (this.projet[0].verrou === 1) return;
@@ -462,9 +445,6 @@ export default {
       this.table = data.element;
       this.typeOperation = data.typeOperaion;
       this.responseSuccess = true;
-    },
-    toTime(date, length) {
-      return new Date(date).toISOString().substr(0, length);
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});

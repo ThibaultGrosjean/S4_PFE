@@ -1,16 +1,10 @@
 <template>
   <v-container class="pa-10">
-    <v-overlay :value="loading" :opacity="0">
-      <v-progress-circular
-          indeterminate
-          size="64"
-          color="primary"
-      ></v-progress-circular>
-    </v-overlay>
+  <ProgressOverlay :loading="loading"/>
     <v-row>
       <v-col class="text-center">
         <h1 class="text-center text-h4 animate-pop-in mb-2">Bilan</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
+        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4) }}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -50,7 +44,7 @@
       >
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">Bilan</v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ toTime(projet[0].date, 4) }}</span></v-card-subtitle>
+          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span></v-card-subtitle>
           <v-card-text class="pa-0">
             <v-simple-table fixed-header v-if="bilans.length">
               <template v-slot:default>
@@ -113,7 +107,7 @@
       >
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">Sous-Totaux</v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ toTime(projet[0].date, 4) }}</span></v-card-subtitle>
+          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span></v-card-subtitle>
           <v-card-text class="pa-0">
             <v-simple-table fixed-header v-if="sousTotaux.length">
               <template v-slot:default>
@@ -210,13 +204,8 @@
               <span class="headline" v-if="methods === 'POST'">Ajouter un sous-total</span>
               <span class="headline" v-else>Modifier le sous-total</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
@@ -269,15 +258,6 @@
                 </template>
               </v-select>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -359,14 +339,15 @@
 import apiProjet from "../services/API/projets";
 import apiBilan from "../services/API/bilans";
 import apiElement from "../services/API/elements";
-
 import MenuShowDetailStatut from "../components/MenuShowDetailStatut";
+import ProgressOverlay from "../components/ProgressOverlay";
+
 import {decimal, maxLength, required} from "vuelidate/lib/validators";
 import {validationMixin} from "vuelidate";
 
 export default {
   name: "Bilan",
-  components: {MenuShowDetailStatut},
+  components: {ProgressOverlay, MenuShowDetailStatut},
   mixins: [validationMixin],
 
   validations: {
@@ -449,11 +430,11 @@ export default {
       this.nom = '';
       this.limite_he_td = '';
       this.element_id = [];
+      this.methods = 'POST';
     },
     async close() {
       await this.getElementsModules();
       this.form = !this.form;
-      this.methods = 'POST';
       this.clear();
     },
     async edit(sousTotal) {
@@ -483,9 +464,6 @@ export default {
       this.dialog = false;
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
-    },
-    toTime(date, length) {
-      return new Date(date).toISOString().substr(0, length);
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
