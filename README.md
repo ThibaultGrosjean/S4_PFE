@@ -113,3 +113,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 ## Semaine 9 : 14-20 juillet
 
 * Ajouter une formation par copie
+* Correction de la gestion des erreurs

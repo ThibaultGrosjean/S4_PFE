@@ -50,7 +50,7 @@ exports.addStatut = (req, res) => {
     nb_he_td_max_sup : req.body.nb_he_td_max_sup,
   };
 
-  var requete="INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES ('" 
+  var requete = "INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES ('" 
     + data['nom'] + "','"
     + data['surnom'] + "','"
     + data['nb_he_td_min_attendu'] + "','" 
@@ -61,8 +61,8 @@ exports.addStatut = (req, res) => {
 
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const extractedErrors = {}
-    errors.array().map(err => extractedErrors[err.param] = err.msg )
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
     res.send({ errors: extractedErrors, data: data});
   } else {
     db.query(requete,
@@ -94,7 +94,7 @@ exports.copyStatut = (req, res) => {
 
 
 exports.editStatut = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
     nom : req.body.nom,
     surnom : req.body.surnom,
@@ -103,23 +103,31 @@ exports.editStatut = (req, res) => {
     nb_he_td_min_sup : req.body.nb_he_td_min_sup,
     nb_he_td_max_sup : req.body.nb_he_td_max_sup,
   };
-  var requete="UPDATE statut SET nom ='" + donnees['nom'] 
-  +"', surnom ='" + donnees['surnom'] 
-  +"', nb_he_td_min_attendu ='" + donnees['nb_he_td_min_attendu'] 
-  +"', nb_he_td_max_attendu ='" + donnees['nb_he_td_max_attendu'] 
-  +"', nb_he_td_min_sup ='" + donnees['nb_he_td_min_sup'] 
-  +"', nb_he_td_max_sup ='" + donnees['nb_he_td_max_sup'] 
+
+  var requete = "UPDATE statut SET nom ='" + data['nom'] 
+  +"', surnom ='" + data['surnom'] 
+  +"', nb_he_td_min_attendu ='" + data['nb_he_td_min_attendu'] 
+  +"', nb_he_td_max_attendu ='" + data['nb_he_td_max_attendu'] 
+  +"', nb_he_td_min_sup ='" + data['nb_he_td_min_sup'] 
+  +"', nb_he_td_max_sup ='" + data['nb_he_td_max_sup'] 
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
-    function(err, statut) {
-      if (!err) {
-        res.status(200).json(statut);  
-      } else {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, statut) {
+        if (!err) {
+          res.status(200).json(statut); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 

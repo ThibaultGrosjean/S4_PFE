@@ -151,7 +151,7 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-text-field
-                  v-model="nom"
+                  v-model="statut.nom"
                   :counter="255"
                   :error-messages="this.errors.nom"
                   label="Nom"
@@ -159,46 +159,37 @@
               >
               </v-text-field>
               <v-text-field
-                  v-model="surnom"
+                  v-model="statut.surnom"
                   :counter="255"
                   :error-messages="this.errors.surnom"
                   label="Surnom"
                   clearable
               ></v-text-field>
               <v-text-field
-                  v-model="nb_he_td_min_attendu"
+                  v-model="statut.nb_he_td_min_attendu"
                   :error-messages="this.errors.nb_he_td_min_attendu"
                   label="Nombre d'heures (équivalent TD) minimales attendues"
                   clearable
               ></v-text-field>
               <v-text-field
-                  v-model="nb_he_td_max_attendu"
+                  v-model="statut.nb_he_td_max_attendu"
                   :error-messages="this.errors.nb_he_td_max_attendu"
                   label="Nombre d'heures (équivalent TD) maximales attendues"
                   clearable
               ></v-text-field>
               <v-text-field
-                  v-model="nb_he_td_min_sup"
+                  v-model="statut.nb_he_td_min_sup"
                   :error-messages="this.errors.nb_he_td_min_sup"
                   label="Nombre d'heures (équivalent TD) minimales supplémentaires attendues"
                   clearable
               ></v-text-field>
               <v-text-field
-                  v-model="nb_he_td_max_sup"
+                  v-model="statut.nb_he_td_max_sup"
                   :error-messages="this.errors.nb_he_td_max_sup"
                   label="Nombre d'heures (équivalent TD) maximales supplémentaires attendues"
                   clearable
               ></v-text-field>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -230,7 +221,7 @@
             </v-btn>
           </v-card-title>
           <v-card-text class="text-justify pt-4">
-            Êtes-vous sûr de vouloir supprimer le statut « {{ this.nom }} » ?<br><br>
+            Êtes-vous sûr de vouloir supprimer le statut « {{ statut.nom }} » ?<br><br>
             Cela entraînera la suppression des enseignants reliés à ce statut, ainsi que toutes ses interventions dans les formations.
           </v-card-text>
           <v-card-actions>
@@ -293,31 +284,24 @@ export default {
     sortByNom: false,
     methods: "POST",
     typeOperation: 'ajouté',
-    id: '',
-    nom: '',
-    surnom: '',
-    nb_he_td_min_attendu: '',
-    nb_he_td_max_attendu: '',
-    nb_he_td_min_sup: '',
-    nb_he_td_max_sup: '',
+    statut: {
+      id: '',
+      nom: '',
+      surnom: '',
+      nb_he_td_min_attendu: '',
+      nb_he_td_max_attendu: '',
+      nb_he_td_min_sup: '',
+      nb_he_td_max_sup: '',
+    }
   }),
   methods: {
     async getStatuts() {
       this.statuts = await apiStatut.getStatuts();
     },
     async submit() {
-      const statut = {
-        id: this.id,
-        nom: this.nom,
-        surnom: this.surnom,
-        nb_he_td_min_attendu: this.nb_he_td_min_attendu,
-        nb_he_td_max_attendu: this.nb_he_td_max_attendu,
-        nb_he_td_min_sup: this.nb_he_td_min_sup,
-        nb_he_td_max_sup: this.nb_he_td_max_sup,
-      };
       this.loading = true;
       if (this.methods === 'POST') {
-        const res = await apiStatut.createStatut(statut);
+        const res = await apiStatut.createStatut(this.statut);
         if (res.errors){
           this.loading = false;
           this.errors = res.errors;
@@ -330,23 +314,31 @@ export default {
           this.responseSuccess = true;
         }
       } else {
-        await apiStatut.editStatut(statut);
-        this.typeOperation = 'modifié';
-        await this.getStatuts();
-        this.clear();
-        this.loading = false;
-        this.form = false;
-        this.responseSuccess = true;
+        const res = await apiStatut.editStatut(this.statut);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'modifié';
+          await this.getStatuts();
+          this.clear();
+          this.statut.id = '';
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+        }
       }
     },
     clear() {
-      this.id = '';
-      this.nom = '';
-      this.surnom = '';
-      this.nb_he_td_min_attendu = '';
-      this.nb_he_td_max_attendu = '';
-      this.nb_he_td_min_sup = '';
-      this.nb_he_td_max_sup = '';
+      this.statut = {
+        nom : '',
+        surnom : '',
+        nb_he_td_min_attendu : '',
+        nb_he_td_max_attendu : '',
+        nb_he_td_min_sup : '',
+        nb_he_td_max_sup : '',
+      };
+      this.errors = [];
     },
     close() {
       this.form = !this.form;
@@ -355,14 +347,7 @@ export default {
     },
     edit(statut) {
       this.methods = 'PUT';
-
-      this.id = statut.id;
-      this.nom = statut.nom;
-      this.surnom = statut.surnom;
-      this.nb_he_td_min_attendu = statut.nb_he_td_min_attendu;
-      this.nb_he_td_max_attendu = statut.nb_he_td_max_attendu;
-      this.nb_he_td_min_sup = statut.nb_he_td_min_sup;
-      this.nb_he_td_max_sup = statut.nb_he_td_max_sup;
+      this.statut = statut;
       this.form = true;
     },
     async copy(statutId) {
@@ -375,8 +360,7 @@ export default {
     },
     closeDialog(){
       this.dialog = false;
-      this.id = '';
-      this.nom = '';
+      this.clear();
     },
     async openDialog(statut) {
       const enseignantByStatuts = await apiEnseignant.getEnseignantByStatut(statut.id)
@@ -385,13 +369,13 @@ export default {
         await this.getStatuts();
       } else {
         this.dialog = true;
-        this.id = statut.id;
-        this.nom = statut.nom;
+        this.statut.id = statut.id;
+        this.statut.nom = statut.nom;
       }
     },
     async deleteStatut(){
       this.loading = true;
-      await apiStatut.deleteStatut(this.id);
+      await apiStatut.deleteStatut(this.statut.id);
       await this.getStatuts();
       this.clear();
       this.loading = false;

@@ -100,7 +100,7 @@
                 <span>{{ p.archive ? "Désarchiver" : "Archiver " }}  {{ p.nom }}</span>
               </v-tooltip>
             </v-card-title>
-            <v-card-subtitle>{{ toTime(p.date) }}</v-card-subtitle>
+            <v-card-subtitle>{{ p.date.substr(0, 10) }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <v-container>
@@ -183,32 +183,24 @@
               <span class="headline" v-if="methods === 'POST'">Ajouter un projet</span>
               <span class="headline" v-else>Modifier un projet</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-text-field
-                  v-model="nom"
-                  :error-messages="nomErrors"
+                  v-model="projet.nom"
                   :counter="255"
+                  :error-messages="errors.nom"
                   label="Nom"
-                  required
                   clearable
-                  @input="$v.nom.$touch()"
-                  @blur="$v.nom.$touch()"
               ></v-text-field>
               <v-menu
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
-                  :return-value.sync="date"
+                  :return-value.sync="projet.date"
                   transition="slide-y-transition"
                   offset-y
                   bottom
@@ -218,7 +210,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                      v-model="date"
+                      v-model="projet.date"
                       label="Date"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -228,7 +220,7 @@
                 </template>
                 <v-date-picker
                     width="600px"
-                    v-model="date"
+                    v-model="projet.date"
                     no-title
                     scrollable
                 >
@@ -249,22 +241,13 @@
                       text
                       color="success darken-1"
                       class="mr-4 mb-3"
-                      @click="$refs.menu.save(date)"
+                      @click="$refs.menu.save(projet.date)"
                   >
                     Valider
                   </v-btn>
                 </v-date-picker>
               </v-menu>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -347,18 +330,12 @@
 
 <script>
 import apiProjet from "../services/API/projets";
-import {validationMixin} from "vuelidate";
-import {maxLength, required} from "vuelidate/lib/validators";
 
 export default {
   name: "ReadProjets",
-  mixins: [validationMixin],
-
-  validations: {
-    nom: {required, maxLength: maxLength(255)},
-  },
   data: () => ({
     projets: [],
+    errors: [],
     form: false,
     dialog: false,
     menu: false,
@@ -369,11 +346,13 @@ export default {
     sortDate: false,
     methods: "POST",
     typeOperation: 'ajouté',
-    id: '',
-    nom: '',
-    date: '',
-    verrou: false,
-    archive: false,
+    projet: {
+      id: '',
+      nom: null,
+      date: '',
+      verrou: false,
+      archive: false,
+    }
   }),
   methods: {
     async getProjets() {
@@ -381,7 +360,7 @@ export default {
     },
     async saveVerrou(projet) {
       this.loading = true;
-      projet.date = this.toTime(projet.date);
+      projet.date = projet.date.substr(0, 10);
       projet.verrou = Number(!projet.verrou);
       await apiProjet.editProjet(projet);
       await apiProjet.verrouFormationProjet(projet.id, projet.verrou);
@@ -392,7 +371,7 @@ export default {
     },
     async saveArchive(projet) {
       this.loading = true;
-      projet.date = this.toTime(projet.date);
+      projet.date = projet.date.substr(0, 10);
       projet.archive = Number(!projet.archive);
       await apiProjet.editProjet(projet);
       if (projet.archive) this.typeOperation = 'archivé';
@@ -401,35 +380,44 @@ export default {
       this.responseSuccess = true;
     },
     async submit() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
       this.loading = true;
       if (this.methods === 'POST') {
-        await apiProjet.createProjet(this.nom);
-        this.typeOperation = 'ajouté';
+        const res = await apiProjet.createProjet(this.projet.nom);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'ajouté';
+          await this.getProjets();
+          this.clear();
+          this.loading = false
+          this.form = false;
+          this.responseSuccess = true;
+        }
       } else {
-        await apiProjet.editProjet({
-          id: this.id,
-          nom: this.nom,
-          date: this.date,
-          verrou: Number(this.verrou),
-          archive: Number(this.archive),
-        });
-        this.typeOperation = 'modifié';
-
+        const res = await apiProjet.editProjet(this.projet);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'modifié';
+          this.projet.id = '';
+          await this.getProjets();
+          this.clear();
+          this.loading = false
+          this.form = false;
+          this.responseSuccess = true;
+        }
       }
-      await this.getProjets();
-      this.clear();
-      this.loading = false
-      this.form = false;
-      this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset();
-      this.id = '';
-      this.nom = '';
-      this.verrou = false;
-      this.archive = false;
+      this.projet = {
+        nom: null,
+        date: '',
+        verrou: false,
+        archive: false,
+      };
+      this.errors = [];
     },
     close() {
       this.form = !this.form;
@@ -438,17 +426,13 @@ export default {
     },
     edit(projet) {
       this.methods = 'PUT';
-
-      this.id = projet.id;
-      this.nom = projet.nom;
-      this.date = this.toTime(projet.date);
-      this.verrou = Boolean(projet.verrou);
-      this.archive = Boolean(projet.archive);
+      this.projet = projet;
+      this.projet.date = projet.date.substr(0, 10);
       this.form = true;
     },
     async save(projet) {
       this.loading = true;
-      projet.date = this.toTime(projet.date);
+      projet.date = projet.date.substr(0, 10);
       await apiProjet.editProjet(projet);
       this.loading = false;
     },
@@ -462,11 +446,8 @@ export default {
       await this.getProjets();
       this.loading = false;
       this.dialog = false;
-      this.id = '';
+      this.projet.id = '';
       this.checkboxCopierGrpInterv = false;
-    },
-    toTime(date) {
-      return new Date(date).toISOString().substr(0, 10);
     },
     redirect(path) {
       this.$router.push({path: path}).catch(() => {
@@ -480,15 +461,6 @@ export default {
         this.sortDate = true;
         this.projets.sort((a, b) => new Date(a.date) - new Date(b.date));
       }
-    },
-  },
-  computed: {
-    nomErrors() {
-      const errors = [];
-      if (!this.$v.nom.$dirty) return errors;
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
-      return errors;
     },
   },
   async mounted() {

@@ -17,7 +17,7 @@ const apiStatut = {
   },
 
   async editStatut(statut) {
-    const response = await axios.patch('/statuts/edit/' + statut.id, statut).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/statuts/edit/' + statut.id, statut);
     return response.data;
   },
 

@@ -15,12 +15,12 @@ const apiProjet = {
   },
 
   async createProjet(nom) {
-    const response = await axios.post('/projets/create/' + nom).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/projets/create/' + nom, {nom: nom});
     return response.data;
   },
 
   async editProjet(projet) {
-    const response = await axios.patch('/projets/edit/' + projet.id, projet).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/projets/edit/' + projet.id, projet);
     return response.data;
   },
 

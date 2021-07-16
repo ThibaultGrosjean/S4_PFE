@@ -10,7 +10,7 @@
     <v-row>
       <v-col class="text-center">
         <h1 class="text-h4 animate-pop-in mb-2">Liste des intervenants</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + toTime(projet[0].date,4)}}</span>
+        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4) }}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -144,19 +144,14 @@
               <span class="headline" v-if="methods === 'POST'">Ajouter un intervenant</span>
               <span class="headline" v-else>Modifier l'intervenant</span>
               <v-spacer></v-spacer>
-              <v-btn
-                  icon
-                  @click="close"
-              >
-                <v-icon>
-                  close
-                </v-icon>
+              <v-btn icon @click="close">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-select
-                  v-model="enseignant_id"
+                  v-model="intervenant.enseignant_id"
                   :items="enseignantByProjetNotInIntervenant"
                   :item-text="item => item.prenom +' '+ item.nom"
                   item-value="id"
@@ -180,58 +175,39 @@
                       v-if="index === 2"
                       class="grey--text text-caption"
                   >
-                    (+{{ enseignant_id.length - 2 }})
+                    (+{{ intervenant.enseignant_id.length - 2 }})
                   </span>
                 </template>
               </v-select>
               <div class="ma-0 pa-0" v-if="methods === 'PUT'">
                 <v-text-field
-                    v-model="nb_he_td_min_attendu_projet"
-                    :error-messages="nb_he_td_min_attendu_projetErrors"
+                    v-model="intervenant.nb_he_td_min_attendu_projet"
+                    :error-messages="errors.nb_he_td_min_attendu_projet"
                     label="Nombre d'heures minimales attendues pour le projet"
                     required
                     clearable
-                    @input="$v.nb_he_td_min_attendu_projet.$touch()"
-                    @blur="$v.nb_he_td_min_attendu_projet.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="nb_he_td_max_attendu_projet"
-                    :error-messages="nb_he_td_max_attendu_projetErrors"
+                    v-model="intervenant.nb_he_td_max_attendu_projet"
+                    :error-messages="errors.nb_he_td_max_attendu_projet"
                     label="Nombre d'heures maximales attendues pour le projet"
                     required
                     clearable
-                    @input="$v.nb_he_td_max_attendu_projet.$touch()"
-                    @blur="$v.nb_he_td_max_attendu_projet.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="nb_he_td_min_sup_projet"
-                    :error-messages="nb_he_td_min_sup_projetErrors"
+                    v-model="intervenant.nb_he_td_min_sup_projet"
+                    :error-messages="errors.nb_he_td_min_sup_projet"
                     label="Nombre d'heures minimales supplémentaires attendues pour le projet"
-                    required
                     clearable
-                    @input="$v.nb_he_td_min_sup_projet.$touch()"
-                    @blur="$v.nb_he_td_min_sup_projet.$touch()"
                 ></v-text-field>
                 <v-text-field
-                    v-model="nb_he_td_max_sup_projet"
-                    :error-messages="nb_he_td_max_sup_projetErrors"
+                    v-model="intervenant.nb_he_td_max_sup_projet"
+                    :error-messages="errors.nb_he_td_max_sup_projet"
                     label="Nombre d'heures maximales supplémentaires attendues pour le projet"
-                    required
                     clearable
-                    @input="$v.nb_he_td_max_sup_projet.$touch()"
-                    @blur="$v.nb_he_td_max_sup_projet.$touch()"
                 ></v-text-field>
               </div>
               <v-card-actions>
-                <v-btn
-                    rounded
-                    :disabled="loading"
-                    color="error darken-1"
-                    text
-                    @click="clear"
-                >
-                  Vider
-                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                     rounded
@@ -315,37 +291,30 @@
 import apiIntervenant from "../services/API/intervenants";
 import apiEnseignant from "../services/API/enseignants";
 import apiProjet from "../services/API/projets";
-import {validationMixin} from "vuelidate";
-import {decimal, required} from "vuelidate/lib/validators";
 
 export default {
   name: "Intervenants",
-  mixins: [validationMixin],
 
-  validations: {
-    nb_he_td_min_attendu_projet: {required, decimal},
-    nb_he_td_max_attendu_projet: {required, decimal},
-    nb_he_td_min_sup_projet: {required, decimal},
-    nb_he_td_max_sup_projet: {required, decimal},
-  },
   data: () => ({
-    enseignants: [],
     intervenants: [],
+    enseignantByProjetNotInIntervenant: [],
     projet: [],
+    errors: [],
     form: false,
     dialog: false,
     loading: false,
     responseSuccess: false,
     methods: "POST",
     typeOperation: 'ajouté',
-    id: '',
-    nb_he_td_min_attendu_projet: '',
-    nb_he_td_max_attendu_projet: '',
-    nb_he_td_min_sup_projet: '',
-    nb_he_td_max_sup_projet: '',
-    projet_id: '',
-    enseignant_id: [],
-    enseignantByProjetNotInIntervenant: [],
+    intervenant: {
+      id: '',
+      nb_he_td_min_attendu_projet: '',
+      nb_he_td_max_attendu_projet: '',
+      nb_he_td_min_sup_projet: '',
+      nb_he_td_max_sup_projet: '',
+      projet_id: '',
+      enseignant_id: [],
+    },
     deleteSelected: [],
     checkboxSelectAll: false,
     rules: {
@@ -377,55 +346,58 @@ export default {
       }
       this.loading = true;
       if (this.methods === 'POST'){
-        this.$v.$touch();
-        if (this.enseignant_id.length <= 0) {
+        if (this.intervenant.enseignant_id.length <= 0) {
+          this.loading = false;
           return;
         } else {
-          for (let i = 0; i < this.enseignant_id.length; i++) {
-            var enseignant = await this.returnEnseignant(this.enseignant_id[i]);
+          for (let i = 0; i < this.intervenant.enseignant_id.length; i++) {
+            var enseignant = await this.returnEnseignant(this.intervenant.enseignant_id[i]);
             var intervenant = {
-              enseignant_id: this.enseignant_id[i],
+              enseignant_id: this.intervenant.enseignant_id[i],
               projet_id: Number(this.$route.params.id),
-              nb_he_td_min_attendu_projet: enseignant[0].statut.nb_he_td_min_attendu,
-              nb_he_td_max_attendu_projet: enseignant[0].statut.nb_he_td_max_attendu,
-              nb_he_td_min_sup_projet: enseignant[0].statut.nb_he_td_min_sup,
-              nb_he_td_max_sup_projet: enseignant[0].statut.nb_he_td_max_sup,
+              nb_he_td_min_attendu_projet: enseignant[0].nb_he_td_min_attendu,
+              nb_he_td_max_attendu_projet: enseignant[0].nb_he_td_max_attendu,
+              nb_he_td_min_sup_projet: enseignant[0].nb_he_td_min_sup,
+              nb_he_td_max_sup_projet: enseignant[0].nb_he_td_max_sup,
             }
-            await apiIntervenant.createIntervenant(intervenant);
+            const res = await apiIntervenant.createIntervenant(intervenant);
+            if (res.errors) this.errors = res.errors;
           }
           this.typeOperation = 'ajouté';
+          await this.getIntervenantsByProjet();
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
         }
       } else {
-        this.$v.$touch();
-        if (this.$v.$invalid) return;
-        const intervenant = {
-          id: this.id,
-          nb_he_td_min_attendu_projet: this.nb_he_td_min_attendu_projet,
-          nb_he_td_max_attendu_projet: this.nb_he_td_max_attendu_projet,
-          nb_he_td_min_sup_projet: this.nb_he_td_min_sup_projet,
-          nb_he_td_max_sup_projet: this.nb_he_td_max_sup_projet,
-          projet_id: this.projet_id,
-          enseignant_id: this.enseignant_id,
+        const res = await apiIntervenant.editIntervenant(this.intervenant);
+        if (res.errors){
+          this.loading = false;
+          this.errors = res.errors;
+        } else {
+          this.typeOperation = 'modifié';
+          this.intervenant.id = '';
+          await this.getIntervenantsByProjet();
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+          this.intervenant.enseignant_id = [];
         }
-        await apiIntervenant.editIntervenant(intervenant);
-        this.typeOperation = 'modifié';
       }
-      await this.getIntervenantsByProjet();
-      this.clear();
-      this.loading = false;
-      this.form = false;
-      this.responseSuccess = true;
     },
     clear() {
-      this.$v.$reset();
       this.$refs.formulaire.resetValidation();
-      this.id = '';
-      this.nb_he_td_min_attendu_projet = '';
-      this.nb_he_td_max_attendu_projet = '';
-      this.nb_he_td_min_sup_projet = '';
-      this.nb_he_td_max_sup_projet = '';
-      this.projet_id = null;
-      this.enseignant_id = [];
+      this.intervenant = {
+        nb_he_td_min_attendu_projet: '',
+        nb_he_td_max_attendu_projet: '',
+        nb_he_td_min_sup_projet: '',
+        nb_he_td_max_sup_projet: '',
+        projet_id: this.$route.params.id,
+        enseignant_id: this.intervenant.enseignant_id,
+      };
+      this.errors = [];
     },
     close() {
       this.getEnseignantProjetNotInIntervenant();
@@ -435,30 +407,18 @@ export default {
     },
     addIntervenant() {
       this.getEnseignantProjetNotInIntervenant();
-      this.projet_id = Number(this.$route.params.id);
       this.methods = 'POST';
       this.form = !this.form;
     },
     edit(intervenant) {
       this.methods = 'PUT';
       this.getEnseignants();
-
-      this.id = intervenant.id;
-      this.nb_he_td_min_attendu_projet = intervenant.nb_he_td_min_attendu_projet;
-      this.nb_he_td_max_attendu_projet = intervenant.nb_he_td_max_attendu_projet;
-      this.nb_he_td_min_sup_projet = intervenant.nb_he_td_min_sup_projet;
-      this.nb_he_td_max_sup_projet = intervenant.nb_he_td_max_sup_projet;
-      this.projet_id = intervenant.projet_id;
-      this.enseignant_id = intervenant.enseignant_id;
+      this.intervenant = intervenant;
       this.form = true;
     },
     checkAllInterv() {
       this.deleteSelected = [];
-      if (this.checkboxSelectAll){
-        for (let i = 0; i < this.intervenants.length; i++) {
-          this.deleteSelected.push(this.intervenants[i]);
-        }
-      }
+      if (this.checkboxSelectAll) this.deleteSelected = this.intervenants;
     },
     async deleteAllSelectedIntervenant() {
       if (this.projet[0].verrou === 1) return;
@@ -476,6 +436,7 @@ export default {
       if (verif > 0) this.dialog = true;
       this.loading = false;
       await this.getIntervenantsByProjet();
+      await this.getEnseignantProjetNotInIntervenant();
     },
     async validDeleteAllIntervenant(){
       if (this.projet[0].verrou === 1) {
@@ -489,44 +450,12 @@ export default {
       this.dialog = false;
       this.loading = false;
       await this.getIntervenantsByProjet();
+      await this.getEnseignantProjetNotInIntervenant();
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
     },
-    toTime(date) {
-      return new Date(date).toISOString().substr(0, 4);
-    },
     redirect(path) {
       this.$router.push({path: path}).catch(() => {});
-    },
-  },
-  computed: {
-    nb_he_td_min_attendu_projetErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_min_attendu_projet.$dirty) return errors;
-      !this.$v.nb_he_td_min_attendu_projet.decimal && errors.push('Le Nombre d\'heures minimales attendues pour le projet doit être un numérique');
-      !this.$v.nb_he_td_min_attendu_projet.required && errors.push('Le Nombre d\'heures minimales attendues pour le projet est obligatoire');
-      return errors;
-    },
-    nb_he_td_max_attendu_projetErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_max_attendu_projet.$dirty) return errors;
-      !this.$v.nb_he_td_max_attendu_projet.decimal && errors.push('Le Nombre d\'heures maximales attendues pour le projet doit être un numérique');
-      !this.$v.nb_he_td_max_attendu_projet.required && errors.push('Le Nombre d\'heures maximales attendues pour le projet est obligatoire');
-      return errors;
-    },
-    nb_he_td_min_sup_projetErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_min_sup_projet.$dirty) return errors;
-      !this.$v.nb_he_td_min_sup_projet.decimal && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet doit être un numérique');
-      !this.$v.nb_he_td_min_sup_projet.required && errors.push('Le Nombre d\'heures minimales supplémentaires attendues pour le projet est obligatoire');
-      return errors;
-    },
-    nb_he_td_max_sup_projetErrors() {
-      const errors = [];
-      if (!this.$v.nb_he_td_max_sup_projet.$dirty) return errors;
-      !this.$v.nb_he_td_max_sup_projet.decimal && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet doit être un numérique');
-      !this.$v.nb_he_td_max_sup_projet.required && errors.push('Le Nombre d\'heures maximales supplémentaires attendues pour le projet est obligatoire');
-      return errors;
     },
   },
   async mounted() {

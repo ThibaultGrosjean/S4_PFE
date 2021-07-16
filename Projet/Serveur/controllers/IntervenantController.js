@@ -1,11 +1,11 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
-  check('nb_he_td_min_attendu_projet',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('nb_he_td_max_attendu_projet',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('nb_he_td_min_sup_projet',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('nb_he_td_max_sup_projet',"Veuillez saisir un un numérique non nul").isDecimal(),
+exports.validationResult = [
+  check('nb_he_td_min_attendu_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_max_attendu_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_min_sup_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_max_sup_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
   check('projet_id',"Veuillez sélectionner un projet").isNumeric(),
   check('enseignant_id',"Veuillez sélectionner un enseignant").isNumeric(),
 ];
@@ -122,7 +122,7 @@ exports.addIntervenant = (req, res) => {
     enseignant_id : req.body.enseignant_id,  
   };
 
-  var requete="INSERT INTO intervenant(nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet, projet_id, enseignant_id) VALUES ('" 
+  var requete = "INSERT INTO intervenant(nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet, projet_id, enseignant_id) VALUES ('" 
     + data['nb_he_td_min_attendu_projet'] + "','"
     + data['nb_he_td_max_attendu_projet'] + "','"
     + data['nb_he_td_min_sup_projet'] + "','"
@@ -131,15 +131,22 @@ exports.addIntervenant = (req, res) => {
     + data['enseignant_id'] + "');"
   ;
 
-  db.query(requete,
-    function(err, intervenant) {
-      if (!err) {
-        res.status(200).json(intervenant); 
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, intervenant) {
+        if (!err) {
+          res.status(200).json(intervenant); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 
@@ -160,7 +167,7 @@ exports.copyIntervenantByProjet = (req, res) => {
 
 
 exports.editIntervenant = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
     nb_he_td_min_attendu_projet : req.body.nb_he_td_min_attendu_projet,
     nb_he_td_max_attendu_projet : req.body.nb_he_td_max_attendu_projet,
@@ -169,23 +176,31 @@ exports.editIntervenant = (req, res) => {
     projet_id : req.body.projet_id,
     enseignant_id : req.body.enseignant_id,  
   };
-  var requete="UPDATE intervenant SET nb_he_td_min_attendu_projet ='" + donnees['nb_he_td_min_attendu_projet'] 
-  +"', nb_he_td_max_attendu_projet ='" + donnees['nb_he_td_max_attendu_projet'] 
-  +"', nb_he_td_min_sup_projet ='" + donnees['nb_he_td_min_sup_projet'] 
-  +"', nb_he_td_max_sup_projet ='" + donnees['nb_he_td_max_sup_projet'] 
-  +"', projet_id ='" + donnees['projet_id']
-  +"', enseignant_id ='" + donnees['enseignant_id']
+  var requete = "UPDATE intervenant SET nb_he_td_min_attendu_projet ='" + data['nb_he_td_min_attendu_projet'] 
+  +"', nb_he_td_max_attendu_projet ='" + data['nb_he_td_max_attendu_projet'] 
+  +"', nb_he_td_min_sup_projet ='" + data['nb_he_td_min_sup_projet'] 
+  +"', nb_he_td_max_sup_projet ='" + data['nb_he_td_max_sup_projet'] 
+  +"', projet_id ='" + data['projet_id']
+  +"', enseignant_id ='" + data['enseignant_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
-    function(err, intervenant) {
-      if (!err) {
-        res.status(200).json(intervenant); 
-      } else {
-        res.send(err);
+  console.log(data)
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, intervenant) {
+        if (!err) {
+          res.status(200).json(intervenant); 
+        } else {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 
