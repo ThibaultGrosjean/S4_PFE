@@ -20,14 +20,13 @@ const apiFormation = {
     return response.data;
   },
 
-  async createFormation(data) {
-    const responseElement = await apiElement.createElement(data.element)
+  async createFormation(projetId, elementId) {
     const formation = {
       verrou: Number(false),
-      projet_id: data.projet_id,
-      element_id: responseElement.insertId,
+      projet_id: projetId,
+      element_id: elementId,
     }
-    const response = await axios.post('/formations/create', formation).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/formations/create', formation);
     return response.data;
   },
 
@@ -37,12 +36,12 @@ const apiFormation = {
       projet_id: projetId,
       element_id: elementId,
     }
-    const response = await axios.post('/formations/create', newFormation).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/formations/create', newFormation);
     return response.data;
   },
 
   async editFormation(formation) {
-    const response = await axios.patch('/formations/edit/' + formation.id, formation).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/formations/edit/' + formation.id, formation);
     return response.data;
   },
 

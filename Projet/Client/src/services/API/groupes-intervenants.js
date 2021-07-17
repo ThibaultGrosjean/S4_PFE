@@ -22,7 +22,7 @@ const apiGroupeIntervenant = {
   },
 
   async createGroupeIntervenant(element) {
-    const response = await axios.post('/groupes-intervenants/create', element).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/groupes-intervenants/create', element);
     return response.data;
   },
 
@@ -37,7 +37,7 @@ const apiGroupeIntervenant = {
   },
 
   async editGroupeIntervenant(element) {
-    const response = await axios.patch('/groupes-intervenants/edit/' + element.id, element).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/groupes-intervenants/edit/' + element.id, element);
     return response.data;
   },
 

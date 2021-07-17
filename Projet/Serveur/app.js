@@ -212,7 +212,7 @@ app.get('/groupes-intervenants/module/get/:id', groupeIntervenantController.getG
 
 app.post('/groupes-intervenants/create/',groupeIntervenantController.validationResult, groupeIntervenantController.addGroupeIntervenant);
 
-app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/nbsemaine/:semaineDeb/:semaineFin',groupeIntervenantController.validationResult, groupeIntervenantController.addVolumesHebdomadaires);
+app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/nbsemaine/:semaineDeb/:semaineFin',groupeIntervenantController.validationResult, groupeIntervenantController.addGroupesIntervenants);
 
 app.post('/groupes-intervenants/copy/:id/parent/:parent/enseignant/:enseignant/projet/:projet', groupeIntervenantController.copyGroupeIntervenant);
 

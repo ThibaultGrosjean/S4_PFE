@@ -73,6 +73,7 @@ exports.getEnseignantByStatut = (req, res) => {
 
 
 function generateSurnom(prenom, nom) {
+  var surnom = ""
   if (prenom != null && nom !== null){
     var compose = prenom.indexOf("-");
     if (nom.length == 1 && prenom.length == 1){
@@ -83,7 +84,7 @@ function generateSurnom(prenom, nom) {
       else
         surnom = prenom[0] + nom[0] + nom[1]
     }
-    return surnom.toUpperCase();
+    return surnom.toString().toUpperCase();
   }
   return null;
 }

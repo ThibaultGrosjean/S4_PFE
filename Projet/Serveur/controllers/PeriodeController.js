@@ -1,12 +1,12 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
-  check('nb_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_defaut_cm',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_defaut_td',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_defaut_tp',"Veuillez saisir un un numérique non nul").isNumeric(),
-  check('nb_groupe_defaut_partiel',"Veuillez saisir un un numérique non nul").isNumeric(),
+exports.validationResult = [
+  check('nb_semaine',"Le Nombre de semaines doit être un numérique").isFloat(),
+  check('nb_groupe_defaut_cm',"Le Nombre de groupes pour les CM doit être un numérique").isFloat(),
+  check('nb_groupe_defaut_td',"Le Nombre de groupes pour les TD doit être un numérique").isFloat(),
+  check('nb_groupe_defaut_tp',"Le Nombre de groupes pour les TP doit être un numérique").isFloat(),
+  check('nb_groupe_defaut_partiel',"Le Nombre de groupes pour les partiels doit être un numérique").isFloat(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
 ];
 
@@ -69,15 +69,22 @@ exports.addPeriode = (req, res) => {
     + data['element_id'] + "');"
   ;
 
-  db.query(requete,
-    function(err, periode) {
-      if (!err) {
-        res.status(200).json(periode); 
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, periode) {
+        if (!err) {
+          res.status(200).json(periode); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 
@@ -131,15 +138,22 @@ exports.editPeriode = (req, res) => {
   +"', element_id ='" + donnees['element_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
-    function(err, periode) {
-      if (!err) {
-        res.status(200).json(periode);  
-      } else {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, periode) {
+        if (!err) {
+          res.status(200).json(periode);  
+        } else {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 

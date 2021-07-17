@@ -103,7 +103,6 @@ exports.editProjet = (req, res) => {
   +" WHERE id = " + req.params.id + ";";
 
   let errors = validationResult(req);
-  console.log(errors)
   if (!errors.isEmpty()) {
     const extractedErrors = {};
     errors.array().map(err => extractedErrors[err.param] = err.msg);

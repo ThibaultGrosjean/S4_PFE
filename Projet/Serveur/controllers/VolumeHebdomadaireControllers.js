@@ -1,12 +1,12 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
+exports.validationResult = [
   check('num_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('vol_hor_cm',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('vol_hor_td',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('vol_hor_tp',"Veuillez saisir un un numérique non nul").isDecimal(),
-  check('vol_hor_partiel',"Veuillez saisir un un numérique non nul").isDecimal(),
+  check('vol_hor_cm',"Veuillez saisir un numérique non nul").isFloat(),
+  check('vol_hor_td',"Veuillez saisir un numérique non nul").isFloat(),
+  check('vol_hor_tp',"Veuillez saisir un un numérique non nul").isFloat(),
+  check('vol_hor_partiel',"Veuillez saisir un un numérique non nul").isFloat(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
 ];
 
@@ -96,7 +96,7 @@ exports.addVolumeHebdomadaire = (req, res) => {
     element_id : req.body.element_id,  
   };
 
-  var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
+  var requete = "INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
     + data['num_semaine'] + "','"
     + data['vol_hor_cm'] + "','"
     + data['vol_hor_td'] + "','"
@@ -105,15 +105,22 @@ exports.addVolumeHebdomadaire = (req, res) => {
     + data['element_id'] + "');"
   ;
 
-  db.query(requete,
-    function(err, volume_hebdomadaire) {
-      if (!err) {
-        res.status(200).json(volume_hebdomadaire); 
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, volume_hebdomadaire) {
+        if (!err) {
+          res.status(200).json(volume_hebdomadaire); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 
@@ -157,7 +164,7 @@ exports.copyVolumeHebdomadaire = (req, res) => {
   db.query('SELECT * FROM volume_hebdomadaire where id = ? ;', [req.params.id],
     function(err, volume_hebdomadaire) {
       if (!err) {
-         var requete="INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
+         var requete = "INSERT INTO volume_hebdomadaire(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id) VALUES ('" 
           + volume_hebdomadaire[0]['num_semaine'] + "','"
           + volume_hebdomadaire[0]['vol_hor_cm'] + "','"
           + volume_hebdomadaire[0]['vol_hor_td'] + "','"
@@ -185,7 +192,7 @@ exports.copyVolumeHebdomadaire = (req, res) => {
 
 
 exports.editVolumeHebdomadaire = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
     num_semaine : req.body.num_semaine | 0,
     vol_hor_cm : req.body.vol_hor_cm | 0,
@@ -194,24 +201,30 @@ exports.editVolumeHebdomadaire = (req, res) => {
     vol_hor_partiel : req.body.vol_hor_partiel | 0,
     element_id : req.body.element_id,  
   };
-  var requete="UPDATE volume_hebdomadaire SET num_semaine ='" + donnees['num_semaine'] 
-  +"', vol_hor_cm ='" + donnees['vol_hor_cm'] 
-  +"', vol_hor_td ='" + donnees['vol_hor_td'] 
-  +"', vol_hor_tp ='" + donnees['vol_hor_tp'] 
-  +"', vol_hor_partiel ='" + donnees['vol_hor_partiel']
-  +"', element_id ='" + donnees['element_id']
+  var requete = "UPDATE volume_hebdomadaire SET num_semaine ='" + data['num_semaine'] 
+  +"', vol_hor_cm ='" + data['vol_hor_cm'] 
+  +"', vol_hor_td ='" + data['vol_hor_td'] 
+  +"', vol_hor_tp ='" + data['vol_hor_tp'] 
+  +"', vol_hor_partiel ='" + data['vol_hor_partiel']
+  +"', element_id ='" + data['element_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
-    function(err, volume_hebdomadaire) {
-      if (!err) {
-        res.status(200).json(volume_hebdomadaire);  
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, volume_hebdomadaire) {
+        if (!err) {
+          res.status(200).json(volume_hebdomadaire); 
+        } else  {
+          res.send(err);
+        }
       }
-      else {
-        res.send(err);
-      }
-    }
-  );
+    );
+  }
 };
 
 
@@ -233,7 +246,7 @@ exports.editTypeValueElementVolumeHebdomadaire = (req, res) => {
     default:
   } 
 
-  var requete="UPDATE volume_hebdomadaire SET " + typeUpdate
+  var requete = "UPDATE volume_hebdomadaire SET " + typeUpdate
   +" WHERE element_id = " + req.params.id +";";
 
   db.query(requete,

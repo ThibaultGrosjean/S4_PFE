@@ -12,7 +12,7 @@
           <v-icon>access_time</v-icon>
         </v-btn>
       </template>
-      <span>Modifier à la période</span>
+      <span>{{ exist ? "Modifier la période" : "Ajouter une période" }}</span>
     </v-tooltip>
     <v-dialog
         v-model="form"
@@ -22,73 +22,47 @@
       <v-card>
         <v-form lazy-validation>
           <v-card-title>
-            <span class="headline">Modifier la période du {{ element.titre }}</span>
+            <span class="headline" v-if="!exist">Ajouter une période au {{ element.titre }}</span>
+            <span class="headline" v-else>Modifier la période du {{ element.titre }}</span>
             <v-spacer></v-spacer>
-            <v-btn
-                icon
-                @click="close"
-            >
+            <v-btn icon @click="close">
               <v-icon>close</v-icon>
             </v-btn>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-text-field
-                v-model="nb_semaine"
-                :error-messages="nb_semaineErrors"
+                v-model="periode.nb_semaine"
+                :error-messages="errors.nb_semaine"
                 label="Nombre de semaines"
-                required
                 clearable
-                @input="$v.nb_semaine.$touch()"
-                @blur="$v.nb_semaine.$touch()"
             ></v-text-field>
             <v-text-field
-                v-model="nb_groupe_defaut_cm"
-                :error-messages="nb_groupe_defaut_cmErrors"
+                v-model="periode.nb_groupe_defaut_cm"
+                :error-messages="errors.nb_groupe_defaut_cm"
                 label="Nombre de groupes par défaut pour les CM"
-                required
                 clearable
-                @input="$v.nb_groupe_defaut_cm.$touch()"
-                @blur="$v.nb_groupe_defaut_cm.$touch()"
             ></v-text-field>
             <v-text-field
-                v-model="nb_groupe_defaut_td"
-                :error-messages="nb_groupe_defaut_tdErrors"
+                v-model="periode.nb_groupe_defaut_td"
+                :error-messages="errors.nb_groupe_defaut_td"
                 label="Nombre de groupes par défaut pour les TD"
-                required
                 clearable
-                @input="$v.nb_groupe_defaut_td.$touch()"
-                @blur="$v.nb_groupe_defaut_td.$touch()"
             ></v-text-field>
             <v-text-field
-                v-model="nb_groupe_defaut_tp"
-                :error-messages="nb_groupe_defaut_tpErrors"
+                v-model="periode.nb_groupe_defaut_tp"
+                :error-messages="errors.nb_groupe_defaut_tp"
                 label="Nombre de groupes par défaut pour les TP"
-                required
                 clearable
-                @input="$v.nb_groupe_defaut_tp.$touch()"
-                @blur="$v.nb_groupe_defaut_tp.$touch()"
             ></v-text-field>
             <v-text-field
-                v-model="nb_groupe_defaut_partiel"
-                :error-messages="nb_groupe_defaut_partielErrors"
+                v-model="periode.nb_groupe_defaut_partiel"
+                :error-messages="errors.nb_groupe_defaut_partiel"
                 label="Nombre de groupes par défaut pour les partiels"
-                required
                 clearable
-                @input="$v.nb_groupe_defaut_partiel.$touch()"
-                @blur="$v.nb_groupe_defaut_partiel.$touch()"
             ></v-text-field>
 
             <v-card-actions>
-              <v-btn
-                  rounded
-                  :disabled="loading"
-                  color="error darken-1"
-                  text
-                  @click="clear"
-              >
-                Vider
-              </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                   rounded
@@ -143,70 +117,77 @@
 
 <script>
 import apiPeriode from "../services/API/periodes";
-import {validationMixin} from "vuelidate";
-import {numeric, required} from "vuelidate/lib/validators";
 
 export default {
   name: "EditPeriode",
-  mixins: [validationMixin],
   props: ['element'],
-  validations: {
-    nb_semaine: {required, numeric},
-    nb_groupe_defaut_cm: {required, numeric},
-    nb_groupe_defaut_td: {required, numeric},
-    nb_groupe_defaut_tp: {required, numeric},
-    nb_groupe_defaut_partiel: {required, numeric},
-    element_id: {required},
-  },
   data: () => ({
+    periodes: [],
+    errors: [],
     form: false,
     loading: false,
-    periodes: [],
     confirmEditPeriode: false,
-    id: '',
-    nb_semaine: '',
+    exist : false,
+    periode: {
+      id: '',
+      nb_semaine: '',
+      nb_groupe_defaut_cm: '',
+      nb_groupe_defaut_td: '',
+      nb_groupe_defaut_tp: '',
+      nb_groupe_defaut_partiel: '',
+      element_id: '',
+    },
     old_nb_semaine: '',
-    nb_groupe_defaut_cm: 1,
-    nb_groupe_defaut_td: 1,
-    nb_groupe_defaut_tp: 1,
-    nb_groupe_defaut_partiel: 1,
-    element_id: '',
   }),
   methods: {
-    async getPeriodes() {
-      this.periodes = await apiPeriode.getPeriodes();
+    async getPeriodeByElementId() {
+      const res = await apiPeriode.getPeriodeByElementId(this.element.id);
+      if (!res.length) {
+        this.exist = false;
+        this.periode.element_id = this.element.id;
+      } else {
+        this.exist = true;
+        this.periode = res[0];
+        this.old_nb_semaine = this.periode.nb_semaine;
+      }
     },
     async submit() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-      const periode = {
-        id: this.id,
-        nb_semaine: this.nb_semaine,
-        old_nb_semaine: this.old_nb_semaine,
-        nb_groupe_defaut_cm: this.nb_groupe_defaut_cm,
-        nb_groupe_defaut_td: this.nb_groupe_defaut_td,
-        nb_groupe_defaut_tp: this.nb_groupe_defaut_tp,
-        nb_groupe_defaut_partiel: this.nb_groupe_defaut_partiel,
-        element_id: this.element_id,
-      }
       this.loading = true;
-      await apiPeriode.editPeriode(periode);
+      if (!this.exist) {
+        const res = await apiPeriode.createPeriode(this.periode);
+        if (res.errors){
+          this.errors = res.errors;
+        } else {
+          this.confirmEditPeriode = false;
+          this.clear();
+          this.form = false;
+        }
+      } else {
+        const res = await apiPeriode.editPeriode(this.periode);
+        if (res.errors){
+          this.errors = res.errors;
+        } else {
+          this.confirmEditPeriode = false;
+          this.exist = true;
+          this.clear();
+          this.form = false;
+        }
+      }
       this.$emit('reload-periode');
       this.loading = false;
-      this.form = false;
-      this.confirmEditPeriode = false;
-      this.clear();
     },
     clear() {
-      this.$v.$reset();
-      this.id = '';
-      this.nb_semaine = '';
+      this.periode = {
+        id: '',
+        nb_semaine: '',
+        nb_groupe_defaut_cm: '',
+        nb_groupe_defaut_td: '',
+        nb_groupe_defaut_tp: '',
+        nb_groupe_defaut_partiel: '',
+        element_id: null,
+      }
       this.old_nb_semaine = '';
-      this.nb_groupe_defaut_cm = 1;
-      this.nb_groupe_defaut_td = 1;
-      this.nb_groupe_defaut_tp = 1;
-      this.nb_groupe_defaut_partiel = 1;
-      this.element_id = null;
+      this.errors = [];
     },
     close() {
       this.form = !this.form;
@@ -217,67 +198,19 @@ export default {
       this.close();
     },
     async edit() {
-      const periode = await this.findPeriodeSemestre(this.element.id)
-      this.id = periode[0].id;
-      this.nb_semaine = periode[0].nb_semaine;
-      this.old_nb_semaine = periode[0].nb_semaine;
-      this.nb_groupe_defaut_cm = periode[0].nb_groupe_defaut_cm;
-      this.nb_groupe_defaut_td = periode[0].nb_groupe_defaut_td;
-      this.nb_groupe_defaut_tp = periode[0].nb_groupe_defaut_tp;
-      this.nb_groupe_defaut_partiel = periode[0].nb_groupe_defaut_partiel;
-      this.element_id = periode[0].element_id;
+      await this.getPeriodeByElementId()
       this.form = true;
     },
     valideForm() {
-      if (this.nb_semaine !== this.old_nb_semaine){
+      if (this.periode.nb_semaine !== this.old_nb_semaine && this.exist){
         this.confirmEditPeriode = true;
       } else {
         this.submit();
       }
     },
-    async findPeriodeSemestre(){
-      return await apiPeriode.getPeriodeByElementId(this.element.id);
-    },
-  },
-  computed: {
-    nb_semaineErrors() {
-      const errors = [];
-      if (!this.$v.nb_semaine.$dirty) return errors;
-      !this.$v.nb_semaine.numeric && errors.push('Le Nombre de semaines doit être un numérique');
-      !this.$v.nb_semaine.required && errors.push('Le Nombre de semaines est obligatoire');
-      return errors;
-    },
-    nb_groupe_defaut_cmErrors() {
-      const errors = [];
-      if (!this.$v.nb_groupe_defaut_cm.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_cm.numeric && errors.push('Le Nombre de groupes pour les CM doit être un numérique');
-      !this.$v.nb_groupe_defaut_cm.required && errors.push('Le Nombre de groupes pour les CM est obligatoire');
-      return errors;
-    },
-    nb_groupe_defaut_tdErrors() {
-      const errors = [];
-      if (!this.$v.nb_groupe_defaut_td.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_td.numeric && errors.push('Le Nombre de groupes pour les TD doit être un numérique');
-      !this.$v.nb_groupe_defaut_td.required && errors.push('Le Nombre de groupes pour les TD est obligatoire');
-      return errors;
-    },
-    nb_groupe_defaut_tpErrors() {
-      const errors = [];
-      if (!this.$v.nb_groupe_defaut_tp.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_tp.numeric && errors.push('Le Nombre de groupes pour les TP doit être un numérique');
-      !this.$v.nb_groupe_defaut_tp.required && errors.push('Le Nombre de groupes pour les TP est obligatoire');
-      return errors;
-    },
-    nb_groupe_defaut_partielErrors() {
-      const errors = [];
-      if (!this.$v.nb_groupe_defaut_partiel.$dirty) return errors;
-      !this.$v.nb_groupe_defaut_partiel.numeric && errors.push('Le Nombre de groupes pour les partiels doit être un numérique');
-      !this.$v.nb_groupe_defaut_partiel.required && errors.push('Le Nombre de groupes pour les partiels est obligatoire');
-      return errors;
-    },
   },
   mounted() {
-    this.getPeriodes();
+    this.getPeriodeByElementId();
   }
 }
 </script>

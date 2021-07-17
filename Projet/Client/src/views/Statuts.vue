@@ -303,7 +303,6 @@ export default {
           this.errors = res.errors;
         } else {
           this.typeOperation = 'ajouté';
-          await this.getStatuts();
           this.clear();
           this.loading = false;
           this.form = false;
@@ -316,7 +315,6 @@ export default {
           this.errors = res.errors;
         } else {
           this.typeOperation = 'modifié';
-          await this.getStatuts();
           this.clear();
           this.statut.id = '';
           this.loading = false;
@@ -325,7 +323,7 @@ export default {
         }
       }
     },
-    clear() {
+    async clear() {
       this.statut = {
         nom : '',
         surnom : '',
@@ -336,6 +334,7 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
+      await this.getStatuts();
     },
     close() {
       this.form = !this.form;
@@ -372,8 +371,7 @@ export default {
     async deleteStatut(){
       this.loading = true;
       await apiStatut.deleteStatut(this.statut.id);
-      await this.getStatuts();
-      this.clear();
+      await this.clear();
       this.loading = false;
       this.dialog = false;
       this.typeOperation = 'supprimé';

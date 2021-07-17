@@ -1,7 +1,7 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
+exports.validationResult = [
   check('verrou',"Le verrou doit être un booléen").isBoolean(),
   check('projet_id',"Veuillez sélectionner un projet").isNumeric(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
@@ -107,15 +107,22 @@ exports.addFormation = (req, res) => {
     + data['element_id'] + "');"
   ;
 
-  db.query(requete,
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
     function(err, formation) {
-      if (!err) {
-        res.status(200).json(formation); 
-      } else  {
-        res.send(err);
+        if (!err) {
+          res.status(200).json(formation); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }  
 };
 
 
@@ -158,15 +165,22 @@ exports.editFormation = (req, res) => {
   +"', element_id ='" + donnees['element_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
     function(err, formation) {
-      if (!err) {
-        res.status(200).json(formation); 
-      } else {
-        res.send(err);
+        if (!err) {
+          res.status(200).json(formation); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 

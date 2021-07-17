@@ -19,12 +19,12 @@ const apiPeriode = {
   },
 
   async createPeriode(periode) {
-    const response = await axios.post('/periodes/create', periode).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/periodes/create', periode);
     return response.data;
   },
 
   async editPeriode(periode) {
-    const response = await axios.patch('/periodes/edit/' + periode.id, periode).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/periodes/edit/' + periode.id, periode);
     var diff = periode.nb_semaine - periode.old_nb_semaine
 
     if (diff < 0) {

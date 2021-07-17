@@ -1,12 +1,12 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
+exports.validationResult = [
   check('num_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('vol_hor_cm',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('vol_hor_td',"Veuillez saisir un numérique non nul").isDecimal(),
-  check('vol_hor_tp',"Veuillez saisir un un numérique non nul").isDecimal(),
-  check('vol_hor_partiel',"Veuillez saisir un un numérique non nul").isDecimal(),
+  check('vol_hor_cm',"Veuillez saisir un numérique non nul").isFloat(),
+  check('vol_hor_td',"Veuillez saisir un numérique non nul").isFloat(),
+  check('vol_hor_tp',"Veuillez saisir un un numérique non nul").isFloat(),
+  check('vol_hor_partiel',"Veuillez saisir un un numérique non nul").isFloat(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
   check('intervenant_id ',"Veuillez sélectionner un élément").isNumeric(),
 ];
@@ -76,7 +76,7 @@ exports.addVolumeGlobale = (req, res) => {
     intervenant_id : req.body.intervenant_id,  
   };
 
-  var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
+  var requete = "INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
     + data['num_semaine'] + "','"
     + data['vol_hor_cm'] + "','"
     + data['vol_hor_td'] + "','"
@@ -86,15 +86,22 @@ exports.addVolumeGlobale = (req, res) => {
     + data['intervenant_id'] + "');"
   ;
 
-  db.query(requete,
-    function(err, volume_globale) {
-      if (!err) {
-        res.status(200).json(volume_globale); 
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, volume_globale) {
+        if (!err) {
+          res.status(200).json(volume_globale); 
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 
@@ -109,7 +116,7 @@ exports.addVolumeGlobaleByModule = (req, res) => {
     intervenant_id : req.params.intervenant,
   };
 
-  var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
+  var requete = "INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, element_id, intervenant_id) VALUES ('" 
     + data['num_semaine'] + "','"
     + data['vol_hor_cm'] + "','"
     + data['vol_hor_td'] + "','"
@@ -135,7 +142,7 @@ exports.copyVolumeGlobale = (req, res) => {
   db.query('SELECT * FROM volume_globale where id = ? ;', [req.params.id],
     function(err, volume_globale) {
       if (!err) {
-         var requete="INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, intervenant_id, element_id) VALUES ('" 
+         var requete = "INSERT INTO volume_globale(num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel, intervenant_id, element_id) VALUES ('" 
           + parseInt(volume_globale[0]['num_semaine']+1) + "','"
           + volume_globale[0]['vol_hor_cm'] + "','"
           + volume_globale[0]['vol_hor_td'] + "','"
@@ -164,7 +171,7 @@ exports.copyVolumeGlobale = (req, res) => {
 
 
 exports.editVolumeGlobale = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
     num_semaine : req.body.num_semaine,
     vol_hor_cm : req.body.vol_hor_cm,
@@ -174,25 +181,31 @@ exports.editVolumeGlobale = (req, res) => {
     element_id : req.body.element_id,  
     intervenant_id : req.body.intervenant_id,  
   };
-  var requete="UPDATE volume_globale SET num_semaine ='" + donnees['num_semaine'] 
-  +"', vol_hor_cm ='" + donnees['vol_hor_cm'] 
-  +"', vol_hor_td ='" + donnees['vol_hor_td'] 
-  +"', vol_hor_tp ='" + donnees['vol_hor_tp'] 
-  +"', vol_hor_partiel ='" + donnees['vol_hor_partiel']
-  +"', element_id ='" + donnees['element_id']
-  +"', intervenant_id ='" + donnees['intervenant_id']
+  var requete = "UPDATE volume_globale SET num_semaine ='" + data['num_semaine'] 
+  +"', vol_hor_cm ='" + data['vol_hor_cm'] 
+  +"', vol_hor_td ='" + data['vol_hor_td'] 
+  +"', vol_hor_tp ='" + data['vol_hor_tp'] 
+  +"', vol_hor_partiel ='" + data['vol_hor_partiel']
+  +"', element_id ='" + data['element_id']
+  +"', intervenant_id ='" + data['intervenant_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  db.query(requete,
-    function(err, volume_globale) {
-      if (!err) {
-        res.status(200).json(volume_globale);  
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, volume_globale) {
+        if (!err) {
+          res.status(200).json(volume_globale); 
+        } else  {
+          res.send(err);
+        }
       }
-      else {
-        res.send(err);
-      }
-    }
-  );
+    );
+  }
 };
 
 
@@ -214,7 +227,7 @@ exports.editTypeValueElementVolumesGlobaux = (req, res) => {
     default:
   } 
 
-  var requete="UPDATE element SET " + typeUpdate
+  var requete = "UPDATE element SET " + typeUpdate
   +" WHERE id = " + req.params.id +";";
 
   db.query(requete,

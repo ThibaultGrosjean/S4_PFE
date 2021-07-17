@@ -360,8 +360,7 @@ export default {
             if (res.errors) this.errors = res.errors;
           }
           this.typeOperation = 'ajouté';
-          await this.getIntervenantsByProjet();
-          this.clear();
+          await this.clear();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -374,8 +373,7 @@ export default {
         } else {
           this.typeOperation = 'modifié';
           this.intervenant.id = '';
-          await this.getIntervenantsByProjet();
-          this.clear();
+          await this.clear();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -383,7 +381,7 @@ export default {
         }
       }
     },
-    clear() {
+    async clear() {
       this.$refs.formulaire.resetValidation();
       this.intervenant = {
         nb_he_td_min_attendu_projet: '',
@@ -395,6 +393,7 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
+      await this.getIntervenantsByProjet();
     },
     close() {
       this.getEnseignantProjetNotInIntervenant();

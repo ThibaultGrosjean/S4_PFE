@@ -32,12 +32,12 @@ const apiVolumeGlobaux = {
   },
 
   async editVolumeGlobaux(element) {
-    const response = await axios.patch('/volumes-globaux/edit/' + element.id, element).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/volumes-globaux/edit/' + element.id, element);
     return response.data;
   },
 
   async editTypeValueElementVolumeGlobaux(value, elementId, type) {
-    const response = await axios.patch('/volumes-globaux/edit/' + value + '/elements/' + elementId + '/' + type).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/volumes-globaux/edit/' + value + '/elements/' + elementId + '/' + type);
     return response.data;
   },
 

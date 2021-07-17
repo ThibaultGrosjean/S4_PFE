@@ -339,8 +339,7 @@ export default {
           this.errors = res.errors;
         } else {
           this.typeOperation = 'ajouté';
-          await this.getEnseignants();
-          this.clear();
+          await this.clear();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -353,15 +352,14 @@ export default {
         } else {
           this.typeOperation = 'modifié';
           this.enseignant.id = '';
-          await this.getEnseignants();
-          this.clear();
+          await this.clear();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
         }
       }
     },
-    clear() {
+    async clear() {
       this.enseignant = {
         id: this.enseignant.id,
         nom: '',
@@ -372,6 +370,7 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
+      await this.getEnseignants();
     },
     close() {
       this.form = !this.form;
@@ -393,12 +392,11 @@ export default {
     async delete() {
       this.loading = true;
       await apiEnseignant.deleteEnseignant(this.id);
-      await this.getEnseignants();
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
       this.loading = false;
       this.dialog = false;
-      this.clear()
+      await this.clear();
     },
     openDialog(id) {
       this.id = id;

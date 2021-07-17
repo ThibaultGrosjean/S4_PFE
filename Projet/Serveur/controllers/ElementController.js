@@ -1,35 +1,37 @@
 var db = require('../models/bdd');
-const { check, validator } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-exports.validator = [
+exports.validationResult = [
   check('titre',"Veuillez saisir un titre avec au minimum 2 caractères").isLength({ min: 2 }),
   check('surnom',"Le surnom doit être un numérique non nul").isLength({ min: 2 }),
   check('code',"Veuillez saisir un code avec au minimum 2 caractères").isLength({ min: 2 }),
-  check('niveau',"Le niveau doit être un numérique non nul").isNumeric().optional(),
-  check('indice',"L'indice doit être un numérique non nul").isNumeric(),
-  check('vol_hor_total_prevues_etu_cm',"Saisir un numérique non nul").isDecimal().optional(),
-  check('vol_hor_total_prevues_etu_tp',"Saisir un numérique non nul").isDecimal().optional(),
-  check('vol_hor_total_prevues_etu_tp',"Saisir un numérique non nul").isDecimal().optional(),
+  check('niveau',"Le niveau doit être un entier").isNumeric(),
+  check('indice',"L'indice doit être un entier").isNumeric(),
+  check('vol_hor_total_prevues_etu_cm',"Le volume horaire pour les CM doit être entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('vol_hor_total_prevues_etu_tp',"Le volume horaire pour les TD doit être entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('vol_hor_total_prevues_etu_tp',"Le volume horaire pour les TP doit être entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
   check('mode_saisie',"Veuillez saisir un mode de saisie").isLength({ min: 2 }),
-  check('cm_autorises',"Saisir un booléen").isBoolean(),
-  check('td_autorises',"Saisir un booléen").isBoolean(),
-  check('tp_autorises',"Saisir un booléen").isBoolean(),
-  check('partiel_autorises',"Saisir un booléen").isBoolean(),
-  check('forfait_globale_cm',"Saisir un numérique non nul").isDecimal().optional(),
-  check('forfait_globale_td',"Saisir un numérique non nul").isDecimal().optional(),
-  check('forfait_globale_tp',"Saisir un numérique non nul").isDecimal().optional(),
-  check('forfait_globale_partiel',"Saisir un numérique non nul").isDecimal().optional(),
-  check('nb_groupe_effectif_cm',"Saisir un numérique non nul").isNumeric().optional(),
-  check('nb_groupe_effectif_td',"Saisir un numérique non nul").isNumeric().optional(),
-  check('nb_groupe_effectif_tp',"Saisir un numérique non nul").isNumeric().optional(),
-  check('nb_groupe_effectif_partiel',"Saisir un numérique non nul").isNumeric().optional(),
-  check('parent',"Veuillez selectionner un parent").isNumeric().optional(),
+  check('cm_autorises',"Saisir un booléen").optional().isBoolean(),
+  check('td_autorises',"Saisir un booléen").optional().isBoolean(),
+  check('tp_autorises',"Saisir un booléen").optional().isBoolean(),
+  check('partiel_autorises',"Saisir un booléen").optional().isBoolean(),
+  check('forfait_globale_cm',"Le forfait globale pour les CM doit être un entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('forfait_globale_td',"Le forfait globale pour les TD doit être un entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('forfait_globale_tp',"Le forfait globale pour les TP doit être un entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('forfait_globale_partiel',"Le forfait globale pour les partiels doit être un entier ou un nombre à virgule").optional({nullable: true}).isFloat(),
+  check('nb_groupe_effectif_cm',"Le Nombre de groupes pour les CM doit être un entier").optional({nullable: true}).isNumeric(),
+  check('nb_groupe_effectif_td',"Le Nombre de groupes pour les TD doit être un entier").optional({nullable: true}).isNumeric(),
+  check('nb_groupe_effectif_tp',"Le Nombre de groupes pour les TP doit être un entier").optional({nullable: true}).isNumeric(),
+  check('nb_groupe_effectif_partiel',"Le Nombre de groupes pour les partiels doit être un entier").optional({nullable: true}).isNumeric(),
+  check('parent',"Veuillez selectionner un parent").optional({nullable: true}).isNumeric(),
 ];
 
 
 exports.getAllElements = (req, res) => {
-  db.query('SELECT e.*, COUNT(ee.id) AS nbfils, COUNT(vh.id) AS nbVolHebdo, COUNT(vg.id) AS nbVolGlob, COUNT(g.id) AS nbGrpInterv'
+  db.query('SELECT e.*, p.id AS periode_id, COUNT(ee.id) AS nbfils, COUNT(vh.id) AS nbVolHebdo, COUNT(vg.id) AS nbVolGlob, COUNT(g.id) AS nbGrpInterv'
         +' FROM element AS e'
+        +' LEFT JOIN periode AS p'
+        +' ON p.element_id = e.id'
         +' LEFT JOIN element AS ee'
         +' ON e.id = ee.parent'
         +' LEFT JOIN volume_hebdomadaire AS vh'
@@ -38,7 +40,7 @@ exports.getAllElements = (req, res) => {
         +' ON vg.element_id = e.id'
         +' LEFT JOIN groupe_intervenant AS g'
         +' ON g.element_id = e.id'
-        +' GROUP BY e.id ORDER BY e.parent, e.indice;',
+        +' GROUP BY e.id, p.id ORDER BY e.parent, e.indice;',
     function(err, elements) {
       if (!err) {
         res.status(200).send(elements);
@@ -200,15 +202,22 @@ exports.addElement = (req, res) => {
     + data['parent'] + ");"
   ;
 
-  db.query(requete,
-    function(err, element) {
-      if (!err) {
-        res.status(200).json(element);
-      } else  {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, element) {
+        if (!err) {
+          res.status(200).json(element);
+        } else  {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  } 
 };
 
 
@@ -313,16 +322,22 @@ exports.editElement = (req, res) => {
   +", nb_groupe_effectif_partiel =" + data['nb_groupe_effectif_partiel']
   +", parent =" + data['parent']
   +" WHERE id = " + req.params.id + ";";
-
-  db.query(requete,
-    function(err, element) {
-      if (!err) {
-        res.status(200).json(element); 
-      } else {
-        res.send(err);
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const extractedErrors = {};
+    errors.array().map(err => extractedErrors[err.param] = err.msg);
+    res.send({ errors: extractedErrors, data: data});
+  } else {
+    db.query(requete,
+      function(err, element) {
+        if (!err) {
+          res.status(200).json(element); 
+        } else {
+          res.send(err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 exports.deleteElement = (req, res) => {

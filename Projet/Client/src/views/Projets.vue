@@ -385,8 +385,7 @@ export default {
           this.errors = res.errors;
         } else {
           this.typeOperation = 'ajouté';
-          await this.getProjets();
-          this.clear();
+          await this.clear();
           this.loading = false
           this.form = false;
           this.responseSuccess = true;
@@ -399,15 +398,14 @@ export default {
         } else {
           this.typeOperation = 'modifié';
           this.projet.id = '';
-          await this.getProjets();
-          this.clear();
+          await this.clear();
           this.loading = false
           this.form = false;
           this.responseSuccess = true;
         }
       }
     },
-    clear() {
+    async clear() {
       this.projet = {
         nom: null,
         date: '',
@@ -416,6 +414,7 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
+      await this.getProjets();
     },
     close() {
       this.form = !this.form;

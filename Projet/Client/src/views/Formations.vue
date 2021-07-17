@@ -142,33 +142,24 @@
               <div v-if="checkboxNewElement">
                 <v-text-field
                     v-model="titre"
-                    :error-messages="titreErrors"
+                    :error-messages="errors.titre"
                     :counter="255"
                     label="Titre"
-                    required
                     clearable
-                    @input="$v.titre.$touch()"
-                    @blur="$v.titre.$touch()"
                 ></v-text-field>
                 <v-text-field
                     v-model="surnom"
-                    :error-messages="surnomErrors"
+                    :error-messages="errors.surnom"
                     :counter="255"
                     label="Surnom"
-                    required
                     clearable
-                    @input="$v.surnom.$touch()"
-                    @blur="$v.surnom.$touch()"
                 ></v-text-field>
                 <v-text-field
                     v-model="code"
-                    :error-messages="codeErrors"
+                    :error-messages="errors.code"
                     :counter="255"
                     label="Code"
-                    required
                     clearable
-                    @input="$v.code.$touch()"
-                    @blur="$v.code.$touch()"
                 ></v-text-field>
               </div>
               <v-form v-if="checkboxCopyElement" ref="formulaire" lazy-validation>
@@ -271,26 +262,19 @@
 import apiFormation from "../services/API/formations";
 import apiElement from "../services/API/elements";
 import apiProjet from "../services/API/projets";
-import {validationMixin} from "vuelidate";
-import {maxLength, required} from "vuelidate/lib/validators";
 import ReadElements from "../components/ReadElements";
 import ProgressOverlay from "../components/ProgressOverlay";
 
 export default {
   name: "Formations",
   components: {ProgressOverlay, ReadElements},
-  mixins: [validationMixin],
 
-  validations: {
-    titre: {required, maxLength: maxLength(255)},
-    surnom: {required, maxLength: maxLength(255)},
-    code: {required, maxLength: maxLength(255)},
-  },
   data: () => ({
     formations: [],
     projet: [],
     elements: [],
     hierarchies: [],
+    errors: [],
     form: false,
     dialog: false,
     loading: false,
@@ -334,9 +318,8 @@ export default {
         this.form = false;
         return;
       }
+      this.table = 'La formation';
       if (this.checkboxNewElement){
-        this.$v.$touch();
-        if (this.$v.$invalid) return;
         this.loading = true;
         const element = {
           titre: this.titre,
@@ -363,37 +346,53 @@ export default {
           parent: null,
           nbfils: 0,
         }
-        await apiFormation.createFormation({element: element,projet_id: Number(this.$route.params.id)});
-      } else {
-        if (this.element === null){
-          return;
+        const resElement = await apiElement.createElement(element);
+        if (resElement.errors){
+          this.errors = resElement.errors;
+          this.loading = false;
         } else {
+          await apiFormation.createFormation(Number(this.$route.params.id), resElement.insertId);
+          this.typeOperation = 'ajouté';
+          this.clear();
+          this.loading = false;
+          this.form = false;
+          this.responseSuccess = true;
+          this.checkboxCopierGrpInterv = false;
+          this.checkboxCopyElement = false;
+          this.checkboxNewElement = false;
+        }
+      } else {
+        if (this.element !== null){
           this.$refs.formulaire.validate();
           this.loading = true;
           let index = await this.hierarchies.findIndex(e => e.id === this.element);
-          await apiFormation.copyFormation(this.hierarchies[index], this.hierarchies[index].projet_id, this.$route.params.id, this.checkboxCopierGrpInterv);
+          const res = await apiFormation.copyFormation(this.hierarchies[index], this.hierarchies[index].projet_id, this.$route.params.id, this.checkboxCopierGrpInterv);
+          if (res.errors){
+            this.errors = res.errors;
+            this.loading = false;
+          } else {
+            this.typeOperation = 'copié';
+            this.clear();
+            this.$refs.formulaire.resetValidation();
+            this.loading = false;
+            this.form = false;
+            this.responseSuccess = true;
+            this.checkboxCopierGrpInterv = false;
+            this.checkboxCopyElement = false;
+            this.checkboxNewElement = false;
+          }
         }
       }
-      this.table = 'La formation';
-      this.typeOperation = 'ajouté';
-      await this.getFormationByProjet();
-      await this.getRacineHierarchie();
-      this.clear();
-      this.loading = false;
-      this.form = false;
-      this.responseSuccess = true;
-      this.checkboxCopierGrpInterv = false;
-      this.checkboxCopyElement = false;
-      this.checkboxNewElement = false;
     },
-    clear() {
-      this.$v.$reset();
-      this.$refs.formulaire.resetValidation();
+    async clear() {
       this.titre = '';
       this.surnom = '';
       this.code = '';
       this.element = null;
       this.methods = 'POST';
+      this.errors = [];
+      await this.getFormationByProjet();
+      await this.getRacineHierarchie();
     },
     close() {
       this.form = !this.form;
@@ -449,41 +448,6 @@ export default {
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
     }
-  },
-  computed: {
-    projetErrors() {
-      const errors = [];
-      if (!this.$v.projet_id.$dirty) return errors;
-      !this.$v.projet_id.required && errors.push('Veuillez sélectionner un projet');
-      return errors;
-    },
-    elementErrors() {
-      const errors = [];
-      if (!this.$v.element_id.$dirty) return errors;
-      !this.$v.element_id.required && errors.push('Veuillez sélectionner un élément');
-      return errors;
-    },
-    titreErrors() {
-      const errors = [];
-      if (!this.$v.titre.$dirty) return errors;
-      !this.$v.titre.maxLength && errors.push('Le titre ne doit pas faire plus de 255 caractères');
-      !this.$v.titre.required && errors.push('Le titre est obligatoire.');
-      return errors;
-    },
-    surnomErrors() {
-      const errors = [];
-      if (!this.$v.surnom.$dirty) return errors;
-      !this.$v.surnom.maxLength && errors.push('Le surnom ne doit pas faire plus de 255 caractères');
-      !this.$v.surnom.required && errors.push('Le surnom est obligatoire.');
-      return errors;
-    },
-    codeErrors() {
-      const errors = [];
-      if (!this.$v.code.$dirty) return errors;
-      !this.$v.code.maxLength && errors.push('Le code ne doit pas faire plus de 255 caractères');
-      !this.$v.code.required && errors.push('Le code est obligatoire');
-      return errors;
-    },
   },
   async mounted() {
     this.loading = true;

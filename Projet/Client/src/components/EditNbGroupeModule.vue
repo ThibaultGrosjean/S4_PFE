@@ -69,15 +69,6 @@
             ></v-text-field>
 
             <v-card-actions>
-              <v-btn
-                  rounded
-                  :disabled="loading"
-                  color="error darken-1"
-                  text
-                  @click="clear"
-              >
-                Vider
-              </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                   rounded

@@ -27,7 +27,7 @@ const apiIntervenant = {
   },
 
   async createIntervenant(intervenant) {
-    const response = await axios.post('/intervenants/create', intervenant).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.post('/intervenants/create', intervenant);
     return response.data;
   },
 
@@ -37,7 +37,7 @@ const apiIntervenant = {
   },
 
   async editIntervenant(intervenant) {
-    const response = await axios.patch('/intervenants/edit/' + intervenant.id, intervenant).catch(error => console.error('Erreur API: ', error));
+    const response = await axios.patch('/intervenants/edit/' + intervenant.id, intervenant);
     return response.data;
   },
 

@@ -184,7 +184,6 @@ exports.editIntervenant = (req, res) => {
   +"', enseignant_id ='" + data['enseignant_id']
   +"' WHERE id = " + req.params.id + ";";
 
-  console.log(data)
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     const extractedErrors = {};

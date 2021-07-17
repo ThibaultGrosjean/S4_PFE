@@ -1,7 +1,7 @@
 var db = require('../models/bdd');
 
-const { check, validator } = require('express-validator');
-
+const { check, validationResult } = require('express-validator');
+exports.validationResult = []
 exports.validatorLimite = [
   check('nom',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
   check('limite_he_td',"La limite doit être un numérique non nul").isDecimal(),
