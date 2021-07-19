@@ -1,84 +1,43 @@
 <template>
-  <v-container class="pa-10">
-  <ProgressOverlay :loading="loading"/>
-    <v-row>
-      <v-col>
-        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des statuts</h1>
-      </v-col>
+  <v-container fluid class="pa-10">
+    <ProgressOverlay :loading="loading"/>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pa-7">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn outlined small color="primary" @click="sortedByNom" class="mr-2">
+              <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Nom
+            </v-btn>
+            <v-btn icon color="success" @click="form = true">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-row>
-    <v-row
-        align="center"
-        justify="center"
-    >
-      <v-btn-toggle
-          v-if="statuts.length"
-          rounded
-          dense
-          class="animate-pop-in"
-      >
-        <v-btn
-            @click="sortedByNom"
-        >
-          <span>Nom</span>
-          <v-icon right>sort_by_alpha</v-icon>
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <v-row>
-      <v-col v-if="!statuts.length">
+
+    <v-row v-if="!statuts.length">
+      <v-col class="pa-0">
         <p class="text-center animate-pop-in">Aucune donnée trouvée</p>
       </v-col>
     </v-row>
+
     <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>Le statut a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row class="mt-15">
       <v-col
-         v-for="s in statuts"
-         :key="s.id"
-         sm="4"
-         class="justify-center"
+          v-for="s in statuts"
+          :key="s.id"
+          sm="6"
+          md="4"
+          class="justify-center"
       >
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">{{ s.nom }}</v-card-title>
-          <v-card-subtitle class="text-subtitle-1">{{ s.surnom }}</v-card-subtitle>
+          <v-card-subtitle class="text-subtitle-1 pb-2">{{ s.surnom }}</v-card-subtitle>
           <v-divider></v-divider>
-          <v-card-text>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">HeTD*</span>
-              </template>
-              <span>Nombre d’heures équivalent TD</span>
-            </v-tooltip> minimales attendues : <b>{{ s.nb_he_td_min_attendu }}</b> h<br>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">HeTD*</span>
-              </template>
-              <span>Nombre d’heures équivalent TD</span>
-            </v-tooltip> maximales attendues : <b>{{ s.nb_he_td_max_attendu }}</b> h<br>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">HeTD*</span>
-              </template>
-              <span>Nombre d’heures équivalent TD</span>
-            </v-tooltip> minimales sup. : <b>{{ s.nb_he_td_min_sup }}</b> h<br>
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">HeTD*</span>
-              </template>
-              <span>Nombre d’heures équivalent TD</span>
-            </v-tooltip> maximales sup. : <b>{{ s.nb_he_td_max_sup }}</b> h<br>
+          <v-card-text class="pa-4">
+            <DetailsStatut :data="s"/>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -115,9 +74,10 @@
                     icon
                     v-bind="attrs"
                     v-on="on"
+                    color="error darken-1"
                     @click="openDialog(s)"
                 >
-                  <v-icon color="error darken-1">delete</v-icon>
+                  <v-icon>delete</v-icon>
                 </v-btn>
               </template>
               <span>Supprimer {{ s.nom }}</span>
@@ -126,6 +86,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -149,6 +110,7 @@
                   :counter="255"
                   :error-messages="this.errors.nom"
                   label="Nom"
+                  autofocus
                   clearable
               >
               </v-text-field>
@@ -186,7 +148,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -200,6 +161,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -210,17 +172,17 @@
           <v-card-title class="text-h5 error darken-2 white--text">
             <span class="headline">Confirmation de suppression</span>
             <v-spacer></v-spacer>
-            <v-btn icon  color="white" @click="closeDialog">
+            <v-btn icon color="white" @click="closeDialog">
               <v-icon>close</v-icon>
             </v-btn>
           </v-card-title>
           <v-card-text class="text-justify pt-4">
             Êtes-vous sûr de vouloir supprimer le statut « {{ statut.nom }} » ?<br><br>
-            Cela entraînera la suppression des enseignants reliés à ce statut, ainsi que toutes ses interventions dans les formations.
+            Cela entraînera la suppression des enseignants reliés à ce statut, ainsi que toutes ses interventions dans
+            les formations.
           </v-card-text>
           <v-card-actions>
             <v-btn
-                rounded
                 :disabled="loading"
                 color="error darken-1"
                 text
@@ -230,7 +192,6 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-                rounded
                 :loading="loading"
                 color="success darken-1"
                 text
@@ -242,21 +203,20 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row>
-      <v-col>
-        <v-fab-transition>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>Le statut a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -265,10 +225,11 @@
 import apiStatut from "../services/API/statuts";
 import apiEnseignant from "../services/API/enseignants";
 import ProgressOverlay from "../components/ProgressOverlay";
+import DetailsStatut from "../components/DetailsStatut";
 
 export default {
   name: "Statuts",
-  components: {ProgressOverlay},
+  components: {DetailsStatut, ProgressOverlay},
 
   data: () => ({
     statuts: [],
@@ -277,7 +238,7 @@ export default {
     dialog: false,
     loading: false,
     responseSuccess: false,
-    sortByNom: false,
+    sortNom: false,
     methods: "POST",
     typeOperation: 'ajouté',
     statut: {
@@ -298,24 +259,26 @@ export default {
       this.loading = true;
       if (this.methods === 'POST') {
         const res = await apiStatut.createStatut(this.statut);
-        if (res.errors){
+        if (res.errors) {
           this.loading = false;
           this.errors = res.errors;
         } else {
           this.typeOperation = 'ajouté';
-          this.clear();
+          await this.clear();
+          await this.getStatuts();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
         }
       } else {
         const res = await apiStatut.editStatut(this.statut);
-        if (res.errors){
+        if (res.errors) {
           this.loading = false;
           this.errors = res.errors;
         } else {
           this.typeOperation = 'modifié';
-          this.clear();
+          await this.clear();
+          await this.getStatuts();
           this.statut.id = '';
           this.loading = false;
           this.form = false;
@@ -325,16 +288,15 @@ export default {
     },
     async clear() {
       this.statut = {
-        nom : '',
-        surnom : '',
-        nb_he_td_min_attendu : '',
-        nb_he_td_max_attendu : '',
-        nb_he_td_min_sup : '',
-        nb_he_td_max_sup : '',
+        nom: '',
+        surnom: '',
+        nb_he_td_min_attendu: '',
+        nb_he_td_max_attendu: '',
+        nb_he_td_min_sup: '',
+        nb_he_td_max_sup: '',
       };
       this.errors = [];
       this.methods = 'POST';
-      await this.getStatuts();
     },
     close() {
       this.form = !this.form;
@@ -353,7 +315,7 @@ export default {
       this.typeOperation = 'copié';
       this.responseSuccess = true;
     },
-    closeDialog(){
+    closeDialog() {
       this.dialog = false;
       this.clear();
     },
@@ -368,10 +330,11 @@ export default {
         this.statut.nom = statut.nom;
       }
     },
-    async deleteStatut(){
+    async deleteStatut() {
       this.loading = true;
       await apiStatut.deleteStatut(this.statut.id);
       await this.clear();
+      await this.getStatuts();
       this.loading = false;
       this.dialog = false;
       this.typeOperation = 'supprimé';

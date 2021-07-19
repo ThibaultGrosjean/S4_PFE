@@ -25,12 +25,11 @@
       </td>
     </template>
     <v-card>
-      <v-card-title class="text-h6 text-center">
-        <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
-        <span v-else>Volume horaire pour toutes les semaines</span>
+      <v-card-title class="text-h6 d-flex justify-center">
+        <span v-if="table === 'groupes-intervenants'">Nombre de groupes {{ typeCours.toUpperCase() }}</span>
+        <span v-else>Volume horaire {{ typeCours.toUpperCase() }}</span>
       </v-card-title>
-      <v-card-subtitle class="text-subtitle-1 text-center" v-if="table === 'groupes-intervenants'">Nombre de groupe {{ typeCours.toUpperCase() }} - semaine {{ data.num_semaine }}</v-card-subtitle>
-      <v-card-subtitle class="text-subtitle-1 text-center" v-else>Volume horaire {{ typeCours.toUpperCase() }} - semaine {{ data.num_semaine }}</v-card-subtitle>
+      <v-card-subtitle class="text-subtitle-1 text-center">Semaine {{ data.num_semaine }}</v-card-subtitle>
       <v-card-text>
         <v-text-field v-if="table === 'groupes-intervenants'"
             v-model="nbGroupeSemaineDefaut"
@@ -54,7 +53,6 @@
             rounded
             :disabled="loading"
             color="error darken-1"
-            class="ml-4 mb-3"
             text
             @click="close"
         >
@@ -65,7 +63,6 @@
             rounded
             :loading="loading"
             color="success darken-1"
-            class="mr-4 mb-3"
             text
             @click="save"
         >
@@ -131,8 +128,18 @@ export default {
     },
     clear() {
       this.$v.$reset();
-      this.volHorSemaineDefaut = 0;
-      this.nbGroupeSemaineDefaut = 0;
+      if (this.table === 'groupes-intervenants') {
+        if (this.typeCours === 'cm') this.nbGroupeSemaineDefaut = this.data.nb_groupe_cm;
+        if (this.typeCours === 'td') this.nbGroupeSemaineDefaut = this.data.nb_groupe_td;
+        if (this.typeCours === 'tp') this.nbGroupeSemaineDefaut = this.data.nb_groupe_tp;
+        if (this.typeCours === 'partiel') this.nbGroupeSemaineDefaut = this.data.nb_groupe_partiel;
+      }
+      else {
+        if (this.typeCours === 'cm') this.volHorSemaineDefaut = this.data.vol_hor_cm;
+        if (this.typeCours === 'td') this.volHorSemaineDefaut = this.data.vol_hor_td;
+        if (this.typeCours === 'tp') this.volHorSemaineDefaut = this.data.vol_hor_tp;
+        if (this.typeCours === 'partiel') this.volHorSemaineDefaut = this.data.vol_hor_partiel;
+      }
     },
     close() {
       this.validForm = true;
@@ -170,6 +177,9 @@ export default {
       this.$emit('reload-data');
       this.loading = false;
     },
+  },
+  mounted() {
+    this.clear();
   }
 }
 </script>

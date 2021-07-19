@@ -35,6 +35,7 @@
                 v-model="periode.nb_semaine"
                 :error-messages="errors.nb_semaine"
                 label="Nombre de semaines"
+                autofocus
                 clearable
             ></v-text-field>
             <v-text-field
@@ -65,7 +66,6 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                  rounded
                   :loading="loading"
                   color="success darken-1"
                   text

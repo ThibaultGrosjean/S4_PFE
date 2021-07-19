@@ -1,51 +1,40 @@
 <template>
-  <v-container class="pa-10">
+  <v-container fluid class="pa-10">
   <ProgressOverlay :loading="loading"/>
-    <v-row>
-      <v-col class="text-center">
-        <h1 class="text-center text-h4 animate-pop-in mb-2">Bilan</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4) }}</span>
-      </v-col>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pt-7 pb-5 pl-7 pr-9">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn small outlined @click="checkBilan = !checkBilan" color="primary" class="mr-4 mb-2">
+              <v-icon class="mr-2">
+                {{ checkBilan ? 'visibility' : 'visibility_off' }}
+              </v-icon>
+              Bilan général
+            </v-btn>
+            <v-btn small outlined @click="checkSousTotaux = !checkSousTotaux" color="primary" class="mb-2">
+              <v-icon class="mr-2">
+                {{ checkSousTotaux ? 'visibility' : 'visibility_off' }}
+              </v-icon>
+              Sous-Totaux
+            </v-btn>
+          </v-col>
+          <v-col cols="3" class="d-flex align-center justify-end pa-0 mb-2">
+            <span v-if="projet.length" class="subtitle-1 text--secondary">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-row>
-    <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>Le sous-total a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row class="pa-3 pb-0 animate-pop-in">
-      <v-col class="d-flex justify-start">
-        <v-checkbox
-            v-model="checkboxBilan"
-            label="Afficher le bilan générale"
-            color="primary"
-            class="ma-0"
-        ></v-checkbox>
-        <v-checkbox
-            v-model="checkboxSousTotaux"
-            label="Afficher les sous totaux"
-            color="primary"
-            class="ma-0 ml-4"
-        ></v-checkbox>
-      </v-col>
-    </v-row>
-    <v-row v-if="checkboxBilan">
+
+    <v-row v-if="checkBilan">
       <v-col
           sm="12"
           class="justify-center"
       >
         <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">Bilan</v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span></v-card-subtitle>
+          <v-card-title class="text-h5">Bilan général</v-card-title>
           <v-card-text class="pa-0">
+            <v-divider v-if="!bilans.length"></v-divider>
             <v-simple-table fixed-header v-if="bilans.length">
               <template v-slot:default>
                 <thead>
@@ -100,15 +89,28 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="checkboxSousTotaux">
+
+    <v-row v-if="checkSousTotaux">
       <v-col
           sm="12"
           class="justify-center"
       >
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">Sous-Totaux</v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="projet.length">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span></v-card-subtitle>
-          <v-card-text class="pa-0">
+          <v-card-text class="pa-0" style="position: relative">
+            <v-divider v-if="!sousTotaux.length"></v-divider>
+            <v-btn
+                v-if="projet.length"
+                :disabled="Boolean(projet[0].verrou)"
+                fab absolute
+                dark
+                small
+                top right
+                color="success"
+                @click="form = true"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
             <v-simple-table fixed-header v-if="sousTotaux.length">
               <template v-slot:default>
                 <thead>
@@ -133,7 +135,7 @@
                   <th class="text-center">Sous-total TP</th>
                   <th class="text-center">Sous-total Partiel</th>
                   <th class="text-center left-border">Sous-total HeTD</th>
-                  <th class="text-center">Opération</th>
+                  <th v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">Opération</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -145,7 +147,7 @@
                   <td class="text-center">{{ st.total_tp }} h</td>
                   <td class="text-center">{{ st.total_partiel }} h</td>
                   <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b></span></td>
-                  <td class="text-center">
+                  <td v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
@@ -165,9 +167,10 @@
                             icon
                             v-bind="attrs"
                             v-on="on"
+                            color="error darken-1"
                             @click="openDialog(st)"
                         >
-                          <v-icon color="error darken-1">delete</v-icon>
+                          <v-icon>delete</v-icon>
                         </v-btn>
                       </template>
                       <span>Supprimer {{ st.nom_limite }}</span>
@@ -192,6 +195,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -215,6 +219,7 @@
                   :error-messages="nomErrors"
                   :counter="255"
                   label="Nom"
+                  autofocus
                   required
                   clearable
                   @input="$v.nom.$touch()"
@@ -260,7 +265,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -274,6 +278,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -293,7 +298,6 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
-                rounded
                 :disabled="loading"
                 color="error darken-1"
                 text
@@ -303,7 +307,6 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-                rounded
                 :loading="loading"
                 color="success darken-1"
                 text
@@ -315,22 +318,20 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
-      <v-col>
-        <v-fab-transition>
+
+    <v-row>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>Le sous-total a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              :disabled="Boolean(projet[0].verrou)"
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -362,8 +363,8 @@ export default {
     form: false,
     dialog: false,
     showMenuStatutDetail: false,
-    checkboxBilan: true,
-    checkboxSousTotaux: true,
+    checkBilan: true,
+    checkSousTotaux: true,
     loading: false,
     responseSuccess: false,
     sortIntervenantBilan: false,
@@ -417,7 +418,7 @@ export default {
         }
       }
       await this.getSousTotaux();
-      this.checkboxSousTotaux = true;
+      this.checkSousTotaux = true;
       this.clear();
       this.loading = false;
       this.form = false;
@@ -498,9 +499,9 @@ export default {
       }
     },
     getClassColorForTotal(bilan){
-      if (bilan.total_general < bilan.nb_he_td_min_attendu_projet) return 'sous-service';
-      if (bilan.total_general >= bilan.nb_he_td_min_attendu_projet && bilan.total_general <= bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'valide';
-      if (bilan.total_general > bilan.nb_he_td_max_attendu_projet + bilan.nb_he_td_max_sup_projet) return 'heures-sup';
+      if (bilan.total_general < bilan.nb_he_td_min_attendu) return 'sous-service';
+      if (bilan.total_general >= bilan.nb_he_td_min_attendu && bilan.total_general <= bilan.nb_he_td_max_attendu + bilan.nb_he_td_max_sup) return 'valide';
+      if (bilan.total_general > bilan.nb_he_td_max_attendu + bilan.nb_he_td_max_sup) return 'heures-sup';
     },
     getClassColorForSousTotal(sousTotal){
       //TODO faire en fonction des statuts

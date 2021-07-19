@@ -40,13 +40,13 @@ exports.getAllGroupeSousTotalByIdLimite = (req, res) => {
  * Les heures supp. sont calculées en réduisant le nombre max HeTD à la somme générale, si le résultat est négatif alors il est égal 0. 
  */ 
 exports.getAllBilanByProjetIntervenant = (req, res) => {
-  db.query('SELECT g.intervenant_id, e.prenom, e.nom, i.nb_he_td_min_attendu_projet, i.nb_he_td_max_attendu_projet, i.nb_he_td_min_sup_projet, i.nb_he_td_max_sup_projet'
+  db.query('SELECT g.intervenant_id, e.prenom, e.nom, i.nb_he_td_min_attendu, i.nb_he_td_max_attendu, i.nb_he_td_min_sup, i.nb_he_td_max_sup'
         +' , SUM(v.vol_hor_cm * g.nb_groupe_cm) AS total_cm'
         +' , SUM(v.vol_hor_td * g.nb_groupe_td) AS total_td'
         +' , SUM(v.vol_hor_tp * g.nb_groupe_tp) AS total_tp'
         +' , SUM(v.vol_hor_partiel * g.nb_groupe_partiel) AS total_partiel'
         +' , (SUM(v.vol_hor_cm * g.nb_groupe_cm) + SUM(v.vol_hor_td * g.nb_groupe_td)  + SUM(v.vol_hor_tp * g.nb_groupe_tp)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel)) AS total_general'
-        +' , CASE WHEN((SUM(v.vol_hor_cm * g.nb_groupe_cm) + SUM(v.vol_hor_td * g.nb_groupe_td)  + SUM(v.vol_hor_tp * g.nb_groupe_tp)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel)) - i.nb_he_td_max_attendu_projet) > 0 THEN ((SUM(v.vol_hor_cm * g.nb_groupe_cm) + SUM(v.vol_hor_td * g.nb_groupe_td)  + SUM(v.vol_hor_tp * g.nb_groupe_tp)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel)) - i.nb_he_td_max_attendu_projet) ELSE 0 END AS total_heures_sup'
+        +' , CASE WHEN((SUM(v.vol_hor_cm * g.nb_groupe_cm) + SUM(v.vol_hor_td * g.nb_groupe_td)  + SUM(v.vol_hor_tp * g.nb_groupe_tp)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel)) - i.nb_he_td_max_attendu) > 0 THEN ((SUM(v.vol_hor_cm * g.nb_groupe_cm) + SUM(v.vol_hor_td * g.nb_groupe_td)  + SUM(v.vol_hor_tp * g.nb_groupe_tp)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel)) - i.nb_he_td_max_attendu) ELSE 0 END AS total_heures_sup'
         +' FROM groupe_intervenant AS g'
         +' JOIN intervenant AS i'
         +' ON i.id = g.intervenant_id'
@@ -78,13 +78,13 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
  * Les heures supp. sont calculées en réduisant le nombre max HeTD à la somme générale, si le résultat est négatif alors il est égal 0. 
  */ 
 exports.getAllBilanByProjetIntervenantWithVolGlobale = (req, res) => {
-  db.query('SELECT g.intervenant_id, e.prenom, e.nom, i.nb_he_td_min_attendu_projet, i.nb_he_td_max_attendu_projet, i.nb_he_td_min_sup_projet, i.nb_he_td_max_sup_projet'
+  db.query('SELECT g.intervenant_id, e.prenom, e.nom, i.nb_he_td_min_attendu, i.nb_he_td_max_attendu, i.nb_he_td_min_sup, i.nb_he_td_max_sup'
       +' , (SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0)) AS total_cm'
       +' , (SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0))  AS total_td'
       +' , (SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)) AS total_tp'
       +' , (SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) AS total_partiel'
       +' , (SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) AS total_general'
-      +' , CASE WHEN((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu_projet) > 0 THEN ((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu_projet) ELSE 0 END AS total_heures_sup'
+      +' , CASE WHEN((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu) > 0 THEN ((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu) ELSE 0 END AS total_heures_sup'
       +' FROM groupe_intervenant AS g'
       +' JOIN intervenant AS i'
       +' ON i.id = g.intervenant_id'

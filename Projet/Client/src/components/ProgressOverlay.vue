@@ -1,5 +1,5 @@
 <template>
-  <v-overlay :value="loading" :opacity="0">
+  <v-overlay :value="loading" :opacity="0" class="margin-correct-bar">
     <v-progress-circular
         indeterminate
         size="64"
@@ -16,5 +16,7 @@ export default {
 </script>
 
 <style scoped>
-
+.margin-correct-bar {
+  margin-left: 67px !important;
+}
 </style>

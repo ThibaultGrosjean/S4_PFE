@@ -1,56 +1,39 @@
 <template>
-  <v-container class="pa-10">
-  <ProgressOverlay :loading="loading"/>
-    <v-row>
+  <v-container fluid class="pa-10">
+    <ProgressOverlay :loading="loading"/>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pa-7">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn outlined small color="primary"  @click="sortedByNom" class="mr-2">
+              <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Nom
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByDate" class="mr-2">
+              <v-icon small class="mr-2">{{ sortDate ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Date
+            </v-btn>
+            <v-btn small outlined @click="switchArchive = !switchArchive" :color="switchArchive ? 'success' : 'primary'">
+              <v-icon class="mr-2">
+                {{ switchArchive ? 'visibility' : 'visibility_off' }}
+              </v-icon>
+              Archive
+            </v-btn>
+            <v-btn icon color="success" @click="form = true">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-row>
+
+    <v-row v-if="!projets.length">
       <v-col>
-        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des projets</h1>
-      </v-col>
-    </v-row>
-    <v-row
-        v-if="projets.length"
-        align="center"
-        justify="center"
-    >
-      <v-btn-toggle
-          rounded
-          dense
-          class="animate-pop-in"
-      >
-        <v-btn
-            @click="sortedByDate"
-        >
-          <span>Date</span>
-          <v-icon right>sort_by_alpha</v-icon>
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <v-row>
-      <v-col v-if="!projets.length">
         <p class="text-center animate-pop-in">Aucun projet trouvé</p>
       </v-col>
     </v-row>
-    <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>Le projet a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row v-if="projets.length">
-      <v-switch
-          v-model="switchArchive"
-          :label="switchArchive ? 'Masquer les projets archivés' : 'Afficher les projets archivés'"
-          color="success"
-          class="ml-4 mt-0 animate-pop-in"
-      ></v-switch>
-    </v-row>
+
     <v-row>
       <template v-for="p in projets">
         <v-col
@@ -62,54 +45,59 @@
         >
           <v-card class="animate-pop-in">
             <v-card-title class="text-h5">
-              <span>{{ p.nom }}</span>
-              <v-spacer></v-spacer>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                      :color="p.verrou ? 'success' : 'gray'"
-                      class="mr-2"
-                      @click="saveVerrou(p)"
-                  >
-                    <v-icon>{{ p.verrou ? "lock" : "lock_open" }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}  {{ p.nom }}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                      :color="p.archive ? 'success' : 'gray'"
-                      @click="saveArchive(p)"
-                  >
-                    <v-icon>{{ p.archive ? "archive" : "unarchive" }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ p.archive ? "Désarchiver" : "Archiver " }}  {{ p.nom }}</span>
-              </v-tooltip>
+              <v-container>
+                <v-row>
+                  <v-col class="pa-0"><span>{{ p.nom }}</span></v-col>
+                  <v-col class="pa-0 d-flex justify-end">
+                    <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          :color="p.verrou ? 'success' : 'gray'"
+                          class="mr-2"
+                          @click="saveVerrou(p)"
+                      >
+                        <v-icon>{{ p.verrou ? "lock" : "lock_open" }}</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ p.verrou ? "Déverrouiller" : "Verrouiller " }}  {{ p.nom }}</span>
+                    </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            :color="p.archive ? 'success' : 'gray'"
+                            @click="saveArchive(p)"
+                        >
+                          <v-icon>{{ p.archive ? "archive" : "unarchive" }}</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>{{ p.archive ? "Désarchiver" : "Archiver " }}  {{ p.nom }}</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card-title>
-            <v-card-subtitle>{{ p.date.substr(0, 10) }}</v-card-subtitle>
+            <v-card-subtitle class="text-subtitle-1 pb-2">{{ p.date.substr(0, 10) }}</v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-btn block outlined rounded color="secondary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
+                  <v-btn block outlined color="primary" @click="redirect('/formations/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">auto_stories</v-icon>Formations
                   </v-btn>
                 </v-row>
                 <v-row>
-                  <v-btn block outlined rounded color="secondary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
+                  <v-btn block outlined color="primary" @click="redirect('/intervenants/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">groups</v-icon>Intervenants
                   </v-btn>
                 </v-row>
                 <v-row>
-                  <v-btn block outlined rounded color="secondary" @click="redirect('/bilan/projets/'+ p.id)" class="mb-4">
+                  <v-btn block outlined color="primary" @click="redirect('/bilan/projets/'+ p.id)" class="mb-4">
                     <v-icon class="mr-2">account_balance_wallet</v-icon>Bilan
                   </v-btn>
                 </v-row>
@@ -153,9 +141,10 @@
                       icon
                       v-bind="attrs"
                       v-on="on"
+                      color="error darken-1"
                       @click="saveArchive(p)"
                   >
-                    <v-icon color="error darken-1">delete</v-icon>
+                    <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
                 <span>Supprimer {{ p.nom }}</span>
@@ -165,6 +154,7 @@
         </v-col>
       </template>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -188,6 +178,7 @@
                   :counter="255"
                   :error-messages="errors.nom"
                   label="Nom"
+                  autofocus
                   clearable
               ></v-text-field>
               <v-menu
@@ -219,22 +210,18 @@
                     scrollable
                 >
                   <v-btn
-                      rounded
                       :disabled="loading"
                       text
                       color="error darken-1"
-                      class="ml-4 mb-3"
                       @click="menu = false"
                   >
                     Annuler
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                      rounded
                       :loading="loading"
                       text
                       color="success darken-1"
-                      class="mr-4 mb-3"
                       @click="$refs.menu.save(projet.date)"
                   >
                     Valider
@@ -244,7 +231,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -258,6 +244,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -303,21 +290,20 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row>
-      <v-col>
-        <v-fab-transition>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>Le projet a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -340,6 +326,7 @@ export default {
     loading: false,
     responseSuccess: false,
     switchArchive: false,
+    sortNom: false,
     sortDate: false,
     methods: "POST",
     typeOperation: 'ajouté',
@@ -386,6 +373,7 @@ export default {
         } else {
           this.typeOperation = 'ajouté';
           await this.clear();
+          await this.getProjets();
           this.loading = false
           this.form = false;
           this.responseSuccess = true;
@@ -399,6 +387,7 @@ export default {
           this.typeOperation = 'modifié';
           this.projet.id = '';
           await this.clear();
+          await this.getProjets();
           this.loading = false
           this.form = false;
           this.responseSuccess = true;
@@ -414,7 +403,6 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
-      await this.getProjets();
     },
     close() {
       this.form = !this.form;
@@ -450,12 +438,23 @@ export default {
       });
     },
     sortedByDate() {
+      this.sortNom = false;
       if (this.sortDate) {
         this.sortDate = false;
         this.projets.sort((a, b) => new Date(b.date) - new Date(a.date));
       } else {
         this.sortDate = true;
         this.projets.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    },
+    sortedByNom() {
+      this.sortDate = false;
+      if (this.sortNom) {
+        this.sortNom = false;
+        this.projets.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
+      } else {
+        this.sortNom = true;
+        this.projets.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
       }
     },
   },

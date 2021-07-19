@@ -13,12 +13,12 @@
       </td>
     </template>
     <v-card>
-      <v-card-title class="text-h6 text-center d-flex justify-center">
-        <span v-if="table === 'groupes-intervenants'">Nombre de groupes pour toutes les semaines</span>
+      <v-card-title class="text-h6 d-flex justify-center">
+        <span v-if="table === 'groupes-intervenants'">Nombre de groupes {{ typeCours.toUpperCase() }}s</span>
         <span v-else-if="table === 'volumes-globaux'">Forfait horaire du {{ element.titre.substr(element.titre.indexOf(":")+1) }}</span>
-        <span v-else>Volume horaire pour toutes les semaines</span>
+        <span v-else>Volume horaire {{ typeCours.toUpperCase() }}</span>
       </v-card-title>
-      <v-card-subtitle class="text-subtitle-1 text-center">{{ typeCours.toUpperCase() }}</v-card-subtitle>
+      <v-card-subtitle class="text-subtitle-1 text-center">Pour toutes les semaines</v-card-subtitle>
       <v-card-text>
         <v-text-field v-if="table === 'groupes-intervenants'"
             v-model="nbGroupeSemaineDefaut"
@@ -39,10 +39,8 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-            rounded
             :disabled="loading"
             color="error darken-1"
-            class="ml-4 mb-3"
             text
             @click="close"
         >
@@ -50,10 +48,8 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-            rounded
             :loading="loading"
             color="success darken-1"
-            class="mr-4 mb-3"
             text
             @click="appliquerTtesSem()"
         >
@@ -179,5 +175,6 @@ export default {
 }
 .first-col {
   min-width: 70px !important;
+  word-wrap: normal !important;
 }
 </style>

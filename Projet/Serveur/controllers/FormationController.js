@@ -9,21 +9,24 @@ exports.validationResult = [
 
 
 exports.getAllFormations = (req, res) => {
-  db.query('SELECT f.*, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
+  db.query('SELECT f.*, e.titre, e.surnom, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
         +' FROM formation AS f'
         +' LEFT JOIN element AS e'
-        +' ON e.parent = f.element_id'
+        +' ON e.id = f.element_id'
         +' LEFT JOIN element AS e2'
         +' ON e2.parent = e.id'
         +' LEFT JOIN element AS e3'
         +' ON e3.parent = e2.id'
+        +' LEFT JOIN element AS e4'
+        +' ON e4.parent = e3.id'
         +' LEFT JOIN groupe_intervenant AS g'
-        +' ON g.element_id = e3.id'
+        +' ON g.element_id = e4.id'
         +' LEFT JOIN volume_globale AS vg'
-        +' ON vg.element_id = e3.id'
+        +' ON vg.element_id = e4.id'
         +' LEFT JOIN volume_hebdomadaire AS vh'
-        +' ON vh.element_id = e3.id'
-        +' GROUP BY f.id, e.titre',
+        +' ON vh.element_id = e4.id'
+        +' GROUP BY f.id, e.titre'
+        +' ORDER BY e.titre',
     function(err, formations) {
       if (!err) {
         res.status(200).json(formations);  
@@ -37,22 +40,24 @@ exports.getAllFormations = (req, res) => {
 
 
 exports.getFormationByProjet = (req, res) => {
-  db.query('SELECT f.*, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
+  db.query('SELECT f.*,e.titre, e.surnom, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
         +' FROM formation AS f'
         +' LEFT JOIN element AS e'
-        +' ON e.parent = f.element_id'
+        +' ON e.id = f.element_id'
         +' LEFT JOIN element AS e2'
         +' ON e2.parent = e.id'
         +' LEFT JOIN element AS e3'
         +' ON e3.parent = e2.id'
+        +' LEFT JOIN element AS e4'
+        +' ON e4.parent = e3.id'
         +' LEFT JOIN groupe_intervenant AS g'
-        +' ON g.element_id = e3.id'
+        +' ON g.element_id = e4.id'
         +' LEFT JOIN volume_globale AS vg'
-        +' ON vg.element_id = e3.id'
+        +' ON vg.element_id = e4.id'
         +' LEFT JOIN volume_hebdomadaire AS vh'
-        +' ON vh.element_id = e3.id'
+        +' ON vh.element_id = e4.id'
         +' WHERE f.projet_id = ?'
-        +' GROUP BY f.id;', [req.params.id],
+        +' GROUP BY f.id, e.titre', [req.params.id],
     function(err, formation) {
       if (!err) {
         res.status(200).json(formation);  
@@ -66,20 +71,22 @@ exports.getFormationByProjet = (req, res) => {
 
 
 exports.getFormation = (req, res) => {
-  db.query('SELECT f.*, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
+  db.query('SELECT f.*,e.titre, e.surnom, COUNT(DISTINCT g.id) AS nbGrpInterv, COUNT(DISTINCT vg.id) AS nbVolHorGlob, COUNT(DISTINCT vh.id) AS nbVolHorHebdo'
         +' FROM formation AS f'
         +' LEFT JOIN element AS e'
-        +' ON e.parent = f.element_id'
+        +' ON e.id = f.element_id'
         +' LEFT JOIN element AS e2'
         +' ON e2.parent = e.id'
         +' LEFT JOIN element AS e3'
         +' ON e3.parent = e2.id'
+        +' LEFT JOIN element AS e4'
+        +' ON e4.parent = e3.id'
         +' LEFT JOIN groupe_intervenant AS g'
-        +' ON g.element_id = e3.id'
+        +' ON g.element_id = e4.id'
         +' LEFT JOIN volume_globale AS vg'
-        +' ON vg.element_id = e3.id'
+        +' ON vg.element_id = e4.id'
         +' LEFT JOIN volume_hebdomadaire AS vh'
-        +' ON vh.element_id = e3.id'
+        +' ON vh.element_id = e4.id'
         +' WHERE f.id = ?'
         +' GROUP BY f.id', [req.params.id],
     function(err, formation) {

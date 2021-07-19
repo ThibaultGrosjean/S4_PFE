@@ -15,8 +15,8 @@ import NavBar from "./components/NavBar";
 export default {
   name: 'App',
   components: {NavBar},
-  computed:{
-    theme(){
+  computed: {
+    theme() {
       return (this.$vuetify.theme.dark) ? 'dark' : 'light';
     }
   }
@@ -29,17 +29,12 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.v-btn--addElement {
-  bottom: 0;
-  right: 0;
-  position: fixed !important;
-  margin: 26px;
-  z-index: 1000;
-}
+
 .animate-pop-in {
   animation: pop-in .3s forwards .15s;
   opacity: 0;
 }
+
 @keyframes pop-in {
   0% {
     opacity: 0;
@@ -50,33 +45,31 @@ export default {
     transform: translateY(0);
   }
 }
+
 .theme--light.v-application {
-  background: #fafafa !important;
+  background: #eef0f4 !important;
 }
-.v-card {
-  border-radius: 20px !important;
-}
-.v-dialog {
-  border-radius: 20px !important;
-}
-.v-sheet.v-snack__wrapper {
-  border-radius: 50px !important;
-}
-.v-menu__content {
-  border-radius: 20px !important;
-}
+
 .theme--dark.v-application {
   background: #202020 !important;
 }
+
+.v-card-title, .v-card__title {
+  word-break: keep-all !important;
+}
+
 .theme--dark.v-card {
   background: #272727 !important;
 }
+
 .theme--dark.v-expansion-panels .v-expansion-panel {
   background: #272727 !important;
 }
+
 .theme--dark.v-data-table {
   background: #272727 !important;
 }
+
 .theme--dark.v-data-table.v-data-table--fixed-header thead th {
   background: #202020 !important;
 }

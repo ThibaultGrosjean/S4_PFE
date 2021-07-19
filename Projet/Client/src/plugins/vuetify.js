@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 import fr from 'vuetify/lib/locale/fr';
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import colors from 'vuetify/lib/util/colors'
 
 Vue.use(Vuetify);
 
@@ -20,13 +19,12 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        primary: colors.blue,
-        accent: colors.blue.lighten2,
+        primary: '#727caa',
+        accent: '#25293a',
       },
       dark: {
-        primary: colors.blue,
-        accent: colors.blue.lighten2,
-
+        primary: '#a6b0dd',
+        accent: '#25293a',
       },
     },
   },

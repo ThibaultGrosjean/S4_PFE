@@ -2,11 +2,11 @@ var db = require('../models/bdd');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
-  check('num_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_cm',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_td',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('nb_groupe_tp',"Veuillez saisir un un numérique non nul").isNumeric(),
-  check('nb_groupe_partiel',"Veuillez saisir un un numérique non nul").isNumeric(),
+  check('num_semaine',"Veuillez saisir un entier ou un nombre à virgule").isNumeric(),
+  check('nb_groupe_cm',"Veuillez saisir un entier ou un nombre à virgule").isNumeric(),
+  check('nb_groupe_td',"Veuillez saisir un entier ou un nombre à virgule").isNumeric(),
+  check('nb_groupe_tp',"Veuillez saisir un un entier ou un nombre à virgule").isNumeric(),
+  check('nb_groupe_partiel',"Veuillez saisir un un entier ou un nombre à virgule").isNumeric(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
   check('intervenant_id ',"Veuillez sélectionner un élément").isNumeric(),
 ];

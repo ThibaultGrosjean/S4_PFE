@@ -10,7 +10,7 @@ exports.validationResult = [
 
 
 exports.getAllProjets = (req, res) => {
-  db.query('SELECT * FROM projet ORDER BY date DESC;',
+  db.query('SELECT * FROM projet ORDER BY date DESC, nom ASC;',
     function(err, projets) {
       if (!err) {
         res.status(200).json(projets);  

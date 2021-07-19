@@ -1,58 +1,44 @@
 <template>
-  <v-container class="pa-10">
-  <ProgressOverlay :loading="loading"/>
-    <v-row>
-      <v-col class="text-center">
-        <h1 class="text-h4 animate-pop-in mb-2">Liste des intervenants</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4) }}</span>
-      </v-col>
+  <v-container fluid class="pa-10">
+    <ProgressOverlay :loading="loading"/>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pt-7 pb-5 pl-5 pr-9">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn v-show="intervenants.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon @click="checkAllInterv" color="primary" class="mb-2">
+              <v-icon>
+                {{ deleteSelected.length === intervenants.length && deleteSelected.length > 0 ? 'check_box' : 'check_box_outline_blank' }}
+              </v-icon>
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByPrenom" class="mx-2 mb-2">
+              <v-icon small class="mr-2">{{ sortPrenom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Prénom
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByNom" class="mx-2 mb-2">
+              <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Nom
+            </v-btn>
+            <v-btn :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="success" @click="form = true" class="mb-2">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+            <v-btn v-show="deleteSelected.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="error darken-1" @click="deleteAllSelectedIntervenant">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col class="d-flex align-center justify-end pa-0 mb-2">
+            <span v-if="projet.length" class="subtitle-1 text--secondary">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-row>
-    <v-row>
-      <v-col v-if="!intervenants.length">
+
+    <v-row v-if="!intervenants.length">
+      <v-col>
         <p class="text-center animate-pop-in">Aucun intervenant sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
       </v-col>
     </v-row>
-    <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>L'intervenant a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row v-if="intervenants.length" class="pa-3 pb-0 animate-pop-in">
-      <v-col class="d-flex justify-start">
-        <v-checkbox
-            :disabled="Boolean(projet[0].verrou)"
-            v-model="checkboxSelectAll"
-            label="Tout sélectionner"
-            color="primary"
-            class="ma-0"
-            @click="checkAllInterv"
-        ></v-checkbox>
-        <v-tooltip top v-if="deleteSelected.length">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                :disabled="Boolean(projet[0].verrou)"
-                icon
-                v-bind="attrs"
-                v-on="on"
-                class="ml-2"
-                @click="deleteAllSelectedIntervenant"
-            >
-              <v-icon color="error darken-1">delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Supprimer la sélection</span>
-        </v-tooltip>
-      </v-col>
-    </v-row>
+
     <v-item-group multiple v-model="deleteSelected">
       <v-row>
         <v-col
@@ -79,30 +65,7 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">HeTD*</span>
-                  </template>
-                  <span>Nombre d’heures équivalent TD</span>
-                </v-tooltip> minimales attendues pour le projet : <b>{{ i.nb_he_td_min_attendu_projet }}</b> h<br>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">HeTD*</span>
-                  </template>
-                  <span>Nombre d’heures équivalent TD</span>
-                </v-tooltip> maximales attendues pour le projet : <b>{{ i.nb_he_td_max_attendu_projet }}</b> h<br>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">HeTD*</span>
-                  </template>
-                  <span>Nombre d’heures équivalent TD</span>
-                </v-tooltip> minimales sup. pour le projet : <b>{{ i.nb_he_td_min_sup_projet }}</b> h<br>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">HeTD*</span>
-                  </template>
-                  <span>Nombre d’heures équivalent TD</span>
-                </v-tooltip> maximales sup. pour le projet : <b>{{ i.nb_he_td_max_sup_projet }}</b> h<br>
+                <DetailsStatut :data="i"/>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -126,6 +89,7 @@
         </v-col>
       </v-row>
     </v-item-group>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -150,6 +114,7 @@
                   :item-text="item => item.prenom +' '+ item.nom"
                   item-value="id"
                   label="Enseignant"
+                  autofocus
                   clearable
                   multiple
                   chips
@@ -175,28 +140,28 @@
               </v-select>
               <div class="ma-0 pa-0" v-if="methods === 'PUT'">
                 <v-text-field
-                    v-model="intervenant.nb_he_td_min_attendu_projet"
-                    :error-messages="errors.nb_he_td_min_attendu_projet"
+                    v-model="intervenant.nb_he_td_min_attendu"
+                    :error-messages="errors.nb_he_td_min_attendu"
                     label="Nombre d'heures minimales attendues pour le projet"
                     required
                     clearable
                 ></v-text-field>
                 <v-text-field
-                    v-model="intervenant.nb_he_td_max_attendu_projet"
-                    :error-messages="errors.nb_he_td_max_attendu_projet"
+                    v-model="intervenant.nb_he_td_max_attendu"
+                    :error-messages="errors.nb_he_td_max_attendu"
                     label="Nombre d'heures maximales attendues pour le projet"
                     required
                     clearable
                 ></v-text-field>
                 <v-text-field
-                    v-model="intervenant.nb_he_td_min_sup_projet"
-                    :error-messages="errors.nb_he_td_min_sup_projet"
+                    v-model="intervenant.nb_he_td_min_sup"
+                    :error-messages="errors.nb_he_td_min_sup"
                     label="Nombre d'heures minimales supplémentaires attendues pour le projet"
                     clearable
                 ></v-text-field>
                 <v-text-field
-                    v-model="intervenant.nb_he_td_max_sup_projet"
-                    :error-messages="errors.nb_he_td_max_sup_projet"
+                    v-model="intervenant.nb_he_td_max_sup"
+                    :error-messages="errors.nb_he_td_max_sup"
                     label="Nombre d'heures maximales supplémentaires attendues pour le projet"
                     clearable
                 ></v-text-field>
@@ -204,7 +169,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -218,6 +182,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -239,7 +204,6 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
-                rounded
                 :disabled="loading"
                 color="error darken-1"
                 text
@@ -249,7 +213,6 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-                rounded
                 :loading="loading"
                 color="success darken-1"
                 text
@@ -261,22 +224,20 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
-      <v-col>
-        <v-fab-transition>
+
+    <v-row>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>L'intervenant a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              :disabled="Boolean(projet[0].verrou)"
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -286,10 +247,11 @@ import apiIntervenant from "../services/API/intervenants";
 import apiEnseignant from "../services/API/enseignants";
 import apiProjet from "../services/API/projets";
 import ProgressOverlay from "../components/ProgressOverlay";
+import DetailsStatut from "../components/DetailsStatut";
 
 export default {
   name: "Intervenants",
-  components: {ProgressOverlay},
+  components: {DetailsStatut, ProgressOverlay},
 
   data: () => ({
     intervenants: [],
@@ -300,14 +262,16 @@ export default {
     dialog: false,
     loading: false,
     responseSuccess: false,
+    sortNom: false,
+    sortPrenom: false,
     methods: "POST",
     typeOperation: 'ajouté',
     intervenant: {
       id: '',
-      nb_he_td_min_attendu_projet: '',
-      nb_he_td_max_attendu_projet: '',
-      nb_he_td_min_sup_projet: '',
-      nb_he_td_max_sup_projet: '',
+      nb_he_td_min_attendu: '',
+      nb_he_td_max_attendu: '',
+      nb_he_td_min_sup: '',
+      nb_he_td_max_sup: '',
       projet_id: '',
       enseignant_id: [],
     },
@@ -336,7 +300,7 @@ export default {
     async submit() {
       this.$refs.formulaire.validate();
       if (this.projet[0].verrou === 1) {
-        this.clear();
+        await this.clear();
         this.form = false;
         return;
       }
@@ -351,16 +315,17 @@ export default {
             var intervenant = {
               enseignant_id: this.intervenant.enseignant_id[i],
               projet_id: Number(this.$route.params.id),
-              nb_he_td_min_attendu_projet: enseignant[0].nb_he_td_min_attendu,
-              nb_he_td_max_attendu_projet: enseignant[0].nb_he_td_max_attendu,
-              nb_he_td_min_sup_projet: enseignant[0].nb_he_td_min_sup,
-              nb_he_td_max_sup_projet: enseignant[0].nb_he_td_max_sup,
+              nb_he_td_min_attendu: enseignant[0].nb_he_td_min_attendu,
+              nb_he_td_max_attendu: enseignant[0].nb_he_td_max_attendu,
+              nb_he_td_min_sup: enseignant[0].nb_he_td_min_sup,
+              nb_he_td_max_sup: enseignant[0].nb_he_td_max_sup,
             }
             const res = await apiIntervenant.createIntervenant(intervenant);
             if (res.errors) this.errors = res.errors;
           }
           this.typeOperation = 'ajouté';
           await this.clear();
+          await this.getIntervenantsByProjet();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -374,6 +339,7 @@ export default {
           this.typeOperation = 'modifié';
           this.intervenant.id = '';
           await this.clear();
+          await this.getIntervenantsByProjet();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -384,19 +350,20 @@ export default {
     async clear() {
       this.$refs.formulaire.resetValidation();
       this.intervenant = {
-        nb_he_td_min_attendu_projet: '',
-        nb_he_td_max_attendu_projet: '',
-        nb_he_td_min_sup_projet: '',
-        nb_he_td_max_sup_projet: '',
+        nb_he_td_min_attendu: '',
+        nb_he_td_max_attendu: '',
+        nb_he_td_min_sup: '',
+        nb_he_td_max_sup: '',
         projet_id: this.$route.params.id,
-        enseignant_id: this.intervenant.enseignant_id,
+        enseignant_id: [],
       };
       this.errors = [];
       this.methods = 'POST';
-      await this.getIntervenantsByProjet();
+      await this.getEnseignantProjetNotInIntervenant();
+      this.checkboxSelectAll = false;
+      this.deleteSelected = [];
     },
     close() {
-      this.getEnseignantProjetNotInIntervenant();
       this.form = false;
       this.clear();
     },
@@ -412,6 +379,7 @@ export default {
       this.form = true;
     },
     checkAllInterv() {
+      this.checkboxSelectAll = !this.checkboxSelectAll;
       this.deleteSelected = [];
       if (this.checkboxSelectAll) this.deleteSelected = this.intervenants;
     },
@@ -432,6 +400,7 @@ export default {
       this.loading = false;
       await this.getIntervenantsByProjet();
       await this.getEnseignantProjetNotInIntervenant();
+      this.checkboxSelectAll = false;
     },
     async validDeleteAllIntervenant(){
       if (this.projet[0].verrou === 1) {
@@ -448,9 +417,28 @@ export default {
       await this.getEnseignantProjetNotInIntervenant();
       this.typeOperation = 'supprimé';
       this.responseSuccess = true;
+      this.checkboxSelectAll = false;
     },
     redirect(path) {
       this.$router.push({path: path}).catch(() => {});
+    },
+    sortedByNom() {
+      if (this.sortNom) {
+        this.sortNom = false;
+        this.intervenants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
+      } else {
+        this.sortNom = true;
+        this.intervenants.sort((a, b) => a.nom.toUpperCase() < b.nom.toUpperCase());
+      }
+    },
+    sortedByPrenom() {
+      if (this.sortPrenom) {
+        this.sortPrenom = false;
+        this.intervenants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
+      } else {
+        this.sortPrenom = true;
+        this.intervenants.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
+      }
     },
   },
   async mounted() {

@@ -1,62 +1,38 @@
 <template>
-  <v-container class="pa-10">
-  <ProgressOverlay :loading="loading"/>
-    <v-row>
+  <v-container fluid class="pa-10">
+    <ProgressOverlay :loading="loading"/>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pa-7">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn outlined small color="primary" @click="sortedByPrenom" class="mr-2">
+              <v-icon small class="mr-2">{{ sortPrenom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Prénom
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByNom" class="mr-2">
+              <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Nom
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByStatut" class="mr-2">
+              <v-icon small class="mr-2">{{ sortStatut ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Statut
+            </v-btn>
+            <v-btn icon color="success" @click="form = true">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-row>
+
+    <v-row v-if="!enseignants.length">
       <v-col>
-        <h1 class="text-center text-h4 animate-pop-in mb-2">Liste des enseignants</h1>
-      </v-col>
-    </v-row>
-    <v-row
-        align="center"
-        justify="center"
-    >
-      <v-btn-toggle
-          v-if="enseignants.length"
-          rounded
-          dense
-          mandatory
-          class="animate-pop-in"
-      >
-        <v-btn
-            @click="sortedByPrenom"
-        >
-          <span>Prénom</span>
-          <v-icon right>sort_by_alpha</v-icon>
-        </v-btn>
-        <v-btn
-            @click="sortedByNom"
-        >
-          <span>Nom</span>
-          <v-icon right>sort_by_alpha</v-icon>
-        </v-btn>
-        <v-btn
-            @click="sortedByStatut"
-        >
-          <span>Statut</span>
-          <v-icon right>sort_by_alpha</v-icon>
-        </v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <v-row>
-      <v-col v-if="!enseignants.length">
         <p class="text-center animate-pop-in">Aucune donnée trouvée</p>
       </v-col>
     </v-row>
+
     <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>L'enseignant a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row class="mt-15">
       <v-col
           v-for="e in enseignants"
           :key="e.id"
@@ -68,7 +44,7 @@
           <v-card-title>
             <span class="text-h5">{{ e.prenom }} {{ e.nom }}</span>
           </v-card-title>
-          <v-card-subtitle class="text-subtitle-1"><span v-if="e.surnom">{{ e.surnom.toUpperCase() }}</span></v-card-subtitle>
+          <v-card-subtitle class="text-subtitle-1 pb-2"><span v-if="e.surnom">{{ e.surnom.toUpperCase() }}</span></v-card-subtitle>
           <v-divider></v-divider>
           <v-card-text class="pa-0">
             <div class="pa-4 pb-0">
@@ -76,34 +52,11 @@
             </div>
             <v-expansion-panels accordion>
               <v-expansion-panel>
-                <v-expansion-panel-header class="pa-4 text--secondary">
-                  Statut<b>{{ ': ' + e.statut_nom }} <small>({{ e.statut_surnom }})</small></b>
+                <v-expansion-panel-header class="pa-4 text--secondary" style="overflow: hidden !important">
+                  <span>Statut : <b>{{ e.statut_nom }} <small>({{ e.statut_surnom }})</small></b></span>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content class="pa-4 pt-0 text--secondary">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">HeTD*</span>
-                    </template>
-                    <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales attendues : <b>{{ e.nb_he_td_min_attendu }}</b> h<br>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">HeTD*</span>
-                    </template>
-                    <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales attendues : <b>{{ e.nb_he_td_max_attendu }}</b> h<br>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">HeTD*</span>
-                    </template>
-                    <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> minimales sup. : <b>{{ e.nb_he_td_min_sup }}</b> h<br>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">HeTD*</span>
-                    </template>
-                    <span>Nombre d’heures équivalent TD</span>
-                  </v-tooltip> maximales sup. : <b>{{ e.nb_he_td_max_sup }}</b> h<br>
+                  <DetailsStatut :data="e"/>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -143,9 +96,10 @@
                     icon
                     v-bind="attrs"
                     v-on="on"
+                    color="error darken-1"
                     @click="openDialog(e.id)"
                 >
-                  <v-icon color="error darken-1">delete</v-icon>
+                  <v-icon>delete</v-icon>
                 </v-btn>
               </template>
               <span>Supprimer {{ e.prenom + ' ' + e.nom }}</span>
@@ -154,6 +108,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -177,6 +132,7 @@
                   :counter="255"
                   :error-messages="errors.prenom"
                   label="Prénom"
+                  autofocus
                   clearable
               ></v-text-field>
               <v-text-field
@@ -215,7 +171,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -229,6 +184,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -244,12 +200,11 @@
             </v-btn>
           </v-card-title>
           <v-card-text class="text-justify pt-4">
-            Êtes-vous sûr de vouloir supprimer la sélection d'enseignant ? <br><br>
-            Si vous continuez les heures saisies globales, les groupes ainsi que les interventions de ces enseignants seront supprimées sur la totalité des formations et des projets. Voulez-vous vraiment valider l'opération ?
+            Êtes-vous sûr de vouloir supprimer cet enseignant ? <br><br>
+            Si vous continuez les heures saisies globales, les groupes ainsi que les interventions de cet enseignant seront supprimées sur la totalité des formations et des projets. Voulez-vous vraiment valider l'opération ?
           </v-card-text>
           <v-card-actions>
             <v-btn
-                rounded
                 :disabled="loading"
                 color="error darken-1"
                 text
@@ -259,7 +214,6 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-                rounded
                 :loading="loading"
                 color="success darken-1"
                 text
@@ -271,21 +225,20 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row>
-      <v-col>
-        <v-fab-transition>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>L'enseignant a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -294,10 +247,11 @@
 import apiEnseignant from "../services/API/enseignants";
 import apiStatut from "../services/API/statuts";
 import ProgressOverlay from "../components/ProgressOverlay";
+import DetailsStatut from "../components/DetailsStatut";
 
 export default {
   name: "ReadEnseignants",
-  components: {ProgressOverlay},
+  components: {DetailsStatut, ProgressOverlay},
 
   data: () => ({
     enseignants: [],
@@ -340,6 +294,7 @@ export default {
         } else {
           this.typeOperation = 'ajouté';
           await this.clear();
+          await this.getEnseignants();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -353,13 +308,14 @@ export default {
           this.typeOperation = 'modifié';
           this.enseignant.id = '';
           await this.clear();
+          await this.getEnseignants();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
         }
       }
     },
-    async clear() {
+    clear() {
       this.enseignant = {
         id: this.enseignant.id,
         nom: '',
@@ -370,7 +326,6 @@ export default {
       };
       this.errors = [];
       this.methods = 'POST';
-      await this.getEnseignants();
     },
     close() {
       this.form = !this.form;
@@ -397,12 +352,14 @@ export default {
       this.loading = false;
       this.dialog = false;
       await this.clear();
+      await this.getEnseignants();
     },
     openDialog(id) {
       this.id = id;
       this.dialog = true;
     },
     sortedByPrenom() {
+      this.sortNom = this.sortStatut = false;
       if (this.sortPrenom) {
         this.sortPrenom = false;
         this.enseignants.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
@@ -412,6 +369,7 @@ export default {
       }
     },
     sortedByNom() {
+      this.sortPrenom = this.sortStatut = false;
       if (this.sortNom) {
         this.sortNom = false;
         this.enseignants.sort((a, b) => a.nom.toUpperCase() > b.nom.toUpperCase());
@@ -421,12 +379,13 @@ export default {
       }
     },
     sortedByStatut() {
+      this.sortNom = this.sortPrenom = false;
       if (this.sortStatut) {
         this.sortStatut = false;
-        this.enseignants.sort((a, b) => a.statut.id > b.statut.id);
+        this.enseignants.sort((a, b) => a.statut_nom > b.statut_nom);
       } else {
         this.sortStatut = true;
-        this.enseignants.sort((a, b) => a.statut.id < b.statut.id);
+        this.enseignants.sort((a, b) => a.statut_nom < b.statut_nom);
       }
     }
   },

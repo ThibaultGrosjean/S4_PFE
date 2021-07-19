@@ -200,17 +200,17 @@ CREATE TABLE `intervenant` (
   `id` int NOT NULL,
   `projet_id` int DEFAULT NULL,
   `enseignant_id` int DEFAULT NULL,
-  `nb_he_td_min_attendu_projet` float NOT NULL,
-  `nb_he_td_max_attendu_projet` float NOT NULL,
-  `nb_he_td_min_sup_projet` float NOT NULL,
-  `nb_he_td_max_sup_projet` float NOT NULL
+  `nb_he_td_min_attendu` float NOT NULL,
+  `nb_he_td_max_attendu` float NOT NULL,
+  `nb_he_td_min_sup` float NOT NULL,
+  `nb_he_td_max_sup` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `intervenant`
 --
 
-INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu_projet`, `nb_he_td_max_attendu_projet`, `nb_he_td_min_sup_projet`, `nb_he_td_max_sup_projet`) VALUES
+INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu`, `nb_he_td_max_attendu`, `nb_he_td_min_sup`, `nb_he_td_max_sup`) VALUES
 (1, 1, 1, 192, 192, 0, 100),
 (2, 1, 2, 384, 384, 0, 200);
 

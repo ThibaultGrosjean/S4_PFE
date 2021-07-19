@@ -8,9 +8,10 @@
             v-bind="attrs"
             v-on="on"
             class="ma-1 mt-2"
+            color="error darken-1"
             @click="dialog = true"
         >
-          <v-icon color="error darken-1">auto_delete</v-icon>
+          <v-icon>auto_delete</v-icon>
         </v-btn>
       </template>
       <span>Supprimer les volumes horaires</span>
@@ -33,7 +34,6 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
-              rounded
               :disabled="loading"
               color="error darken-1"
               text
@@ -43,7 +43,6 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
-              rounded
               :loading="loading"
               color="success darken-1"
               text

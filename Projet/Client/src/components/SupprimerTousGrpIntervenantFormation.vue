@@ -7,9 +7,10 @@
             v-bind="attrs"
             v-on="on"
             class="ma-1 mt-2"
+            color="error darken-1"
             @click="dialog = true"
         >
-          <v-icon color="error darken-1">person_remove</v-icon>
+          <v-icon>person_remove</v-icon>
         </v-btn>
       </template>
       <span>Supprimer les groupes d'intervenants</span>
@@ -31,7 +32,6 @@
           Êtes-vous sûr de vouloir supprimer tous les groupes d'intervenants de « {{ formation.titre }} » ?</v-card-text>
         <v-card-actions>
           <v-btn
-              rounded
               :disabled="loading"
               color="error darken-1"
               text
@@ -41,7 +41,6 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
-              rounded
               :loading="loading"
               color="success darken-1"
               text

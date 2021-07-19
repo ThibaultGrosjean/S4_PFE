@@ -2,10 +2,10 @@ var db = require('../models/bdd');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
-  check('nb_he_td_min_attendu_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_max_attendu_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_min_sup_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_max_sup_projet',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_min_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_max_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_min_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_max_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
   check('projet_id',"Veuillez sélectionner un projet").isNumeric(),
   check('enseignant_id',"Veuillez sélectionner un enseignant").isNumeric(),
 ];
@@ -37,7 +37,8 @@ exports.getIntervenantsByProjet = (req, res) => {
         +' JOIN enseignant AS e'
         +' ON e.id = i.enseignant_id'
         +' WHERE i.projet_id = ?'
-        +' GROUP BY i.id', [req.params.id],
+        +' GROUP BY i.id'
+        +' ORDER BY e.prenom, e.nom', [req.params.id],
     function(err, intervenant) {
       if (!err) {
         res.status(200).json(intervenant);  
@@ -114,19 +115,19 @@ exports.getIntervenant = (req, res) => {
 
 exports.addIntervenant = (req, res) => {
   var data = {
-    nb_he_td_min_attendu_projet : req.body.nb_he_td_min_attendu_projet,
-    nb_he_td_max_attendu_projet : req.body.nb_he_td_max_attendu_projet,
-    nb_he_td_min_sup_projet : req.body.nb_he_td_min_sup_projet,
-    nb_he_td_max_sup_projet : req.body.nb_he_td_max_sup_projet,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
     projet_id : req.body.projet_id,
     enseignant_id : req.body.enseignant_id,  
   };
 
-  var requete = "INSERT INTO intervenant(nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet, projet_id, enseignant_id) VALUES ('" 
-    + data['nb_he_td_min_attendu_projet'] + "','"
-    + data['nb_he_td_max_attendu_projet'] + "','"
-    + data['nb_he_td_min_sup_projet'] + "','"
-    + data['nb_he_td_max_sup_projet'] + "','"
+  var requete = "INSERT INTO intervenant(nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, projet_id, enseignant_id) VALUES ('" 
+    + data['nb_he_td_min_attendu'] + "','"
+    + data['nb_he_td_max_attendu'] + "','"
+    + data['nb_he_td_min_sup'] + "','"
+    + data['nb_he_td_max_sup'] + "','"
     + data['projet_id'] + "','"
     + data['enseignant_id'] + "');"
   ;
@@ -151,8 +152,8 @@ exports.addIntervenant = (req, res) => {
 
 
 exports.copyIntervenantByProjet = (req, res) => {
-  db.query('INSERT INTO intervenant(projet_id, enseignant_id, nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet)'
-        +' SELECT ' + req.params.newProjetId + ', enseignant_id, nb_he_td_min_attendu_projet, nb_he_td_max_attendu_projet, nb_he_td_min_sup_projet, nb_he_td_max_sup_projet'
+  db.query('INSERT INTO intervenant(projet_id, enseignant_id, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup)'
+        +' SELECT ' + req.params.newProjetId + ', enseignant_id, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup'
         +' FROM intervenant WHERE projet_id = ' + req.params.projetId,
     function(err, projet) {
       if (!err) {
@@ -169,17 +170,17 @@ exports.copyIntervenantByProjet = (req, res) => {
 exports.editIntervenant = (req, res) => {
   var data = {
     id : req.body.id,
-    nb_he_td_min_attendu_projet : req.body.nb_he_td_min_attendu_projet,
-    nb_he_td_max_attendu_projet : req.body.nb_he_td_max_attendu_projet,
-    nb_he_td_min_sup_projet : req.body.nb_he_td_min_sup_projet,
-    nb_he_td_max_sup_projet : req.body.nb_he_td_max_sup_projet,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
     projet_id : req.body.projet_id,
     enseignant_id : req.body.enseignant_id,  
   };
-  var requete = "UPDATE intervenant SET nb_he_td_min_attendu_projet ='" + data['nb_he_td_min_attendu_projet'] 
-  +"', nb_he_td_max_attendu_projet ='" + data['nb_he_td_max_attendu_projet'] 
-  +"', nb_he_td_min_sup_projet ='" + data['nb_he_td_min_sup_projet'] 
-  +"', nb_he_td_max_sup_projet ='" + data['nb_he_td_max_sup_projet'] 
+  var requete = "UPDATE intervenant SET nb_he_td_min_attendu ='" + data['nb_he_td_min_attendu'] 
+  +"', nb_he_td_max_attendu ='" + data['nb_he_td_max_attendu'] 
+  +"', nb_he_td_min_sup ='" + data['nb_he_td_min_sup'] 
+  +"', nb_he_td_max_sup ='" + data['nb_he_td_max_sup'] 
   +"', projet_id ='" + data['projet_id']
   +"', enseignant_id ='" + data['enseignant_id']
   +"' WHERE id = " + req.params.id + ";";

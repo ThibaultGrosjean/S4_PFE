@@ -40,6 +40,7 @@
                 v-model="nb_groupe_effectif_cm"
                 :error-messages="nb_groupe_effectif_cmErrors"
                 label="Nombre de groupes effectifs pour les CM"
+                autofocus
                 @input="$v.nb_groupe_effectif_cm.$touch()"
                 @blur="$v.nb_groupe_effectif_cm.$touch()"
             ></v-text-field>
@@ -71,7 +72,6 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                  rounded
                   :loading="loading"
                   color="success darken-1"
                   text

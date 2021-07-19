@@ -2,11 +2,11 @@ var db = require('../models/bdd');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
-  check('num_semaine',"Veuillez saisir un numérique non nul").isNumeric(),
-  check('vol_hor_cm',"Veuillez saisir un numérique non nul").isFloat(),
-  check('vol_hor_td',"Veuillez saisir un numérique non nul").isFloat(),
-  check('vol_hor_tp',"Veuillez saisir un un numérique non nul").isFloat(),
-  check('vol_hor_partiel',"Veuillez saisir un un numérique non nul").isFloat(),
+  check('num_semaine',"Veuillez saisir un entier ou un nombre à virgule").isNumeric(),
+  check('vol_hor_cm',"Veuillez saisir un entier ou un nombre à virgule").isFloat(),
+  check('vol_hor_td',"Veuillez saisir un entier ou un nombre à virgule").isFloat(),
+  check('vol_hor_tp',"Veuillez saisir un un entier ou un nombre à virgule").isFloat(),
+  check('vol_hor_partiel',"Veuillez saisir un un entier ou un nombre à virgule").isFloat(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
   check('intervenant_id ',"Veuillez sélectionner un élément").isNumeric(),
 ];

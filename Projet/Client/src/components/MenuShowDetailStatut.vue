@@ -13,39 +13,18 @@
     </template>
     <v-card class="border-custom">
       <v-card-title class="justify-center">{{ bilan.prenom }} {{ bilan.nom }}</v-card-title>
-      <v-card-text class="px-7 pb-7">
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">HeTD*</span>
-          </template>
-          <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> minimales attendues : <b>{{ bilan.nb_he_td_min_attendu_projet }}</b> h<br>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">HeTD*</span>
-          </template>
-          <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> maximales attendues : <b>{{ bilan.nb_he_td_max_attendu_projet }}</b> h<br>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">HeTD*</span>
-          </template>
-          <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> minimales sup. : <b>{{ bilan.nb_he_td_min_sup_projet }}</b> h<br>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">HeTD*</span>
-          </template>
-          <span>Nombre d’heures équivalent TD</span>
-        </v-tooltip> maximales sup. : <b>{{ bilan.nb_he_td_max_sup_projet }}</b> h<br>
+      <v-card-text class="px-5 pb-5">
+        <DetailsStatut :data="bilan"/>
       </v-card-text>
     </v-card>
   </v-menu>
 </template>
 
 <script>
+import DetailsStatut from "./DetailsStatut";
 export default {
   name: "MenuShowDetailStatut",
+  components: {DetailsStatut},
   props: ['bilan'],
   data: () => ({
     showMenuStatutDetails: false,

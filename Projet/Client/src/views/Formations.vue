@@ -1,105 +1,92 @@
 <template>
-  <v-container class="pa-10">
-  <ProgressOverlay :loading="loading"/>
-    <v-row>
-      <v-col class="text-center">
-        <h1 class="text-h4 animate-pop-in mb-2">Liste des formations</h1>
-        <span v-if="projet.length" class="text-subtitle-1 animate-pop-in">{{ projet[0].nom + ' - ' + projet[0].date.substr(0, 4)}}</span>
-      </v-col>
+  <v-container fluid class="pa-10">
+    <ProgressOverlay :loading="loading"/>
+
+    <v-row class="animate-pop-in mb-2 pa-3">
+      <v-card width="100%" class="pa-7 pr-9">
+        <v-row>
+          <v-col class="align-center pa-0">
+            <v-btn v-show="formations.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon @click="checkAllFormation" color="primary" class="mr-2">
+              <v-icon>
+                {{ deleteSelected.length === formations.length && deleteSelected.length > 0 ? 'check_box' : 'check_box_outline_blank' }}
+              </v-icon>
+            </v-btn>
+            <v-btn outlined small color="primary"  @click="sortedByNom" class="mr-2">
+              <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
+              Nom
+            </v-btn>
+            <v-btn :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="success" @click="form = true">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+            <v-btn v-show="deleteSelected.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="error darken-1" @click="deleteAllSelectedFormation">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col class="d-flex align-center justify-end pa-0">
+            <span v-if="projet.length" class="subtitle-1 text--secondary">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-row>
-    <v-row>
-      <v-col v-if="!formations.length">
+
+    <v-row v-if="!formations.length">
+      <v-col>
         <p class="text-center animate-pop-in">Aucune formation sur le projet <span v-if="projet.length">« {{ projet[0].nom }} »</span></p>
       </v-col>
     </v-row>
-    <v-row>
-      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success" :rounded="true">
-        <span>{{ table }} a été {{ typeOperation }} avec succès.</span>
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              @click="responseSuccess = false"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-row>
-    <v-row v-if="formations.length" class="pa-3 pb-0 animate-pop-in">
-      <v-col class="d-flex justify-start">
-        <v-checkbox
-            :disabled="Boolean(projet[0].verrou)"
-            v-model="checkboxSelectAll"
-            label="Tout sélectionner"
-            color="primary"
-            class="ma-0 ml-2"
-            @click="checkAllFormation"
-        ></v-checkbox>
-        <v-tooltip top v-if="deleteSelected.length">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                :disabled="Boolean(projet[0].verrou)"
-                :loading="loading"
-                icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteAllSelectedFormation"
-            >
-              <v-icon color="error darken-1">delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Supprimer la sélection</span>
-        </v-tooltip>
-      </v-col>
-    </v-row>
+
     <v-item-group multiple v-model="deleteSelected">
-      <v-row>
-        <v-col
-            v-for="f in formations"
-            :key="f.id"
-            sm="12"
-            class="justify-center"
-        >
-          <v-item v-slot="{ active, toggle }" :value="f">
-            <v-card class="animate-pop-in">
-              <v-card-title class="text-h5">
-                <v-btn
-                    :disabled="Boolean(projet[0].verrou)"
-                    icon
-                    @click="toggle"
-                    :color="active ? 'primary' : 'gray'"
-                >
-                  <v-icon>
-                    {{ active ? 'check_box' : 'check_box_outline_blank' }}
-                  </v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        :disabled="Boolean(projet[0].verrou)"
-                        icon
-                        v-bind="attrs"
-                        v-on="on"
-                        :color="f.verrou ? 'success' : 'gray'"
-                        @click="saveVerrou(f)"
-                    >
-                      <v-icon>{{ f.verrou ? "lock" : "lock_open" }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ f.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
-                </v-tooltip>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="pa-0 pb-5">
-                <ReadElements :formation="f" :disabled="Boolean(f.verrou)" v-on:edit-element="snackbarElement($event)"></ReadElements>
-              </v-card-text>
-            </v-card>
-          </v-item>
-        </v-col>
-      </v-row>
-    </v-item-group>
+        <v-row >
+          <v-col
+              v-for="f in formations"
+              :key="f.id"
+              sm="12"
+              class="justify-center"
+          >
+            <v-item v-slot="{ active, toggle }" :value="f">
+              <v-card class="animate-pop-in">
+                <v-card-title class="text-h5 pa-4">
+                  <v-container fluid>
+                    <v-row>
+                      <v-col cols="1" class="pa-0 d-flex justify-start">
+                        <v-btn :disabled="Boolean(projet[0].verrou)" icon @click="toggle" :color="active ? 'primary' : 'gray'">
+                          <v-icon>{{ active ? 'check_box' : 'check_box_outline_blank' }}</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col class="py-0 px-6 d-flex justify-center align-center">
+                        <v-divider></v-divider>
+                        <span class="mr-2 ml-2 text-h5 text-center">{{ f.titre }}</span>
+                        <v-divider></v-divider>
+                      </v-col>
+                      <v-col cols="1" class="pa-0 d-flex justify-end">
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :disabled="Boolean(projet[0].verrou)"
+                                icon
+                                v-bind="attrs"
+                                v-on="on"
+                                :color="f.verrou ? 'success' : 'gray'"
+                                @click="saveVerrou(f)"
+                            >
+                              <v-icon>{{ f.verrou ? "lock" : "lock_open" }}</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>{{ f.verrou ? "Déverrouiller" : "Verrouiller " }}</span>
+                        </v-tooltip>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-title>
+                <v-card-text class="pa-0">
+                  <ReadElements :formation="f" :disabled="Boolean(f.verrou)" v-on:edit-element="snackbarElement($event)"></ReadElements>
+                </v-card-text>
+              </v-card>
+            </v-item>
+          </v-col>
+        </v-row>
+      </v-item-group>
+
     <v-row justify="center">
       <v-dialog
           v-model="form"
@@ -145,6 +132,7 @@
                     :error-messages="errors.titre"
                     :counter="255"
                     label="Titre"
+                    autofocus
                     clearable
                 ></v-text-field>
                 <v-text-field
@@ -163,7 +151,6 @@
                 ></v-text-field>
               </div>
               <v-form v-if="checkboxCopyElement" ref="formulaire" lazy-validation>
-                {{ element }}
                 <v-select
                     v-model="element"
                     :items="hierarchies"
@@ -183,7 +170,6 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                    rounded
                     :loading="loading"
                     color="success darken-1"
                     text
@@ -197,6 +183,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-row justify="center">
       <v-dialog
           v-model="dialog"
@@ -238,22 +225,20 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row v-if="projet.length" v-show="!Boolean(projet[0].verrou)">
-      <v-col>
-        <v-fab-transition>
+
+    <v-row>
+      <v-snackbar v-model="responseSuccess" :timeout="3000" color="success">
+        <span>{{ table }} a été {{ typeOperation }} avec succès.</span>
+        <template v-slot:action="{ attrs }">
           <v-btn
-              :disabled="Boolean(projet[0].verrou)"
-              v-show="!form"
-              class="v-btn--addElement"
-              color="success"
-              fab
-              dark
-              @click="form = true"
+              icon
+              v-bind="attrs"
+              @click="responseSuccess = false"
           >
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>close</v-icon>
           </v-btn>
-        </v-fab-transition>
-      </v-col>
+        </template>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -279,6 +264,7 @@ export default {
     dialog: false,
     loading: false,
     responseSuccess: false,
+    sortNom: false,
     typeOperation: 'ajouté',
     table: 'La formation',
     titre: '',
@@ -372,7 +358,7 @@ export default {
             this.loading = false;
           } else {
             this.typeOperation = 'copié';
-            this.clear();
+            await this.clear();
             this.$refs.formulaire.resetValidation();
             this.loading = false;
             this.form = false;
@@ -399,6 +385,7 @@ export default {
       this.clear();
     },
     checkAllFormation() {
+      this.checkboxSelectAll = !this.checkboxSelectAll;
       this.deleteSelected = [];
       if (this.checkboxSelectAll) this.deleteSelected = this.formations;
     },
@@ -447,7 +434,16 @@ export default {
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
-    }
+    },
+    sortedByNom() {
+      if (this.sortNom) {
+        this.sortNom = false;
+        this.formations.sort((a, b) => a.titre.toUpperCase() > b.titre.toUpperCase());
+      } else {
+        this.sortNom = true;
+        this.formations.sort((a, b) => a.titre.toUpperCase() < b.titre.toUpperCase());
+      }
+    },
   },
   async mounted() {
     this.loading = true;
