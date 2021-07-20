@@ -117,3 +117,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Améliorations du "responsif"
 * Améliorations graphiques : barre de navigation et barre d'outils
 * Corrections bugs graphiques
+* Système de connexion, inscription, protection des routes on n'est pas authentifié

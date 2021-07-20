@@ -6,7 +6,7 @@
       <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
         <v-icon>{{ $vuetify.theme.dark ? "wb_sunny" : "nightlight_round" }}</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn icon @click="deconnexion">
         <v-icon>logout</v-icon>
       </v-btn>
     </v-app-bar>
@@ -117,10 +117,21 @@ export default {
       {index:7, text: "Statuts",icon:"grade", path: "/statuts"},
     ]
   }),
+  async created() {
+    if (!this.$store.getters.isLoggedIn) {
+      await this.$router.push('/connexion').catch(()=>{});
+    }
+  },
   methods: {
     redirect(path) {
       this.$router.push({path:path}).catch(()=>{});
     },
+    async deconnexion() {
+      this.loading = true;
+      await this.$store.dispatch('deconnexion');
+      this.redirect('/connexion');
+      this.loading = false;
+    }
   }
 }
 </script>

@@ -8,6 +8,8 @@ import Intervenant from "../views/Intervenants";
 import Formation from "../views/Formations";
 import Bilan from "../views/Bilan";
 import Erreur404 from "../views/Erreur404";
+import Connexion from "../views/Connexion";
+import Inscription from "../views/Inscription";
 
 Vue.use(VueRouter)
 
@@ -50,6 +52,16 @@ const routes = [
     path: '/bilan/projets/:id',
     name: 'Bilan',
     component: Bilan
+  },
+  {
+    path: '/connexion',
+    name: 'Connexion',
+    component: Connexion
+  },
+  {
+    path: '/inscription',
+    name: 'Inscription',
+    component: Inscription
   },
   {
     path: '*',

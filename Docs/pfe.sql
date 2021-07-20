@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 12 juil. 2021 à 14:01
+-- Généré le : mar. 20 juil. 2021 à 14:20
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `pfe`
 --
-DROP TABLE element, enseignant, formation, groupe_intervenant, groupe_sous_total, intervenant, limite_sous_total, periode, projet, statut, volume_globale, volume_hebdomadaire;
+DROP TABLE element, enseignant, formation, groupe_intervenant, groupe_sous_total, intervenant, limite_sous_total, periode, projet, statut, volume_globale, volume_hebdomadaire, utilisateur;
 -- --------------------------------------------------------
 
 --
@@ -311,6 +311,25 @@ INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_m
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id` int NOT NULL,
+  `identifiant` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `mot_de_passe` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `identifiant`, `mot_de_passe`) VALUES
+(1, 'adminadmin', '$2a$10$5Smk/aQ6BDI9c6EqWvb73u3CWpxwuwS61upSYJquCC/z32dJyJgUi');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `volume_globale`
 --
 
@@ -454,6 +473,12 @@ ALTER TABLE `statut`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `volume_globale`
 --
 ALTER TABLE `volume_globale`
@@ -525,6 +550,12 @@ ALTER TABLE `projet`
 --
 ALTER TABLE `statut`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `volume_globale`

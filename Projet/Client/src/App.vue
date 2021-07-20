@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <NavBar/>
+      <NavBar v-if="this.$route.name !== 'Connexion' && this.$route.name !== 'Inscription' && this.$route.name !== '404 Page introuvable'"/>
       <v-main>
         <router-view/>
       </v-main>

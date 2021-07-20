@@ -12,5 +12,10 @@
 
 export default {
   name: 'Accueil',
+  async created() {
+    if (!this.$store.getters.isLoggedIn) {
+      await this.$router.push('/connexion');
+    }
+  },
 }
 </script>
