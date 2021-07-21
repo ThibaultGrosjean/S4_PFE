@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mar. 20 juil. 2021 à 14:20
+-- Généré le : mer. 21 juil. 2021 à 10:03
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -317,6 +317,9 @@ INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_m
 CREATE TABLE `utilisateur` (
   `id` int NOT NULL,
   `identifiant` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `prenom` varchar(255) NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `mot_de_passe` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -324,8 +327,8 @@ CREATE TABLE `utilisateur` (
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `identifiant`, `mot_de_passe`) VALUES
-(1, 'adminadmin', '$2a$10$5Smk/aQ6BDI9c6EqWvb73u3CWpxwuwS61upSYJquCC/z32dJyJgUi');
+INSERT INTO `utilisateur` (`id`, `identifiant`, `prenom`, `nom`, `email`, `mot_de_passe`) VALUES
+(1, 'adminadmin', 'admin', 'admin', 'admin@admin.com', '$2a$10$5Smk/aQ6BDI9c6EqWvb73u3CWpxwuwS61upSYJquCC/z32dJyJgUi');
 
 -- --------------------------------------------------------
 

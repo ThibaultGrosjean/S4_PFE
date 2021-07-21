@@ -31,7 +31,7 @@
             <v-list-item-content class="py-3">
               <v-icon :color="$route.name === 'mon-compte' ? 'primary' : 'gray'">account_circle</v-icon>
               <v-list-item-subtitle class="text-center">
-                <small>Mon Compte</small>
+                <small>{{ this.$store.state.utilisateur.identifiant }}</small>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>

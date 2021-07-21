@@ -11,9 +11,7 @@
                 <div>
                   <v-text-field
                       v-model="utilisateur.identifiant"
-                      :error-messages="errors.identifiant"
                       label="Identifiant"
-                      clearable
                   >
 
                   </v-text-field>
@@ -21,9 +19,7 @@
                       v-model="utilisateur.mot_de_passe"
                       :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                       :type="showPassword ? 'text' : 'password'"
-                      :error-messages="errors.mot_de_passe"
                       label="Mot de passe"
-                      clearable
                       @click:append="showPassword = !showPassword"
                   ></v-text-field>
                 </div>
@@ -46,6 +42,21 @@
           </v-card>
         </v-col>
       </v-row>
+
+    <v-row>
+      <v-snackbar v-model="responseError" :timeout="3000" color="error">
+        <span>{{ errors.general_error }}</span>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              @click="responseError = false"
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-row>
     </v-container>
 </template>
 
@@ -62,13 +73,22 @@ export default {
     },
     showPassword: false,
     loading: false,
+    responseError: false,
   }),
+  async created() {
+    if (this.$store.getters.isLoggedIn) {
+      await this.$router.push('/').catch(()=>{});
+    }
+  },
   methods: {
     async connexion() {
       this.loading = true;
       const res = await apiUtilisateur.connexion(this.utilisateur);
       if (res.errors){
         this.errors = res.errors;
+        if (res.errors.general_error){
+          this.responseError = true;
+        }
         this.loading = false;
       } else {
         const token = res.token;

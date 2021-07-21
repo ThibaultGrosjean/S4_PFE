@@ -5,17 +5,13 @@ import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex)
 
-const getDefaultState = () => {
-  return {
-    token: '',
-    utilisateur: {}
-  };
-};
-
 export default new Vuex.Store({
   strict: true,
   plugins: [createPersistedState()],
-  state: getDefaultState(),
+  state:{
+    token: '',
+    utilisateur: {}
+  },
   getters: {
     isLoggedIn: state => {
       return state.token;
@@ -29,10 +25,12 @@ export default new Vuex.Store({
       state.token = token;
     },
     SET_UTILISATEUR: (state, utilisateur) => {
-      state.user = utilisateur;
+      state.utilisateur = utilisateur;
     },
     RESET: state => {
-      Object.assign(state, getDefaultState());
+      state.token = '';
+      state.utilisateur = {};
+      localStorage.clear();
     }
   },
   actions: {
@@ -41,9 +39,20 @@ export default new Vuex.Store({
       commit('SET_UTILISATEUR', utilisateur);
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
     },
     deconnexion: ({ commit }) => {
-      commit('RESET', '');
+      commit('RESET');
+    },
+    initStore: ({ commit}) => {
+      if (localStorage.token && localStorage.utilisateur){
+        commit('SET_TOKEN', localStorage.token);
+        commit('SET_UTILISATEUR', JSON.parse(localStorage.utilisateur));
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+      }
     }
   },
   modules: {}

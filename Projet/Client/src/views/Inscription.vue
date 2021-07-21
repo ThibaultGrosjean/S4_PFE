@@ -15,7 +15,27 @@
                     label="Identifiant"
                     clearable
                 >
-
+                </v-text-field>
+                <v-text-field
+                    v-model="utilisateur.prenom"
+                    :error-messages="errors.prenom"
+                    label="Prénom"
+                    clearable
+                >
+                </v-text-field>
+                <v-text-field
+                    v-model="utilisateur.nom"
+                    :error-messages="errors.nom"
+                    label="Nom"
+                    clearable
+                >
+                </v-text-field>
+                <v-text-field
+                    v-model="utilisateur.email"
+                    :error-messages="errors.email"
+                    label="Email"
+                    clearable
+                >
                 </v-text-field>
                 <v-text-field
                     v-model="utilisateur.mot_de_passe"
@@ -30,11 +50,12 @@
                     v-model="utilisateur.mot_de_passe_verif"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showPassword ? 'text' : 'password'"
-                    :error-messages="errors.mot_de_passe"
+                    :error-messages="errors.mot_de_passe_verif"
                     label="Mot de passe"
                     clearable
                     @click:append="showPassword = !showPassword"
                 ></v-text-field>
+                <br v-if="errors.mot_de_passe_verif">
               </div>
               <div class="d-flex justify-start">
                 <a href="#" class="text-caption text-decoration-none">Mot de passe oublié ?</a>
@@ -55,6 +76,21 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-snackbar v-model="responseError" :timeout="3000" color="error">
+        <span>{{ errors.general_error }}</span>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              @click="responseError = false"
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-row>
   </v-container>
 </template>
 
@@ -67,20 +103,36 @@ export default {
     errors: [],
     utilisateur: {
       identifiant: '',
+      prenom: '',
+      nom: '',
+      email: '',
       mot_de_passe: '',
       mot_de_passe_verif: '',
     },
     showPassword: false,
     loading: false,
+    responseError: false,
   }),
+  async created() {
+    if (this.$store.getters.isLoggedIn) {
+      await this.$router.push('/').catch(()=>{});
+    }
+  },
   methods: {
     async inscription() {
       this.loading = true;
-      const res = await apiUtilisateur.connexion(this.utilisateur);
+      const res = await apiUtilisateur.inscription(this.utilisateur);
       if (res.errors){
         this.errors = res.errors;
+        if (res.errors.general_error){
+          this.responseError = true;
+        }
         this.loading = false;
       } else {
+        const con = await apiUtilisateur.connexion(this.utilisateur);
+        const token = con.token;
+        const utilisateur = con.utilisateur;
+        await this.$store.dispatch('connexion', {token, utilisateur});
         await this.$router.push('/').catch(()=>{});
         this.clear();
         this.loading = false;
@@ -90,6 +142,9 @@ export default {
     clear() {
       this.utilisateur = {
         identifiant: '',
+        prenom: '',
+        nom: '',
+        email: '',
         mot_de_passe: '',
         mot_de_passe_verif: '',
       };

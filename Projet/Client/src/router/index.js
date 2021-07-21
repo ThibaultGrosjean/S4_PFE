@@ -10,6 +10,8 @@ import Bilan from "../views/Bilan";
 import Erreur404 from "../views/Erreur404";
 import Connexion from "../views/Connexion";
 import Inscription from "../views/Inscription";
+import MonCompte from "../views/MonCompte";
+
 
 Vue.use(VueRouter)
 
@@ -62,6 +64,11 @@ const routes = [
     path: '/inscription',
     name: 'Inscription',
     component: Inscription
+  },
+  {
+    path: '/mon-compte',
+    name: 'Mon Compte',
+    component: MonCompte
   },
   {
     path: '*',
