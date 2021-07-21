@@ -75,7 +75,7 @@ export default {
       await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByFormation(this.formation.id);
       await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(this.formation.id);
       await apiVolumeGlobaux.deleteVolumeGlobauxByFormation(this.formation.id);
-      this.$emit('relaod-all-volumes');
+      this.$emit('reload-data');
       this.loading = false;
       this.dialog = false;
     }

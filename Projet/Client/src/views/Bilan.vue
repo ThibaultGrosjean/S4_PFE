@@ -6,7 +6,7 @@
       <v-card width="100%" class="pt-7 pb-5 pl-7 pr-9">
         <v-row>
           <v-col class="align-center pa-0">
-            <v-btn small outlined @click="checkBilan = !checkBilan" color="primary" class="mr-4 mb-2">
+            <v-btn small outlined @click="checkBilan = !checkBilan" color="primary" class="mr-2 mb-2">
               <v-icon class="mr-2">
                 {{ checkBilan ? 'visibility' : 'visibility_off' }}
               </v-icon>
@@ -146,7 +146,7 @@
                   <td class="text-center">{{ st.total_td }} h</td>
                   <td class="text-center">{{ st.total_tp }} h</td>
                   <td class="text-center">{{ st.total_partiel }} h</td>
-                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b></span></td>
+                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite_he_td }}</span></td>
                   <td v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -237,7 +237,7 @@
               <v-select
                   v-model="element_id"
                   :items="elementsModules"
-                  :item-text="item => item.titre + ' (' + item.parent_titre + ')'"
+                  :item-text="item => item.titre + ' ' + item.semestre_titre + ' (' + item.formation_titre + ')'"
                   item-value="id"
                   label="Modules"
                   clearable
@@ -249,10 +249,10 @@
               >
                 <template v-slot:selection="{ item, index }">
                   <v-chip v-if="index === 0 ">
-                    <span>{{ item.titre + ' (' + item.parent_titre + ' )'}}</span>
+                    <span>{{ item.titre + ' ' + item.semestre_titre + ' (' + item.formation_titre + ' )'}}</span>
                   </v-chip>
                   <v-chip v-if="index === 1 ">
-                    <span>{{ item.titre + ' (' + item.parent_titre + ' )'}}</span>
+                    <span>{{ item.titre + ' ' + item.semestre_titre + ' (' + item.formation_titre + ' )'}}</span>
                   </v-chip>
                   <span
                       v-if="index === 2"
@@ -546,7 +546,7 @@ export default {
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 .right-border {
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 .first-col {
   width: 10em !important;

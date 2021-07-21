@@ -49,8 +49,8 @@
                     </template>
                     <span>Ajouter un semestre</span>
                   </v-tooltip>
-                  <SupprimerTousGrpIntervenantFormation :formation="f" v-on:relaod-all-groupes="getGroupeIntervenantByModule"/>
-                  <SupprimerTousVolHorFormation :formation="f" v-on:relaod-all-volumes="reloadData"/>
+                  <SupprimerTousGrpIntervenantFormation :formation="f" v-on:reload-data="reloadData"/>
+                  <SupprimerTousVolHorFormation :formation="f" v-on:reload-data="reloadData"/>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -159,7 +159,7 @@
                                 </template>
                                 <span>Modifier {{ ue.titre }}</span>
                               </v-tooltip>
-                              <v-tooltip top>
+                              <v-tooltip top v-if="ue.mode_saisie !== 'globale'">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                       icon
@@ -173,7 +173,7 @@
                                 </template>
                                 <span>Ajouter un module à l'{{ ue.titre }}</span>
                               </v-tooltip>
-                              <v-tooltip top v-if="ue.nbfils === 0">
+                              <v-tooltip top v-if="ue.nbfils === 0 && ue.nbVolGlob === 0">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                       icon
@@ -196,7 +196,66 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content v-if="semestre.id === ue.parent">
 
-                      <v-expansion-panels multiple accordion hover>
+                      <div v-if="ue.mode_saisie ==='globale'" class="px-11">
+                        <template v-for="(i,idx) in volumesGlobaux">
+                          <v-container :key="idx" v-if="i.element_id === ue.id" class="reset-width">
+                            <v-row>
+                              <v-col cols="1" class="top-border pa-1 background-gray"></v-col>
+                              <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                                <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{i.prenom }} {{ i.nom }}</span>
+                              </v-col>
+                              <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
+                                <SupprimerTableau :type="'volumes-globaux'" :module="ue" :intervenant="i" :disabled="disabled" v-on:reload-data="reloadData"/>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-simple-table dense fixed-header class="width">
+                                <template v-slot:default>
+                                  <thead>
+                                  <tr>
+                                    <th class="text-right right-border"></th>
+                                    <th class="text-center">{{ ue.titre.substr(ue.titre.indexOf(":") + 1) }}</th>
+                                    <th class="text-center left-border">Total HeTD</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr v-if="i.element_id === ue.id" :class="{ 'disabled-row' : !ue.cm_autorises}">
+                                    <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-globaux'" :intervenant="null" :element="ue" :disabled="disabled || !ue.cm_autorises" v-on:reload-volumes-globaux="reloadData"></TDContexteMenu>
+                                    <TDEditValue :lim="ue.nb_groupe_effectif_cm" :type-cours="'cm'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !ue.cm_autorises" v-on:reload-data="reloadData"/>
+                                    <td class="text-center left-border">{{ i.total_he_td_cm }}</td>
+                                  </tr>
+
+                                  <tr v-if="i.element_id === ue.id" :class="{ 'disabled-row' : !ue.td_autorises}">
+                                    <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-globaux'" :intervenant="null" :element="ue" :disabled="disabled || !ue.td_autorises" v-on:reload-volumes-globaux="reloadData"></TDContexteMenu>
+                                    <TDEditValue :lim="ue.nb_groupe_effectif_td" :type-cours="'td'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !ue.td_autorises" v-on:reload-data="reloadData"/>
+                                    <td class="text-center left-border">{{ i.total_he_td_td }}</td>
+                                  </tr>
+
+                                  <tr v-if="i.element_id === ue.id" :class="{ 'disabled-row' : !ue.tp_autorises}">
+                                    <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-globaux'" :intervenant="null" :element="ue" :disabled="disabled || !ue.tp_autorises" v-on:reload-volumes-globaux="reloadData"></TDContexteMenu>
+                                    <TDEditValue :lim="ue.nb_groupe_effectif_tp" :type-cours="'tp'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !ue.tp_autorises" v-on:reload-data="reloadData"/>
+                                    <td class="text-center left-border">{{ i.total_he_td_tp }}</td>
+                                  </tr>
+
+                                  <tr v-if="i.element_id === ue.id" :class="{ 'disabled-row' : !ue.partiel_autorises}">
+                                    <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-globaux'" :intervenant="null" :element="ue" :disabled="disabled || !ue.partiel_autorises" v-on:reload-volumes-globaux="reloadData"></TDContexteMenu>
+                                    <TDEditValue :lim="ue.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !ue.partiel_autorises" v-on:reload-data="reloadData"/>
+                                    <td class="text-center left-border">{{ i.total_he_td_partiel }}</td>
+                                  </tr>
+                                  </tbody>
+                                </template>
+                              </v-simple-table>
+                            </v-row>
+                          </v-container>
+                        </template>
+                        <v-divider></v-divider>
+                        <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolGlob(ue.id)" color="primary">
+                          <v-icon class="mr-2">mdi-plus</v-icon>
+                          Ajouter des intervenants
+                        </v-btn>
+                      </div>
+
+                      <v-expansion-panels v-else multiple accordion hover>
                         <v-expansion-panel v-for="module in elements" :key="module.id">
                           <v-expansion-panel-header v-if="ue.id === module.parent">
                             <div class="ml-7">
@@ -250,27 +309,26 @@
                               <span class="subtitle-2 ml-2">{{ module.titre }}</span>
                             </div>
                           </v-expansion-panel-header>
-                          <v-expansion-panel-content v-if="ue.id === module.parent">
-
-                            <div v-if="module.mode_saisie ==='hebdo'">
-                              <div v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
-                                <v-btn text tile block height="2.3em" :disabled="disabled" :loading="loading" @click="addVolHebdo(module.id, semestre.id)">
-                                  Ajouter les volumes hebdomadaires
-                                </v-btn>
-                              </div>
-                              <template v-for="v in volumesHebdomadairesModules">
-                                <div :key="v.id" v-if="v.element_id === module.id && volumesHebdomadairesModules.length !== 0">
-                                  <v-container class="reset-width">
-                                    <v-row>
-                                      <v-col cols="1" class="top-border pa-1 background-gray"></v-col>
-                                      <v-col class="top-border d-flex justify-center pa-1 background-gray">
-                                        <span class="text-subtitle-1 text-center font-weight-medium text--secondary">Volumes horaires prévus pour un étudiant</span>
-                                      </v-col>
-                                      <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
-                                        <SupprimerTableau v-if="v.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled" v-on:reload-volumes-hebdomadaires-module="getVolumeHebdomadaireByModule"/>
-                                      </v-col>
-                                    </v-row>
-                                  </v-container>
+                          <v-expansion-panel-content v-if="ue.id === module.parent" class="px-16">
+                            <div v-if="module.nbVolHebdo === 0 && module.nbVolGlob === 0">
+                              <v-btn text tile block height="2.3em" :disabled="disabled" :loading="loading" @click="addVolHebdo(module.id, semestre.id)" color="primary">
+                                Ajouter les volumes hebdomadaires
+                              </v-btn>
+                            </div>
+                            <template v-for="vm in volumesHebdomadairesModules">
+                              <div :key="vm.id" v-if="vm.element_id === module.id && volumesHebdomadairesModules.length !== 0">
+                                <v-container class="reset-width">
+                                  <v-row>
+                                    <v-col cols="1" class="top-border pa-1 background-gray"></v-col>
+                                    <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                                      <span class="text-subtitle-1 text-center font-weight-medium text--secondary">Volumes horaires prévus pour un étudiant</span>
+                                    </v-col>
+                                    <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
+                                      <SupprimerTableau v-if="vm.nbGrpInterv === 0" :type="'volumes-hebdomadaires'" :module="module" :intervenant="null" :disabled="disabled" v-on:reload-data="reloadData"/>
+                                    </v-col>
+                                  </v-row>
+                                </v-container>
+                                <v-container class="pa-0 reset-width">
                                   <v-simple-table dense fixed-header>
                                     <template v-slot:default>
                                       <thead>
@@ -284,36 +342,36 @@
                                       </thead>
                                       <tbody>
                                       <tr v-if="module.cm_autorises">
-                                        <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                        <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"/>
                                         <template v-for="v in volumesHebdomadaires">
-                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'cm'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50" v-on:reload-data="getVolumeHebdomadaireByModule"/>
                                         </template>
-                                        <td class="left-border text-center">{{totalVolume(module, 'vol_hor_cm') }}</td>
+                                        <td class="left-border text-center">{{ vm.total_vol_hor_cm }}</td>
                                       </tr>
 
                                       <tr v-if="module.td_autorises">
-                                        <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                        <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"/>
                                         <template v-for="v in volumesHebdomadaires">
-                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'td'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50" v-on:reload-data="getVolumeHebdomadaireByModule"/>
                                         </template>
-                                        <td class="left-border text-center">{{totalVolume(module, 'vol_hor_td') }}</td>
+                                        <td class="left-border text-center">{{ vm.total_vol_hor_td }}</td>
                                       </tr>
 
                                       <tr v-if="module.tp_autorises">
-                                        <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                        <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"/>
                                         <template v-for="v in volumesHebdomadaires">
-                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'tp'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50" v-on:reload-data="getVolumeHebdomadaireByModule"/>
                                         </template>
-                                        <td class="left-border text-center">{{totalVolume(module, 'vol_hor_tp') }}
+                                        <td class="left-border text-center">{{ vm.total_vol_hor_tp }}
                                         </td>
                                       </tr>
 
                                       <tr v-if="module.partiel_autorises">
-                                        <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"></TDContexteMenu>
+                                        <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-hebdomadaires'" :element="module" :disabled="disabled" v-on:reload-volumes-hebdomadaires="getVolumesHebdomadaires"/>
                                         <template v-for="v in volumesHebdomadaires">
-                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50"/>
+                                          <TDEditValue :key="v.id" v-if="v.element_id === module.id" :type-cours="'partiel'" :data="v" :table="'volumes-hebdomadaires'" :disabled="disabled" :lim="50" v-on:reload-data="getVolumeHebdomadaireByModule"/>
                                         </template>
-                                        <td class="left-border text-center">{{ totalVolume(module, 'vol_hor_partiel') }}</td>
+                                        <td class="left-border text-center">{{ vm.total_vol_hor_partiel }}</td>
                                       </tr>
                                       </tbody>
                                     </template>
@@ -333,175 +391,77 @@
                                         </template>
                                       </v-expansion-panel-header>
                                       <v-expansion-panel-content>
-                                        <template v-for="i in intervenantsModules">
-                                          <v-container :key="i.id" v-if="i.element_id === module.id && intervenantsModules.length !== 0" class="reset-width">
+                                        <template v-for="im in intervenantsModules">
+                                          <v-container :key="im.id" v-if="im.element_id === module.id && intervenantsModules.length !== 0" class="reset-width">
                                             <v-row>
                                               <v-col cols="1" class="top-border pa-1 background-gray"></v-col>
                                               <v-col class="top-border d-flex justify-center pa-1 background-gray">
-                                                <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{i.prenom }} {{ i.nom }}</span>
+                                                <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{im.prenom }} {{ im.nom }}</span>
                                               </v-col>
                                               <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
-                                                <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-groupes-intervenants-module="getGroupeIntervenantByModule"/>
+                                                <SupprimerTableau :type="'groupes-intervenants'" :module="module" :intervenant="im" :disabled="disabled" v-on:reload-data="reloadData"/>
                                               </v-col>
                                             </v-row>
                                           </v-container>
-                                          <v-simple-table dense fixed-header :key="i.id" v-if="i.element_id === module.id">
+                                          <v-simple-table dense fixed-header :key="im.id" v-if="im.element_id === module.id">
                                             <template v-slot:default>
                                               <thead>
                                               <tr>
                                                 <th class="right-border"></th>
                                                 <template v-for="g in groupesIntervenants">
-                                                  <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id" class="text-center">{{ g.num_semaine }}</th>
+                                                  <th :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === im.intervenant_id" class="text-center">{{ g.num_semaine }}</th>
                                                 </template>
                                                 <th class="text-center left-border">Total</th>
                                               </tr>
                                               </thead>
                                               <tbody>
                                               <tr v-if="module.cm_autorises">
-                                                <TDContexteMenu :lim="module.nb_groupe_effectif_cm"
-                                                                :type-cours="'cm'" :table="'groupes-intervenants'"
-                                                                :intervenant="i.intervenant_id" :element="module"
-                                                                :disabled="disabled"
-                                                                v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                <TDContexteMenu :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :table="'groupes-intervenants'" :intervenant="im.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"/>
                                                 <template v-for="g in groupesIntervenants">
-                                                  <TDEditValue :key="g.id"
-                                                               v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id"
-                                                               :lim="module.nb_groupe_effectif_cm"
-                                                               :type-cours="'cm'" :data="g"
-                                                               :table="'groupes-intervenants'"
-                                                               :disabled="disabled"/>
+                                                  <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === im.intervenant_id" :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="g" :table="'groupes-intervenants'" :disabled="disabled" v-on:reload-data="getGroupeIntervenantByModule"/>
                                                 </template>
-                                                <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id, 'nb_groupe_cm') }}</td>
+                                                <td class="left-border text-center">{{ im.total_nb_grp_cm }}</td>
                                               </tr>
 
                                               <tr v-if="module.td_autorises">
-                                                <TDContexteMenu :lim="module.nb_groupe_effectif_td"
-                                                                :type-cours="'td'" :table="'groupes-intervenants'"
-                                                                :intervenant="i.intervenant_id" :element="module"
-                                                                :disabled="disabled"
-                                                                v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                <TDContexteMenu :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :table="'groupes-intervenants'" :intervenant="im.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"/>
                                                 <template v-for="g in groupesIntervenants">
-                                                  <TDEditValue :key="g.id"
-                                                               v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id"
-                                                               :lim="module.nb_groupe_effectif_td"
-                                                               :type-cours="'td'" :data="g"
-                                                               :table="'groupes-intervenants'"
-                                                               :disabled="disabled"/>
+                                                  <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === im.intervenant_id" :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="g" :table="'groupes-intervenants'" :disabled="disabled" v-on:reload-data="getGroupeIntervenantByModule"/>
                                                 </template>
-                                                <td class="left-border text-center">
-                                                  {{ totalNbGroupe(module, i.intervenant_id, 'nb_groupe_td') }}
-                                                </td>
+                                                <td class="left-border text-center">{{ im.total_nb_grp_td }}</td>
                                               </tr>
 
                                               <tr v-if="module.tp_autorises">
-                                                <TDContexteMenu :lim="module.nb_groupe_effectif_tp"
-                                                                :type-cours="'tp'" :table="'groupes-intervenants'"
-                                                                :intervenant="i.intervenant_id" :element="module"
-                                                                :disabled="disabled"
-                                                                v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                <TDContexteMenu :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :table="'groupes-intervenants'" :intervenant="im.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"/>
                                                 <template v-for="g in groupesIntervenants">
-                                                  <TDEditValue :key="g.id"
-                                                               v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id"
-                                                               :lim="module.nb_groupe_effectif_tp"
-                                                               :type-cours="'tp'" :data="g"
-                                                               :table="'groupes-intervenants'"
-                                                               :disabled="disabled"/>
+                                                  <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === im.intervenant_id" :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="g" :table="'groupes-intervenants'" :disabled="disabled" v-on:reload-data="getGroupeIntervenantByModule"/>
                                                 </template>
-                                                <td class="left-border text-center">{{ totalNbGroupe(module, i.intervenant_id, 'nb_groupe_tp') }}</td>
+                                                <td class="left-border text-center">{{ im.total_nb_grp_tp }}</td>
                                               </tr>
 
                                               <tr v-if="module.partiel_autorises">
-                                                <TDContexteMenu :lim="module.nb_groupe_effectif_partiel"
-                                                                :type-cours="'partiel'"
-                                                                :table="'groupes-intervenants'"
-                                                                :intervenant="i.intervenant_id" :element="module"
-                                                                :disabled="disabled"
-                                                                v-on:reload-groupes-intervenants="getGroupesIntervenants"></TDContexteMenu>
+                                                <TDContexteMenu :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :table="'groupes-intervenants'" :intervenant="im.intervenant_id" :element="module" :disabled="disabled" v-on:reload-groupes-intervenants="getGroupesIntervenants"/>
                                                 <template v-for="g in groupesIntervenants">
-                                                  <TDEditValue :key="g.id"
-                                                               v-if="g.element_id === module.id && g.intervenant_id === i.intervenant_id"
-                                                               :lim="module.nb_groupe_effectif_partiel"
-                                                               :type-cours="'partiel'" :data="g"
-                                                               :table="'groupes-intervenants'"
-                                                               :disabled="disabled"/>
+                                                  <TDEditValue :key="g.id" v-if="g.element_id === module.id && g.intervenant_id === im.intervenant_id" :lim="module.nb_groupe_effectif_partiel" :type-cours="'partiel'" :data="g" :table="'groupes-intervenants'" :disabled="disabled" v-on:reload-data="getGroupeIntervenantByModule"/>
                                                 </template>
-                                                <td class="left-border text-center">{{totalNbGroupe(module, i.intervenant_id, 'nb_groupe_partiel') }}
-                                                </td>
+                                                <td class="left-border text-center">{{ im.total_nb_grp_partiel }}</td>
                                               </tr>
                                               </tbody>
                                             </template>
                                           </v-simple-table>
                                         </template>
                                         <v-divider></v-divider>
-                                        <v-btn text tile block height="2.3em" :disabled="disabled" @click="addGrpInterv(module.id, semestre.id)" color="success">
+                                        <v-btn text tile block height="2.3em" :disabled="disabled" @click="addGrpInterv(module.id, semestre.id)" color="primary">
                                           <v-icon class="mr-2">mdi-plus</v-icon>
                                           Ajouter des intervenants
                                         </v-btn>
                                       </v-expansion-panel-content>
                                     </v-expansion-panel>
                                   </v-expansion-panels>
-                                </div>
-                              </template>
-                            </div>
-
-                            <div v-if="module.mode_saisie ==='globale'">
-                              <template v-for="i in volumesGlobaux">
-                                <v-container :key="i.id" v-if="i.element_id === module.id" class="reset-width">
-                                  <v-row>
-                                    <v-col cols="1" class="top-border pa-1 background-gray"></v-col>
-                                    <v-col class="top-border d-flex justify-center pa-1 background-gray">
-                                      <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{i.prenom }} {{ i.nom }}</span>
-                                    </v-col>
-                                    <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
-                                      <SupprimerTableau :type="'volumes-globaux'" :module="module" :intervenant="i" :disabled="disabled" v-on:reload-volumes-globaux-module="getVolumesGlobaux"/>
-                                    </v-col>
-                                  </v-row>
-                                  <v-row>
-                                    <v-simple-table dense fixed-header class="width">
-                                      <template v-slot:default>
-                                        <thead>
-                                        <tr>
-                                          <th class="text-right right-border"></th>
-                                          <th class="text-center">{{ module.titre.substr(module.titre.indexOf(":") + 1) }}</th>
-                                          <th class="text-center left-border">Total HeTD</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.cm_autorises}">
-                                          <TDContexteMenu :lim="50" :type-cours="'cm'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.cm_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
-                                          <TDEditValue :lim="module.nb_groupe_effectif_cm" :type-cours="'cm'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.cm_autorises" v-on:reload-data="reloadData"/>
-                                          <td class="text-center left-border">{{ i.total_HeTD_cm }}</td>
-                                        </tr>
-
-                                        <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.td_autorises}">
-                                          <TDContexteMenu :lim="50" :type-cours="'td'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.td_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
-                                          <TDEditValue :lim="module.nb_groupe_effectif_td" :type-cours="'td'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.td_autorises" v-on:reload-data="reloadData"/>
-                                          <td class="text-center left-border">{{ i.total_HeTD_td }}</td>
-                                        </tr>
-
-                                        <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.tp_autorises}">
-                                          <TDContexteMenu :lim="50" :type-cours="'tp'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.tp_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
-                                          <TDEditValue :lim="module.nb_groupe_effectif_tp" :type-cours="'tp'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.tp_autorises" v-on:reload-data="reloadData"/>
-                                          <td class="text-center left-border">{{ i.total_HeTD_tp }}</td>
-                                        </tr>
-
-                                        <tr v-if="i.element_id === module.id" :class="{ 'disabled-row' : !module.partiel_autorises}">
-                                          <TDContexteMenu :lim="50" :type-cours="'partiel'" :table="'volumes-globaux'" :intervenant="null" :element="module" :disabled="disabled || !module.partiel_autorises" v-on:reload-volumes-globaux="getVolumesGlobaux"></TDContexteMenu>
-                                          <TDEditValue :lim="module.nb_groupe_effectif_td" :type-cours="'partiel'" :data="i" :table="'volumes-globaux'" :disabled="disabled || !module.partiel_autorises" v-on:reload-data="reloadData"/>
-                                          <td class="text-center left-border">{{ i.total_HeTD_partiel }}</td>
-                                        </tr>
-                                        </tbody>
-                                      </template>
-                                    </v-simple-table>
-                                  </v-row>
                                 </v-container>
-                              </template>
-                              <v-divider></v-divider>
-                              <v-btn text tile block height="2.3em" :disabled="disabled" @click="addVolGlob(module.id)" color="success">
-                                <v-icon class="mr-2">mdi-plus</v-icon>
-                                Ajouter des intervenants
-                              </v-btn>
-                            </div>
+
+                              </div>
+                            </template>
                           </v-expansion-panel-content>
                         </v-expansion-panel>
                       </v-expansion-panels>
@@ -573,6 +533,7 @@
               ></v-text-field>
               <v-select
                   v-if="!this.isFormation"
+                  disabled
                   v-model="element.mode_saisie"
                   :items="item_mode_saisie"
                   item-text="nom"
@@ -787,15 +748,15 @@ export default {
     SupprimerTousVolHorFormation,
     SupprimerTableau, EditNbGroupeModule, TDEditValue, EditPeriode, TDContexteMenu
   },
-  props: ['formation', 'disabled'],
+  props: ['formation', 'disabled', 'saisie'],
 
   data: () => ({
     elements: [],
     volumesHebdomadaires: [],
-    volumesGlobaux: [],
-    groupesIntervenants: [],
     volumesHebdomadairesModules: [],
+    volumesGlobaux: [],
     intervenantsModules: [],
+    groupesIntervenants: [],
     errors: [],
     form: false,
     dialog: false,
@@ -844,22 +805,23 @@ export default {
     }
   }),
   methods: {
-    async getElements() {
-      this.elements = await apiElement.getElements();
+    async getElementsHebdo() {
+      this.elements = await apiElement.getElementsHebdo();
+    },
+    async getElementsGlobale() {
+      this.elements = await apiElement.getElementsGlobale();
     },
     async getPeriodeByElementId(id) {
       return await apiPeriode.getPeriodeByElementId(id);
     },
     async getVolumeHebdomadaireByModule() {
       this.volumesHebdomadairesModules = await apiVolumeHebdomadaire.getAllVolumeHebdomadaireByModule();
-      await this.getElements();
     },
     async getVolumesHebdomadaires() {
       this.volumesHebdomadaires = await apiVolumeHebdomadaire.getVolumesHebdomadaires();
     },
     async getVolumesGlobaux() {
       this.volumesGlobaux = await apiVolumeGlobaux.getVolumesGlobaux();
-      await this.getElements();
     },
     async getIntervenantsForGrpIntervByProjetNotInModule(idModule) {
       this.intervenantByProjetNotInModule = await apiIntervenant.getIntervenantsForGrpIntervByProjetNotInModule(this.$route.params.id, idModule)
@@ -869,7 +831,6 @@ export default {
     },
     async getGroupeIntervenantByModule() {
       this.intervenantsModules = await apiGroupeIntervenant.getAllGroupeIntervenantByModule();
-      await this.getVolumeHebdomadaireByModule();
     },
     async getGroupesIntervenants() {
       this.groupesIntervenants = await apiGroupeIntervenant.getGroupesIntervenants();
@@ -877,10 +838,14 @@ export default {
     async reloadData() {
       await this.getVolumeHebdomadaireByModule();
       await this.getVolumesHebdomadaires();
+      await this.getVolumesGlobaux();
       await this.getGroupeIntervenantByModule();
       await this.getGroupesIntervenants();
-      await this.getVolumesGlobaux();
-      await this.getElements();
+      if (this.saisie){
+        await this.getElementsHebdo();
+      } else {
+        await this.getElementsGlobale();
+      }
     },
     async submit() {
       this.loading = true;
@@ -907,8 +872,9 @@ export default {
           await this.clear();
         }
       }
+      await this.reloadData();
     },
-    async clear() {
+    clear() {
       this.element = {
         id: '',
         titre: '',
@@ -937,7 +903,6 @@ export default {
       };
       this.methods = 'POST';
       this.errors = [];
-      await this.reloadData();
     },
     close() {
       this.form = false;
@@ -954,7 +919,7 @@ export default {
       var nbfils = element.nbfils;
       if (nbfils === null) nbfils = 0;
       this.element.titre = "Semestre " + (nbfils + 1);
-      this.element.surnom = "S" + (nbfils + 1);
+      this.element.surnom = this.element.code = "S" + (nbfils + 1);
       this.element.niveau = 1;
       this.element.mode_saisie = 'aucun';
       this.element.indice = nbfils;
@@ -967,18 +932,23 @@ export default {
       var indice = element.indice;
       var nbfils = element.nbfils;
       if (nbfils === null) nbfils = 0;
-      this.element.titre = "UE " + (indice + 1) + (nbfils + 1) + " : ";
-      this.element.surnom = "UE" + (indice + 1) + (nbfils + 1);
       this.element.niveau = 2;
-      this.element.mode_saisie = 'aucun';
       this.element.indice = nbfils;
       this.element.parent = element.id;
-      var periode = await this.getPeriodeByElementId(element.id);
-      if (periode !== -1 && periode !== undefined) {
-        this.element.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm;
-        this.element.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td;
-        this.element.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp;
-        this.element.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel;
+
+      if (this.saisie){
+        this.element.mode_saisie = 'aucun';
+        this.element.titre = "UE " + (indice + 1) + (nbfils + 1) + " : ";
+        this.element.surnom = this.element.code = "UE" + (indice + 1) + (nbfils + 1);
+        var periode = await this.getPeriodeByElementId(element.id);
+        if (periode !== -1 && periode !== undefined) {
+          this.element.nb_groupe_effectif_cm = periode[0].nb_groupe_defaut_cm;
+          this.element.nb_groupe_effectif_td = periode[0].nb_groupe_defaut_td;
+          this.element.nb_groupe_effectif_tp = periode[0].nb_groupe_defaut_tp;
+          this.element.nb_groupe_effectif_partiel = periode[0].nb_groupe_defaut_partiel;
+        }
+      } else {
+        this.element.mode_saisie = 'globale';
       }
       this.isFormation = false;
       this.form = true;
@@ -996,8 +966,10 @@ export default {
         this.element.titre = "M " + (indiceM + 1) + (indice + 1) + (nbfils + 1) + " : ";
         this.element.surnom = "M" + (indiceM + 1) + (indice + 1) + (nbfils + 1);
       }
+      this.element.code = this.element.surnom;
       this.element.niveau = 3;
       this.element.indice = nbfils;
+      this.element.mode_saisie = 'hebdo';
       this.element.parent = element.id;
       const periode = await this.getPeriodeByElementId(semestre.id);
       if (periode !== -1 && periode !== undefined) {
@@ -1012,33 +984,9 @@ export default {
     async remove(element) {
       this.loading = true;
       await apiElement.deleteElement(element);
-      await this.getElements();
+      await this.reloadData();
       this.loading = false;
       this.$emit('edit-element', {typeOperaion: 'supprimé', element: element.titre});
-    },
-    totalVolume(module, type) {
-      var volumeByModule = [];
-      for (let i = 0; i < this.volumesHebdomadaires.length; i++) {
-        if (this.volumesHebdomadaires[i].element_id === module.id) {
-          volumeByModule.push(this.volumesHebdomadaires[i]);
-        }
-      }
-      let total = 0
-      return volumeByModule.reduce((accumulator, currentValue) => {
-        return (total += +currentValue[type])
-      }, 0)
-    },
-    totalNbGroupe(module, intervenant, type) {
-      var vnbGroupeByModule = [];
-      for (let i = 0; i < this.groupesIntervenants.length; i++) {
-        if (this.groupesIntervenants[i].element_id === module.id && this.groupesIntervenants[i].intervenant_id === intervenant) {
-          vnbGroupeByModule.push(this.groupesIntervenants[i]);
-        }
-      }
-      let total = 0
-      return vnbGroupeByModule.reduce((accumulator, currentValue) => {
-        return (total += +currentValue[type])
-      }, 0)
     },
     async addVolHebdo(module_id, semestre_id) {
       const periode = await this.getPeriodeByElementId(semestre_id);
@@ -1046,9 +994,7 @@ export default {
 
       this.loading = true;
       await apiVolumeHebdomadaire.createVolumeHebdomadaireBySemaine(module_id, 1, nb_semaine);
-      await this.getVolumeHebdomadaireByModule();
-      await this.getVolumesHebdomadaires();
-      await this.getElements();
+      await this.reloadData();
       this.loading = false;
     },
     async addGrpInterv(idModule, idSemestre) {
@@ -1058,14 +1004,14 @@ export default {
       this.idElement = idModule;
       const periode = await this.getPeriodeByElementId(idSemestre);
       this.nb_semaine = periode[0].nb_semaine;
-      await this.getElements();
+      await this.reloadData();
     },
     async addVolGlob(idModule) {
       this.type = 'volGlob';
       await this.getIntervenantsForVolGlobByProjetNotInModule(idModule);
       this.formIntervenant = true;
       this.idElement = idModule;
-      await this.getElements();
+      await this.reloadData();
     },
     async submitIntervenant() {
       this.$refs.formulaire.validate();
@@ -1100,15 +1046,18 @@ export default {
       this.clearGrpInterv();
     },
   },
-
   mounted() {
-    this.getGroupeIntervenantByModule();
-    this.getGroupesIntervenants();
-    this.getVolumeHebdomadaireByModule();
-    this.getVolumesHebdomadaires();
-    this.getVolumesGlobaux();
-    this.getElements();
+    this.reloadData();
   },
+  watch: {
+    saisie() {
+      if (this.saisie){
+        this.getElementsHebdo();
+      } else {
+        this.getElementsGlobale();
+      }
+    }
+  }
 }
 </script>
 

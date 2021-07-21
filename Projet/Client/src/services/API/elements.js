@@ -5,8 +5,13 @@ import apiGroupeIntervenant from "./groupes-intervenants";
 import apiBilan from "./bilans";
 
 const apiElement = {
-  async getElements() {
-    const response = await axios.get('/elements/get').catch(error => console.log('Erreur API: ', error));
+  async getElementsHebdo() {
+    const response = await axios.get('/elements/hebdomadaire/get').catch(error => console.log('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getElementsGlobale() {
+    const response = await axios.get('/elements/globale/get').catch(error => console.log('Erreur API: ', error));
     return response.data;
   },
 

@@ -8,7 +8,7 @@
       :close-on-content-click="validForm"
   >
     <template v-slot:activator="{ on }">
-      <td class="text-right right-border first-col" @contextmenu.prevent="on.click">
+      <td class="text-center right-border first-col" @contextmenu.prevent="on.click">
         {{ typeCours.toUpperCase() }}
       </td>
     </template>

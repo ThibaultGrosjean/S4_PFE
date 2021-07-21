@@ -50,7 +50,6 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-            rounded
             :disabled="loading"
             color="error darken-1"
             text
@@ -60,7 +59,6 @@
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-            rounded
             :loading="loading"
             color="success darken-1"
             text
@@ -143,6 +141,7 @@ export default {
     },
     close() {
       this.validForm = true;
+      this.showMenuVolHor = false;
       this.clear();
     },
     async save() {
@@ -160,14 +159,14 @@ export default {
         if (this.typeCours === 'partiel') this.data.nb_groupe_partiel = this.nbGroupeSemaineDefaut;
         await apiGroupeIntervenant.editGroupeIntervenant(this.data);
       }
-      if (this.table === 'volumes-hebdomadaires') {
+      else if (this.table === 'volumes-hebdomadaires') {
         if (this.typeCours === 'cm') this.data.vol_hor_cm = this.volHorSemaineDefaut;
         if (this.typeCours === 'td') this.data.vol_hor_td = this.volHorSemaineDefaut;
         if (this.typeCours === 'tp') this.data.vol_hor_tp = this.volHorSemaineDefaut;
         if (this.typeCours === 'partiel') this.data.vol_hor_partiel = this.volHorSemaineDefaut;
         await apiVolumeHebdomadaire.editVolumeHebdomadaire(this.data);
       }
-      if (this.table === 'volumes-globaux') {
+      else if (this.table === 'volumes-globaux') {
         if (this.typeCours === 'cm') this.data.vol_hor_cm = this.volHorSemaineDefaut;
         if (this.typeCours === 'td') this.data.vol_hor_td = this.volHorSemaineDefaut;
         if (this.typeCours === 'tp') this.data.vol_hor_tp = this.volHorSemaineDefaut;
@@ -185,5 +184,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

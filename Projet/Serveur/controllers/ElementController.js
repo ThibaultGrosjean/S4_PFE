@@ -1,4 +1,5 @@
 var db = require('../models/bdd');
+const tools = require('../models/tools');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
@@ -27,7 +28,7 @@ exports.validationResult = [
 ];
 
 
-exports.getAllElements = (req, res) => {
+exports.getAllElementsHebdo = (req, res) => {
   db.query('SELECT e.*, p.id AS periode_id, COUNT(ee.id) AS nbfils, COUNT(vh.id) AS nbVolHebdo, COUNT(vg.id) AS nbVolGlob, COUNT(g.id) AS nbGrpInterv'
         +' FROM element AS e'
         +' LEFT JOIN periode AS p'
@@ -40,6 +41,7 @@ exports.getAllElements = (req, res) => {
         +' ON vg.element_id = e.id'
         +' LEFT JOIN groupe_intervenant AS g'
         +' ON g.element_id = e.id'
+        +' WHERE e.niveau < 2 OR e.mode_saisie != "globale" OR (e.niveau = 2 AND ee.mode_saisie != "globale")'
         +' GROUP BY e.id, p.id ORDER BY e.parent, e.indice;',
     function(err, elements) {
       if (!err) {
@@ -53,16 +55,40 @@ exports.getAllElements = (req, res) => {
 };
 
 
+exports.getAllElementsGlobale = (req, res) => {
+  db.query('SELECT e.*, p.id AS periode_id, COUNT(e2.id) AS nbfils, COUNT(vg.id) AS nbVolGlob, COUNT(DISTINCT vg2.id) AS nbVolGlobSemestre'
+        +' FROM element AS e'
+        +' LEFT JOIN element AS e2'
+        +' ON e.id = e2.parent'
+        +' LEFT JOIN periode AS p'
+        +' ON p.element_id = e.id'
+        +' LEFT JOIN volume_globale AS vg'
+        +' ON vg.element_id = e.id'
+        +' LEFT JOIN volume_globale AS vg2'
+        +' ON vg2.element_id = e2.id'
+        +' WHERE e.niveau < 2 OR e.mode_saisie = "globale" OR (e.niveau = 2 AND e2.mode_saisie = "globale")'
+        +' GROUP BY e.id, p.id'
+        +' ORDER BY e.parent, e.indice;',
+    function(err, elements) {
+      if (!err) {
+        res.status(200).send(elements);
+      }
+      else {
+        res.send(err);
+      }
+    }
+  ); 
+};
+
+
 exports.getAllElementsModules = (req, res) => {
-  db.query('SELECT e4.surnom AS parent_titre, e.*'
+  db.query('SELECT e2.surnom AS semestre_titre ,e3.surnom AS formation_titre, e.*'
         +' FROM `element` AS e'
         +' JOIN element AS e2'
         +' ON e2.id = e.parent'
         +' JOIN element AS e3'
         +' ON e3.id = e2.parent'
-        +' JOIN element AS e4'
-        +' ON e4.id = e3.parent'
-        +' WHERE e4.id IN (SELECT f.element_id FROM formation AS f WHERE f.projet_id = ' + req.params.id + ')'
+        +' WHERE e3.id IN (SELECT f.element_id FROM formation AS f WHERE f.projet_id = ' + req.params.id + ')'
         +' AND e.mode_saisie = "globale"'
         +' ORDER BY e.mode_saisie DESC, e.titre ASC;',
     function(err, elements) {
@@ -153,9 +179,9 @@ exports.getElement = (req, res) => {
 
 exports.addElement = (req, res) => {
   var data = {
-    titre : req.body.titre,
-    surnom : req.body.surnom,
-    code : req.body.code,
+    titre : tools.safeStringSQL(req.body.titre),
+    surnom : tools.safeStringSQL(req.body.surnom),
+    code : tools.safeStringSQL(req.body.code),
     niveau : req.body.niveau,
     indice : req.body.indice,
     vol_hor_total_prevues_etu_cm : req.body.vol_hor_total_prevues_etu_cm | null,
@@ -275,9 +301,9 @@ exports.copyElement = (req, res) => {
 
 exports.editElement = (req, res) => {
   var data = {
-    titre : req.body.titre,
-    surnom : req.body.surnom,
-    code : req.body.code,
+    titre : tools.safeStringSQL(req.body.titre),
+    surnom : tools.safeStringSQL(req.body.surnom),
+    code : tools.safeStringSQL(req.body.code),
     niveau : req.body.niveau,
     indice : req.body.indice,
     vol_hor_total_prevues_etu_cm : req.body.vol_hor_total_prevues_etu_cm | null,

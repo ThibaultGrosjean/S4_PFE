@@ -40,10 +40,22 @@ exports.getAllVolumeHebdomadaires = (req, res) => {
 
 exports.getAllVolumesHebdoByModule = (req, res) => {
   db.query('SELECT v.element_id, COUNT(DISTINCT g.id) AS nbGrpInterv'
+        +' , total.total_vol_hor_cm, total.total_vol_hor_td, total.total_vol_hor_tp, total.total_vol_hor_partiel'
         +' FROM volume_hebdomadaire AS v'
         +' LEFT JOIN groupe_intervenant AS g'
         +' ON g.element_id = v.element_id'
-        +' GROUP BY v.element_id;',
+        +' LEFT JOIN ('
+        +'     SELECT'
+        +'       v.element_id AS id,'
+        +'     SUM(v.vol_hor_cm) as total_vol_hor_cm,'
+        +'     SUM(v.vol_hor_td) as total_vol_hor_td,'
+        +'     SUM(v.vol_hor_tp) as total_vol_hor_tp,'
+        +'     SUM(v.vol_hor_partiel) as total_vol_hor_partiel'
+        +'     FROM volume_hebdomadaire AS v'
+        +'       GROUP BY v.element_id'
+        +' ) AS total'
+        +' ON total.id = v.element_id'
+        +' GROUP BY v.element_id, total.total_vol_hor_cm, total.total_vol_hor_td, total.total_vol_hor_tp, total.total_vol_hor_partiel;',
     function(err, volume_hebdomadaire) {
       if (!err) {
         res.status(200).json(volume_hebdomadaire);  

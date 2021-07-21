@@ -1,13 +1,3 @@
-/** Node modules : 
-
-npm install express
-npm install body-parser 
-npm install express-validationResult 
-npm install mysql 
-npm install cors
-
-**/
-
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
@@ -84,7 +74,9 @@ app.patch('/projets/edit/:id', utilisateurController.verifToken, projetControlle
 app.delete('/projets/delete/:id', utilisateurController.verifToken, projetController.deleteProjet);
 
 
-app.get('/elements/get', utilisateurController.verifToken, elementController.getAllElements);
+app.get('/elements/hebdomadaire/get', utilisateurController.verifToken, elementController.getAllElementsHebdo);
+
+app.get('/elements/globale/get', utilisateurController.verifToken, elementController.getAllElementsGlobale);
 
 app.get('/elements/modules/projets/get/:id', utilisateurController.verifToken, elementController.getAllElementsModules);
 
@@ -172,7 +164,7 @@ app.post('/volumes-hebdomadaires/create/:module/nbsemaine/:semaineDeb/:semaineFi
 
 app.post('/volumes-hebdomadaires/copy/:id/parent/:parent', utilisateurController.verifToken, volumeHebdomadaireController.copyVolumeHebdomadaire);
 
-app.patch('/volumes-hebdomadaires/edit/:id', utilisateurController.verifToken,volumeHebdomadaireController.validationResult, volumeHebdomadaireController.editVolumeHebdomadaire);
+app.patch('/volumes-hebdomadaires/edit/:id', utilisateurController.verifToken, volumeHebdomadaireController.validationResult, volumeHebdomadaireController.editVolumeHebdomadaire);
 
 app.patch('/volumes-hebdomadaires/edit/:value/elements/:id/:type', utilisateurController.verifToken,volumeHebdomadaireController.validationResult, volumeHebdomadaireController.editTypeValueElementVolumeHebdomadaire);
 
@@ -189,13 +181,13 @@ app.get('/volumes-globaux/get', utilisateurController.verifToken, volumeGlobaleC
 
 app.get('/volumes-globaux/get/:id', utilisateurController.verifToken, volumeGlobaleController.getVolumeGlobale);
 
-app.post('/volumes-globaux/create/', utilisateurController.verifToken,volumeGlobaleController.validationResult, volumeGlobaleController.addVolumeGlobale);
+app.post('/volumes-globaux/create', utilisateurController.verifToken,volumeGlobaleController.validationResult, volumeGlobaleController.addVolumeGlobale);
 
 app.post('/volumes-globaux/module/:module/intervenant/:intervenant/create', utilisateurController.verifToken,volumeGlobaleController.validationResult, volumeGlobaleController.addVolumeGlobaleByModule);
 
 app.post('/volumes-globaux/copy/:id', utilisateurController.verifToken, volumeGlobaleController.copyVolumeGlobale);
 
-app.patch('/volumes-globaux/edit/:id', utilisateurController.verifToken,volumeGlobaleController.validationResult, volumeGlobaleController.editVolumeGlobale);
+app.patch('/volumes-globaux/edit/:id', utilisateurController.verifToken, volumeGlobaleController.validationResult, volumeGlobaleController.editVolumeGlobale);
 
 app.patch('/volumes-globaux/edit/:value/elements/:id/:type', utilisateurController.verifToken,volumeGlobaleController.validationResult, volumeGlobaleController.editTypeValueElementVolumesGlobaux);
 
@@ -220,7 +212,7 @@ app.post('/groupes-intervenants/create/module/:module/intervenant/:intervenant/n
 
 app.post('/groupes-intervenants/copy/:id/parent/:parent/enseignant/:enseignant/projet/:projet', utilisateurController.verifToken, groupeIntervenantController.copyGroupeIntervenant);
 
-app.patch('/groupes-intervenants/edit/:id', utilisateurController.verifToken,groupeIntervenantController.validationResult, groupeIntervenantController.editGroupeIntervenant);
+app.patch('/groupes-intervenants/edit/:id', utilisateurController.verifToken, groupeIntervenantController.validationResult, groupeIntervenantController.editGroupeIntervenant);
 
 app.patch('/groupes-intervenants/edit/:value/elements/:id/:type/intervenant/:intervenant', utilisateurController.verifToken,groupeIntervenantController.validationResult, groupeIntervenantController.editTypeValueElementGroupeIntervenant);
 

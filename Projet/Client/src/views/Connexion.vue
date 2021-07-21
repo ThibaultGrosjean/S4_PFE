@@ -1,6 +1,6 @@
 <template>
-  <v-container fill-height fluid class="animate-pop-in pa-16 background-shape">
-    <v-row align="center" justify="center" class="text-center">
+  <v-container fill-height fluid class="pa-16 animate-pop-in background-shape">
+    <v-row align="center" justify="center" class="text-center" style="height: 100%">
         <v-col class="pa-0 animate-pop-in" sm="6">
           <v-card>
             <v-form>
@@ -13,7 +13,6 @@
                       v-model="utilisateur.identifiant"
                       label="Identifiant"
                   >
-
                   </v-text-field>
                   <v-text-field
                       v-model="utilisateur.mot_de_passe"
@@ -28,6 +27,7 @@
                 </div>
               </v-card-text>
               <v-card-actions class="px-8 pb-5">
+                <a @click="$router.push('/inscription')" class="text-caption text-decoration-none">Pas encore de compte ?</a>
                 <v-spacer></v-spacer>
                 <v-btn
                     :loading="loading"

@@ -14,7 +14,7 @@
               <v-icon small class="mr-2">{{ sortDate ? "arrow_upward" : "arrow_downward" }}</v-icon>
               Date
             </v-btn>
-            <v-btn small outlined @click="switchArchive = !switchArchive" :color="switchArchive ? 'success' : 'primary'">
+            <v-btn small outlined @click="switchArchive = !switchArchive" :color="switchArchive ? 'success' : 'primary'" class="mr-2">
               <v-icon class="mr-2">
                 {{ switchArchive ? 'visibility' : 'visibility_off' }}
               </v-icon>
@@ -394,7 +394,7 @@ export default {
         }
       }
     },
-    async clear() {
+    clear() {
       this.projet = {
         nom: null,
         date: '',

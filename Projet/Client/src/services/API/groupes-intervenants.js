@@ -21,8 +21,8 @@ const apiGroupeIntervenant = {
     return response.data;
   },
 
-  async createGroupeIntervenant(element) {
-    const response = await axios.post('/groupes-intervenants/create', element);
+  async createGroupeIntervenant(groupe) {
+    const response = await axios.post('/groupes-intervenants/create', groupe);
     return response.data;
   },
 
@@ -36,8 +36,8 @@ const apiGroupeIntervenant = {
     return response.data;
   },
 
-  async editGroupeIntervenant(element) {
-    const response = await axios.patch('/groupes-intervenants/edit/' + element.id, element);
+  async editGroupeIntervenant(groupe) {
+    const response = await axios.patch('/groupes-intervenants/edit/' + groupe.id, groupe);
     return response.data;
   },
 

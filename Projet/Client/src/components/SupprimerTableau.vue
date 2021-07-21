@@ -82,18 +82,16 @@ export default {
         this.loading = true;
         await apiGroupeIntervenant.deleteGroupeIntervenantByElement(this.module.id, this.intervenant.intervenant_id);
         this.loading = false;
-        this.$emit('reload-groupes-intervenants-module');
       } else if (this.type === 'volumes-hebdomadaires') {
         this.loading = true;
         await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByElement(this.module.id);
         this.loading = false;
-        this.$emit('reload-volumes-hebdomadaires-module');
       } else if (this.type === 'volumes-globaux') {
         this.loading = true;
         await apiVolumeGlobaux.deleteVolumeGlobauxByElement(this.module.id, this.intervenant.intervenant_id);
         this.loading = false;
-        this.$emit('reload-volumes-globaux-module');
       }
+      this.$emit('reload-data');
       this.dialog = false;
     }
   }

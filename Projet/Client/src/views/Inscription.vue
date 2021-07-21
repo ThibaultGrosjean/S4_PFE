@@ -1,6 +1,6 @@
 <template>
-  <v-container fill-height fluid class="animate-pop-in pa-16 background-shape">
-    <v-row align="center" justify="center" class="text-center">
+  <v-container fill-height fluid class="pa-16 animate-pop-in background-shape">
+    <v-row align="center" justify="center" class="text-center" style="height: 100%">
       <v-col class="pa-0 animate-pop-in" sm="6">
         <v-card>
           <v-form>

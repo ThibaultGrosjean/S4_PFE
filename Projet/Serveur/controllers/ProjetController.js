@@ -1,4 +1,5 @@
 var db = require('../models/bdd');
+const tools = require('../models/tools');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
@@ -39,7 +40,7 @@ exports.getProjet = (req, res) => {
 
 exports.addProjet = (req, res) => {
   var data = {
-    nom :  req.params.name,
+    nom :  tools.safeStringSQL(req.params.name),
     date : new Date().toISOString().substr(0, 10),
     verrou : 0,
     archive : 0,
@@ -90,7 +91,7 @@ exports.copyProjet = (req, res) => {
 exports.editProjet = (req, res) => {
   var data = {
     id : req.body.id,
-    nom : req.body.nom,
+    nom : tools.safeStringSQL(req.body.nom),
     date : req.body.date,
     verrou : req.body.verrou,
     archive : req.body.archive,

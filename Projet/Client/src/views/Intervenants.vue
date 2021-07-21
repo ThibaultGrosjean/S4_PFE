@@ -15,7 +15,7 @@
               <v-icon small class="mr-2">{{ sortPrenom ? "arrow_upward" : "arrow_downward" }}</v-icon>
               Prénom
             </v-btn>
-            <v-btn outlined small color="primary"  @click="sortedByNom" class="mx-2 mb-2">
+            <v-btn outlined small color="primary"  @click="sortedByNom" class="mr-2 mb-2">
               <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
               Nom
             </v-btn>

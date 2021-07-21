@@ -69,7 +69,7 @@ export default {
     async valider() {
       this.loading = true;
       await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(this.formation.id);
-      this.$emit('relaod-all-groupes');
+      this.$emit('reload-data');
       this.loading = false;
       this.dialog = false;
     }

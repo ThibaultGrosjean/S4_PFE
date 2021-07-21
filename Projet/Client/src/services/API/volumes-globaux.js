@@ -11,8 +11,13 @@ const apiVolumeGlobaux = {
     return response.data;
   },
 
-  async getVolumeGlobauxByModule() {
-    const response = await axios.get('/volumes-globaux/module/get' ).catch(error => console.error('Erreur API: ', error));
+  async getVolumeGlobauxBySemestre() {
+    const response = await axios.get('/volumes-globaux/semestre/get' ).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async getVolumeGlobauxBySemestreIntervenant() {
+    const response = await axios.get('/volumes-globaux/semestre/intervenant/get' ).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -31,8 +36,8 @@ const apiVolumeGlobaux = {
     return response.data;
   },
 
-  async editVolumeGlobaux(element) {
-    const response = await axios.patch('/volumes-globaux/edit/' + element.id, element);
+  async editVolumeGlobaux(volume) {
+    const response = await axios.patch('/volumes-globaux/edit/' + volume.id, volume);
     return response.data;
   },
 

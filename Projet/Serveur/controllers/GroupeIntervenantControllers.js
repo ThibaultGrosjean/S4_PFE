@@ -8,7 +8,6 @@ exports.validationResult = [
   check('nb_groupe_tp',"Veuillez saisir un un entier ou un nombre à virgule").isNumeric(),
   check('nb_groupe_partiel',"Veuillez saisir un un entier ou un nombre à virgule").isNumeric(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
-  check('intervenant_id ',"Veuillez sélectionner un élément").isNumeric(),
 ];
 
 
@@ -56,13 +55,20 @@ exports.getGroupeIntervenant = (req, res) => {
 
 
 exports.getAllGroupeIntervenantByModule = (req, res) => {
-  db.query('SELECT g.element_id, g.intervenant_id, e.prenom, e.nom'
+  db.query('SELECT g.element_id, g.intervenant_id, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel'
         +' FROM groupe_intervenant AS g'
-        +' JOIN intervenant AS i' 
-        +' ON i.id = g.intervenant_id'
-        +' JOIN enseignant AS e'
-        +' ON e.id = i.enseignant_id'
-        +' GROUP BY g.element_id, g.intervenant_id',
+        +' LEFT JOIN ('
+        +'     SELECT '
+        +'       g2.intervenant_id, g2.element_id,'
+        +'     SUM(g2.nb_groupe_cm) as total_nb_grp_cm,'
+        +'     SUM(g2.nb_groupe_td) as total_nb_grp_td,'
+        +'     SUM(g2.nb_groupe_tp) as total_nb_grp_tp,'
+        +'     SUM(g2.nb_groupe_partiel) as total_nb_grp_partiel'
+        +'     FROM groupe_intervenant AS g2'
+        +'     GROUP BY g2.element_id, g2.intervenant_id'
+        +' ) AS total '
+        +' ON total.intervenant_id = g.intervenant_id AND total.element_id = g.element_id'
+        +' GROUP BY g.element_id, g.intervenant_id, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel',
     function(err, groupes_intervenants) {
       if (!err) {
         res.status(200).json(groupes_intervenants);  
@@ -206,11 +212,11 @@ exports.copyGroupeIntervenant = (req, res) => {
 exports.editGroupeIntervenant = (req, res) => {
   var data = {
     id : req.body.id,
-    num_semaine : req.body.num_semaine,
-    nb_groupe_cm : req.body.nb_groupe_cm,
-    nb_groupe_td : req.body.nb_groupe_td,
-    nb_groupe_tp : req.body.nb_groupe_tp,
-    nb_groupe_partiel : req.body.nb_groupe_partiel,
+    num_semaine : req.body.num_semaine | 0,
+    nb_groupe_cm : req.body.nb_groupe_cm | 0,
+    nb_groupe_td : req.body.nb_groupe_td | 0,
+    nb_groupe_tp : req.body.nb_groupe_tp | 0,
+    nb_groupe_partiel : req.body.nb_groupe_partiel | 0,
     element_id : req.body.element_id,
     intervenant_id : req.body.intervenant_id,  
   };
@@ -224,9 +230,11 @@ exports.editGroupeIntervenant = (req, res) => {
   +"' WHERE id = " + req.params.id + ";";
 
   let errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     const extractedErrors = {};
     errors.array().map(err => extractedErrors[err.param] = err.msg);
+    if (data.intervenant_id) console.log(data.intervenant_id)
     res.send({ errors: extractedErrors, data: data});
   } else {
     db.query(requete,

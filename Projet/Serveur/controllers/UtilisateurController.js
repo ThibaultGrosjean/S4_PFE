@@ -1,4 +1,5 @@
 var db = require('../models/bdd');
+const tools = require('../models/tools');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 
@@ -26,7 +27,7 @@ exports.addUtilisateur = (req, res, next) => {
 	      if (utilisateur.length) {
 	        return res.send({ errors: {"identifiant": "L'identifiant est déjà utilisé"} });
 	      } else {
-	      	// Vérifier le double mot de passe
+	      	// Vérifier le double mot de passgite
 	      	if (req.body.mot_de_passe != req.body.mot_de_passe_verif){
 	      		 return res.send({ errors: {"mot_de_passe_verif": "Les deux mots de passe sont différents"} });
 	      	} else {
@@ -34,7 +35,7 @@ exports.addUtilisateur = (req, res, next) => {
 		          if (err) {
 		            return res.send({ errors: err});
 		          } else {
-		            db.query(`INSERT INTO utilisateur (identifiant, prenom, nom, email, mot_de_passe) VALUES (${db.escape(req.body.identifiant)}, ${db.escape(req.body.prenom)}, ${db.escape(req.body.nom)},${db.escape(req.body.email)}, ${db.escape(hash)})`,
+		            db.query(`INSERT INTO utilisateur (identifiant, prenom, nom, email, mot_de_passe) VALUES (${db.escape(tools.safeStringSQL(req.body.identifiant))}, ${db.escape(tools.safeStringSQL(req.body.prenom))}, ${db.escape(tools.safeStringSQL(req.body.nom))},${db.escape(tools.safeStringSQL(req.body.email))}, ${db.escape(hash)})`,
 		              function(err, utilisateur) {
 		                if (err) {
 		                  return res.send({ errors: err});
@@ -103,4 +104,4 @@ exports.verifToken = (req, res, next) => {
   } catch (err) {
     res.send({ errors: {"general_error": "Problème d'identification, veuillez recommencer."} });
   }
-}
+};

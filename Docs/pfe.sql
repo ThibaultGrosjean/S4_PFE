@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mer. 21 juil. 2021 à 10:03
+-- Généré le : mer. 21 juil. 2021 à 17:41
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -58,19 +58,28 @@ CREATE TABLE `element` (
 --
 
 INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol_hor_total_prevues_etu_cm`, `vol_hor_total_prevues_etu_td`, `vol_hor_total_prevues_etu_tp`, `mode_saisie`, `cm_autorises`, `td_autorises`, `tp_autorises`, `partiel_autorises`, `forfait_globale_cm`, `forfait_globale_td`, `forfait_globale_tp`, `forfait_globale_partiel`, `nb_groupe_effectif_cm`, `nb_groupe_effectif_td`, `nb_groupe_effectif_tp`, `nb_groupe_effectif_partiel`, `parent`) VALUES
-(1, 'DUT Informatique IUT Belfort-Montbéliard', 'DUT Info', 'DUTI', 0, 0, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'Semestre 1', 'S1', 'S1', 1, 0, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(3, 'Semestre 2', 'S2', 'S2', 1, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(4, 'Semestre 3', 'S3', 'S3', 1, 2, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(5, 'Semestre 4', 'S4', 'S4', 1, 3, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(6, 'UE 11: Informatique', 'UE11', 'UE11', 2, 0, 44, 60, 76, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(7, 'UE 12: Connaissances et compétences générales', 'UE12', 'UE12', 2, 1, NULL, NULL, NULL, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(8, 'M1101 - Algorithmique et Programmation', 'M1101', 'M1101', 3, 0, 19, 16, 16, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(9, 'M1102 - Architecture, Systèmes et Réseaux', 'M1102', 'M1102', 3, 1, 2, 1, 2, 'hebdo', 1, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 4, 8, 2, 6),
-(10, 'UE 41 : Stage', 'UE41', 'UE41', 2, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5),
-(11, 'M 4101 : Stage', 'M4101', 'M4101', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 10),
-(12, 'UE 42 : Projet tuteuré', 'UE42 Ptut', 'UE42', 2, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 3, 6, 2, 5),
-(13, 'M 4201 : Projet tuteuré', 'M4201', 'M4201', 3, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 2, 0, 0, 1, 3, 6, 2, 12);
+(1, 'DUT Informatique IUT Belfort-Montbéliard', 'Dut Info', 'DUTI', 0, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL),
+(2, 'Semestre 1', 'S1', 'S1', 1, 0, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+(3, 'Semestre 2', 'S2', 'S2', 1, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+(4, 'Semestre 3', 'S3', 'S3', 1, 2, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+(5, 'Semestre 4', 'S4', 'S4', 1, 3, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+(6, 'UE 11 : Base de l\'Informatique', 'UE11', 'UE11', 2, 0, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 2),
+(7, 'UE 12 : Base de culture scientifique, sociale et humaine', 'UE12', 'UE12', 2, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 2),
+(8, 'M 1101 : Introduction aux systèmes informatiques', 'M1101', 'M1101', 3, 0, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
+(9, 'M 1102 : Introduction à l\'algorithmique et à la programmation', 'M1102', 'M1102', 3, 1, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
+(10, 'M 1103 : Structures de données et algorithmes fondamentaux', 'M1103', 'M1103', 3, 2, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
+(11, 'M 1104 : Introduction aux bases de données', 'M1104', 'M1104', 3, 3, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
+(12, 'M 1105 : Conception de documents et interfaces numériques', 'M1105', 'M1105', 3, 4, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
+(13, 'Projet Tutoré', 'Ptut', 'Ptut', 2, 2, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2),
+(14, 'M 1201 : Mathématiques discrètes', 'M1201', 'M1201', 3, 0, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(15, 'M 1202 : Algèbre linéaire', 'M1202', 'M1202', 3, 1, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(16, 'M 1203 : Environnement économique', 'M1203', 'M1203', 3, 2, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(17, 'M 1204 : Fonctionnement des organisations', 'M1204', 'M1204', 3, 3, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(18, 'M 1205 : Expression et communication', 'M1205', 'M1205', 3, 4, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(19, 'M 1206 : Anglais', 'M1206', 'M1206', 3, 5, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(20, 'M 1207 : PPP', 'M1207', 'M1207', 3, 6, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
+(21, 'Stage', 'Stage', 'Stage', 2, 1, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5),
+(22, 'Projet Tutoré', 'Ptut', 'Ptut', 2, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 5);
 
 -- --------------------------------------------------------
 
@@ -137,39 +146,34 @@ CREATE TABLE `groupe_intervenant` (
 --
 
 INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
-(1, 9, 1, 1, 1, 1, 3, 1),
-(2, 9, 1, 2, 1, 1, 3, 1),
-(3, 9, 1, 3, 1, 1, 3, 1),
-(4, 9, 1, 4, 1, 1, 3, 1),
-(5, 9, 1, 5, 1, 1, 3, 1),
-(6, 9, 1, 6, 1, 1, 3, 1),
-(7, 9, 1, 7, 1, 1, 3, 1),
-(8, 9, 1, 8, 1, 1, 3, 1),
-(9, 9, 1, 9, 1, 1, 3, 1),
-(10, 9, 1, 10, 1, 1, 3, 1),
-(11, 9, 1, 11, 0, 0, 0, 1),
-(12, 9, 2, 1, 3, 1, 1, 1),
-(13, 9, 2, 2, 1, 1, 1, 1),
-(14, 9, 2, 3, 1, 1, 1, 1),
-(15, 9, 2, 4, 1, 1, 1, 1),
-(16, 9, 2, 5, 1, 1, 1, 1),
-(17, 9, 2, 6, 1, 1, 1, 1),
-(18, 9, 2, 7, 1, 1, 1, 1),
-(19, 9, 2, 8, 1, 1, 1, 1),
-(20, 9, 2, 9, 1, 1, 1, 1),
-(21, 9, 2, 10, 1, 1, 1, 1),
-(22, 9, 2, 11, 0, 0, 0, 1),
-(23, 8, 1, 1, 1, 2, 6, 0),
-(24, 8, 1, 2, 1, 2, 6, 0),
-(25, 8, 1, 3, 1, 2, 6, 0),
-(26, 8, 1, 4, 1, 2, 6, 0),
-(27, 8, 1, 5, 1, 2, 6, 0),
-(28, 8, 1, 6, 1, 2, 6, 0),
-(29, 8, 1, 7, 1, 2, 6, 0),
-(30, 8, 1, 8, 1, 2, 6, 0),
-(31, 8, 1, 9, 1, 2, 6, 0),
-(32, 8, 1, 10, 1, 2, 6, 0),
-(33, 8, 1, 11, 0, 0, 0, 1);
+(1, 8, 1, 1, 1, 2, 4, 0),
+(2, 8, 1, 2, 1, 2, 4, 0),
+(3, 8, 1, 3, 1, 2, 4, 0),
+(4, 8, 1, 4, 1, 2, 4, 0),
+(5, 8, 1, 5, 1, 2, 4, 0),
+(6, 8, 1, 6, 1, 2, 4, 0),
+(7, 8, 1, 7, 1, 2, 4, 0),
+(8, 8, 1, 8, 1, 2, 4, 0),
+(9, 8, 1, 9, 1, 2, 4, 0),
+(10, 8, 1, 10, 1, 2, 4, 0),
+(11, 8, 1, 11, 1, 2, 4, 0),
+(12, 8, 1, 12, 1, 2, 4, 0),
+(13, 8, 1, 13, 1, 2, 4, 0),
+(14, 8, 1, 14, 1, 2, 4, 0),
+(15, 8, 2, 1, 0, 2, 4, 0),
+(16, 8, 2, 2, 0, 2, 4, 0),
+(17, 8, 2, 3, 0, 2, 4, 0),
+(18, 8, 2, 4, 0, 2, 4, 0),
+(19, 8, 2, 5, 0, 2, 4, 0),
+(20, 8, 2, 6, 0, 2, 4, 0),
+(21, 8, 2, 7, 0, 2, 4, 0),
+(22, 8, 2, 8, 0, 2, 4, 0),
+(23, 8, 2, 9, 0, 2, 4, 0),
+(24, 8, 2, 10, 0, 2, 4, 0),
+(25, 8, 2, 11, 0, 2, 4, 0),
+(26, 8, 2, 12, 0, 2, 4, 0),
+(27, 8, 2, 13, 0, 2, 4, 0),
+(28, 8, 2, 14, 0, 2, 4, 0);
 
 -- --------------------------------------------------------
 
@@ -187,8 +191,9 @@ CREATE TABLE `groupe_sous_total` (
 --
 
 INSERT INTO `groupe_sous_total` (`limite_sous_total_id`, `element_id`) VALUES
-(1, 11),
-(1, 13);
+(1, 13),
+(1, 22),
+(1, 21);
 
 -- --------------------------------------------------------
 
@@ -232,7 +237,7 @@ CREATE TABLE `limite_sous_total` (
 --
 
 INSERT INTO `limite_sous_total` (`id`, `nom`, `limite_he_td`, `projet_id`) VALUES
-(1, 'Référentiel', 50, 1);
+(1, 'Référentiel', 80, 1);
 
 -- --------------------------------------------------------
 
@@ -255,10 +260,10 @@ CREATE TABLE `periode` (
 --
 
 INSERT INTO `periode` (`id`, `element_id`, `nb_semaine`, `nb_groupe_defaut_cm`, `nb_groupe_defaut_td`, `nb_groupe_defaut_tp`, `nb_groupe_defaut_partiel`) VALUES
-(1, 2, 11, 1, 4, 8, 2),
-(2, 3, 10, 1, 4, 8, 2),
-(3, 4, 10, 1, 4, 8, 2),
-(4, 5, 10, 1, 3, 6, 2);
+(1, 2, 14, 1, 4, 8, 2),
+(2, 3, 14, 1, 4, 8, 2),
+(3, 4, 14, 1, 4, 8, 2),
+(4, 5, 14, 1, 4, 8, 2);
 
 -- --------------------------------------------------------
 
@@ -279,7 +284,7 @@ CREATE TABLE `projet` (
 --
 
 INSERT INTO `projet` (`id`, `nom`, `date`, `verrou`, `archive`) VALUES
-(1, 'Test Projet', '2021-05-30', 0, 0);
+(1, 'Test Projet 2021', '2021-05-16', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -352,9 +357,12 @@ CREATE TABLE `volume_globale` (
 --
 
 INSERT INTO `volume_globale` (`id`, `intervenant_id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
-(1, 2, 11, 1, 0, 5, 0, 0),
-(2, 1, 13, 1, 0, 3, 0, 0),
-(3, 2, 13, 1, 0, 2, 0, 0);
+(1, 1, 13, 1, 0, 3, 0, 0),
+(2, 2, 13, 1, 0, 6, 0, 0),
+(3, 1, 21, 1, 0, 5, 0, 0),
+(4, 2, 21, 1, 0, 4, 0, 0),
+(5, 1, 22, 1, 0, 4, 0, 0),
+(6, 2, 22, 1, 0, 6, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -377,28 +385,20 @@ CREATE TABLE `volume_hebdomadaire` (
 --
 
 INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
-(1, 8, 1, 1, 1, 1.5, 0),
-(2, 8, 3, 1, 1, 1.5, 0),
-(3, 8, 2, 1, 1, 1.5, 0),
-(4, 8, 4, 1, 1, 1.5, 0),
-(5, 8, 5, 1, 1, 1.5, 0),
-(6, 8, 6, 1, 1, 1.5, 0),
-(7, 8, 7, 1, 1, 1.5, 0),
-(8, 8, 8, 1, 1, 1.5, 0),
-(9, 8, 9, 1, 1, 1.5, 0),
-(10, 8, 10, 1, 1, 1.5, 0),
-(11, 8, 11, 0, 0, 0, 3),
-(13, 9, 1, 1, 1, 2, 0),
-(14, 9, 3, 1, 1, 2, 0),
-(15, 9, 2, 1, 1, 2, 0),
-(16, 9, 4, 1, 1, 2, 0),
-(17, 9, 5, 1, 1, 2, 0),
-(18, 9, 6, 1, 1, 2, 0),
-(19, 9, 7, 1, 1, 2, 0),
-(20, 9, 8, 1, 1, 2, 0),
-(21, 9, 9, 1, 1, 2, 0),
-(22, 9, 10, 1, 1, 2, 0),
-(23, 9, 11, 0, 0, 0, 0);
+(1, 8, 1, 1, 2, 3, 0),
+(2, 8, 2, 1, 2, 3, 0),
+(3, 8, 3, 1, 2, 3, 0),
+(4, 8, 4, 1, 2, 3, 0),
+(5, 8, 5, 1, 2, 3, 0),
+(6, 8, 6, 1, 2, 3, 0),
+(7, 8, 7, 1, 2, 3, 0),
+(8, 8, 8, 1, 2, 3, 0),
+(9, 8, 9, 1, 2, 3, 0),
+(10, 8, 10, 1, 2, 3, 0),
+(11, 8, 11, 1, 2, 3, 0),
+(12, 8, 12, 1, 2, 3, 0),
+(13, 8, 13, 1, 2, 3, 0),
+(14, 8, 14, 0, 0, 0, 3);
 
 --
 -- Index pour les tables déchargées
@@ -504,7 +504,7 @@ ALTER TABLE `volume_hebdomadaire`
 -- AUTO_INCREMENT pour la table `element`
 --
 ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
@@ -522,7 +522,7 @@ ALTER TABLE `formation`
 -- AUTO_INCREMENT pour la table `groupe_intervenant`
 --
 ALTER TABLE `groupe_intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT pour la table `intervenant`
@@ -558,19 +558,19 @@ ALTER TABLE `statut`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `volume_globale`
 --
 ALTER TABLE `volume_globale`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `volume_hebdomadaire`
 --
 ALTER TABLE `volume_hebdomadaire`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Contraintes pour les tables déchargées

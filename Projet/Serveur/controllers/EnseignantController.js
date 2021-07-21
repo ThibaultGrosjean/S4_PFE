@@ -1,4 +1,5 @@
 var db = require('../models/bdd');
+const tools = require('../models/tools');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
@@ -92,9 +93,9 @@ function generateSurnom(prenom, nom) {
 
 exports.addEnseignant = (req, res) => {
   var data = {
-    nom : req.body.nom,
-    prenom : req.body.prenom,
-    email : req.body.email,
+    nom : tools.safeStringSQL(req.body.nom),
+    prenom : tools.safeStringSQL(req.body.prenom),
+    email : tools.safeStringSQL(req.body.email),
     statut_id : req.body.statut_id,
   };
 
@@ -146,10 +147,10 @@ exports.copyEnseignant = (req, res) => {
 exports.editEnseignant = (req, res) => {
   var data = {
     id : req.body.id,
-    nom : req.body.nom,
-    prenom : req.body.prenom,
-    surnom : req.body.surnom,
-    email : req.body.email,
+    nom : tools.safeStringSQL(req.body.nom),
+    prenom : tools.safeStringSQL(req.body.prenom),
+    surnom : tools.safeStringSQL(req.body.surnom),
+    email : tools.safeStringSQL(req.body.email),
     statut_id : req.body.statut_id
   };
 

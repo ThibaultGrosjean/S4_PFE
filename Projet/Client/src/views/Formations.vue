@@ -1,7 +1,6 @@
 <template>
   <v-container fluid class="pa-10">
     <ProgressOverlay :loading="loading"/>
-
     <v-row class="animate-pop-in mb-2 pa-3">
       <v-card width="100%" class="pa-7 pr-9">
         <v-row>
@@ -15,6 +14,12 @@
               <v-icon small class="mr-2">{{ sortNom ? "arrow_upward" : "arrow_downward" }}</v-icon>
               Nom
             </v-btn>
+            <v-btn small outlined @click="changeSaisie" color="primary" class="mr-2">
+              <v-icon class="mr-2">
+                {{ saisieHebdo ? 'date_range' : 'pie_chart' }}
+              </v-icon>
+              {{ saisieHebdo ? 'Saisie Hebdomadaire' : 'Saisie Globale' }}
+            </v-btn>
             <v-btn :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="success" @click="form = true">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
@@ -22,7 +27,7 @@
               <v-icon>delete</v-icon>
             </v-btn>
           </v-col>
-          <v-col class="d-flex align-center justify-end pa-0">
+          <v-col cols="3" class="d-flex align-center justify-end pa-0">
             <span v-if="projet.length" class="subtitle-1 text--secondary">{{ projet[0].nom }} - {{ projet[0].date.substr(0, 4) }}</span>
           </v-col>
         </v-row>
@@ -45,7 +50,7 @@
           >
             <v-item v-slot="{ active, toggle }" :value="f">
               <v-card class="animate-pop-in">
-                <v-card-title class="text-h5 pa-4">
+                <v-card-title class="text-h5 pa-4 pt-5">
                   <v-container fluid>
                     <v-row>
                       <v-col cols="1" class="pa-0 d-flex justify-start">
@@ -79,7 +84,7 @@
                   </v-container>
                 </v-card-title>
                 <v-card-text class="pa-0">
-                  <ReadElements :formation="f" :disabled="Boolean(f.verrou)" v-on:edit-element="snackbarElement($event)"></ReadElements>
+                  <ReadElements :formation="f" :disabled="Boolean(f.verrou)" v-on:edit-element="snackbarElement($event)" :saisie="saisieHebdo"></ReadElements>
                 </v-card-text>
               </v-card>
             </v-item>
@@ -257,10 +262,10 @@ export default {
   data: () => ({
     formations: [],
     projet: [],
-    elements: [],
     hierarchies: [],
     errors: [],
     form: false,
+    saisieHebdo: true,
     dialog: false,
     loading: false,
     responseSuccess: false,
@@ -300,7 +305,7 @@ export default {
     },
     async submit() {
       if (this.projet[0].verrou === 1) {
-        this.clear();
+        await this.clear();
         this.form = false;
         return;
       }
@@ -339,7 +344,7 @@ export default {
         } else {
           await apiFormation.createFormation(Number(this.$route.params.id), resElement.insertId);
           this.typeOperation = 'ajouté';
-          this.clear();
+          await this.clear();
           this.loading = false;
           this.form = false;
           this.responseSuccess = true;
@@ -369,6 +374,7 @@ export default {
           }
         }
       }
+      await this.getFormationByProjet();
     },
     async clear() {
       this.titre = '';
@@ -377,7 +383,6 @@ export default {
       this.element = null;
       this.methods = 'POST';
       this.errors = [];
-      await this.getFormationByProjet();
       await this.getRacineHierarchie();
     },
     close() {
@@ -444,6 +449,11 @@ export default {
         this.formations.sort((a, b) => a.titre.toUpperCase() < b.titre.toUpperCase());
       }
     },
+    async changeSaisie() {
+      this.loading = true;
+      this.saisieHebdo = !this.saisieHebdo;
+      this.loading = false;
+    }
   },
   async mounted() {
     this.loading = true;
@@ -451,7 +461,7 @@ export default {
     await this.getFormationByProjet();
     await this.getRacineHierarchie();
     this.loading = false;
-  }
+  },
 }
 </script>
 

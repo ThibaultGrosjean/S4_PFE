@@ -21,8 +21,8 @@ const apiVolumeHebdomadaire = {
     return response.data;
   },
 
-  async createVolumeHebdomadaire(element) {
-    const response = await axios.post('/volumes-hebdomadaires/create', element).catch(error => console.error('Erreur API: ', error));
+  async createVolumeHebdomadaire(volume) {
+    const response = await axios.post('/volumes-hebdomadaires/create', volume).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -36,8 +36,8 @@ const apiVolumeHebdomadaire = {
     return response.data;
   },
 
-  async editVolumeHebdomadaire(element) {
-    const response = await axios.patch('/volumes-hebdomadaires/edit/' + element.id, element);
+  async editVolumeHebdomadaire(volume) {
+    const response = await axios.patch('/volumes-hebdomadaires/edit/' + volume.id, volume);
     return response.data;
   },
 

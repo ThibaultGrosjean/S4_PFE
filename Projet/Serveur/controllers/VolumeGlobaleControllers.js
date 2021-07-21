@@ -8,16 +8,14 @@ exports.validationResult = [
   check('vol_hor_tp',"Veuillez saisir un un entier ou un nombre à virgule").isFloat(),
   check('vol_hor_partiel',"Veuillez saisir un un entier ou un nombre à virgule").isFloat(),
   check('element_id',"Veuillez sélectionner un élément").isNumeric(),
-  check('intervenant_id ',"Veuillez sélectionner un élément").isNumeric(),
 ];
 
-
 exports.getAllVolumeGlobales = (req, res) => {
-  db.query('SELECT v.*, e.prenom, e.nom'
-      +' , SUM(el.forfait_globale_cm * v.vol_hor_cm) AS total_HeTD_cm'
-      +' , SUM(el.forfait_globale_td * v.vol_hor_td) AS total_HeTD_td'
-      +' , SUM(el.forfait_globale_tp * v.vol_hor_tp) AS total_HeTD_tp'
-      +' , SUM(el.forfait_globale_partiel * v.vol_hor_partiel) AS total_HeTD_partiel'
+  db.query('SELECT v.*,el.titre, e.prenom, e.nom'
+      +' , SUM(el.forfait_globale_cm * v.vol_hor_cm) AS total_he_td_cm'
+      +' , SUM(el.forfait_globale_td * v.vol_hor_td) AS total_he_td_td'
+      +' , SUM(el.forfait_globale_tp * v.vol_hor_tp) AS total_he_td_tp'
+      +' , SUM(el.forfait_globale_partiel * v.vol_hor_partiel) AS total_he_td_partiel'
       +' FROM volume_globale AS v'
       +' JOIN element AS el'
       +' ON el.id = v.element_id'
@@ -173,11 +171,11 @@ exports.copyVolumeGlobale = (req, res) => {
 exports.editVolumeGlobale = (req, res) => {
   var data = {
     id : req.body.id,
-    num_semaine : req.body.num_semaine,
-    vol_hor_cm : req.body.vol_hor_cm,
-    vol_hor_td : req.body.vol_hor_td,
-    vol_hor_tp : req.body.vol_hor_tp,
-    vol_hor_partiel : req.body.vol_hor_partiel,
+    num_semaine : req.body.num_semaine | 0,
+    vol_hor_cm : req.body.vol_hor_cm | 0,
+    vol_hor_td : req.body.vol_hor_td | 0,
+    vol_hor_tp : req.body.vol_hor_tp | 0,
+    vol_hor_partiel : req.body.vol_hor_partiel | 0,
     element_id : req.body.element_id,  
     intervenant_id : req.body.intervenant_id,  
   };
@@ -251,7 +249,7 @@ exports.deleteAllVolumesGlobauxByFormation = (req, res) => {
         +' ON e.parent = e2.id'
         +' LEFT JOIN element as e3'
         +' ON e2.parent = e3.id'
-        +' WHERE e3.parent = ?',[req.params.id],
+        +' WHERE e3.parent = ' + req.params.id + ' OR e2.parent = ' + req.params.id,
     function(err, volume_globale) {
       if (!err) {
         res.status(200).json(volume_globale);

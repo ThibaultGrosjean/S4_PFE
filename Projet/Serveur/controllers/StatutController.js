@@ -1,5 +1,5 @@
 var db = require('../models/bdd');
-
+const tools = require('../models/tools');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
@@ -42,8 +42,8 @@ exports.getStatut = (req, res) => {
 
 exports.addStatut = (req, res) => {
   var data = {
-    nom : req.body.nom,
-    surnom : req.body.surnom,
+    nom : tools.safeStringSQL(req.body.nom),
+    surnom : tools.safeStringSQL(req.body.surnom),
     nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
     nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
     nb_he_td_min_sup : req.body.nb_he_td_min_sup,
@@ -96,8 +96,8 @@ exports.copyStatut = (req, res) => {
 exports.editStatut = (req, res) => {
   var data = {
     id : req.body.id,
-    nom : req.body.nom,
-    surnom : req.body.surnom,
+    nom : tools.safeStringSQL(req.body.nom),
+    surnom : tools.safeStringSQL(req.body.surnom),
     nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
     nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
     nb_he_td_min_sup : req.body.nb_he_td_min_sup,

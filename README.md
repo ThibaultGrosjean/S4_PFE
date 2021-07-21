@@ -118,3 +118,11 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Améliorations graphiques : barre de navigation et barre d'outils
 * Corrections bugs graphiques
 * Système de connexion, inscription, protection des routes on n'est pas authentifié
+
+## Semaine 10 : 20-23 juillet
+
+* Sauvegarde de la connexion dans une session
+* Affichage des données de l'utilisateur dans la page "mon compte"
+* Demande 2 fois le mot de passe lors d'une inscription
+* Correction affichage des volumes globaux
+* Fonction pour convertir les chaînes avec des caractères spéciaux afin d'éviter les conflits dans les requêtes SQL (l' →  l\')
