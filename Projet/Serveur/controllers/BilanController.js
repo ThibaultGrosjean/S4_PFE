@@ -84,7 +84,7 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
 
 
 exports.getAllBilanSousTotal = (req, res) => {
-  db.query('SELECT g.intervenant_id, e.prenom, e.nom,l.id, l.nom AS nom_limite, l.limite_he_td'
+  db.query('SELECT IFNULL(sl.limite, l.limite_he_td) AS limite , g.intervenant_id, e.prenom, e.nom,l.id, l.nom AS nom_limite'
        +' , IFNULL(vgt.total_volume_globale_cm, 0) AS total_cm'
        +' , IFNULL(vgt.total_volume_globale_td, 0)  AS total_td'
        +' , IFNULL(vgt.total_volume_globale_tp, 0) AS total_tp'
@@ -101,6 +101,8 @@ exports.getAllBilanSousTotal = (req, res) => {
        +' ON gst.limite_sous_total_id = l.id'
        +' LEFT JOIN volume_hebdomadaire AS v'
        +' ON g.element_id = v.element_id AND g.num_semaine = v.num_semaine'
+       +' LEFT JOIN groupe_statut_limite AS sl'
+       +' ON sl.limite_id = l.id AND sl.statut_id = e.statut_id'
        +' LEFT JOIN ('
        +'     SELECT intervenant_id AS id'
        +'   , SUM(IFNULL(vol_hor_cm * el.forfait_globale_cm, 0)) AS total_volume_globale_cm'
@@ -110,13 +112,13 @@ exports.getAllBilanSousTotal = (req, res) => {
        +'   FROM volume_globale'
        +'   LEFT JOIN element AS el'
        +'   ON element_id = el.id'
-       +'   WHERE intervenant_id IN (SELECT i2.id FROM intervenant AS i2 WHERE i2.projet_id = ' + req.params.id + ' )'
-       +'   AND  element_id IN (SELECT g2.element_id  FROM groupe_sous_total AS g2 JOIN limite_sous_total As l2 On l2.id = g2.limite_sous_total_id WHERE l2.projet_id =  ' + req.params.id + ')'
+       +'   WHERE intervenant_id IN (SELECT i2.id FROM intervenant AS i2 WHERE i2.projet_id = ' + req.params.id + '  )'
+       +'   AND  element_id IN (SELECT g2.element_id  FROM groupe_sous_total AS g2 JOIN limite_sous_total As l2 On l2.id = g2.limite_sous_total_id WHERE l2.projet_id =  ' + req.params.id + ' )'
        +'   GROUP BY intervenant_id)'
        +' AS vgt'
        +' ON vgt.id = i.id'
-       +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id =  ' + req.params.id + ')'
-       +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel, l.id'
+       +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id =  ' + req.params.id + ' )'
+       +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel, l.id, sl.limite'
        +' ORDER BY l.nom, e.prenom, e.nom',
     function(err, bilan) {
       if (!err) {

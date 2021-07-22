@@ -66,7 +66,7 @@
                   <td class="text-center left-border">
                     <span :class="getClassColorForTotal(b)"><b>{{ b.total_general }} h</b></span>
                   </td>
-                  <td class="text-center">{{ b.total_heures_sup }} h</td>
+                  <td class="text-center"><span :class="getClassColorForTotalHeureSup(b)"><b>{{ b.total_heures_sup }} h </b> / {{ b.nb_he_td_max_sup }}</span></td>
                 </tr>
                 </tbody>
               </template>
@@ -146,7 +146,7 @@
                   <td class="text-center">{{ st.total_td }} h</td>
                   <td class="text-center">{{ st.total_tp }} h</td>
                   <td class="text-center">{{ st.total_partiel }} h</td>
-                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite_he_td }}</span></td>
+                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite}}</span></td>
                   <td v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">
                     <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
@@ -337,6 +337,7 @@
 </template>
 
 <script>
+import apiStatut from "../services/API/statuts";
 import apiProjet from "../services/API/projets";
 import apiBilan from "../services/API/bilans";
 import apiElement from "../services/API/elements";
@@ -360,6 +361,7 @@ export default {
     sousTotaux: [],
     limiteSousTotal: [],
     projet: [],
+    statuts: [],
     form: false,
     dialog: false,
     showMenuStatutDetail: false,
@@ -385,6 +387,9 @@ export default {
   methods: {
     async getProjet() {
       this.projet = await apiProjet.getProjet(this.$route.params.id);
+    },
+    async getStatut() {
+      this.statuts = await apiStatut.getStatuts();
     },
     async getElementsModules() {
       this.elementsModules = await apiElement.getElementsModules(this.$route.params.id);
@@ -503,10 +508,13 @@ export default {
       if (bilan.total_general >= bilan.nb_he_td_min_attendu && bilan.total_general <= bilan.nb_he_td_max_attendu + bilan.nb_he_td_max_sup) return 'valide';
       if (bilan.total_general > bilan.nb_he_td_max_attendu + bilan.nb_he_td_max_sup) return 'heures-sup';
     },
+    getClassColorForTotalHeureSup(bilan){
+      if (bilan.total_heures_sup <= bilan.nb_he_td_max_sup) return 'valide';
+      if (bilan.total_heures_sup > bilan.nb_he_td_max_sup) return 'heures-sup';
+    },
     getClassColorForSousTotal(sousTotal){
-      //TODO faire en fonction des statuts
-      if (sousTotal.total_he_td <= sousTotal.limite_he_td) return 'valide';
-      if (sousTotal.total_he_td > sousTotal.limite_he_td) return 'heures-sup';
+      if (sousTotal.total_he_td <= sousTotal.limite) return 'valide';
+      if (sousTotal.total_he_td > sousTotal.limite) return 'heures-sup';
     }
   },
   computed: {
@@ -529,6 +537,7 @@ export default {
   async mounted() {
     this.loading = true;
     await this.getProjet();
+    await this.getStatut();
     await this.getBilanByProjetIntervenant();
     await this.getSousTotaux();
     await this.getElementsModules();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : mer. 21 juil. 2021 à 17:41
+-- Généré le : jeu. 22 juil. 2021 à 15:06
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -18,46 +18,46 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `pfe`
+-- Base de données : pfe
 --
-DROP TABLE element, enseignant, formation, groupe_intervenant, groupe_sous_total, intervenant, limite_sous_total, periode, projet, statut, volume_globale, volume_hebdomadaire, utilisateur;
+DROP TABLE element, enseignant, formation, groupe_intervenant, groupe_sous_total, groupe_statut_limite, intervenant, limite_sous_total, periode, projet, statut, utilisateur, volume_globale, volume_hebdomadaire;
 -- --------------------------------------------------------
 
 --
--- Structure de la table `element`
+-- Structure de la table element
 --
 
-CREATE TABLE `element` (
-  `id` int NOT NULL,
-  `titre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `niveau` int NOT NULL,
-  `indice` int NOT NULL,
-  `vol_hor_total_prevues_etu_cm` float DEFAULT NULL,
-  `vol_hor_total_prevues_etu_td` float DEFAULT NULL,
-  `vol_hor_total_prevues_etu_tp` float DEFAULT NULL,
-  `mode_saisie` enum('aucun','hebdo','globale') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cm_autorises` tinyint(1) NOT NULL DEFAULT '0',
-  `td_autorises` tinyint(1) NOT NULL DEFAULT '0',
-  `tp_autorises` tinyint(1) NOT NULL DEFAULT '0',
-  `partiel_autorises` tinyint(1) NOT NULL DEFAULT '0',
-  `forfait_globale_cm` float DEFAULT NULL,
-  `forfait_globale_td` float DEFAULT NULL,
-  `forfait_globale_tp` float DEFAULT NULL,
-  `forfait_globale_partiel` float DEFAULT NULL,
-  `nb_groupe_effectif_cm` int DEFAULT NULL,
-  `nb_groupe_effectif_td` int DEFAULT NULL,
-  `nb_groupe_effectif_tp` int DEFAULT NULL,
-  `nb_groupe_effectif_partiel` int DEFAULT NULL,
-  `parent` int DEFAULT NULL
+CREATE TABLE element (
+  id int NOT NULL,
+  titre varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  surnom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  code varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  niveau int NOT NULL,
+  indice int NOT NULL,
+  vol_hor_total_prevues_etu_cm float DEFAULT NULL,
+  vol_hor_total_prevues_etu_td float DEFAULT NULL,
+  vol_hor_total_prevues_etu_tp float DEFAULT NULL,
+  mode_saisie enum('aucun','hebdo','globale') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  cm_autorises tinyint(1) NOT NULL DEFAULT '0',
+  td_autorises tinyint(1) NOT NULL DEFAULT '0',
+  tp_autorises tinyint(1) NOT NULL DEFAULT '0',
+  partiel_autorises tinyint(1) NOT NULL DEFAULT '0',
+  forfait_globale_cm float DEFAULT NULL,
+  forfait_globale_td float DEFAULT NULL,
+  forfait_globale_tp float DEFAULT NULL,
+  forfait_globale_partiel float DEFAULT NULL,
+  nb_groupe_effectif_cm int DEFAULT NULL,
+  nb_groupe_effectif_td int DEFAULT NULL,
+  nb_groupe_effectif_tp int DEFAULT NULL,
+  nb_groupe_effectif_partiel int DEFAULT NULL,
+  parent int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `element`
+-- Déchargement des données de la table element
 --
 
-INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol_hor_total_prevues_etu_cm`, `vol_hor_total_prevues_etu_td`, `vol_hor_total_prevues_etu_tp`, `mode_saisie`, `cm_autorises`, `td_autorises`, `tp_autorises`, `partiel_autorises`, `forfait_globale_cm`, `forfait_globale_td`, `forfait_globale_tp`, `forfait_globale_partiel`, `nb_groupe_effectif_cm`, `nb_groupe_effectif_td`, `nb_groupe_effectif_tp`, `nb_groupe_effectif_partiel`, `parent`) VALUES
+INSERT INTO element (id, titre, surnom, code, niveau, indice, vol_hor_total_prevues_etu_cm, vol_hor_total_prevues_etu_td, vol_hor_total_prevues_etu_tp, mode_saisie, cm_autorises, td_autorises, tp_autorises, partiel_autorises, forfait_globale_cm, forfait_globale_td, forfait_globale_tp, forfait_globale_partiel, nb_groupe_effectif_cm, nb_groupe_effectif_td, nb_groupe_effectif_tp, nb_groupe_effectif_partiel, parent) VALUES
 (1, 'DUT Informatique IUT Belfort-Montbéliard', 'Dut Info', 'DUTI', 0, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL),
 (2, 'Semestre 1', 'S1', 'S1', 1, 0, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
 (3, 'Semestre 2', 'S2', 'S2', 1, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
@@ -84,82 +84,84 @@ INSERT INTO `element` (`id`, `titre`, `surnom`, `code`, `niveau`, `indice`, `vol
 -- --------------------------------------------------------
 
 --
--- Structure de la table `enseignant`
+-- Structure de la table enseignant
 --
 
-CREATE TABLE `enseignant` (
-  `id` int NOT NULL,
-  `statut_id` int DEFAULT NULL,
-  `prenom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+CREATE TABLE enseignant (
+  id int NOT NULL,
+  statut_id int DEFAULT NULL,
+  prenom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  nom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  surnom varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  email varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `enseignant`
+-- Déchargement des données de la table enseignant
 --
 
-INSERT INTO `enseignant` (`id`, `statut_id`, `prenom`, `nom`, `surnom`, `email`) VALUES
+INSERT INTO enseignant (id, statut_id, prenom, nom, surnom, email) VALUES
 (1, 1, 'Gérard', 'Dupond', 'GDU', 'gerard.dupond@testmail.com'),
-(2, 4, 'Jean-Louis', 'Martin', 'JLM', 'jeanlouis.martin@testmail.com');
+(2, 4, 'Jean-Louis', 'Martin', 'JLM', 'jeanlouis.martin@testmail.com'),
+(3, 2, 'Jean-Pierre', 'Rondin', 'JPR', 'jeanlouis.martin@testmail.com'),
+(4, 5, 'Henri', 'Bernard', 'HBE', 'jeanlouis.martin@testmail.com');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `formation`
+-- Structure de la table formation
 --
 
-CREATE TABLE `formation` (
-  `id` int NOT NULL,
-  `projet_id` int DEFAULT NULL,
-  `element_id` int DEFAULT NULL,
-  `verrou` tinyint(1) NOT NULL
+CREATE TABLE formation (
+  id int NOT NULL,
+  projet_id int DEFAULT NULL,
+  element_id int DEFAULT NULL,
+  verrou tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `formation`
+-- Déchargement des données de la table formation
 --
 
-INSERT INTO `formation` (`id`, `projet_id`, `element_id`, `verrou`) VALUES
+INSERT INTO formation (id, projet_id, element_id, verrou) VALUES
 (1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `groupe_intervenant`
+-- Structure de la table groupe_intervenant
 --
 
-CREATE TABLE `groupe_intervenant` (
-  `id` int NOT NULL,
-  `element_id` int DEFAULT NULL,
-  `intervenant_id` int DEFAULT NULL,
-  `num_semaine` int NOT NULL,
-  `nb_groupe_cm` int NOT NULL,
-  `nb_groupe_td` int NOT NULL,
-  `nb_groupe_tp` int NOT NULL,
-  `nb_groupe_partiel` int NOT NULL
+CREATE TABLE groupe_intervenant (
+  id int NOT NULL,
+  element_id int DEFAULT NULL,
+  intervenant_id int DEFAULT NULL,
+  num_semaine int NOT NULL,
+  nb_groupe_cm int NOT NULL,
+  nb_groupe_td int NOT NULL,
+  nb_groupe_tp int NOT NULL,
+  nb_groupe_partiel int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `groupe_intervenant`
+-- Déchargement des données de la table groupe_intervenant
 --
 
-INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_semaine`, `nb_groupe_cm`, `nb_groupe_td`, `nb_groupe_tp`, `nb_groupe_partiel`) VALUES
-(1, 8, 1, 1, 1, 2, 4, 0),
-(2, 8, 1, 2, 1, 2, 4, 0),
-(3, 8, 1, 3, 1, 2, 4, 0),
-(4, 8, 1, 4, 1, 2, 4, 0),
-(5, 8, 1, 5, 1, 2, 4, 0),
-(6, 8, 1, 6, 1, 2, 4, 0),
-(7, 8, 1, 7, 1, 2, 4, 0),
-(8, 8, 1, 8, 1, 2, 4, 0),
-(9, 8, 1, 9, 1, 2, 4, 0),
-(10, 8, 1, 10, 1, 2, 4, 0),
-(11, 8, 1, 11, 1, 2, 4, 0),
-(12, 8, 1, 12, 1, 2, 4, 0),
-(13, 8, 1, 13, 1, 2, 4, 0),
-(14, 8, 1, 14, 1, 2, 4, 0),
+INSERT INTO groupe_intervenant (id, element_id, intervenant_id, num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel) VALUES
+(1, 8, 1, 1, 1, 4, 4, 0),
+(2, 8, 1, 2, 1, 4, 4, 0),
+(3, 8, 1, 3, 1, 4, 4, 0),
+(4, 8, 1, 4, 1, 4, 4, 0),
+(5, 8, 1, 5, 1, 4, 4, 0),
+(6, 8, 1, 6, 1, 4, 4, 0),
+(7, 8, 1, 7, 1, 4, 4, 0),
+(8, 8, 1, 8, 1, 4, 4, 0),
+(9, 8, 1, 9, 1, 4, 4, 0),
+(10, 8, 1, 10, 1, 4, 4, 0),
+(11, 8, 1, 11, 1, 4, 4, 0),
+(12, 8, 1, 12, 1, 4, 4, 0),
+(13, 8, 1, 13, 1, 4, 4, 0),
+(14, 8, 1, 14, 1, 4, 4, 0),
 (15, 8, 2, 1, 0, 2, 4, 0),
 (16, 8, 2, 2, 0, 2, 4, 0),
 (17, 8, 2, 3, 0, 2, 4, 0),
@@ -173,24 +175,52 @@ INSERT INTO `groupe_intervenant` (`id`, `element_id`, `intervenant_id`, `num_sem
 (25, 8, 2, 11, 0, 2, 4, 0),
 (26, 8, 2, 12, 0, 2, 4, 0),
 (27, 8, 2, 13, 0, 2, 4, 0),
-(28, 8, 2, 14, 0, 2, 4, 0);
+(28, 8, 2, 14, 0, 2, 4, 0),
+(29, 8, 3, 1, 1, 0, 2, 0),
+(30, 8, 3, 2, 1, 0, 2, 0),
+(31, 8, 3, 3, 1, 0, 2, 0),
+(32, 8, 3, 4, 1, 0, 2, 0),
+(33, 8, 3, 5, 1, 0, 2, 0),
+(34, 8, 3, 6, 1, 0, 2, 0),
+(35, 8, 3, 7, 1, 0, 2, 0),
+(36, 8, 3, 8, 1, 0, 2, 0),
+(37, 8, 3, 9, 1, 0, 2, 0),
+(38, 8, 3, 10, 1, 0, 2, 0),
+(39, 8, 3, 11, 1, 0, 2, 0),
+(40, 8, 3, 12, 1, 0, 2, 0),
+(41, 8, 3, 13, 1, 0, 2, 0),
+(42, 8, 3, 14, 1, 0, 2, 0),
+(43, 8, 4, 1, 1, 1, 0, 0),
+(44, 8, 4, 2, 1, 1, 0, 0),
+(45, 8, 4, 3, 1, 1, 0, 0),
+(46, 8, 4, 4, 1, 1, 0, 0),
+(47, 8, 4, 5, 1, 1, 0, 0),
+(48, 8, 4, 6, 1, 1, 0, 0),
+(49, 8, 4, 7, 1, 1, 0, 0),
+(50, 8, 4, 8, 1, 1, 0, 0),
+(51, 8, 4, 9, 1, 1, 0, 0),
+(52, 8, 4, 10, 1, 1, 0, 0),
+(53, 8, 4, 11, 1, 1, 0, 0),
+(54, 8, 4, 12, 1, 0, 0, 0),
+(55, 8, 4, 13, 1, 0, 0, 0),
+(56, 8, 4, 14, 1, 0, 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `groupe_sous_total`
+-- Structure de la table groupe_sous_total
 --
 
-CREATE TABLE `groupe_sous_total` (
-  `limite_sous_total_id` int NOT NULL,
-  `element_id` int NOT NULL
+CREATE TABLE groupe_sous_total (
+  limite_sous_total_id int NOT NULL,
+  element_id int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Déchargement des données de la table `groupe_sous_total`
+-- Déchargement des données de la table groupe_sous_total
 --
 
-INSERT INTO `groupe_sous_total` (`limite_sous_total_id`, `element_id`) VALUES
+INSERT INTO groupe_sous_total (limite_sous_total_id, element_id) VALUES
 (1, 13),
 (1, 22),
 (1, 21);
@@ -198,68 +228,92 @@ INSERT INTO `groupe_sous_total` (`limite_sous_total_id`, `element_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `intervenant`
+-- Structure de la table groupe_statut_limite
 --
 
-CREATE TABLE `intervenant` (
-  `id` int NOT NULL,
-  `projet_id` int DEFAULT NULL,
-  `enseignant_id` int DEFAULT NULL,
-  `nb_he_td_min_attendu` float NOT NULL,
-  `nb_he_td_max_attendu` float NOT NULL,
-  `nb_he_td_min_sup` float NOT NULL,
-  `nb_he_td_max_sup` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `intervenant`
---
-
-INSERT INTO `intervenant` (`id`, `projet_id`, `enseignant_id`, `nb_he_td_min_attendu`, `nb_he_td_max_attendu`, `nb_he_td_min_sup`, `nb_he_td_max_sup`) VALUES
-(1, 1, 1, 192, 192, 0, 100),
-(2, 1, 2, 384, 384, 0, 200);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `limite_sous_total`
---
-
-CREATE TABLE `limite_sous_total` (
-  `id` int NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `limite_he_td` int NOT NULL DEFAULT '0',
-  `projet_id` int NOT NULL
+CREATE TABLE groupe_statut_limite (
+  statut_id int NOT NULL,
+  limite_id int NOT NULL,
+  limite int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Déchargement des données de la table `limite_sous_total`
+-- Déchargement des données de la table groupe_statut_limite
 --
 
-INSERT INTO `limite_sous_total` (`id`, `nom`, `limite_he_td`, `projet_id`) VALUES
-(1, 'Référentiel', 80, 1);
+INSERT INTO groupe_statut_limite (statut_id, limite_id, limite) VALUES
+(2, 1, 42),
+(1, 1, 42),
+(3, 1, 84),
+(4, 1, 84);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `periode`
+-- Structure de la table intervenant
 --
 
-CREATE TABLE `periode` (
-  `id` int NOT NULL,
-  `element_id` int DEFAULT NULL,
-  `nb_semaine` int NOT NULL,
-  `nb_groupe_defaut_cm` int NOT NULL,
-  `nb_groupe_defaut_td` int NOT NULL,
-  `nb_groupe_defaut_tp` int NOT NULL,
-  `nb_groupe_defaut_partiel` int NOT NULL
+CREATE TABLE intervenant (
+  id int NOT NULL,
+  projet_id int DEFAULT NULL,
+  enseignant_id int DEFAULT NULL,
+  nb_he_td_min_attendu float NOT NULL,
+  nb_he_td_max_attendu float NOT NULL,
+  nb_he_td_min_sup float NOT NULL,
+  nb_he_td_max_sup float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `periode`
+-- Déchargement des données de la table intervenant
 --
 
-INSERT INTO `periode` (`id`, `element_id`, `nb_semaine`, `nb_groupe_defaut_cm`, `nb_groupe_defaut_td`, `nb_groupe_defaut_tp`, `nb_groupe_defaut_partiel`) VALUES
+INSERT INTO intervenant (id, projet_id, enseignant_id, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES
+(1, 1, 1, 192, 192, 0, 100),
+(2, 1, 2, 384, 384, 0, 200),
+(3, 1, 3, 192, 192, 0, 100),
+(4, 1, 4, 0, 64, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table limite_sous_total
+--
+
+CREATE TABLE limite_sous_total (
+  id int NOT NULL,
+  nom varchar(255) NOT NULL,
+  limite_he_td int NOT NULL DEFAULT '0',
+  projet_id int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table limite_sous_total
+--
+
+INSERT INTO limite_sous_total (id, nom, limite_he_td, projet_id) VALUES
+(1, 'Référentiel', 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table periode
+--
+
+CREATE TABLE periode (
+  id int NOT NULL,
+  element_id int DEFAULT NULL,
+  nb_semaine int NOT NULL,
+  nb_groupe_defaut_cm int NOT NULL,
+  nb_groupe_defaut_td int NOT NULL,
+  nb_groupe_defaut_tp int NOT NULL,
+  nb_groupe_defaut_partiel int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table periode
+--
+
+INSERT INTO periode (id, element_id, nb_semaine, nb_groupe_defaut_cm, nb_groupe_defaut_td, nb_groupe_defaut_tp, nb_groupe_defaut_partiel) VALUES
 (1, 2, 14, 1, 4, 8, 2),
 (2, 3, 14, 1, 4, 8, 2),
 (3, 4, 14, 1, 4, 8, 2),
@@ -268,45 +322,45 @@ INSERT INTO `periode` (`id`, `element_id`, `nb_semaine`, `nb_groupe_defaut_cm`, 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `projet`
+-- Structure de la table projet
 --
 
-CREATE TABLE `projet` (
-  `id` int NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `date` date NOT NULL,
-  `verrou` tinyint(1) NOT NULL,
-  `archive` tinyint(1) NOT NULL
+CREATE TABLE projet (
+  id int NOT NULL,
+  nom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  date date NOT NULL,
+  verrou tinyint(1) NOT NULL,
+  archive tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `projet`
+-- Déchargement des données de la table projet
 --
 
-INSERT INTO `projet` (`id`, `nom`, `date`, `verrou`, `archive`) VALUES
+INSERT INTO projet (id, nom, date, verrou, archive) VALUES
 (1, 'Test Projet 2021', '2021-05-16', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `statut`
+-- Structure de la table statut
 --
 
-CREATE TABLE `statut` (
-  `id` int NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `surnom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nb_he_td_min_attendu` float NOT NULL,
-  `nb_he_td_max_attendu` float NOT NULL,
-  `nb_he_td_min_sup` float NOT NULL,
-  `nb_he_td_max_sup` float NOT NULL
+CREATE TABLE statut (
+  id int NOT NULL,
+  nom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  surnom varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  nb_he_td_min_attendu float NOT NULL,
+  nb_he_td_max_attendu float NOT NULL,
+  nb_he_td_min_sup float NOT NULL,
+  nb_he_td_max_sup float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `statut`
+-- Déchargement des données de la table statut
 --
 
-INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_max_attendu`, `nb_he_td_min_sup`, `nb_he_td_max_sup`) VALUES
+INSERT INTO statut (id, nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES
 (1, 'Professeur des Universités', 'PU', 192, 192, 0, 100),
 (2, 'Maître de Conférence', 'MCF', 192, 192, 0, 100),
 (3, 'Professeur agrégé', 'PRAG', 384, 384, 0, 200),
@@ -316,75 +370,74 @@ INSERT INTO `statut` (`id`, `nom`, `surnom`, `nb_he_td_min_attendu`, `nb_he_td_m
 -- --------------------------------------------------------
 
 --
--- Structure de la table `utilisateur`
+-- Structure de la table utilisateur
 --
 
-CREATE TABLE `utilisateur` (
-  `id` int NOT NULL,
-  `identifiant` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `prenom` varchar(255) NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `mot_de_passe` varchar(255) NOT NULL
+CREATE TABLE utilisateur (
+  id int NOT NULL,
+  identifiant varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  prenom varchar(255) NOT NULL,
+  nom varchar(255) NOT NULL,
+  email varchar(255) NOT NULL,
+  mot_de_passe varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Déchargement des données de la table `utilisateur`
+-- Déchargement des données de la table utilisateur
 --
 
-INSERT INTO `utilisateur` (`id`, `identifiant`, `prenom`, `nom`, `email`, `mot_de_passe`) VALUES
+INSERT INTO utilisateur (id, identifiant, prenom, nom, email, mot_de_passe) VALUES
 (1, 'adminadmin', 'admin', 'admin', 'admin@admin.com', '$2a$10$5Smk/aQ6BDI9c6EqWvb73u3CWpxwuwS61upSYJquCC/z32dJyJgUi');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `volume_globale`
+-- Structure de la table volume_globale
 --
 
-CREATE TABLE `volume_globale` (
-  `id` int NOT NULL,
-  `intervenant_id` int DEFAULT NULL,
-  `element_id` int DEFAULT NULL,
-  `num_semaine` int NOT NULL,
-  `vol_hor_cm` float NOT NULL,
-  `vol_hor_td` float NOT NULL,
-  `vol_hor_tp` float NOT NULL,
-  `vol_hor_partiel` float NOT NULL
+CREATE TABLE volume_globale (
+  id int NOT NULL,
+  intervenant_id int DEFAULT NULL,
+  element_id int DEFAULT NULL,
+  num_semaine int NOT NULL,
+  vol_hor_cm float NOT NULL,
+  vol_hor_td float NOT NULL,
+  vol_hor_tp float NOT NULL,
+  vol_hor_partiel float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `volume_globale`
+-- Déchargement des données de la table volume_globale
 --
 
-INSERT INTO `volume_globale` (`id`, `intervenant_id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
-(1, 1, 13, 1, 0, 3, 0, 0),
-(2, 2, 13, 1, 0, 6, 0, 0),
-(3, 1, 21, 1, 0, 5, 0, 0),
+INSERT INTO volume_globale (id, intervenant_id, element_id, num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel) VALUES
+(1, 1, 13, 1, 0, 2, 0, 0),
+(2, 2, 13, 1, 0, 3, 0, 0),
 (4, 2, 21, 1, 0, 4, 0, 0),
 (5, 1, 22, 1, 0, 4, 0, 0),
-(6, 2, 22, 1, 0, 6, 0, 0);
+(7, 3, 13, 1, 0, 8, 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `volume_hebdomadaire`
+-- Structure de la table volume_hebdomadaire
 --
 
-CREATE TABLE `volume_hebdomadaire` (
-  `id` int NOT NULL,
-  `element_id` int DEFAULT NULL,
-  `num_semaine` int NOT NULL,
-  `vol_hor_cm` float NOT NULL,
-  `vol_hor_td` float NOT NULL,
-  `vol_hor_tp` float NOT NULL,
-  `vol_hor_partiel` float NOT NULL
+CREATE TABLE volume_hebdomadaire (
+  id int NOT NULL,
+  element_id int DEFAULT NULL,
+  num_semaine int NOT NULL,
+  vol_hor_cm float NOT NULL,
+  vol_hor_td float NOT NULL,
+  vol_hor_tp float NOT NULL,
+  vol_hor_partiel float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Déchargement des données de la table `volume_hebdomadaire`
+-- Déchargement des données de la table volume_hebdomadaire
 --
 
-INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_cm`, `vol_hor_td`, `vol_hor_tp`, `vol_hor_partiel`) VALUES
+INSERT INTO volume_hebdomadaire (id, element_id, num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel) VALUES
 (1, 8, 1, 1, 2, 3, 0),
 (2, 8, 2, 1, 2, 3, 0),
 (3, 8, 3, 1, 2, 3, 0),
@@ -405,241 +458,255 @@ INSERT INTO `volume_hebdomadaire` (`id`, `element_id`, `num_semaine`, `vol_hor_c
 --
 
 --
--- Index pour la table `element`
+-- Index pour la table element
 --
-ALTER TABLE `element`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `parent` (`parent`);
+ALTER TABLE element
+  ADD PRIMARY KEY (id),
+  ADD KEY parent (parent);
 
 --
--- Index pour la table `enseignant`
+-- Index pour la table enseignant
 --
-ALTER TABLE `enseignant`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_81A72FA1F6203804` (`statut_id`);
+ALTER TABLE enseignant
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_81A72FA1F6203804 (statut_id);
 
 --
--- Index pour la table `formation`
+-- Index pour la table formation
 --
-ALTER TABLE `formation`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_404021BFC18272` (`projet_id`),
-  ADD KEY `IDX_404021BF1F1F2A24` (`element_id`);
+ALTER TABLE formation
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_404021BFC18272 (projet_id),
+  ADD KEY IDX_404021BF1F1F2A24 (element_id);
 
 --
--- Index pour la table `groupe_intervenant`
+-- Index pour la table groupe_intervenant
 --
-ALTER TABLE `groupe_intervenant`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_394A1E7D1F1F2A24` (`element_id`),
-  ADD KEY `IDX_394A1E7DAB9A1716` (`intervenant_id`);
+ALTER TABLE groupe_intervenant
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_394A1E7D1F1F2A24 (element_id),
+  ADD KEY IDX_394A1E7DAB9A1716 (intervenant_id);
 
 --
--- Index pour la table `groupe_sous_total`
+-- Index pour la table groupe_sous_total
 --
-ALTER TABLE `groupe_sous_total`
-  ADD KEY `id_limite_sous_total` (`limite_sous_total_id`),
-  ADD KEY `id_element` (`element_id`);
+ALTER TABLE groupe_sous_total
+  ADD KEY limite_sous_total_id (limite_sous_total_id) USING BTREE,
+  ADD KEY element_id (element_id) USING BTREE;
 
 --
--- Index pour la table `intervenant`
+-- Index pour la table groupe_statut_limite
 --
-ALTER TABLE `intervenant`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_73D0145CC18272` (`projet_id`),
-  ADD KEY `IDX_73D0145CE455FCC0` (`enseignant_id`);
+ALTER TABLE groupe_statut_limite
+  ADD KEY statut_id (statut_id) USING BTREE,
+  ADD KEY limite_id (limite_id) USING BTREE;
 
 --
--- Index pour la table `limite_sous_total`
+-- Index pour la table intervenant
 --
-ALTER TABLE `limite_sous_total`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_projet` (`projet_id`);
+ALTER TABLE intervenant
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_73D0145CC18272 (projet_id),
+  ADD KEY IDX_73D0145CE455FCC0 (enseignant_id);
 
 --
--- Index pour la table `periode`
+-- Index pour la table limite_sous_total
 --
-ALTER TABLE `periode`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_93C32DF31F1F2A24` (`element_id`);
+ALTER TABLE limite_sous_total
+  ADD PRIMARY KEY (id),
+  ADD KEY id_projet (projet_id);
 
 --
--- Index pour la table `projet`
+-- Index pour la table periode
 --
-ALTER TABLE `projet`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE periode
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_93C32DF31F1F2A24 (element_id);
 
 --
--- Index pour la table `statut`
+-- Index pour la table projet
 --
-ALTER TABLE `statut`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE projet
+  ADD PRIMARY KEY (id);
 
 --
--- Index pour la table `utilisateur`
+-- Index pour la table statut
 --
-ALTER TABLE `utilisateur`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE statut
+  ADD PRIMARY KEY (id);
 
 --
--- Index pour la table `volume_globale`
+-- Index pour la table utilisateur
 --
-ALTER TABLE `volume_globale`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_F0BC8913AB9A1716` (`intervenant_id`),
-  ADD KEY `IDX_F0BC89131F1F2A24` (`element_id`);
+ALTER TABLE utilisateur
+  ADD PRIMARY KEY (id);
 
 --
--- Index pour la table `volume_hebdomadaire`
+-- Index pour la table volume_globale
 --
-ALTER TABLE `volume_hebdomadaire`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_8665328E1F1F2A24` (`element_id`);
+ALTER TABLE volume_globale
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_F0BC8913AB9A1716 (intervenant_id),
+  ADD KEY IDX_F0BC89131F1F2A24 (element_id);
+
+--
+-- Index pour la table volume_hebdomadaire
+--
+ALTER TABLE volume_hebdomadaire
+  ADD PRIMARY KEY (id),
+  ADD KEY IDX_8665328E1F1F2A24 (element_id);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT pour la table `element`
+-- AUTO_INCREMENT pour la table element
 --
-ALTER TABLE `element`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+ALTER TABLE element
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT pour la table `enseignant`
+-- AUTO_INCREMENT pour la table enseignant
 --
-ALTER TABLE `enseignant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE enseignant
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT pour la table `formation`
+-- AUTO_INCREMENT pour la table formation
 --
-ALTER TABLE `formation`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE formation
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table `groupe_intervenant`
+-- AUTO_INCREMENT pour la table groupe_intervenant
 --
-ALTER TABLE `groupe_intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+ALTER TABLE groupe_intervenant
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
--- AUTO_INCREMENT pour la table `intervenant`
+-- AUTO_INCREMENT pour la table intervenant
 --
-ALTER TABLE `intervenant`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE intervenant
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT pour la table `limite_sous_total`
+-- AUTO_INCREMENT pour la table limite_sous_total
 --
-ALTER TABLE `limite_sous_total`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE limite_sous_total
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table `periode`
+-- AUTO_INCREMENT pour la table periode
 --
-ALTER TABLE `periode`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE periode
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT pour la table `projet`
+-- AUTO_INCREMENT pour la table projet
 --
-ALTER TABLE `projet`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE projet
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table `statut`
+-- AUTO_INCREMENT pour la table statut
 --
-ALTER TABLE `statut`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE statut
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT pour la table `utilisateur`
+-- AUTO_INCREMENT pour la table utilisateur
 --
-ALTER TABLE `utilisateur`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE utilisateur
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table `volume_globale`
+-- AUTO_INCREMENT pour la table volume_globale
 --
-ALTER TABLE `volume_globale`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE volume_globale
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT pour la table `volume_hebdomadaire`
+-- AUTO_INCREMENT pour la table volume_hebdomadaire
 --
-ALTER TABLE `volume_hebdomadaire`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+ALTER TABLE volume_hebdomadaire
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Contraintes pour les tables déchargées
 --
 
 --
--- Contraintes pour la table `element`
+-- Contraintes pour la table element
 --
-ALTER TABLE `element`
-  ADD CONSTRAINT `element_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE element
+  ADD CONSTRAINT element_ibfk_1 FOREIGN KEY (parent) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `enseignant`
+-- Contraintes pour la table enseignant
 --
-ALTER TABLE `enseignant`
-  ADD CONSTRAINT `FK_81A72FA1F6203804` FOREIGN KEY (`statut_id`) REFERENCES `statut` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE enseignant
+  ADD CONSTRAINT FK_81A72FA1F6203804 FOREIGN KEY (statut_id) REFERENCES statut (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `formation`
+-- Contraintes pour la table formation
 --
-ALTER TABLE `formation`
-  ADD CONSTRAINT `FK_404021BF1F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_404021BFC18272` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE formation
+  ADD CONSTRAINT FK_404021BF1F1F2A24 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT FK_404021BFC18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `groupe_intervenant`
+-- Contraintes pour la table groupe_intervenant
 --
-ALTER TABLE `groupe_intervenant`
-  ADD CONSTRAINT `FK_394A1E7D1F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_394A1E7DAB9A1716` FOREIGN KEY (`intervenant_id`) REFERENCES `intervenant` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE groupe_intervenant
+  ADD CONSTRAINT FK_394A1E7D1F1F2A24 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT FK_394A1E7DAB9A1716 FOREIGN KEY (intervenant_id) REFERENCES intervenant (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `groupe_sous_total`
+-- Contraintes pour la table groupe_sous_total
 --
-ALTER TABLE `groupe_sous_total`
-  ADD CONSTRAINT `groupe_sous_total_ibfk_1` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `groupe_sous_total_ibfk_2` FOREIGN KEY (`limite_sous_total_id`) REFERENCES `limite_sous_total` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE groupe_sous_total
+  ADD CONSTRAINT groupe_sous_total_ibfk_1 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT groupe_sous_total_ibfk_2 FOREIGN KEY (limite_sous_total_id) REFERENCES limite_sous_total (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `intervenant`
+-- Contraintes pour la table groupe_statut_limite
 --
-ALTER TABLE `intervenant`
-  ADD CONSTRAINT `FK_73D0145CC18272` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_73D0145CE455FCC0` FOREIGN KEY (`enseignant_id`) REFERENCES `enseignant` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE groupe_statut_limite
+  ADD CONSTRAINT groupe_statut_limite_ibfk_1 FOREIGN KEY (statut_id) REFERENCES statut (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT groupe_statut_limite_ibfk_2 FOREIGN KEY (limite_id) REFERENCES limite_sous_total (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `limite_sous_total`
+-- Contraintes pour la table intervenant
 --
-ALTER TABLE `limite_sous_total`
-  ADD CONSTRAINT `limite_sous_total_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE intervenant
+  ADD CONSTRAINT FK_73D0145CC18272 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT FK_73D0145CE455FCC0 FOREIGN KEY (enseignant_id) REFERENCES enseignant (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `periode`
+-- Contraintes pour la table limite_sous_total
 --
-ALTER TABLE `periode`
-  ADD CONSTRAINT `FK_93C32DF31F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE limite_sous_total
+  ADD CONSTRAINT limite_sous_total_ibfk_1 FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `volume_globale`
+-- Contraintes pour la table periode
 --
-ALTER TABLE `volume_globale`
-  ADD CONSTRAINT `FK_F0BC89131F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_F0BC8913AB9A1716` FOREIGN KEY (`intervenant_id`) REFERENCES `intervenant` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE periode
+  ADD CONSTRAINT FK_93C32DF31F1F2A24 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `volume_hebdomadaire`
+-- Contraintes pour la table volume_globale
 --
-ALTER TABLE `volume_hebdomadaire`
-  ADD CONSTRAINT `FK_8665328E1F1F2A24` FOREIGN KEY (`element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE volume_globale
+  ADD CONSTRAINT FK_F0BC89131F1F2A24 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT FK_F0BC8913AB9A1716 FOREIGN KEY (intervenant_id) REFERENCES intervenant (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table volume_hebdomadaire
+--
+ALTER TABLE volume_hebdomadaire
+  ADD CONSTRAINT FK_8665328E1F1F2A24 FOREIGN KEY (element_id) REFERENCES element (id) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

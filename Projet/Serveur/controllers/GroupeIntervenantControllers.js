@@ -55,7 +55,7 @@ exports.getGroupeIntervenant = (req, res) => {
 
 
 exports.getAllGroupeIntervenantByModule = (req, res) => {
-  db.query('SELECT g.element_id, g.intervenant_id, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel'
+  db.query('SELECT g.element_id, g.intervenant_id, e.prenom, e.nom, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel'
         +' FROM groupe_intervenant AS g'
         +' LEFT JOIN ('
         +'     SELECT '
@@ -68,7 +68,11 @@ exports.getAllGroupeIntervenantByModule = (req, res) => {
         +'     GROUP BY g2.element_id, g2.intervenant_id'
         +' ) AS total '
         +' ON total.intervenant_id = g.intervenant_id AND total.element_id = g.element_id'
-        +' GROUP BY g.element_id, g.intervenant_id, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel',
+        +' JOIN intervenant AS i' 
+        +' ON i.id = g.intervenant_id'
+        +' JOIN enseignant AS e'
+        +' ON e.id = i.enseignant_id'
+        +' GROUP BY g.element_id, g.intervenant_id, e.id, total.total_nb_grp_cm, total.total_nb_grp_td, total.total_nb_grp_tp, total.total_nb_grp_partiel',
     function(err, groupes_intervenants) {
       if (!err) {
         res.status(200).json(groupes_intervenants);  
