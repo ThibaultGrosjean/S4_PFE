@@ -16,6 +16,7 @@ const apiProjet = {
 
   async createProjet(nom) {
     const response = await axios.post('/projets/create/' + nom, {nom: nom});
+    console.log(response.data.errors)
     return response.data;
   },
 

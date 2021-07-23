@@ -30,16 +30,6 @@ const apiFormation = {
     return response.data;
   },
 
-  async createFormationByCopie(projetId, elementId) {
-    const newFormation = {
-      verrou: Number(false),
-      projet_id: projetId,
-      element_id: elementId,
-    }
-    const response = await axios.post('/formations/create', newFormation);
-    return response.data;
-  },
-
   async editFormation(formation) {
     const response = await axios.patch('/formations/edit/' + formation.id, formation);
     return response.data;
@@ -57,7 +47,6 @@ const apiFormation = {
     await apiVolumeHebdomadaire.deleteVolumeHebdomadaireByFormation(formation.element_id)
     await apiVolumeGlobaux.deleteVolumeGlobauxByFormation(formation.element_id)
     await apiGroupeIntervenant.deleteGroupeIntervenantByFormation(formation.element_id)
-    //TODO DELETE DELETE_AllBilanByFormation
     await apiElement.deleteHierarchie(formation.element_id)
 
     return response.data;

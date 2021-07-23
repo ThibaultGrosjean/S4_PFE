@@ -103,25 +103,6 @@ exports.getAllElementsModules = (req, res) => {
 };
 
 
-exports.getHierarchieByRoot = (req, res) => {
-  db.query(' SELECT e.* FROM element AS e'
-          +' LEFT JOIN element AS e2 ON e.parent = e2.id' 
-          +' LEFT JOIN element as e3 ON e2.parent = e3.id' 
-          +' LEFT JOIN element as e4 ON e3.parent = e4.id' 
-          +' WHERE e.id = ' + req.params.id + ' OR e2.id = ' + req.params.id + ' OR e3.id = ' + req.params.id + ' OR e4.id = ' + req.params.id
-          + ' ORDER BY e.niveau;',
-    function(err, hierarchie) {
-      if (!err) {
-        res.status(200).send(hierarchie);
-      }
-      else {
-        res.send(err);
-      }
-    }
-  ); 
-};
-
-
 exports.getChildrenElement = (req, res) => {
   db.query('SELECT e.* FROM element AS e'
         +' WHERE e.parent = ?'
@@ -281,7 +262,6 @@ exports.copyElement = (req, res) => {
           + element[0]['nb_groupe_effectif_partiel'] + ","
           + element[0]['parent'] + ");"
         ;
-        console.log(requete);
         db.query(requete,
           function(err, element) {
             if (!err) {

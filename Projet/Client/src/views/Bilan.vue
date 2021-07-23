@@ -2,7 +2,7 @@
   <v-container fluid class="pa-10">
   <ProgressOverlay :loading="loading"/>
 
-    <v-row class="animate-pop-in mb-2 pa-3">
+    <v-row class="animate-pop-in pa-3">
       <v-card width="100%" class="pt-7 pb-5 pl-7 pr-9">
         <v-row>
           <v-col class="align-center pa-0">
@@ -60,7 +60,7 @@
                   <td class="text-center left-border">
                     <span :class="getClassColorForTotal(b)"><b>{{ b.total_general }} h</b></span>
                   </td>
-                  <td class="text-center"><span :class="getClassColorForTotalHeureSup(b)"><b>{{ b.total_heures_supp }} h </b></span></td>
+                  <td class="text-center"><span :class="getClassColorForTotalHeureSup(b)"><b>{{ b.total_heures_supp }} h </b> / {{ b.nb_he_td_max_sup }}</span></td>
                 </tr>
                 </tbody>
               </template>
@@ -109,6 +109,8 @@
                   <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
+                          v-if="projet.length"
+                          :disabled="Boolean(projet[0].verrou)"
                           icon
                           small
                           v-bind="attrs"
@@ -164,7 +166,7 @@
                       <td class="text-center">{{ st.total_td }} h</td>
                       <td class="text-center">{{ st.total_tp }} h</td>
                       <td class="text-center">{{ st.total_partiel }} h</td>
-                      <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b></span></td>
+                      <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite}}</span></td>
                     </tr>
                     </tbody>
                   </template>

@@ -8,8 +8,8 @@ const { check, validationResult } = require('express-validator');
 const secretKey = 'SECRETKEY';
 
 exports.validationResult = [
-  check('identifiant',"Veuillez sélectionner un mot de passe supérieur à 6 caractères").isLength({ min: 6 }),
-  check('prenom',"Veuillez sélectionner un prénom supérieur à 6 caractères").optional().isLength({ min: 2 }),
+  check('identifiant',"Veuillez sélectionner un identifiant supérieur à 6 caractères").isLength({ min: 6 }),
+  check('prenom',"Veuillez sélectionner un prénom supérieur à 2 caractères").optional().isLength({ min: 2 }),
   check('nom',"Veuillez sélectionner un nom supérieur à 2 caractères").optional().isLength({ min: 2 }),
   check('email',"Veuillez sélectionner un email valide").optional().isEmail(),
   check('mot_de_passe',"Veuillez sélectionner un mot de passe supérieur à 6 caractères").isLength({ min: 6 }),

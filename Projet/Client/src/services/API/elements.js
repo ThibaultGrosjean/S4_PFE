@@ -20,11 +20,6 @@ const apiElement = {
     return response.data;
   },
 
-  async getHierarchie(racineId) {
-    const response = await axios.get('/elements/hierarchie/get/' + racineId).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
   async getAllRacineHierarchie() {
     const response = await axios.get('/elements/hierarchie/racine/get/').catch(error => console.error('Erreur API: ', error));
     return response.data;

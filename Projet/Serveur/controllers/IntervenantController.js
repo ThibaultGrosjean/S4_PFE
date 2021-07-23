@@ -2,10 +2,10 @@ var db = require('../models/bdd');
 const { check, validationResult } = require('express-validator');
 
 exports.validationResult = [
-  check('nb_he_td_min_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_max_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_min_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
-  check('nb_he_td_max_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un numérique").notEmpty().isFloat(),
+  check('nb_he_td_min_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un entier ou un nombre à virgule").notEmpty().isFloat(),
+  check('nb_he_td_max_attendu',"Le Nombre d'heures minimales attendues pour le projet doit être un entier ou un nombre à virgule").notEmpty().isFloat(),
+  check('nb_he_td_min_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un entier ou un nombre à virgule").notEmpty().isFloat(),
+  check('nb_he_td_max_sup',"Le Nombre d'heures minimales attendues pour le projet doit être un entier ou un nombre à virgule").notEmpty().isFloat(),
   check('projet_id',"Veuillez sélectionner un projet").isNumeric(),
   check('enseignant_id',"Veuillez sélectionner un enseignant").isNumeric(),
 ];
@@ -62,7 +62,8 @@ exports.getIntervenantsForGrpIntervByProjetNotInModule = (req, res) => {
         +' AND i.id NOT IN (SELECT g2.intervenant_id'
                          +' FROM groupe_intervenant AS g2'
                          +' WHERE g2.element_id = ' + req.params.idModule
-                         +' GROUP BY g2.element_id, g2.intervenant_id);',
+                         +' GROUP BY g2.element_id, g2.intervenant_id) '
+        +' ORDER BY e.prenom, e.nom',
     function(err, intervenant) {
       if (!err) {
         res.status(200).json(intervenant);  
@@ -86,7 +87,8 @@ exports.getIntervenantsForVolGlobByProjetNotInModule = (req, res) => {
         +' AND i.id NOT IN (SELECT v.intervenant_id'
                          +' FROM volume_globale AS v'
                          +' WHERE v.element_id = ' + req.params.idModule
-                         +' GROUP BY v.element_id, v.intervenant_id);',
+                         +' GROUP BY v.element_id, v.intervenant_id)'
+        +' ORDER BY e.prenom, e.nom',
     function(err, intervenant) {
       if (!err) {
         res.status(200).json(intervenant);  
@@ -115,10 +117,10 @@ exports.getIntervenant = (req, res) => {
 
 exports.addIntervenant = (req, res) => {
   var data = {
-    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
-    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
-    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
-    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu | 0,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu | 0,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup | 0,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup | 0,
     projet_id : req.body.projet_id,
     enseignant_id : req.body.enseignant_id,  
   };
@@ -170,10 +172,10 @@ exports.copyIntervenantByProjet = (req, res) => {
 exports.editIntervenant = (req, res) => {
   var data = {
     id : req.body.id,
-    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
-    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
-    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
-    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu | 0,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu | 0,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup | 0,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup | 0,
     projet_id : req.body.projet_id,
     enseignant_id : req.body.enseignant_id,  
   };

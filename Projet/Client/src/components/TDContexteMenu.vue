@@ -14,7 +14,7 @@
     </template>
     <v-card>
       <v-card-title class="text-h6 d-flex justify-center">
-        <span v-if="table === 'groupes-intervenants'">Nombre de groupes {{ typeCours.toUpperCase() }}s</span>
+        <span v-if="table === 'groupes-intervenants'">Nombre de groupes {{ typeCours.toUpperCase() }}</span>
         <span v-else-if="table === 'volumes-globaux'">Forfait horaire du {{ element.titre.substr(element.titre.indexOf(":")+1) }}</span>
         <span v-else>Volume horaire {{ typeCours.toUpperCase() }}</span>
       </v-card-title>
