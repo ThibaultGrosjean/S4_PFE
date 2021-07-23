@@ -1,17 +1,10 @@
 var db = require('../models/bdd');
 const tools = require('../models/tools');
 const { check, validationResult } = require('express-validator');
-exports.validationResult = []
 
-exports.validatorLimite = [
-  check('nom',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
-  check('limite_he_td',"La limite doit être un numérique non nul").isDecimal(),
+exports.validationResult = [
+  check('nom_limite',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
   check('projet_id',"Veuillez selectionner un projet").isNumeric(),
-];
-
-exports.validatorGroupe = [
-  check('limite_sous_total_id ',"Veuillez selectionner une limite").isNumeric(),
-  check('element_id',"Veuillez selectionner un element").isNumeric(),
 ];
 
 
@@ -70,7 +63,8 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
       +' AS vgt'
       +' ON vgt.id = i.id'
       +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id = ' + req.params.id + ')'
-      +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel',
+      +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel'
+      +' ORDER BY e.prenom, e.nom',
     function(err, bilan) {
       if (!err) {
         res.status(200).json(bilan);  
@@ -84,7 +78,7 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
 
 
 exports.getAllBilanSousTotal = (req, res) => {
-  db.query('SELECT IFNULL(sl.limite, l.limite_he_td) AS limite , g.intervenant_id, e.prenom, e.nom,l.id, l.nom AS nom_limite'
+  db.query('SELECT IFNULL(sl.limite, 0) AS limite, s.nom AS statut_nom, g.intervenant_id, e.prenom, e.nom, e.statut_id, l.id, l.nom_limite'
        +' , IFNULL(vgt.total_volume_globale_cm, 0) AS total_cm'
        +' , IFNULL(vgt.total_volume_globale_td, 0)  AS total_td'
        +' , IFNULL(vgt.total_volume_globale_tp, 0) AS total_tp'
@@ -95,6 +89,8 @@ exports.getAllBilanSousTotal = (req, res) => {
        +' ON i.id = g.intervenant_id'
        +' JOIN enseignant AS e'
        +' ON e.id = i.enseignant_id'
+       +' JOIN statut AS s'
+       +' ON s.id = e.statut_id'
        +' JOIN limite_sous_total AS l'
        +' ON l.projet_id = i.projet_id'
        +' JOIN groupe_sous_total AS gst'
@@ -119,10 +115,17 @@ exports.getAllBilanSousTotal = (req, res) => {
        +' ON vgt.id = i.id'
        +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id =  ' + req.params.id + ' )'
        +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel, l.id, sl.limite'
-       +' ORDER BY l.nom, e.prenom, e.nom',
+       +' ORDER BY l.nom_limite, e.prenom, e.nom',
     function(err, bilan) {
       if (!err) {
-        res.status(200).json(bilan);  
+        const groupeByLimite = bilan.reduce((acc, value) => {
+          if (!acc[value.nom_limite]) {
+            acc[value.nom_limite] = [];
+          }
+          acc[value.nom_limite].push(value);
+          return acc;
+        }, {});
+        res.status(200).send(Object.values(groupeByLimite));  
       }
       else {
         res.send(err);
@@ -133,7 +136,7 @@ exports.getAllBilanSousTotal = (req, res) => {
 
 
 exports.getAllLimiteSousTotalByProjet = (req, res) => {
-  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ? ORDER BY projet_id, nom;',[req.params.id],
+  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ? ORDER BY projet_id, nom_limite;',[req.params.id],
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -147,7 +150,7 @@ exports.getAllLimiteSousTotalByProjet = (req, res) => {
 
 
 exports.getAllGroupeSousTotalByProjetAndElement = (req, res) => {
-  db.query('SELECT g.*, l.nom' 
+  db.query('SELECT g.*, l.nom_limite' 
         +' FROM groupe_sous_total AS g'
         +' JOIN limite_sous_total AS l'
         +' ON l.id = g.limite_sous_total_id'
@@ -165,7 +168,7 @@ exports.getAllGroupeSousTotalByProjetAndElement = (req, res) => {
 
 
 exports.getAllLimiteSousTotalByProjetAndName = (req, res) => {
-  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ' + req.params.id + ' AND nom = "' + req.params.nom + '" ORDER BY projet_id, nom;',
+  db.query('SELECT * FROM limite_sous_total WHERE projet_id = ' + req.params.id + ' AND nom_limite = "' + req.params.nom + '" ORDER BY projet_id, nom_limite;',
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
@@ -180,14 +183,12 @@ exports.getAllLimiteSousTotalByProjetAndName = (req, res) => {
 
 exports.addLimiteSousTotal = (req, res) => {
   var data = {
-    nom : tools.safeStringSQL(req.body.nom),
-    limite_he_td : req.body.limite_he_td,
+    nom_limite : tools.safeStringSQL(req.body.nom_limite),
     projet_id : req.body.projet_id,
   };
 
-  var requete="INSERT INTO limite_sous_total(nom, limite_he_td, projet_id) VALUES ('" 
-    + data['nom'] + "','"
-    + data['limite_he_td'] + "','" 
+  var requete="INSERT INTO limite_sous_total(nom_limite, projet_id) VALUES ('" 
+    + data['nom_limite'] + "','" 
     + data['projet_id'] + "');"
   ;
 
@@ -201,6 +202,87 @@ exports.addLimiteSousTotal = (req, res) => {
     }
   );
 };
+
+
+exports.addLimite = (req, res) => {
+  var data = {
+    nom_limite : tools.safeStringSQL(req.body.nom_limite),
+    projet_id : req.body.projet_id,
+    elements : req.body.elements,
+    statuts : req.body.statuts,
+  };
+
+  const extractedErrors = {};
+  var lengthErrors = 0;
+
+  let errorsLimite = validationResult(req);
+  if (!errorsLimite.isEmpty()) {
+    errorsLimite.array().map(err => extractedErrors[err.param] = err.msg);
+    lengthErrors++;
+  }
+  if (data.elements.length <= 0) {
+    extractedErrors.elements = "Veuillez selectionner un ou plusieurs modules";
+    lengthErrors++;
+  }
+  
+  for (let i = 0; i < data.statuts.length; i++) {
+    if (!tools.isFloat(data.statuts[i].limite)) {
+      extractedErrors[data.statuts[i].nom] = "La limite doit être un entier ou un nombre à virgule";
+      lengthErrors++;
+    }
+  }
+ 
+  if (lengthErrors != 0) {
+    return res.send({ errors: extractedErrors, data: data});
+  } else {
+    var requeteLimite ="INSERT INTO limite_sous_total(nom_limite, projet_id) VALUES ('" 
+      + data['nom_limite'] + "','"
+      + data['projet_id'] + "');"
+    ;
+    db.query(requeteLimite,
+      function(err, limite_sous_total) {
+        if (!err) {
+          var requeteGroupeLimite = "INSERT INTO groupe_sous_total(limite_sous_total_id, element_id) VALUES";
+
+          for (let i = 0; i < data['elements'].length; i++) {
+            var values = " ('" + limite_sous_total.insertId + "','"+ data['elements'][i] + "')";
+            if (i < data['elements'].length-1) values += ",";
+            requeteGroupeLimite += values;
+          }
+
+          db.query(requeteGroupeLimite,
+            function(err, groupe_sous_total) {
+              if (!err) {
+                var requeteLimiteStatut = "INSERT INTO groupe_statut_limite(statut_id, limite_id, limite) VALUES";
+  
+                for (let i = 0; i < data.statuts.length; i++) {
+                  var values = " ('" + data.statuts[i].id + "','"+ limite_sous_total.insertId + "','" + data.statuts[i].limite + "')";
+                  if (i < data.statuts.length-1) values += ",";
+                  requeteLimiteStatut += values;
+                }
+
+                db.query(requeteLimiteStatut,
+                  function(err, limite_statut) {
+                    if (!err) {
+                      res.status(200).json(limite_sous_total, groupe_sous_total, limite_statut);  
+                    } else {
+                      res.send(err);
+                    }
+                  }
+                );
+              } else  {
+                res.send(err);
+              }
+            }
+          );
+        } else  {
+          res.send(err);
+        }
+      }
+    );
+   } 
+};
+
 
 
 exports.addGroupeSousTotal = (req, res) => {
@@ -229,16 +311,109 @@ exports.addGroupeSousTotal = (req, res) => {
 };
 
 
+exports.editLimite = (req, res) => {
+  var data = {
+    id: req.body.id,
+    nom_limite : tools.safeStringSQL(req.body.nom_limite),
+    projet_id : req.body.projet_id,
+    elements : req.body.elements,
+    statuts : req.body.statuts,
+  };
+
+  const extractedErrors = {};
+  var lengthErrors = 0;
+
+  let errorsLimite = validationResult(req);
+  if (!errorsLimite.isEmpty()) {
+    errorsLimite.array().map(err => extractedErrors[err.param] = err.msg);
+    lengthErrors++;
+  }
+  if (data.elements.length <= 0) {
+    extractedErrors.elements = "Veuillez selectionner un ou plusieurs modules";
+    lengthErrors++;
+  }
+  
+  for (let i = 0; i < data.statuts.length; i++) {
+    if (!tools.isFloat(data.statuts[i].limite)) {
+      extractedErrors[data.statuts[i].nom] = "La limite doit être un entier ou un nombre à virgule";
+      lengthErrors++;
+    }
+  }
+ 
+  if (lengthErrors != 0) {
+    return res.send({ errors: extractedErrors, data: data});
+  } else {
+    var requeteLimite = "UPDATE limite_sous_total SET nom_limite ='" + data['nom_limite'] +"' WHERE id = " + req.params.id + ";";
+
+    db.query(requeteLimite,
+      function(err, limite_sous_total) {
+        if (!err) {
+          var requeteGroupeLimiteDelete = "DELETE FROM groupe_sous_total WHERE limite_sous_total_id = " + req.params.id;
+          db.query(requeteGroupeLimiteDelete,
+            function(err, limite_sous_total_delete) {
+              if (!err) {
+                var requeteGroupeLimite = "INSERT INTO groupe_sous_total(limite_sous_total_id, element_id) VALUES";
+
+                for (let i = 0; i < data['elements'].length; i++) {
+                  var values = " ('" + data['id'] + "','"+ data['elements'][i] + "')";
+                  if (i < data['elements'].length-1) values += ",";
+                  requeteGroupeLimite += values;
+                }
+                db.query(requeteGroupeLimite,
+                  function(err, groupe_sous_total) {
+                    if (!err) {
+                      var requeteLimiteStatutDelete = "DELETE FROM groupe_statut_limite WHERE limite_id = " + req.params.id;
+                      db.query(requeteLimiteStatutDelete,
+                        function(err, limite_statut_delete) {
+                          if (!err) {
+                            var requeteLimiteStatut = "INSERT INTO groupe_statut_limite(statut_id, limite_id, limite) VALUES";
+  
+                            for (let i = 0; i < data.statuts.length; i++) {
+                              var values = " ('" + data.statuts[i].id + "','"+ data['id'] + "','" + data.statuts[i].limite + "')";
+                              if (i < data.statuts.length-1) values += ",";
+                              requeteLimiteStatut += values;
+                            }
+                            db.query(requeteLimiteStatut,
+                              function(err, limite_statut) {
+                                if (!err) {
+                                  res.status(200).json(limite_sous_total, groupe_sous_total, limite_statut);  
+                                } else {
+                                  res.send(err);
+                                }
+                              }
+                            );
+                           
+                          } else {
+                            res.send(err);
+                          }
+                        }
+                      );
+                    } else  {
+                      res.send(err);
+                    }
+                  }
+                );
+              } else  {
+                res.send(err);
+              }
+            }
+          );          
+        } else  {
+          res.send(err);
+        }
+      }
+    );
+   } 
+};
+
+
 exports.editLimiteSousTotal = (req, res) => {
   var donnees = {
     id : req.body.id,
-    nom : tools.safeStringSQL(req.body.nom),
-    limite_he_td : req.body.limite_he_td,
+    nom_limite : tools.safeStringSQL(req.body.nom_limite),
     projet_id : req.body.projet_id,
   };
-  var requete="UPDATE limite_sous_total SET nom ='" + donnees['nom'] 
-  +"', limite_he_td ='" + donnees['limite_he_td'] 
-  +"' WHERE id = " + req.params.id + ";";
+  var requete="UPDATE limite_sous_total SET nom_limite ='" + donnees['nom_limite'] +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
     function(err, limite_sous_total) {
@@ -252,13 +427,34 @@ exports.editLimiteSousTotal = (req, res) => {
 };
 
 
+exports.editLimiteStatut = (req, res) => {
+  var donnees = {
+    statut_id : req.body.statut_id,
+    limite_id : req.body.limite_id,
+    limite : req.body.limite,
+  };
+  var requete="UPDATE groupe_statut_limite SET statut_id ='" + donnees['statut_id'] 
+  +"', limite_id ='" + donnees['limite_id'] +"', limite ='" + donnees['limite'] 
+  +"' WHERE statut_id = " + req.params.statut + " AND limite_id = " + req.params.limite;
+
+  db.query(requete,
+    function(err, limite_statut) {
+      if (!err) {
+        res.status(200).json(limite_statut);  
+      } else {
+        res.send(err);
+      }
+    }
+  );
+};
+
+
 exports.copyLimiteSousTotal = (req, res) => {
   db.query('SELECT * FROM limite_sous_total WHERE id = ? ;', [req.params.id],
     function(err, limite_sous_total) {
       if (!err) {
-         var requete="INSERT INTO limite_sous_total(nom, limite_he_td, projet_id) VALUES ('" 
-          + limite_sous_total[0]['nom'] + "','"
-          + limite_sous_total[0]['limite_he_td'] + "','"
+         var requete="INSERT INTO limite_sous_total(nom_limite, projet_id) VALUES ('" 
+          + limite_sous_total[0]['nom_limite'] + "','"
           + req.params.projet + "');"
         ;
 
@@ -292,6 +488,21 @@ exports.copyGroupeSousTotalByLimite = (req, res) => {
     }
   );
 };
+
+
+exports.copyLimiteStatut = (req, res) => {
+  var requete = "INSERT IGNORE INTO groupe_statut_limite(statut_id, limite_id, limite) SELECT statut_id,"+ req.params.newLimite +", limite FROM groupe_statut_limite WHERE limite_id = " + req.params.id + ";";
+  db.query(requete,
+    function(err, groupe_statut_limite) {
+      if (!err) {
+        res.status(200).json(groupe_statut_limite); 
+      } else  {
+        res.send(err);
+      }
+    }
+  );
+};
+
 
 
 exports.deleteGroupeSousTotal = (req, res) => {

@@ -56,39 +56,47 @@ const apiElement = {
   },
 
   async copyHierarchie(racineId, grpInterv, projetId, newProjetId) {
-    const racine = await this.getElement(racineId);
-    const copyRacine = await this.copyElement(racine[0], 0);
-
+    //Copier la racine
+    var racine = await this.getElement(racineId);
+    var copyRacine = await this.copyElement(racine[0], 0);
     const childrenRacine = await this.getChildren(racineId);
+
     for (let i = 0; i < childrenRacine.length; i++) {
-      const semestre = await this.copyElement(childrenRacine[i], copyRacine.insertId);
-      const childrenSemestre = await this.getChildren(childrenRacine[i].id);
+      //Copier les semestres
+      var semestre = await this.copyElement(childrenRacine[i], copyRacine.insertId);
+      var childrenSemestre = await this.getChildren(childrenRacine[i].id);
       await apiPeriode.copyPeriode(childrenRacine[i].id, semestre.insertId);
+
+      //Copier les UE
       for (let j = 0; j < childrenSemestre.length; j++) {
-        const ue = await this.copyElement(childrenSemestre[j], semestre.insertId);
-        const childrenUe = await this.getChildren(childrenSemestre[j].id);
+        var ue = await this.copyElement(childrenSemestre[j], semestre.insertId);
+        var childrenUe = await this.getChildren(childrenSemestre[j].id);
+
+        //Copier les sous-totaux
+        var groupeSousTotalElement = await apiBilan.getGroupeSousTotalByProjetAndElement(projetId, childrenSemestre[j].id);
+        for (let l = 0; l < groupeSousTotalElement.length; l++) {
+          var sousTotal = await apiBilan.getLimiteSousTotalByProjetAndName(groupeSousTotalElement[l].nom_limite, newProjetId);
+          if (sousTotal.length) {
+            await apiBilan.createGroupeSousTotal({limite_sous_total_id: sousTotal[0].id, element_id: [ue.insertId]})
+          }
+        }
+
+        //Copier les modules
         for (let k = 0; k < childrenUe.length; k++) {
-          const module = await this.copyElement(childrenUe[k], ue.insertId);
+          var module = await this.copyElement(childrenUe[k], ue.insertId);
 
           //Copier les volumes hebdo.
-          const volumesHebdo = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule(childrenUe[k].id);
+          var volumesHebdo = await apiVolumeHebdomadaire.getVolumeHebdomadaireByModule(childrenUe[k].id);
           for (let l = 0; l < volumesHebdo.length; l++) {
             await apiVolumeHebdomadaire.copyVolumeHebdomadaireByModule(volumesHebdo[l].id, module.insertId);
           }
 
           //Copier les groupes d'intervenants
           if (grpInterv) {
-            const groupesIntervenants = await apiGroupeIntervenant.getGroupeIntervenantByModule(childrenUe[k].id);
+            var groupesIntervenants = await apiGroupeIntervenant.getGroupeIntervenantByModule(childrenUe[k].id);
             for (let l = 0; l < groupesIntervenants.length; l++) {
               await apiGroupeIntervenant.copyGroupeIntervenantByModule(groupesIntervenants[l].id, module.insertId, groupesIntervenants[l].enseignant_id, newProjetId);
             }
-          }
-
-          //Copier les sous-totaux
-          const groupeSousTotalElement = await apiBilan.getGroupeSousTotalByProjetAndElement(projetId, childrenUe[k].id);
-          for (let l = 0; l < groupeSousTotalElement.length; l++) {
-            const sousTotal = await apiBilan.getLimiteSousTotalByProjetAndName(groupeSousTotalElement[l].nom, newProjetId);
-            if (sousTotal.length) await apiBilan.createGroupeSousTotal({limite_sous_total_id: sousTotal[0].id, element_id: [module.insertId]})
           }
         }
       }

@@ -68,7 +68,7 @@
               <span>Dupliquer {{ s.nom }}</span>
             </v-tooltip>
             <v-spacer></v-spacer>
-            <v-tooltip top>
+            <v-tooltip top v-if="!Boolean(s.verrou)">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                     icon

@@ -34,20 +34,14 @@
         <v-card class="animate-pop-in">
           <v-card-title class="text-h5">Bilan général</v-card-title>
           <v-card-text class="pa-0">
-            <v-divider v-if="!bilans.length"></v-divider>
             <v-simple-table fixed-header v-if="bilans.length">
               <template v-slot:default>
                 <thead>
                 <tr>
-                  <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="7">Bilan des intervenants du projet</th>
+                  <th class="text-subtitle-1 text-center font-weight-medium top-border background-gray" colspan="7">Bilan des intervenants du projet</th>
                 </tr>
                 <tr>
-                  <th class="text-center right-border">
-                    <span class="mr-1">Intervenant</span>
-                    <v-btn x-small icon @click="sortedByIntervenantBilan">
-                      <v-icon small>{{ sortIntervenantBilan ? "arrow_upward" : "arrow_downward" }}</v-icon>
-                    </v-btn>
-                  </th>
+                  <th class="text-center right-border">Intervenant</th>
                   <th class="text-center">Total CM</th>
                   <th class="text-center">Total TD</th>
                   <th class="text-center">Total TP</th>
@@ -58,7 +52,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="b in bilans" :key="b.intervenant_id">
-                  <MenuShowDetailStatut :bilan="b"></MenuShowDetailStatut>
+                  <MenuShowDetailStatut :bilan="b"/>
                   <td class="text-center">{{ b.total_cm }} h</td>
                   <td class="text-center">{{ b.total_td }} h</td>
                   <td class="text-center">{{ b.total_tp }} h</td>
@@ -73,7 +67,7 @@
             </v-simple-table>
             <div v-else class="pa-5">Aucune donnée trouvée</div>
           </v-card-text>
-          <v-divider v-if="bilans.length"></v-divider>
+          <v-divider></v-divider>
           <v-card-actions v-if="bilans.length">
             <v-spacer></v-spacer>
             <div class="mr-6">
@@ -96,93 +90,90 @@
           class="justify-center"
       >
         <v-card class="animate-pop-in">
-          <v-card-title class="text-h5">Sous-Totaux</v-card-title>
-          <v-card-text class="pa-0" style="position: relative">
-            <v-divider v-if="!sousTotaux.length"></v-divider>
+          <v-card-title class="text-h5">
+            <span class="mr-2 mb-1">Sous-Totaux</span>
             <v-btn
                 v-if="projet.length"
                 :disabled="Boolean(projet[0].verrou)"
-                fab absolute
-                dark
-                small
-                top right
+                icon
                 color="success"
                 @click="form = true"
             >
               <v-icon>mdi-plus</v-icon>
             </v-btn>
-            <v-simple-table fixed-header v-if="sousTotaux.length">
-              <template v-slot:default>
-                <thead>
-                <tr>
-                  <th class="text-subtitle-1 text-center font-weight-medium text--secondary top-border background-gray" colspan="8">Sous-Totaux</th>
-                </tr>
-                <tr>
-                  <th class="text-center first-col">
-                    <span class="mr-1">Intervenant</span>
-                    <v-btn x-small icon @click="sortedByIntervenantSousTotal">
-                      <v-icon small>{{ sortIntervenantSousTotal ? "arrow_upward" : "arrow_downward" }}</v-icon>
-                    </v-btn>
-                  </th>
-                  <th class="text-center first-col">
-                    <span class="mr-1">Nom limite</span>
-                    <v-btn x-small icon @click="sortedByLimite">
-                      <v-icon small>{{ sortByLimite ? "arrow_upward" : "arrow_downward" }}</v-icon>
-                    </v-btn>
-                  </th>
-                  <th class="text-center">Sous-total CM</th>
-                  <th class="text-center">Sous-total TD</th>
-                  <th class="text-center">Sous-total TP</th>
-                  <th class="text-center">Sous-total Partiel</th>
-                  <th class="text-center left-border">Sous-total HeTD</th>
-                  <th v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">Opération</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(st, idx) in sousTotaux" :key="idx">
-                  <td class="text-center first-col-split">{{ st.prenom }} {{ st.nom }}</td>
-                  <td class="text-center first-col-split">{{ st.nom_limite }}</td>
-                  <td class="text-center">{{ st.total_cm }} h</td>
-                  <td class="text-center">{{ st.total_td }} h</td>
-                  <td class="text-center">{{ st.total_tp }} h</td>
-                  <td class="text-center">{{ st.total_partiel }} h</td>
-                  <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite}}</span></td>
-                  <td v-if="projet.length && !Boolean(projet[0].verrou)" class="text-center">
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            @click="edit(st)"
-                        >
-                          <v-icon>edit</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Modifier {{ st.nom_limite }}</span>
-                    </v-tooltip>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            color="error darken-1"
-                            @click="openDialog(st)"
-                        >
-                          <v-icon>delete</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Supprimer {{ st.nom_limite }}</span>
-                    </v-tooltip>
-                  </td>
-                </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-            <div v-else class="pa-5">Aucun sous-total dans le projet</div>
+          </v-card-title>
+          <v-card-text class="pa-0" style="position: relative">
+            <v-container fluid v-for="lim in sousTotaux" :key="lim.id">
+              <v-row>
+                <v-col cols="1" class="top-border pa-1 background-gray">
+                  <v-tooltip right>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          icon
+                          small
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="edit(lim[0])"
+                      >
+                        <v-icon size="22">edit</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Modifier {{ lim[0].nom_limite }}</span>
+                  </v-tooltip>
+                </v-col>
+                <v-col class="top-border d-flex justify-center pa-1 background-gray">
+                  <span class="text-subtitle-1 text-center font-weight-medium text--secondary">{{ lim[0].nom_limite }}</span>
+                </v-col>
+                <v-col cols="1" class="top-border pa-1 d-flex justify-end background-gray">
+                  <v-tooltip left>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          v-if="projet.length"
+                          :disabled="Boolean(projet[0].verrou)"
+                          icon
+                          small
+                          v-bind="attrs"
+                          v-on="on"
+                          color="error darken-1"
+                          @click="openDialog(lim[0])"
+                      >
+                        <v-icon>close</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Supprimer {{ lim[0].nom_limite }}</span>
+                  </v-tooltip>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-simple-table fixed-header class="width">
+                  <template v-slot:default>
+                    <thead>
+                    <tr>
+                      <th class="text-center first-col">Intervenant</th>
+                      <th class="text-center">Sous-total CM</th>
+                      <th class="text-center">Sous-total TD</th>
+                      <th class="text-center">Sous-total TP</th>
+                      <th class="text-center">Sous-total Partiel</th>
+                      <th class="text-center left-border">Sous-total HeTD</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(st, idx) in lim" :key="idx">
+                      <td class="text-center right-border">{{ st.prenom }} {{ st.nom }}</td>
+                      <td class="text-center">{{ st.total_cm }} h</td>
+                      <td class="text-center">{{ st.total_td }} h</td>
+                      <td class="text-center">{{ st.total_tp }} h</td>
+                      <td class="text-center">{{ st.total_partiel }} h</td>
+                      <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite}}</span></td>
+                    </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-row>
+            </v-container>
+            <div v-if="!sousTotaux.length" class="pa-5">Aucun sous-total dans le projet</div>
           </v-card-text>
-          <v-divider v-if="sousTotaux.length"></v-divider>
+          <v-divider></v-divider>
           <v-card-actions v-if="sousTotaux.length">
             <v-spacer></v-spacer>
             <div class="mr-6">
@@ -215,35 +206,24 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-text-field
-                  v-model="nom"
-                  :error-messages="nomErrors"
+                  v-model="sousTotal.nom_limite"
                   :counter="255"
+                  :error-messages="errors.nom_limite"
                   label="Nom"
                   autofocus
                   required
                   clearable
-                  @input="$v.nom.$touch()"
-                  @blur="$v.nom.$touch()"
-              ></v-text-field>
-              <v-text-field
-                  v-model="limite_he_td"
-                  :error-messages="limiteHeTDErrors"
-                  label="Limite HeTD (équivalent TD)"
-                  required
-                  clearable
-                  @input="$v.limite_he_td.$touch()"
-                  @blur="$v.limite_he_td.$touch()"
               ></v-text-field>
               <v-select
-                  v-model="element_id"
+                  v-model="sousTotal.elements"
                   :items="elementsModules"
                   :item-text="item => item.titre + ' ' + item.semestre_titre + ' (' + item.formation_titre + ')'"
                   item-value="id"
+                  :error-messages="errors.elements"
                   label="Modules"
                   clearable
                   multiple
                   chips
-                  :rules="rules.selectModules"
                   no-data-text="Tous les modules sont déjà assignés à un sous-total"
                   required
               >
@@ -258,10 +238,19 @@
                       v-if="index === 2"
                       class="grey--text text-caption"
                   >
-                    (+{{ element_id.length - 2 }})
+                    (+{{ sousTotal.elements.length - 2 }})
                   </span>
                 </template>
               </v-select>
+              <v-text-field
+                  v-for="s in sousTotal.statuts"
+                  :key="s.id"
+                  v-model="s.limite"
+                  :error-messages="errors[s.nom]"
+                  :label="'Limite ' + s.nom.toLowerCase()"
+                  required
+                  clearable
+              ></v-text-field>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -294,7 +283,7 @@
             </v-btn>
           </v-card-title>
           <v-card-text class="text-justify pt-4">
-            Êtes-vous sûr de vouloir supprimer la limite « {{ this.nom }} » ?
+            Êtes-vous sûr de vouloir supprimer la limite « {{ sousTotal.nom_limite }} » ?
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -344,52 +333,38 @@ import apiElement from "../services/API/elements";
 import MenuShowDetailStatut from "../components/MenuShowDetailStatut";
 import ProgressOverlay from "../components/ProgressOverlay";
 
-import {decimal, maxLength, required} from "vuelidate/lib/validators";
-import {validationMixin} from "vuelidate";
-
 export default {
   name: "Bilan",
   components: {ProgressOverlay, MenuShowDetailStatut},
-  mixins: [validationMixin],
 
-  validations: {
-    nom: {required, maxLength: maxLength(255)},
-    limite_he_td: {required, decimal},
-  },
   data: () => ({
     bilans: [],
     sousTotaux: [],
-    limiteSousTotal: [],
+    elementsModules: [],
     projet: [],
-    statuts: [],
+    errors: [],
     form: false,
     dialog: false,
-    showMenuStatutDetail: false,
     checkBilan: true,
     checkSousTotaux: true,
     loading: false,
     responseSuccess: false,
-    sortIntervenantBilan: false,
-    sortIntervenantSousTotal: false,
-    sortByLimite: false,
     typeOperation: 'ajouté',
     methods: "POST",
-    id: '',
-    nom: '',
-    limite_he_td: '',
-    elementsModules: [],
-    element_id: [],
-
-    rules: {
-      selectModules: [(v) => v.length > 0 || "Veuillez sélectionner un enseignant"],
+    sousTotal: {
+      id: null,
+      nom_limite: '',
+      projet_id: 0,
+      elements: [],
+      statuts: [],
     }
   }),
   methods: {
     async getProjet() {
       this.projet = await apiProjet.getProjet(this.$route.params.id);
     },
-    async getStatut() {
-      this.statuts = await apiStatut.getStatuts();
+    async getStatutsLimite(id) {
+      this.sousTotal.statuts = await apiStatut.getStatutsLimite(id);
     },
     async getElementsModules() {
       this.elementsModules = await apiElement.getElementsModules(this.$route.params.id);
@@ -401,69 +376,67 @@ export default {
       this.sousTotaux = await apiBilan.getBilanSousTotal(this.$route.params.id);
     },
     async submit() {
-      this.$refs.formulaire.validate();
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-      if (this.element_id.length <= 0) {
-        return;
-      } else {
-        const limiteSousTotal = {
-          id: this.id,
-          nom: this.nom,
-          limite_he_td: this.limite_he_td,
-          projet_id: Number(this.$route.params.id),
-        }
-        this.loading = true;
-        if (this.methods === 'POST'){
-          await apiBilan.createLimiteSousTotal(limiteSousTotal, this.element_id);
-          this.typeOperation = 'ajouté';
+      this.loading = true;
+      if (this.methods === 'POST'){
+        const resLimite = await apiBilan.createLimite(this.sousTotal);
+        if (resLimite.errors) {
+          this.errors = resLimite.errors;
+          this.loading = false;
         } else {
-          await apiBilan.editLimiteSousTotal(limiteSousTotal, this.element_id);
-          this.typeOperation = 'modifié';
+          this.typeOperation = 'ajouté';
+          await this.close();
+          await this.getSousTotaux();
+          this.checkSousTotaux = true;
+          this.loading = false;
+          this.responseSuccess = true;
         }
+      } else {
+        await apiBilan.editLimite(this.sousTotal);
+        this.typeOperation = 'modifié';
+        await this.close();
+        await this.getSousTotaux();
+        this.checkSousTotaux = true;
+        this.loading = false;
+        this.responseSuccess = true;
       }
-      await this.getSousTotaux();
-      this.checkSousTotaux = true;
-      this.clear();
-      this.loading = false;
-      this.form = false;
-      this.responseSuccess = true;
     },
-    clear() {
-      this.$v.$reset();
-      this.$refs.formulaire.resetValidation();
-      this.id = '';
-      this.nom = '';
-      this.limite_he_td = '';
-      this.element_id = [];
+    async clear() {
+      this.sousTotal = {
+        id: '',
+        nom_limite: '',
+        projet_id: Number(this.$route.params.id),
+        elements: [],
+      };
+      this.errors = [];
+      await this.getStatutsLimite(null);
       this.methods = 'POST';
     },
     async close() {
       await this.getElementsModules();
       this.form = !this.form;
-      this.clear();
+      await this.clear();
     },
     async edit(sousTotal) {
       this.methods = 'PUT';
-      this.id = sousTotal.id;
-      this.nom = sousTotal.nom_limite;
-      this.limite_he_td = sousTotal.limite_he_td;
-      this.element_id = await apiBilan.getAllGroupeSousTotalByLimite(sousTotal.id);
+      this.sousTotal = sousTotal;
+      this.sousTotal.projet_id = Number(this.$route.params.id);
+      await this.getStatutsLimite(this.sousTotal.id);
+      this.sousTotal.elements = await apiBilan.getAllGroupeSousTotalByLimite(this.sousTotal.id);
       this.form = true;
     },
     closeDialog(){
       this.dialog = false;
-      this.id = '';
-      this.nom = '';
+      this.sousTotal.id = '';
+      this.sousTotal.nom_limite = '';
     },
     openDialog(limite) {
       this.dialog = true;
-      this.id = limite.id;
-      this.nom = limite.nom_limite;
+      this.sousTotal.id = limite.id;
+      this.sousTotal.nom_limite = limite.nom_limite;
     },
     async deleteLimite() {
       this.loading = true;
-      await apiBilan.deleteLimiteSousTotal(this.id);
+      await apiBilan.deleteLimiteSousTotal(this.sousTotal.id);
       this.id = '';
       await this.getSousTotaux();
       this.loading = false;
@@ -473,35 +446,6 @@ export default {
     },
     redirect(path){
       this.$router.push({path:path}).catch(()=>{});
-    },
-    sortedByIntervenantBilan() {
-      if (this.sortIntervenantBilan) {
-        this.sortIntervenantBilan = false;
-        this.bilans.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
-      } else {
-        this.sortIntervenantBilan = true;
-        this.bilans.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
-      }
-    },
-    sortedByIntervenantSousTotal() {
-      this.sortByLimite = false;
-      if (this.sortIntervenantSousTotal) {
-        this.sortIntervenantSousTotal = false;
-        this.sousTotaux.sort((a, b) => a.prenom.toUpperCase() > b.prenom.toUpperCase());
-      } else {
-        this.sortIntervenantSousTotal = true;
-        this.sousTotaux.sort((a, b) => a.prenom.toUpperCase() < b.prenom.toUpperCase());
-      }
-    },
-    sortedByLimite() {
-      this.sortIntervenantSousTotal = false;
-      if (this.sortByLimite) {
-        this.sortByLimite = false;
-        this.sousTotaux.sort((a, b) => a.nom_limite.toUpperCase() > b.nom_limite.toUpperCase());
-      } else {
-        this.sortByLimite = true;
-        this.sousTotaux.sort((a, b) => a.nom_limite.toUpperCase() < b.nom_limite.toUpperCase());
-      }
     },
     getClassColorForTotal(bilan){
       if (bilan.total_general < bilan.nb_he_td_min_attendu) return 'sous-service';
@@ -517,30 +461,14 @@ export default {
       if (sousTotal.total_he_td > sousTotal.limite) return 'heures-sup';
     }
   },
-  computed: {
-    nomErrors() {
-      const errors = [];
-      if (!this.$v.nom.$dirty) return errors;
-      !this.$v.nom.maxLength && errors.push('Le nom ne doit pas faire plus de 255 caractères');
-      !this.$v.nom.required && errors.push('Le nom est obligatoire.');
-      return errors;
-    },
-    limiteHeTDErrors() {
-      const errors = [];
-      if (!this.$v.limite_he_td.$dirty) return errors;
-      !this.$v.limite_he_td.decimal && errors.push('La limite HeTD (équivalent TD) doit être un numérique');
-      !this.$v.limite_he_td.required && errors.push('La limite HeTD (équivalent TD) est obligatoire');
-      !this.$v.limite_he_td.required && errors.push('La limite HeTD (équivalent TD) est obligatoire');
-      return errors;
-    },
-  },
   async mounted() {
     this.loading = true;
     await this.getProjet();
-    await this.getStatut();
+    await this.getStatutsLimite(null);
     await this.getBilanByProjetIntervenant();
     await this.getSousTotaux();
     await this.getElementsModules();
+    this.sousTotal.projet_id = Number(this.$route.params.id);
     this.loading = false;
   }
 }
@@ -548,7 +476,6 @@ export default {
 
 <style scoped>
 .top-border{
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 .left-border {
@@ -561,12 +488,6 @@ export default {
   width: 10em !important;
   min-width: 10em !important;
   max-width: 10em !important;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-.first-col-split {
-  width: 5em !important;
-  min-width: 5em !important;
-  max-width: 5em !important;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 thead th {
@@ -583,5 +504,9 @@ thead th {
 }
 .heures-sup {
   color: #512DA8 !important;
+}
+
+.width {
+  width: 100% !important;
 }
 </style>

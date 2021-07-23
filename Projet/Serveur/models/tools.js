@@ -27,3 +27,8 @@ exports.safeStringSQL = (str) => {
 		)
 	}
 };
+
+exports.isFloat = (n) => {
+	if (n === null) return false;
+	return Number(n) === n && n % 1 !== 0 || n % 1 === 0;
+}

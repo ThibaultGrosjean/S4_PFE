@@ -258,9 +258,9 @@ exports.copyElement = (req, res) => {
         }
 
         var requete="INSERT INTO element(titre, surnom, code, niveau, indice, vol_hor_total_prevues_etu_cm, vol_hor_total_prevues_etu_td, vol_hor_total_prevues_etu_tp, mode_saisie, cm_autorises, td_autorises, tp_autorises, partiel_autorises, forfait_globale_cm, forfait_globale_td, forfait_globale_tp, forfait_globale_partiel, nb_groupe_effectif_cm, nb_groupe_effectif_td, nb_groupe_effectif_tp, nb_groupe_effectif_partiel, parent) VALUES ('" 
-          + element[0]['titre'] + "','"
-          + element[0]['surnom'] + "','"
-          + element[0]['code'] + "','"
+          + tools.safeStringSQL(element[0]['titre']) + "','"
+          + tools.safeStringSQL(element[0]['surnom']) + "','"
+          + tools.safeStringSQL(element[0]['code']) + "','"
           + element[0]['niveau'] + "','"
           + element[0]['indice'] + "',"
           + element[0]['vol_hor_total_prevues_etu_cm'] + ","
@@ -281,6 +281,7 @@ exports.copyElement = (req, res) => {
           + element[0]['nb_groupe_effectif_partiel'] + ","
           + element[0]['parent'] + ");"
         ;
+        console.log(requete);
         db.query(requete,
           function(err, element) {
             if (!err) {

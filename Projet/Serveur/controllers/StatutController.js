@@ -22,6 +22,30 @@ exports.getAllStatuts = (req, res) => {
         res.send(err);
       }
     }
+  ); 
+};
+
+
+exports.getAllStatutsLimite = (req, res) => {
+  db.query('SELECT s.*, IFNULL(limite_statut.limite, 0)AS limite'
+        +' FROM statut AS s'
+        +' LEFT JOIN ('
+        +'     SELECT IFNULL(sl.limite, 0) AS limite, sl.statut_id'
+        +'   FROM groupe_statut_limite AS sl'
+        +'   LEFT JOIN limite_sous_total AS l'
+        +'   ON sl.limite_id = l.id'
+        +'   WHERE l.id = ?'
+        +' ) AS limite_statut'
+        +' ON limite_statut.statut_id = s.id'
+        +' ORDER BY s.nom',[req.params.id],
+    function(err, statuts) {
+      if (!err) {
+        res.status(200).send(statuts);  
+      }
+      else {
+        res.send(err);
+      }
+    }
   );  
 };
 
@@ -50,13 +74,13 @@ exports.addStatut = (req, res) => {
     nb_he_td_max_sup : req.body.nb_he_td_max_sup,
   };
 
-  var requete = "INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES ('" 
+  var requete = "INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, verrou) VALUES ('" 
     + data['nom'] + "','"
     + data['surnom'] + "','"
     + data['nb_he_td_min_attendu'] + "','" 
     + data['nb_he_td_max_attendu'] + "','" 
     + data['nb_he_td_min_sup'] + "','" 
-    + data['nb_he_td_max_sup'] + "');"
+    + data['nb_he_td_max_sup'] + "',0);"
   ;
 
   let errors = validationResult(req);
@@ -79,8 +103,8 @@ exports.addStatut = (req, res) => {
 
 
 exports.copyStatut = (req, res) => {
-  db.query("INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup)"
-        +" SELECT CONCAT(nom, ' (copie)'), surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup"
+  db.query("INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, verrou)"
+        +" SELECT CONCAT(nom, ' (copie)'), surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, 0"
         +" FROM statut WHERE id = ?;", [req.params.id],
     function(err, statut) {
       if (!err) {

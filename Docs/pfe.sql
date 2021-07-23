@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 22 juil. 2021 à 15:06
+-- Généré le : ven. 23 juil. 2021 à 16:45
 -- Version du serveur :  8.0.22
 -- Version de PHP : 7.4.11
 
@@ -245,7 +245,8 @@ INSERT INTO groupe_statut_limite (statut_id, limite_id, limite) VALUES
 (2, 1, 42),
 (1, 1, 42),
 (3, 1, 84),
-(4, 1, 84);
+(4, 1, 84),
+(5, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -281,8 +282,7 @@ INSERT INTO intervenant (id, projet_id, enseignant_id, nb_he_td_min_attendu, nb_
 
 CREATE TABLE limite_sous_total (
   id int NOT NULL,
-  nom varchar(255) NOT NULL,
-  limite_he_td int NOT NULL DEFAULT '0',
+  nom_limite varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   projet_id int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -290,8 +290,8 @@ CREATE TABLE limite_sous_total (
 -- Déchargement des données de la table limite_sous_total
 --
 
-INSERT INTO limite_sous_total (id, nom, limite_he_td, projet_id) VALUES
-(1, 'Référentiel', 0, 1);
+INSERT INTO limite_sous_total (id, nom_limite, projet_id) VALUES
+(1, 'Référentiel', 1);
 
 -- --------------------------------------------------------
 
@@ -338,7 +338,7 @@ CREATE TABLE projet (
 --
 
 INSERT INTO projet (id, nom, date, verrou, archive) VALUES
-(1, 'Test Projet 2021', '2021-05-16', 0, 0);
+(1, 'Test Projet', '2021-05-16', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -353,19 +353,20 @@ CREATE TABLE statut (
   nb_he_td_min_attendu float NOT NULL,
   nb_he_td_max_attendu float NOT NULL,
   nb_he_td_min_sup float NOT NULL,
-  nb_he_td_max_sup float NOT NULL
+  nb_he_td_max_sup float NOT NULL,
+  verrou tinyint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table statut
 --
 
-INSERT INTO statut (id, nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES
-(1, 'Professeur des Universités', 'PU', 192, 192, 0, 100),
-(2, 'Maître de Conférence', 'MCF', 192, 192, 0, 100),
-(3, 'Professeur agrégé', 'PRAG', 384, 384, 0, 200),
-(4, 'Professeur certifié', 'PRCE', 384, 384, 0, 200),
-(5, 'Vacataire', 'VAC', 0, 64, 0, 0);
+INSERT INTO statut (id, nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, verrou) VALUES
+(1, 'Professeur des Universités', 'PU', 192, 192, 0, 100, 1),
+(2, 'Maître de Conférence', 'MCF', 192, 192, 0, 100, 1),
+(3, 'Professeur agrégé', 'PRAG', 384, 384, 0, 200, 1),
+(4, 'Professeur certifié', 'PRCE', 384, 384, 0, 200, 1),
+(5, 'Vacataire', 'VAC', 0, 64, 0, 0, 1);
 
 -- --------------------------------------------------------
 

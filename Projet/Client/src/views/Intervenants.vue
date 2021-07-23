@@ -397,9 +397,9 @@ export default {
         }
       }
       if (verif > 0) this.dialog = true;
-      this.loading = false;
       await this.getIntervenantsByProjet();
       await this.getEnseignantProjetNotInIntervenant();
+      this.loading = false;
       this.checkboxSelectAll = false;
     },
     async validDeleteAllIntervenant(){

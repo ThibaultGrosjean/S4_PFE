@@ -48,6 +48,8 @@ app.delete('/enseignants/delete/:id', utilisateurController.verifToken, enseigna
 
 app.get('/statuts/get', utilisateurController.verifToken, statutController.getAllStatuts);
 
+app.get('/statuts/limite/get/:id', utilisateurController.verifToken, statutController.getAllStatutsLimite);
+
 app.get('/statuts/get/:id', utilisateurController.verifToken, statutController.getStatut);
 
 app.post('/statuts/create/', utilisateurController.verifToken, statutController.validationResult, statutController.addStatut);
@@ -237,6 +239,8 @@ app.get('/bilan/limite-sous-total/nom/:nom/projet/get/:id', utilisateurControlle
 
 app.get('/bilan/groupe-sous-total/element/:element/projet/get/:id', utilisateurController.verifToken, bilanController.getAllGroupeSousTotalByProjetAndElement);
 
+app.post('/bilan/limite/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addLimite);
+
 app.post('/bilan/limite-sous-total/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addLimiteSousTotal);
 
 app.post('/bilan/groupe-sous-total/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addGroupeSousTotal);
@@ -245,7 +249,13 @@ app.post('/bilan/limite-sous-total/copy/:id/projet/:projet', utilisateurControll
 
 app.post('/bilan/groupe-sous-total/copy/:id/limite/:limite', utilisateurController.verifToken, bilanController.copyGroupeSousTotalByLimite);
 
+app.post('/bilan/limite-statut/copy/:id/limite/:newLimite', utilisateurController.verifToken, bilanController.copyLimiteStatut);
+
+app.patch('/bilan/limite/edit/:id', utilisateurController.verifToken,bilanController.validationResult, bilanController.editLimite);
+
 app.patch('/bilan/limite-sous-total/edit/:id', utilisateurController.verifToken,bilanController.validationResult, bilanController.editLimiteSousTotal);
+
+app.patch('/bilan/limite-statut/edit/statut/:statut/limite/:limite', utilisateurController.verifToken,bilanController.validationResult, bilanController.editLimiteStatut);
 
 app.delete('/bilan/groupe-sous-total/delete/:id', utilisateurController.verifToken, bilanController.deleteGroupeSousTotal);
 

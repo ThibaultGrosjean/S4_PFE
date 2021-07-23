@@ -31,9 +31,13 @@ const apiBilan = {
     return response.data;
   },
 
-  async createLimiteSousTotal(limiteSousTotal, elements) {
+  async createLimite(limite) {
+    const response = await axios.post('/bilan/limite/create', limite);
+    return response.data;
+  },
+
+  async createLimiteSousTotal(limiteSousTotal) {
     const response = await axios.post('/bilan/limite-sous-total/create', limiteSousTotal).catch(error => console.error('Erreur API: ', error));
-    await this.createGroupeSousTotal({limite_sous_total_id: response.data.insertId, element_id: elements});
     return response.data;
   },
 
@@ -47,10 +51,19 @@ const apiBilan = {
     return response.data;
   },
 
-  async editLimiteSousTotal(limiteSousTotal, elements) {
-    const response = await axios.patch('/bilan/limite-sous-total/edit/' + limiteSousTotal.id, limiteSousTotal).catch(error => console.error('Erreur API: ', error));
-    await this.deleteGroupeSousTotal(limiteSousTotal.id);
-    await this.createGroupeSousTotal({limite_sous_total_id: limiteSousTotal.id, element_id: elements});
+  async copyLimiteStatut(limiteId, newLimiteId) {
+    const response = await axios.post('/bilan/limite-statut/copy/' + limiteId + '/limite/' + newLimiteId).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+
+  async editLimiteStatut(limiteStatut) {
+    const response = await axios.patch('/bilan/limite-statut/edit/statut/' + limiteStatut.statut_id + '/limite/' + limiteStatut.limite_id, limiteStatut).catch(error => console.error('Erreur API: ', error));
+    return response.data;
+  },
+
+  async editLimite(limiteSousTotal) {
+    const response = await axios.patch('/bilan/limite/edit/' + limiteSousTotal.id, limiteSousTotal).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

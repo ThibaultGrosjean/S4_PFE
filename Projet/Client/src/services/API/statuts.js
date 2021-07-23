@@ -5,6 +5,11 @@ const apiStatut = {
     const response = await axios.get('/statuts/get').catch(error => console.log('Erreur API: ', error));
     return response.data;
   },
+  
+  async getStatutsLimite(limiteId) {
+    const response = await axios.get('/statuts/limite/get/' + limiteId).catch(error => console.log('Erreur API: ', error));
+    return response.data;
+  },
 
   async getStatut(statutId) {
     const response = await axios.get('/statuts/get/' + statutId).catch(error => console.error('Erreur API: ', error));

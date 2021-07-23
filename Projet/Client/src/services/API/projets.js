@@ -34,7 +34,8 @@ const apiProjet = {
     await apiIntervenant.copyIntervenantByProjet(projetId, projetResponse.data.insertId);
     const bilan = await apiBilan.getAllLimiteSousTotalByProjet(projetId);
     for (let i = 0; i < bilan.length; i++) {
-      await apiBilan.copyLimiteSousTotalByProjet(bilan[i].id, projetResponse.data.insertId);
+      const res = await apiBilan.copyLimiteSousTotalByProjet(bilan[i].id, projetResponse.data.insertId);
+      await apiBilan.copyLimiteStatut(bilan[i].id, res.insertId);
     }
     const formations = await apiFormation.getFormationByProjet(projetId);
     for (let i = 0; i < formations.length; i++) {

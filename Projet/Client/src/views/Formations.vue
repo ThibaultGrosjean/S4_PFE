@@ -401,6 +401,9 @@ export default {
       for (let i = 0; i < this.deleteSelected.length; i++) {
         if (this.deleteSelected[i].nbVolHorGlob === 0 && this.deleteSelected[i].nbVolHorHebdo === 0 && this.deleteSelected[i].nbGrpInterv === 0){
           await apiFormation.deleteFormation(this.deleteSelected[i]);
+          this.table = 'La formation';
+          this.typeOperation = 'supprimé';
+          this.responseSuccess = true;
         } else {
           verif += 1;
         }
@@ -408,10 +411,8 @@ export default {
       if (verif > 0) this.dialog = true;
       await this.getFormationByProjet();
       await this.getRacineHierarchie();
-      this.table = 'La formation';
-      this.typeOperation = 'supprimé';
-      this.responseSuccess = true;
       this.loading = false;
+      this.checkboxSelectAll = false;
     },
     async validDeleteAllFormation(){
       if (this.projet[0].verrou === 1) {
