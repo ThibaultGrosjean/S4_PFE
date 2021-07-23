@@ -127,3 +127,4 @@ Application permettant de saisir les heures annuelles faîtes par un enseignant 
 * Correction affichage des volumes globaux
 * Fonction pour convertir les chaînes avec des caractères spéciaux afin d'éviter les conflits dans les requêtes SQL (l' →  l\')
 * Ajouter et modifier un sous-total : Assigner une limite spécifique à un statut
+* Algorithme de calcul des HeTD totales selon le statut pour le bilan

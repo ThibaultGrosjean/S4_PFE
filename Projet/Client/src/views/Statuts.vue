@@ -115,6 +115,7 @@
               >
               </v-text-field>
               <v-text-field
+                  :disabled="Boolean(statut.verrou)"
                   v-model="statut.surnom"
                   :counter="255"
                   :error-messages="this.errors.surnom"

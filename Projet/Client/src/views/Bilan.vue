@@ -60,7 +60,7 @@
                   <td class="text-center left-border">
                     <span :class="getClassColorForTotal(b)"><b>{{ b.total_general }} h</b></span>
                   </td>
-                  <td class="text-center"><span :class="getClassColorForTotalHeureSup(b)"><b>{{ b.total_heures_sup }} h </b> / {{ b.nb_he_td_max_sup }}</span></td>
+                  <td class="text-center"><span :class="getClassColorForTotalHeureSup(b)"><b>{{ b.total_heures_supp }} h </b></span></td>
                 </tr>
                 </tbody>
               </template>
@@ -164,7 +164,7 @@
                       <td class="text-center">{{ st.total_td }} h</td>
                       <td class="text-center">{{ st.total_tp }} h</td>
                       <td class="text-center">{{ st.total_partiel }} h</td>
-                      <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b> / {{ st.limite}}</span></td>
+                      <td class="text-center left-border"><span :class="getClassColorForSousTotal(st)"><b>{{ st.total_he_td }} h</b></span></td>
                     </tr>
                     </tbody>
                   </template>
@@ -247,7 +247,7 @@
                   :key="s.id"
                   v-model="s.limite"
                   :error-messages="errors[s.nom]"
-                  :label="'Limite ' + s.nom.toLowerCase()"
+                  :label="'Limite : ' + s.nom + ' (' + s.surnom + ')'"
                   required
                   clearable
               ></v-text-field>
@@ -453,8 +453,8 @@ export default {
       if (bilan.total_general > bilan.nb_he_td_max_attendu + bilan.nb_he_td_max_sup) return 'heures-sup';
     },
     getClassColorForTotalHeureSup(bilan){
-      if (bilan.total_heures_sup <= bilan.nb_he_td_max_sup) return 'valide';
-      if (bilan.total_heures_sup > bilan.nb_he_td_max_sup) return 'heures-sup';
+      if (bilan.total_heures_supp <= bilan.nb_he_td_max_sup) return 'valide';
+      if (bilan.total_heures_supp > bilan.nb_he_td_max_sup) return 'heures-sup';
     },
     getClassColorForSousTotal(sousTotal){
       if (sousTotal.total_he_td <= sousTotal.limite) return 'valide';

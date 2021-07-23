@@ -32,3 +32,12 @@ exports.isFloat = (n) => {
 	if (n === null) return false;
 	return Number(n) === n && n % 1 !== 0 || n % 1 === 0;
 }
+
+
+exports.roundedFloat = (n) => {
+	if (n.toString().indexOf('.') != -1) {
+		return n.toFixed(2);
+	} else {
+		return n;
+	}
+}

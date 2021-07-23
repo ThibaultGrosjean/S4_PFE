@@ -35,18 +35,18 @@ exports.getAllGroupeSousTotalByIdLimite = (req, res) => {
  * Les heures supp. sont calculées en réduisant le nombre max HeTD à la somme générale, si le résultat est négatif alors il est égal 0. 
  */ 
 exports.getAllBilanByProjetIntervenant = (req, res) => {
-  db.query('SELECT g.intervenant_id, e.prenom, e.nom, i.nb_he_td_min_attendu, i.nb_he_td_max_attendu, i.nb_he_td_min_sup, i.nb_he_td_max_sup'
+  db.query('SELECT g.intervenant_id, e.prenom, e.nom, s.surnom, i.nb_he_td_min_attendu, i.nb_he_td_max_attendu, i.nb_he_td_min_sup, i.nb_he_td_max_sup'
       +' , (SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0)) AS total_cm'
       +' , (SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0))  AS total_td'
       +' , (SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)) AS total_tp'
       +' , (SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) AS total_partiel'
-      +' , (SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) AS total_general'
-      +' , CASE WHEN((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu) > 0 THEN ((SUM(v.vol_hor_cm * g.nb_groupe_cm) + IFNULL(vgt.total_volume_globale_cm, 0) + SUM(v.vol_hor_td * g.nb_groupe_td) + IFNULL(vgt.total_volume_globale_td, 0)  + SUM(v.vol_hor_tp * g.nb_groupe_tp) + IFNULL(vgt.total_volume_globale_tp, 0)+ SUM(v.vol_hor_partiel * g.nb_groupe_partiel) + IFNULL(vgt.total_volume_globale_partiel, 0)) - i.nb_he_td_max_attendu) ELSE 0 END AS total_heures_sup'
       +' FROM groupe_intervenant AS g'
       +' JOIN intervenant AS i'
       +' ON i.id = g.intervenant_id'
       +' JOIN enseignant AS e'
       +' ON e.id = i.enseignant_id'
+      +' JOIN statut AS s'
+      +' ON s.id = e.statut_id'
       +' LEFT JOIN volume_hebdomadaire AS v'
       +' ON g.element_id = v.element_id AND g.num_semaine = v.num_semaine'
       +' LEFT JOIN ('
@@ -65,9 +65,26 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
       +' WHERE g.intervenant_id IN (SELECT i.id FROM intervenant AS i WHERE i.projet_id = ' + req.params.id + ')'
       +' GROUP BY g.intervenant_id, vgt.total_volume_globale_cm, vgt.total_volume_globale_td, vgt.total_volume_globale_tp, vgt.total_volume_globale_partiel'
       +' ORDER BY e.prenom, e.nom',
-    function(err, bilan) {
+    function(err, bilans) {
       if (!err) {
-        res.status(200).json(bilan);  
+        var bilansAvecTotal = [];
+        for (let i = 0; i < bilans.length; i++) {
+
+          var total =  ( (bilans[i].total_cm * 1.5) +  bilans[i].total_td +  bilans[i].total_tp +  bilans[i].total_partiel);
+          var heuresSupp = 0;
+
+          if ( (bilans[i].surnom == 'PU' || bilans[i].surnom == 'MCF') && total > 192) {
+            var totalBis = ( (bilans[i].total_cm * 1.5) +  bilans[i].total_td +  bilans[i].total_tp + (bilans[i].total_partiel / 1.5) );
+            var ratio = 1.0 - (192 / total);
+            heuresSupp = ratio * totalBis;
+          } else if (total > bilans[i].nb_he_td_max_attendu) {
+              heuresSupp = total - bilans[i].nb_he_td_max_attendu;
+          }
+          bilans[i].total_general = tools.roundedFloat(total);
+          bilans[i].total_heures_supp = tools.roundedFloat(heuresSupp);
+          bilansAvecTotal.push(bilans[i]);
+        }
+        res.status(200).send(bilansAvecTotal);  
       }
       else {
         res.send(err);
@@ -78,7 +95,7 @@ exports.getAllBilanByProjetIntervenant = (req, res) => {
 
 
 exports.getAllBilanSousTotal = (req, res) => {
-  db.query('SELECT IFNULL(sl.limite, 0) AS limite, s.nom AS statut_nom, g.intervenant_id, e.prenom, e.nom, e.statut_id, l.id, l.nom_limite'
+  db.query('SELECT IFNULL(sl.limite, 0) AS limite, s.nom AS statut_nom, s.surnom, g.intervenant_id, e.prenom, e.nom, e.statut_id, l.id, l.nom_limite'
        +' , IFNULL(vgt.total_volume_globale_cm, 0) AS total_cm'
        +' , IFNULL(vgt.total_volume_globale_td, 0)  AS total_td'
        +' , IFNULL(vgt.total_volume_globale_tp, 0) AS total_tp'
