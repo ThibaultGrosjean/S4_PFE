@@ -30,6 +30,7 @@
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
+                    disabled
                     icon
                     v-bind="attrs"
                     v-on="on"
@@ -40,7 +41,7 @@
               <span>Modifier mes données</span>
             </v-tooltip>
             <v-spacer></v-spacer>
-            <v-btn text link color="primary" class="px-1">Modifier mon mot de passe</v-btn>
+            <v-btn disabled text link color="primary" class="px-1">Modifier mon mot de passe</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

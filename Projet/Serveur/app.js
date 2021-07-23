@@ -84,8 +84,6 @@ app.get('/elements/modules/projets/get/:id', utilisateurController.verifToken, e
 
 app.get('/elements/get/:id', utilisateurController.verifToken, elementController.getElement);
 
-app.get('/elements/hierarchie/get/:id', utilisateurController.verifToken, elementController.getHierarchieByRoot);
-
 app.get('/elements/hierarchie/racine/get/', utilisateurController.verifToken, elementController.getAllRacineHierarchie);
 
 app.get('/elements/children/get/:id', utilisateurController.verifToken, elementController.getChildrenElement);
@@ -241,8 +239,6 @@ app.get('/bilan/groupe-sous-total/element/:element/projet/get/:id', utilisateurC
 
 app.post('/bilan/limite/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addLimite);
 
-app.post('/bilan/limite-sous-total/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addLimiteSousTotal);
-
 app.post('/bilan/groupe-sous-total/create/', utilisateurController.verifToken,bilanController.validationResult, bilanController.addGroupeSousTotal);
 
 app.post('/bilan/limite-sous-total/copy/:id/projet/:projet', utilisateurController.verifToken,bilanController.validationResult, bilanController.copyLimiteSousTotal);
@@ -255,8 +251,6 @@ app.patch('/bilan/limite/edit/:id', utilisateurController.verifToken,bilanContro
 
 app.patch('/bilan/limite-sous-total/edit/:id', utilisateurController.verifToken,bilanController.validationResult, bilanController.editLimiteSousTotal);
 
-app.patch('/bilan/limite-statut/edit/statut/:statut/limite/:limite', utilisateurController.verifToken,bilanController.validationResult, bilanController.editLimiteStatut);
-
 app.delete('/bilan/groupe-sous-total/delete/:id', utilisateurController.verifToken, bilanController.deleteGroupeSousTotal);
 
 app.delete('/bilan/limite-sous-total/delete/:id', utilisateurController.verifToken, bilanController.deleteLimiteSousTotal);
@@ -266,8 +260,6 @@ app.post('/inscription',utilisateurController.validationResult, utilisateurContr
 
 app.post('/connexion',utilisateurController.validationResult, utilisateurController.connexion);
 
-
-utilisateurController
 
 app.listen(port, () => {
     console.log(`Écoute sur le port : ${port}`);

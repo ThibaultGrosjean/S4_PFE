@@ -36,11 +36,6 @@ const apiBilan = {
     return response.data;
   },
 
-  async createLimiteSousTotal(limiteSousTotal) {
-    const response = await axios.post('/bilan/limite-sous-total/create', limiteSousTotal).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
   async createGroupeSousTotal(GroupeSousTotal) {
     const response = await axios.post('/bilan/groupe-sous-total/create', GroupeSousTotal).catch(error => console.error('Erreur API: ', error));
     return response.data;
@@ -53,12 +48,6 @@ const apiBilan = {
 
   async copyLimiteStatut(limiteId, newLimiteId) {
     const response = await axios.post('/bilan/limite-statut/copy/' + limiteId + '/limite/' + newLimiteId).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
-
-  async editLimiteStatut(limiteStatut) {
-    const response = await axios.patch('/bilan/limite-statut/edit/statut/' + limiteStatut.statut_id + '/limite/' + limiteStatut.limite_id, limiteStatut).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

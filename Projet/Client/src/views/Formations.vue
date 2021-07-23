@@ -278,7 +278,7 @@ export default {
     element: null,
     deleteSelected: [],
     checkboxSelectAll: false,
-    checkboxNewElement: false,
+    checkboxNewElement: true,
     checkboxCopyElement: false,
     checkboxCopierGrpInterv: false,
     rules: {

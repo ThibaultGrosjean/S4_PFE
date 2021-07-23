@@ -107,13 +107,13 @@ exports.getGroupeIntervenantByModule = (req, res) => {
 
 exports.addGroupeIntervenant = (req, res) => {
   var data = {
-    num_semaine : req.body.num_semaine,
-    nb_groupe_cm : req.body.nb_groupe_cm,
-    nb_groupe_td : req.body.nb_groupe_td,
-    nb_groupe_tp : req.body.nb_groupe_tp,
-    nb_groupe_partiel : req.body.nb_groupe_partiel,
-    element_id : req.body.element_id,
-    intervenant_id : req.body.intervenant_id,
+    num_semaine : req.body.num_semaine | 0,
+    nb_groupe_cm : req.body.nb_groupe_cm | 0,
+    nb_groupe_td : req.body.nb_groupe_td | 0,
+    nb_groupe_tp : req.body.nb_groupe_tp | 0,
+    nb_groupe_partiel : req.body.nb_groupe_partiel | 0,
+    element_id : req.body.element_id | 0,
+    intervenant_id : req.body.intervenant_id | 0,
   };
 
   var requete = "INSERT INTO groupe_intervenant(num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel, element_id, intervenant_id) VALUES ('" 

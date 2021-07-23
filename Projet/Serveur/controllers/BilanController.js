@@ -198,29 +198,6 @@ exports.getAllLimiteSousTotalByProjetAndName = (req, res) => {
 };
 
 
-exports.addLimiteSousTotal = (req, res) => {
-  var data = {
-    nom_limite : tools.safeStringSQL(req.body.nom_limite),
-    projet_id : req.body.projet_id,
-  };
-
-  var requete="INSERT INTO limite_sous_total(nom_limite, projet_id) VALUES ('" 
-    + data['nom_limite'] + "','" 
-    + data['projet_id'] + "');"
-  ;
-
-  db.query(requete,
-    function(err, limite_sous_total) {
-      if (!err) {
-        res.status(200).json(limite_sous_total); 
-      } else  {
-        res.send(err);
-      }
-    }
-  );
-};
-
-
 exports.addLimite = (req, res) => {
   var data = {
     nom_limite : tools.safeStringSQL(req.body.nom_limite),
@@ -425,39 +402,17 @@ exports.editLimite = (req, res) => {
 
 
 exports.editLimiteSousTotal = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
     nom_limite : tools.safeStringSQL(req.body.nom_limite),
     projet_id : req.body.projet_id,
   };
-  var requete="UPDATE limite_sous_total SET nom_limite ='" + donnees['nom_limite'] +"' WHERE id = " + req.params.id + ";";
+  var requete="UPDATE limite_sous_total SET nom_limite ='" + data['nom_limite'] +"' WHERE id = " + req.params.id + ";";
 
   db.query(requete,
     function(err, limite_sous_total) {
       if (!err) {
         res.status(200).json(limite_sous_total);  
-      } else {
-        res.send(err);
-      }
-    }
-  );
-};
-
-
-exports.editLimiteStatut = (req, res) => {
-  var donnees = {
-    statut_id : req.body.statut_id,
-    limite_id : req.body.limite_id,
-    limite : req.body.limite,
-  };
-  var requete="UPDATE groupe_statut_limite SET statut_id ='" + donnees['statut_id'] 
-  +"', limite_id ='" + donnees['limite_id'] +"', limite ='" + donnees['limite'] 
-  +"' WHERE statut_id = " + req.params.statut + " AND limite_id = " + req.params.limite;
-
-  db.query(requete,
-    function(err, limite_statut) {
-      if (!err) {
-        res.status(200).json(limite_statut);  
       } else {
         res.send(err);
       }

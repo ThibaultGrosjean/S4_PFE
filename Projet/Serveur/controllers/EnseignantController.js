@@ -75,7 +75,7 @@ exports.getEnseignantByStatut = (req, res) => {
 
 function generateSurnom(prenom, nom) {
   var surnom = ""
-  if (prenom != null && nom !== null){
+  if (prenom != null && nom !== null && prenom != undefined && nom != undefined){
     var compose = prenom.indexOf("-");
     if (nom.length == 1 && prenom.length == 1){
       surnom = prenom[0] + nom[0]

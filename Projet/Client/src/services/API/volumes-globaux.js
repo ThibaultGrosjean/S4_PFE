@@ -11,23 +11,9 @@ const apiVolumeGlobaux = {
     return response.data;
   },
 
-  async getVolumeGlobauxBySemestre() {
-    const response = await axios.get('/volumes-globaux/semestre/get' ).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
-  async getVolumeGlobauxBySemestreIntervenant() {
-    const response = await axios.get('/volumes-globaux/semestre/intervenant/get' ).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
 
   async createVolumeGlobaux(volumeGlobale) {
     const response = await axios.post('/volumes-globaux/create', volumeGlobale).catch(error => console.error('Erreur API: ', error));
-    return response.data;
-  },
-
-  async createVolumeGlobauxBySemaine(moduleId, semaineDeb, semaineFin) {
-    const response = await axios.post('/volumes-globaux/create/' + moduleId + '/nbsemaine/' + semaineDeb + '/' + semaineFin).catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 
@@ -43,11 +29,6 @@ const apiVolumeGlobaux = {
 
   async editTypeValueElementVolumeGlobaux(value, elementId, type) {
     const response = await axios.patch('/volumes-globaux/edit/' + value + '/elements/' + elementId + '/' + type);
-    return response.data;
-  },
-
-  async deleteVolumeGlobauxBySemaine(semestreId, semaineDeb, semaineFin) {
-    const response = await axios.delete('/volumes-globaux/semestre/' + semestreId + '/nbsemaine/' + semaineDeb + '/' + semaineFin + '/delete').catch(error => console.error('Erreur API: ', error));
     return response.data;
   },
 

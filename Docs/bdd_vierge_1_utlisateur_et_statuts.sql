@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.0.4
--- https://www.phpmyadmin.net/
---
--- Hôte : localhost
--- Généré le : ven. 23 juil. 2021 à 16:45
--- Version du serveur :  8.0.22
--- Version de PHP : 7.4.11
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -53,34 +44,6 @@ CREATE TABLE element (
   parent int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table element
---
-
-INSERT INTO element (id, titre, surnom, code, niveau, indice, vol_hor_total_prevues_etu_cm, vol_hor_total_prevues_etu_td, vol_hor_total_prevues_etu_tp, mode_saisie, cm_autorises, td_autorises, tp_autorises, partiel_autorises, forfait_globale_cm, forfait_globale_td, forfait_globale_tp, forfait_globale_partiel, nb_groupe_effectif_cm, nb_groupe_effectif_td, nb_groupe_effectif_tp, nb_groupe_effectif_partiel, parent) VALUES
-(1, 'DUT Informatique IUT Belfort-Montbéliard', 'Dut Info', 'DUTI', 0, 0, 0, 0, 0, 'aucun', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL),
-(2, 'Semestre 1', 'S1', 'S1', 1, 0, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-(3, 'Semestre 2', 'S2', 'S2', 1, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-(4, 'Semestre 3', 'S3', 'S3', 1, 2, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-(5, 'Semestre 4', 'S4', 'S4', 1, 3, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-(6, 'UE 11 : Base de l\'Informatique', 'UE11', 'UE11', 2, 0, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 2),
-(7, 'UE 12 : Base de culture scientifique, sociale et humaine', 'UE12', 'UE12', 2, 1, 0, 0, 0, 'aucun', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 2),
-(8, 'M 1101 : Introduction aux systèmes informatiques', 'M1101', 'M1101', 3, 0, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
-(9, 'M 1102 : Introduction à l\'algorithmique et à la programmation', 'M1102', 'M1102', 3, 1, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
-(10, 'M 1103 : Structures de données et algorithmes fondamentaux', 'M1103', 'M1103', 3, 2, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
-(11, 'M 1104 : Introduction aux bases de données', 'M1104', 'M1104', 3, 3, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
-(12, 'M 1105 : Conception de documents et interfaces numériques', 'M1105', 'M1105', 3, 4, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 6),
-(13, 'Projet Tutoré', 'Ptut', 'Ptut', 2, 2, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2),
-(14, 'M 1201 : Mathématiques discrètes', 'M1201', 'M1201', 3, 0, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(15, 'M 1202 : Algèbre linéaire', 'M1202', 'M1202', 3, 1, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(16, 'M 1203 : Environnement économique', 'M1203', 'M1203', 3, 2, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(17, 'M 1204 : Fonctionnement des organisations', 'M1204', 'M1204', 3, 3, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(18, 'M 1205 : Expression et communication', 'M1205', 'M1205', 3, 4, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(19, 'M 1206 : Anglais', 'M1206', 'M1206', 3, 5, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(20, 'M 1207 : PPP', 'M1207', 'M1207', 3, 6, 0, 0, 0, 'hebdo', 1, 1, 1, 1, 0, 0, 0, 0, 1, 4, 8, 2, 7),
-(21, 'Stage', 'Stage', 'Stage', 2, 1, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5),
-(22, 'Projet Tutoré', 'Ptut', 'Ptut', 2, 0, 0, 0, 0, 'globale', 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -96,16 +59,6 @@ CREATE TABLE enseignant (
   email varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table enseignant
---
-
-INSERT INTO enseignant (id, statut_id, prenom, nom, surnom, email) VALUES
-(1, 1, 'Gérard', 'Dupond', 'GDU', 'gerard.dupond@testmail.com'),
-(2, 4, 'Jean-Louis', 'Martin', 'JLM', 'jeanlouis.martin@testmail.com'),
-(3, 2, 'Jean-Pierre', 'Rondin', 'JPR', 'jeanlouis.martin@testmail.com'),
-(4, 5, 'Henri', 'Bernard', 'HBE', 'jeanlouis.martin@testmail.com');
-
 -- --------------------------------------------------------
 
 --
@@ -118,13 +71,6 @@ CREATE TABLE formation (
   element_id int DEFAULT NULL,
   verrou tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table formation
---
-
-INSERT INTO formation (id, projet_id, element_id, verrou) VALUES
-(1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -143,68 +89,6 @@ CREATE TABLE groupe_intervenant (
   nb_groupe_partiel int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table groupe_intervenant
---
-
-INSERT INTO groupe_intervenant (id, element_id, intervenant_id, num_semaine, nb_groupe_cm, nb_groupe_td, nb_groupe_tp, nb_groupe_partiel) VALUES
-(1, 8, 1, 1, 1, 4, 4, 0),
-(2, 8, 1, 2, 1, 4, 4, 0),
-(3, 8, 1, 3, 1, 4, 4, 0),
-(4, 8, 1, 4, 1, 4, 4, 0),
-(5, 8, 1, 5, 1, 4, 4, 0),
-(6, 8, 1, 6, 1, 4, 4, 0),
-(7, 8, 1, 7, 1, 4, 4, 0),
-(8, 8, 1, 8, 1, 4, 4, 0),
-(9, 8, 1, 9, 1, 4, 4, 0),
-(10, 8, 1, 10, 1, 4, 4, 0),
-(11, 8, 1, 11, 1, 4, 4, 0),
-(12, 8, 1, 12, 1, 4, 4, 0),
-(13, 8, 1, 13, 1, 4, 4, 0),
-(14, 8, 1, 14, 1, 4, 4, 0),
-(15, 8, 2, 1, 0, 2, 4, 0),
-(16, 8, 2, 2, 0, 2, 4, 0),
-(17, 8, 2, 3, 0, 2, 4, 0),
-(18, 8, 2, 4, 0, 2, 4, 0),
-(19, 8, 2, 5, 0, 2, 4, 0),
-(20, 8, 2, 6, 0, 2, 4, 0),
-(21, 8, 2, 7, 0, 2, 4, 0),
-(22, 8, 2, 8, 0, 2, 4, 0),
-(23, 8, 2, 9, 0, 2, 4, 0),
-(24, 8, 2, 10, 0, 2, 4, 0),
-(25, 8, 2, 11, 0, 2, 4, 0),
-(26, 8, 2, 12, 0, 2, 4, 0),
-(27, 8, 2, 13, 0, 2, 4, 0),
-(28, 8, 2, 14, 0, 2, 4, 0),
-(29, 8, 3, 1, 1, 0, 2, 0),
-(30, 8, 3, 2, 1, 0, 2, 0),
-(31, 8, 3, 3, 1, 0, 2, 0),
-(32, 8, 3, 4, 1, 0, 2, 0),
-(33, 8, 3, 5, 1, 0, 2, 0),
-(34, 8, 3, 6, 1, 0, 2, 0),
-(35, 8, 3, 7, 1, 0, 2, 0),
-(36, 8, 3, 8, 1, 0, 2, 0),
-(37, 8, 3, 9, 1, 0, 2, 0),
-(38, 8, 3, 10, 1, 0, 2, 0),
-(39, 8, 3, 11, 1, 0, 2, 0),
-(40, 8, 3, 12, 1, 0, 2, 0),
-(41, 8, 3, 13, 1, 0, 2, 0),
-(42, 8, 3, 14, 1, 0, 2, 0),
-(43, 8, 4, 1, 1, 1, 0, 0),
-(44, 8, 4, 2, 1, 1, 0, 0),
-(45, 8, 4, 3, 1, 1, 0, 0),
-(46, 8, 4, 4, 1, 1, 0, 0),
-(47, 8, 4, 5, 1, 1, 0, 0),
-(48, 8, 4, 6, 1, 1, 0, 0),
-(49, 8, 4, 7, 1, 1, 0, 0),
-(50, 8, 4, 8, 1, 1, 0, 0),
-(51, 8, 4, 9, 1, 1, 0, 0),
-(52, 8, 4, 10, 1, 1, 0, 0),
-(53, 8, 4, 11, 1, 1, 0, 0),
-(54, 8, 4, 12, 1, 0, 0, 0),
-(55, 8, 4, 13, 1, 0, 0, 0),
-(56, 8, 4, 14, 1, 0, 0, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -215,15 +99,6 @@ CREATE TABLE groupe_sous_total (
   limite_sous_total_id int NOT NULL,
   element_id int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table groupe_sous_total
---
-
-INSERT INTO groupe_sous_total (limite_sous_total_id, element_id) VALUES
-(1, 13),
-(1, 22),
-(1, 21);
 
 -- --------------------------------------------------------
 
@@ -236,17 +111,6 @@ CREATE TABLE groupe_statut_limite (
   limite_id int NOT NULL,
   limite int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table groupe_statut_limite
---
-
-INSERT INTO groupe_statut_limite (statut_id, limite_id, limite) VALUES
-(2, 1, 42),
-(1, 1, 42),
-(3, 1, 84),
-(4, 1, 84),
-(5, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -264,16 +128,6 @@ CREATE TABLE intervenant (
   nb_he_td_max_sup float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table intervenant
---
-
-INSERT INTO intervenant (id, projet_id, enseignant_id, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup) VALUES
-(1, 1, 1, 192, 192, 0, 100),
-(2, 1, 2, 384, 384, 0, 200),
-(3, 1, 3, 192, 192, 0, 100),
-(4, 1, 4, 0, 64, 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -285,13 +139,6 @@ CREATE TABLE limite_sous_total (
   nom_limite varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   projet_id int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table limite_sous_total
---
-
-INSERT INTO limite_sous_total (id, nom_limite, projet_id) VALUES
-(1, 'Référentiel', 1);
 
 -- --------------------------------------------------------
 
@@ -309,16 +156,6 @@ CREATE TABLE periode (
   nb_groupe_defaut_partiel int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table periode
---
-
-INSERT INTO periode (id, element_id, nb_semaine, nb_groupe_defaut_cm, nb_groupe_defaut_td, nb_groupe_defaut_tp, nb_groupe_defaut_partiel) VALUES
-(1, 2, 14, 1, 4, 8, 2),
-(2, 3, 14, 1, 4, 8, 2),
-(3, 4, 14, 1, 4, 8, 2),
-(4, 5, 14, 1, 4, 8, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -332,13 +169,6 @@ CREATE TABLE projet (
   verrou tinyint(1) NOT NULL,
   archive tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table projet
---
-
-INSERT INTO projet (id, nom, date, verrou, archive) VALUES
-(1, 'Test Projet', '2021-05-16', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -407,17 +237,6 @@ CREATE TABLE volume_globale (
   vol_hor_partiel float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table volume_globale
---
-
-INSERT INTO volume_globale (id, intervenant_id, element_id, num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel) VALUES
-(1, 1, 13, 1, 0, 2, 0, 0),
-(2, 2, 13, 1, 0, 3, 0, 0),
-(4, 2, 21, 1, 0, 4, 0, 0),
-(5, 1, 22, 1, 0, 4, 0, 0),
-(7, 3, 13, 1, 0, 8, 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -433,26 +252,6 @@ CREATE TABLE volume_hebdomadaire (
   vol_hor_tp float NOT NULL,
   vol_hor_partiel float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table volume_hebdomadaire
---
-
-INSERT INTO volume_hebdomadaire (id, element_id, num_semaine, vol_hor_cm, vol_hor_td, vol_hor_tp, vol_hor_partiel) VALUES
-(1, 8, 1, 1, 2, 3, 0),
-(2, 8, 2, 1, 2, 3, 0),
-(3, 8, 3, 1, 2, 3, 0),
-(4, 8, 4, 1, 2, 3, 0),
-(5, 8, 5, 1, 2, 3, 0),
-(6, 8, 6, 1, 2, 3, 0),
-(7, 8, 7, 1, 2, 3, 0),
-(8, 8, 8, 1, 2, 3, 0),
-(9, 8, 9, 1, 2, 3, 0),
-(10, 8, 10, 1, 2, 3, 0),
-(11, 8, 11, 1, 2, 3, 0),
-(12, 8, 12, 1, 2, 3, 0),
-(13, 8, 13, 1, 2, 3, 0),
-(14, 8, 14, 0, 0, 0, 3);
 
 --
 -- Index pour les tables déchargées
@@ -565,49 +364,49 @@ ALTER TABLE volume_hebdomadaire
 -- AUTO_INCREMENT pour la table element
 --
 ALTER TABLE element
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table enseignant
 --
 ALTER TABLE enseignant
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table formation
 --
 ALTER TABLE formation
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table groupe_intervenant
 --
 ALTER TABLE groupe_intervenant
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table intervenant
 --
 ALTER TABLE intervenant
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table limite_sous_total
 --
 ALTER TABLE limite_sous_total
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table periode
 --
 ALTER TABLE periode
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table projet
 --
 ALTER TABLE projet
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table statut
@@ -625,13 +424,13 @@ ALTER TABLE utilisateur
 -- AUTO_INCREMENT pour la table volume_globale
 --
 ALTER TABLE volume_globale
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table volume_hebdomadaire
 --
 ALTER TABLE volume_hebdomadaire
-  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY id int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- Contraintes pour les tables déchargées

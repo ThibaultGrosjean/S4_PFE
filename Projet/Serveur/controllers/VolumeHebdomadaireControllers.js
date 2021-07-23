@@ -100,11 +100,11 @@ exports.getVolumeHebdomadaire = (req, res) => {
 
 exports.addVolumeHebdomadaire = (req, res) => {
   var data = {
-    num_semaine : req.body.num_semaine,
-    vol_hor_cm : req.body.vol_hor_cm,
-    vol_hor_td : req.body.vol_hor_td,
-    vol_hor_tp : req.body.vol_hor_tp,
-    vol_hor_partiel : req.body.vol_hor_partiel,
+    num_semaine : req.body.num_semaine | 0,
+    vol_hor_cm : req.body.vol_hor_cm | 0,
+    vol_hor_td : req.body.vol_hor_td | 0,
+    vol_hor_tp : req.body.vol_hor_tp | 0,
+    vol_hor_partiel : req.body.vol_hor_partiel | 0,
     element_id : req.body.element_id,  
   };
 

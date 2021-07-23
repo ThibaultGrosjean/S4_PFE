@@ -161,15 +161,15 @@ exports.copyFormation = (req, res) => {
 
 
 exports.editFormation = (req, res) => {
-  var donnees = {
+  var data = {
     id : req.body.id,
-    verrou : req.body.verrou,
+    verrou : req.body.verrou | 0,
     projet_id : req.body.projet_id,
     element_id : req.body.element_id,  
   };
-  var requete="UPDATE formation SET verrou ='" + donnees['verrou'] 
-  +"', projet_id ='" + donnees['projet_id']
-  +"', element_id ='" + donnees['element_id']
+  var requete="UPDATE formation SET verrou ='" + data['verrou'] 
+  +"', projet_id ='" + data['projet_id']
+  +"', element_id ='" + data['element_id']
   +"' WHERE id = " + req.params.id + ";";
 
   let errors = validationResult(req);

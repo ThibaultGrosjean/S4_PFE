@@ -2,7 +2,7 @@
   <v-container fluid class="pa-10">
     <ProgressOverlay :loading="loading"/>
 
-    <v-row class="animate-pop-in mb-2 pa-3">
+    <v-row class="animate-pop-in pa-3">
       <v-card width="100%" class="pa-7">
         <v-row>
           <v-col class="align-center pa-0">

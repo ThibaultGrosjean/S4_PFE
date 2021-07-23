@@ -5,10 +5,10 @@ const { check, validationResult } = require('express-validator');
 exports.validationResult = [
   check('nom',"Veuillez saisir un nom avec au minimum 2 caractères").isLength({ min: 2 }),
   check('surnom',"Veuillez saisir un surnom avec au minimum 2 caractères").isLength({ min: 2 }),
-  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un numérique non nul").isFloat(),
-  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un numérique non nul").isFloat(),
-  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un numérique non nul").isFloat(),
-  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un numérique non nul").isFloat(),
+  check('nb_he_td_min_attendu',"Le nombre d’heures (équivalent TD) minimal attendu doit être un entier ou un nombre à virgule").isFloat(),
+  check('nb_he_td_max_attendu',"Le nombre d’heures (équivalent TD) maximal attendu doit être un entier ou un nombre à virgule").isFloat(),
+  check('nb_he_td_min_sup',"Le nombre d’heures (équivalent TD) minimal supplémentaires doit être un entier ou un nombre à virgule").isFloat(),
+  check('nb_he_td_max_sup',"Le nombre d’heures (équivalent TD) maximal supplémentaires doit être un entier ou un nombre à virgule").isFloat(),
 ];
 
 
@@ -68,10 +68,10 @@ exports.addStatut = (req, res) => {
   var data = {
     nom : tools.safeStringSQL(req.body.nom),
     surnom : tools.safeStringSQL(req.body.surnom),
-    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
-    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
-    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
-    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu | 0,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu | 0,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup | 0,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup | 0,
   };
 
   var requete = "INSERT INTO statut(nom, surnom, nb_he_td_min_attendu, nb_he_td_max_attendu, nb_he_td_min_sup, nb_he_td_max_sup, verrou) VALUES ('" 
@@ -122,10 +122,10 @@ exports.editStatut = (req, res) => {
     id : req.body.id,
     nom : tools.safeStringSQL(req.body.nom),
     surnom : tools.safeStringSQL(req.body.surnom),
-    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu,
-    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu,
-    nb_he_td_min_sup : req.body.nb_he_td_min_sup,
-    nb_he_td_max_sup : req.body.nb_he_td_max_sup,
+    nb_he_td_min_attendu : req.body.nb_he_td_min_attendu | 0,
+    nb_he_td_max_attendu : req.body.nb_he_td_max_attendu | 0,
+    nb_he_td_min_sup : req.body.nb_he_td_min_sup | 0,
+    nb_he_td_max_sup : req.body.nb_he_td_max_sup | 0,
   };
 
   var requete = "UPDATE statut SET nom ='" + data['nom'] 

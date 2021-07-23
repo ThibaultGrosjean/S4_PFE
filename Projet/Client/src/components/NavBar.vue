@@ -71,7 +71,7 @@
                   @click="redirect(s.path + Number($route.params.id))"
                   class="pa-0"
               >
-                <v-list-item-content>
+                <v-list-item-content class="py-3">
                   <v-icon :color="$route.name === s.text ? 'primary' : 'gray'">{{ s.icon }}</v-icon>
                   <v-list-item-subtitle class="text-center">
                     <small>{{ s.text }}</small>

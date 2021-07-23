@@ -22,7 +22,7 @@
             <v-btn :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="success" @click="form = true" class="mb-2">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
-            <v-btn v-show="deleteSelected.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="error darken-1" @click="deleteAllSelectedIntervenant">
+            <v-btn v-show="deleteSelected.length" :disabled="!projet.length || Boolean(projet[0].verrou)" icon color="error darken-1" @click="deleteAllSelectedIntervenant" class="mb-2">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-col>
@@ -99,7 +99,7 @@
         <v-card>
           <v-form ref="formulaire" lazy-validation>
             <v-card-title>
-              <span class="headline" v-if="methods === 'POST'">Ajouter un intervenant</span>
+              <span class="headline" v-if="methods === 'POST'">Ajouter un ou plusieurs intervenant(s)</span>
               <span class="headline" v-else>Modifier l'intervenant</span>
               <v-spacer></v-spacer>
               <v-btn icon @click="close">
